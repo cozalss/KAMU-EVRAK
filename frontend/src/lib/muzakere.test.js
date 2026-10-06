@@ -5,7 +5,7 @@
    A1-A6: adversarial doğrulama bulgularının regresyon kilitleri. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { muzakereKurgusu, uzlasiMetni, nihaiTaslak, sunucuKurgusu, cevapsizTalepler, ORNEK_KURGU, kaynakEtiketi, kurulRiskOzeti } from "./muzakere.js";
+import { muzakereKurgusu, uzlasiMetni, nihaiTaslak, sunucuKurgusu, cevapsizTalepler, ORNEK_KURGU, kaynakEtiketi, kurulRiskOzeti, sozcukteKes } from "./muzakere.js";
 
 const TASLAK = "T.C.\nANKARA VALİLİĞİ\n\nSayı : E-2026/1502\nKonu : Bilgi Edinme Başvurusu\n\nİşbu talebinize binaen bilgiler değerlendirilmiştir.\n\nBilgilerinize saygıyla sunulur.";
 
@@ -596,4 +596,34 @@ test("kurulRiskOzeti: belge ve kurul bandı farklıysa yön söylenir", () => {
   assert.equal(kurulRiskOzeti("sari", "sari").fark, null);
   assert.deepEqual(kurulRiskOzeti("sari", ""), { bant: "sari", belge: "sari", kurul: null, fark: null });
   assert.equal(kurulRiskOzeti("", ""), null);
+});
+
+/* ---- tur-6: alıntı kelime ortasında kesilmez ---- */
+
+test("sozcukteKes: sözcük sınırında keser ve üç nokta ekler; kısa metne dokunmaz", () => {
+  assert.equal(sozcukteKes("kısa metin", 90), "kısa metin");
+  const uzun = "Sayaç okumasının kontrol edilerek hatalı tahakkuka itirazımın değerlendirilmesini ve faturanın düzeltilmesini";
+  const k = sozcukteKes(uzun, 90);
+  assert.ok(k.endsWith("…"), k);
+  assert.ok(k.length <= 91, k);
+  assert.ok(!/fatur…$/.test(k), "kelime ortasında kesildi: " + k);
+  assert.ok(uzun.startsWith(k.slice(0, -1)), k);
+  assert.equal(sozcukteKes("abcdefghijklmnop", 10), "abcdefghij…");   // boşluksuz → sert kesim
+});
+
+/* Tur 7 regresyon kilidi: revize yokken Yazı Sorumlusu'nun kapanışı Hukukçu'ya KARŞI ÇIKMAZ.
+   Eskiden tutum 'karsi' + "Taslak bu hâliyle gönderime uygun görünüyor" basılıyordu → tutanakta
+   "Hukuk 'ek itirazım yok' derken Yazı Sorumlusu karşı çıkıyor" ve imza bloğunda gerekçesi
+   olumlu bir ŞERH; öneri varken de "2 değişiklik önerdik. Taslak … uygun görünüyor" çelişkisi. */
+test("Kapanış: revize yokken taslakçı Hukukçu'ya katılır; 'gönderime uygun' hükmü vermez", () => {
+  for (const r of [R_TEMIZ, { ...R_TEMIZ, verify_uyari: ["Eksik bölüm: İmza bloğu (ad-soyad/unvan)"], risk_metadata: { bant: "sari" } }]) {
+    const k = muzakereKurgusu(r);
+    const kapanis = k.turlar.filter((t) => t.who === "taslakci" && t.tur === 1).slice(-1)[0];
+    assert.ok(kapanis, "taslakçı kapanış turu var");
+    if (!k.uzlasi_uygulanabilir) {
+      assert.equal(kapanis.tutum, "katil");
+      assert.doesNotMatch(kapanis.text, /gönderime uygun/);
+      if (k.oneriler.length) assert.doesNotMatch(kapanis.text, /değişiklik önerdik/);
+    }
+  }
 });

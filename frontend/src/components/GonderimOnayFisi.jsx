@@ -20,10 +20,28 @@ import { Btn, Icon, MONO, DISPLAY, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, 
 import { riskOlcuEtiketi } from "../lib/detayYorum.js";
 
 const bugun = () => new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
+/* "3.10.2026" / "03.10.2026" / "03/10/2026" aynı gün sayılsın — yalnız rakam üçlüsü karşılaştırılır. */
+const gunAnahtari = (s) => {
+  const m = String(s || "").match(/(\d{1,2})\D(\d{1,2})\D(\d{4})/);
+  return m ? `${+m[1]}.${+m[2]}.${m[3]}` : "";
+};
+/* Konu, kuyruk ve karar fişindeki gibi baş harfi büyük gösterilir (yalnız sunum; metne dokunulmaz). */
+const basHarf = (s) => (s ? s.charAt(0).toLocaleUpperCase("tr-TR") + s.slice(1) : s);
+const SATIR_GECIKME_MS = 40;
 
-function Satir({ etiket, children, not }) {
+/* KONTROL ÇİZELGESİ — künye satırları yukarıdan aşağı sırayla "görülür": sol kenarda tik
+   (değer metinde var) ya da boş halka (bulunamadı). Hareket yalnız opaklık + 2px kayma, satır
+   başına 40ms; reduced-motion global kuralıyla anında. İşaret salt görsel — durum metinle de
+   yazılı ("Metinde bulunamadı"), renk tek sinyal değil. */
+function Satir({ etiket, children, not, sira = 0, isaret = "tamam" }) {
+  const tamam = isaret === "tamam";
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "112px minmax(0, 1fr)", gap: SP.m, padding: "9px 0", borderTop: `1px solid ${PAL.line}` }}>
+    <div style={{ display: "grid", gridTemplateColumns: "18px 100px minmax(0, 1fr)", gap: SP.m, padding: "9px 0", borderTop: `1px solid ${PAL.line}`,
+      animation: `ke-fis-satir .22s var(--ke-ease-out) ${120 + sira * SATIR_GECIKME_MS}ms both` }}>
+      <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 16, height: 16, marginTop: 1, borderRadius: RAD.dot,
+        border: `1px solid ${tamam ? "transparent" : PAL.lineHi}`, background: tamam ? ALFA(BANT.yesil.c) : "transparent", color: DERIN.yesil }}>
+        {tamam && <Icon.check width={11} height={11} />}
+      </span>
       <dt style={{ ...TYPE.meta, color: PAL.mut2, paddingTop: 1 }}>{etiket}</dt>
       <dd style={{ margin: 0, minWidth: 0, ...TYPE.data, color: PAL.ink, fontWeight: 500, overflowWrap: "anywhere" }}>
         {children || <span style={{ color: PAL.mut2, fontWeight: 400 }}>Metinde bulunamadı</span>}
@@ -75,13 +93,18 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
   const bant = BANT[r?.risk_metadata?.bant] ? r.risk_metadata.bant : null;
   const olcu = riskOlcuEtiketi(r?.risk_metadata);
   const ayrinti = [kunye.antet && `Gönderen: ${kunye.antet}`].filter(Boolean)[0];
+  // Yazı tarihi gönderim gününden farklıysa söylenir (imza öncesi son kontrol bunu yakalamalı).
+  const tarihFarkli = !!kunye.tarih && gunAnahtari(kunye.tarih) && gunAnahtari(kunye.tarih) !== gunAnahtari(bugun());
+  const isaret = (v) => (v ? "tamam" : "eksik");
 
   if (typeof document === "undefined") return null;
   return createPortal(
     <div role="presentation" onMouseDown={() => { if (!gonderiliyor) onVazgec(); }}
       style={{ position: "fixed", inset: 0, zIndex: 80, display: "grid", placeItems: "center", padding: 16,
-        background: "color-mix(in srgb, var(--ke-ink) 38%, transparent)", animation: "ke-fis-zemin .16s ease-out both" }}>
-      <style>{"@keyframes ke-fis-zemin{from{opacity:0}to{opacity:1}}"}</style>
+        background: PAL.scrim, animation: "ke-fis-zemin .16s ease-out both" }}>
+      {/* Örtü PAL.scrim: iki temada da KARARTIR (eski ink-%38 karışımı koyu temada açık
+          renk olduğundan sayfayı griye boyuyor, fiş yükselmek yerine çöküyordu). */}
+      <style>{"@keyframes ke-fis-zemin{from{opacity:0}to{opacity:1}}@keyframes ke-fis-satir{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}"}</style>
       <section ref={kutuRef} role="alertdialog" aria-modal="true" aria-labelledby="ke-fis-baslik" aria-describedby="ke-fis-aciklama"
         onKeyDown={odakDongusu} onMouseDown={(e) => e.stopPropagation()}
         style={{ width: "min(560px, 100%)", maxHeight: "calc(100vh - 32px)", overflow: "auto", background: PAL.surfPop,
@@ -105,25 +128,33 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
         </div>
 
         <dl style={{ margin: "14px 24px 0" }}>
-          <Satir etiket="Muhatap">{kunye.muhatap}</Satir>
-          <Satir etiket="Konu">{kunye.konu}</Satir>
-          <Satir etiket="Sayı" not="Kayıt numarası gönderimde evrak kaydı sırasında verilir.">
+          <Satir sira={0} isaret={isaret(kunye.muhatap)} etiket="Muhatap">{kunye.muhatap}</Satir>
+          <Satir sira={1} isaret={isaret(kunye.konu)} etiket="Konu">{basHarf(kunye.konu)}</Satir>
+          <Satir sira={2} isaret={isaret(kunye.sayi)} etiket="Sayı" not="Kayıt numarası gönderimde evrak kaydı sırasında verilir.">
             {kunye.sayi && <span style={{ fontFamily: MONO, fontSize: 13, ...TNUM }}>{kunye.sayi}</span>}
           </Satir>
-          <Satir etiket="Tarih">{kunye.tarih && <span style={{ ...TNUM }}>{kunye.tarih}</span>}</Satir>
-          <Satir etiket="Kapanış · imza" not={ayrinti}>{[kunye.kapanis, kunye.imza].filter(Boolean).join(" — ")}</Satir>
+          <Satir sira={3} isaret={tarihFarkli ? "eksik" : isaret(kunye.tarih)} etiket="Tarih"
+            not={tarihFarkli ? `Bugün ${bugun()} — yazının tarihi farklı.` : null}>
+            {kunye.tarih && <span style={{ ...TNUM }}>{kunye.tarih}</span>}
+          </Satir>
+          <Satir sira={4} isaret={isaret(kunye.kapanis || kunye.imza)} etiket="Kapanış · imza" not={ayrinti}>{[kunye.kapanis, kunye.imza].filter(Boolean).join(" — ")}</Satir>
           {bant && (
-            <Satir etiket="Risk bandı">
+            <Satir sira={5} etiket="Risk bandı">
               <span style={{ color: BANT[bant].c === BANT.yesil.c ? DERIN.yesil : bant === "kirmizi" ? DERIN.kirmizi : DERIN.sari, fontWeight: 600 }}>{BANT[bant].l}</span>
               {olcu && <span style={{ color: PAL.mut2, fontWeight: 400 }}> · {olcu}</span>}
             </Satir>
           )}
         </dl>
 
-        {(engel.length > 0 || uyari.length > 0) && (
+        {(engel.length > 0 || uyari.length > 0 || tarihFarkli) && (
           <ul aria-label="Gönderim öncesi bulgular" style={{ listStyle: "none", margin: "12px 24px 0", padding: 0, display: "grid", gap: SP.xs }}>
             {engel.map((e) => <Madde key={e.kod} ton="kirmizi">{e.metin}</Madde>)}
             {uyari.map((u) => <Madde key={u.kod} ton="sari">{u.metin}</Madde>)}
+            {tarihFarkli && (
+              <Madde ton="sari">
+                Yazının tarihi {kunye.tarih}; bugün {bugun()}. Tarih bugün olarak gidecekse önce taslağı düzenleyin.
+              </Madde>
+            )}
           </ul>
         )}
 
@@ -140,16 +171,16 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
               Onaylayan: <strong style={{ color: PAL.ink2, fontWeight: 600 }}>{onaylayan}</strong>
             </span>
           )}
-          <Btn onClick={onVazgec} disabled={gonderiliyor} style={{ minHeight: 42, marginLeft: onaylayan ? 0 : "auto" }}>Vazgeç</Btn>
+          <Btn onClick={onVazgec} disabled={gonderiliyor} style={{ minHeight: 44, marginLeft: onaylayan ? 0 : "auto" }}>Vazgeç</Btn>
           {hazir ? (
             <button type="button" onClick={onOnayla} disabled={gonderiliyor} data-press="" {...focusRing}
               aria-label={gonderiliyor ? "Gönderiliyor" : "Yazıyı onayla ve Giden Evrak'a gönder"}
-              style={{ cursor: gonderiliyor ? "progress" : "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, minHeight: 42, padding: "9px 20px",
+              style={{ cursor: gonderiliyor ? "progress" : "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, minHeight: 44, padding: "9px 20px",
                 borderRadius: RAD.ctl, border: "1px solid transparent", background: DERIN.T, color: PAL.onAccent, ...TYPE.ui, fontWeight: 600 }}>
               {gonderiliyor ? <><Icon.spin width={14} height={14} /> Gönderiliyor…</> : <><Icon.send width={14} height={14} /> {hata ? "Tekrar dene" : "Onayla ve gönder"}</>}
             </button>
           ) : (
-            <Btn primary onClick={onDuzenle} style={{ minHeight: 42 }}><Icon.edit width={14} height={14} /> Taslağı düzenle</Btn>
+            <Btn primary onClick={onDuzenle} style={{ minHeight: 44 }}><Icon.edit width={14} height={14} /> Taslağı düzenle</Btn>
           )}
         </div>
       </section>

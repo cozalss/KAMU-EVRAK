@@ -18,11 +18,13 @@ import { gonderimDenetimi } from "./lib/gonderimHazirlik.js";
 import GonderimOnayFisi from "./components/GonderimOnayFisi.jsx";
 import { useAuth } from "./lib/useAuth.jsx";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
-import { sampleAdIndex, kuyrukDurumuTuret } from "./lib/kuyrukDurumu.js";
+import { useSlaOnizleme, useKabukSayac } from "./kabukSayac.js";
+import { kuyrukDurumuTuret } from "./lib/kuyrukDurumu.js";
+import { draftsFromHistory, SAMPLE_AD_ID, useKaliciKayitlar } from "./kabukVeri.js";
 import { ayniKosumMu, varyantBirlestir } from "./lib/sicilVaryant.js";
-import { PAL, DERIN, SANS, TYPE, RAD, SH, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
+import { PAL, DERIN, SANS, TYPE, RAD, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
 import NeonSidebar from "./components/NeonSidebar.jsx";
-import { gecisle, ViewFallback, ErrorBar } from "./dashboardKabuk.jsx";
+import { gecisle, ViewFallback, ErrorBar, DenemeSeridi } from "./dashboardKabuk.jsx";
 import HataSiniri from "./components/HataSiniri.jsx";
 // PanelView VARSAYILAN açılış görünümü → EAGER: her refresh'te lazy chunk beklemesi
 // ("yükleniyor…" flash) yaşanmasın, panel anında görünsün. Bağımlılıkları (neonUi +
@@ -59,36 +61,6 @@ const hashView = () => window.location.hash.slice(1);
 // Sekme başlığı için görünüm adları (kenar çubuğu etiketleriyle aynı).
 const VIEW_AD = { panel: "Panel", islenen: "İşlenen evrak", gelen: "Gelen evrak", isleniyor: "İşleniyor", taslaklar: "Taslaklar", giden: "Giden evrak", mevzuat: "Mevzuat", denetim: "Denetim izi" };
 
-// DB geçmişinden taslak listesi türet: taslağı ÜRETİLMİŞ ve henüz KARAR VERİLMEMİŞ işlemler
-// (onaylanmış/reddedilmiş işlemler Giden Evrak'a düşer — burada tekrar taslak sayılmaz;
-// Panel'deki "karar bekleyen" tanımıyla birebir aynı süzgeç). Hem açılış hidrasyonunda
-// hem de DB reconcile'ında aynı eşleme → iki yol tutarlı kalsın.
-// Oturumluk satır id'si sentetiktir (`${Date.now()}-${sıra}-${ad}`) — önbellekten hidre
-// edilince db-taslak- öneki bu sentetik id'yi DB islem id'si sanıp yanlış uca gönderiyordu
-// (bug avı bulgusu: PATCH/DELETE 404, silinen taslak refresh'te diriliyordu). Önek daima
-// GERÇEK islem id'siyle kurulur: result.islem_id (persist merge'i) varsa o, yoksa satır id.
-const draftsFromHistory = (items) =>
-  (items || []).filter((x) => x.result?.yazi_taslak_md && !x.result?.onay_durumu).map((x) => ({
-    ...x,
-    id: `db-taslak-${x.result?.islem_id || x.id}`,
-    name: x.name || "Kalıcı taslak",
-  }));
-
-// Kayıt kimliği — persist edilince result.islem_id, öncesinde satır id'si (sentetik).
-const _kayitAnahtar = (r) => r?.result?.islem_id || r?.id;
-
-// DB reconcile'ı in-session state ile BİRLEŞTİR (union): DB snapshot'ta OLMAYAN (henüz
-// persist edilmemiş, islem_id'siz) canlı kayıtları KORU; eşleşenlerde DB gerçeğini al.
-// Bug avı 2026-07-23 (CRITICAL): eski `setHistory(items)` tam-değiştirme, mount'ta ateşlenen
-// islemlerQ persist penceresinden (~20-27sn) önce dönünce, az önce işlenen evrakı UI'dan
-// KALICI siliyordu (islem_id yoktu → snapshot içermiyordu → replace ile kayboluyordu). Persist
-// tamamlanınca kayıt islem_id kazanır → sonraki reconcile'da eşleşip DB sürümüne deduplike olur.
-const _reconcileBirlestir = (mevcut, dbYeni) => {
-  const dbAnahtar = new Set((dbYeni || []).map(_kayitAnahtar));
-  const canliEkstra = (mevcut || []).filter((r) => !dbAnahtar.has(_kayitAnahtar(r)));
-  return [...canliEkstra, ...dbYeni];
-};
-
 // islemIdCoz: sentetik oturum id'sini DB islem id'si sanmayan çözümleyici —
 // lib/taslakId.js'te (saf + node:test regresyon testli).
 
@@ -96,9 +68,6 @@ const _reconcileBirlestir = (mevcut, dbYeni) => {
 // nihai karar DEĞİLDİR — evrak "karar bekleyen"de kalır, damgalanmaz).
 const KARAR_ETIKET = { onayla: "onaylandi", reddet: "reddedildi" };
 
-// Örnek evrak (dosya adı `${id}.txt` / etiket) → id — kuyruk durumunu DB geçmişinden
-// türetmek için (bkz. lib/kuyrukDurumu): gönderilmiş örnek refresh'te kuyruğa GERİ DÜŞMEZ.
-const SAMPLE_AD_ID = sampleAdIndex(SAMPLE_DOCS);
 
 export default function DashboardApp({ tema, onTemaDegistir }) {
   const {
@@ -149,8 +118,6 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   const [gelenHedef, setGelenHedef] = useState(null);
   // Onay kartı "Düzenle" → Taslaklar'da o taslağı doğrudan düzenleme modunda aç (aynı hedef deseni).
   const [taslakHedef, setTaslakHedef] = useState(null);
-  // Kuyruk SLA önizlemesi: id → sla_metadata (backend compute_sla — süre tablosu tek kaynak).
-  const [slaMap, setSlaMap] = useState(null);
   const fileRef = useRef(null);
   const lastResultRef = useRef(null);
   const pendingApprovalRef = useRef(null);   // HITL kararı damgası (resume async)
@@ -310,51 +277,8 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // memo'yu bozar ve canlı akışın her SSE tick'inde sidebar yeniden render olurdu.
   const kota = useMemo(() => kotaQ.data ?? null, [kotaQ.data]);
 
-  const islemlerQ = useQuery({
-    queryKey: ["islemler", user?.id],
-    queryFn: () => apiGet("/islemler?limit=100"),
-    enabled: !!user,
-  });
-  useEffect(() => {
-    if (islemlerQ.error) { console.warn("Kalıcı işlem geçmişi alınamadı", islemlerQ.error); return; }
-    if (!islemlerQ.data) return;
-    const items = Array.isArray(islemlerQ.data.kayitlar) ? islemlerQ.data.kayitlar : [];
-    // Union: DB gerçeğini al ama henüz persist edilmemiş canlı kayıtları KORU (bkz. _reconcileBirlestir).
-    setHistory((prev) => _reconcileBirlestir(prev, items));
-    setDrafts((prev) => _reconcileBirlestir(prev, draftsFromHistory(items)));
-    // Kuyruk durumunu DB gerçeğiyle BİRLEŞTİR (union): canlı oturumda işaretlenenler
-    // korunur, geçmiş oturumların kararları da yansır → gönderilmiş örnek geri düşmez.
-    const { processed, sent } = kuyrukDurumuTuret(items, SAMPLE_AD_ID);
-    if (processed.size) setProcessedIds((p) => new Set([...p, ...processed]));
-    if (sent.size) setSentSampleIds((s) => new Set([...s, ...sent]));
-  }, [islemlerQ.data, islemlerQ.error]);
-
-  const gidenQ = useQuery({
-    queryKey: ["giden-evrak", user?.id],
-    queryFn: () => apiGet("/giden-evrak?limit=100"),
-    enabled: !!user,
-  });
-  useEffect(() => {
-    if (gidenQ.error) { console.warn("Kalıcı giden evrak alınamadı", gidenQ.error); return; }
-    if (!gidenQ.data || !user) return;
-    const rows = Array.isArray(gidenQ.data.kayitlar) ? gidenQ.data.kayitlar : [];
-    setOutbox(rows.map((r) => ({
-      id: r.giden_no || r.id,
-      kaynak_evrak_adi: r.kaynak_evrak_adi || "Kalıcı kayıt",
-      gonderim_tarihi: Date.parse(r.gonderim_tarihi || "") || Date.now(),
-      evrak_turu: r.evrak_turu || "",
-      tur: r.yazi_turu_kod || r.tur || "",
-      konu: r.konu || "—",
-      alici_birim: r.alici_birim || "",
-      risk: r.risk || "yesil",
-      durum: r.durum || "gonderildi",
-      taslak: r.taslak || "",
-      memor_adi: user.ad_soyad || "Memur",
-      memor_unvan: user.unvan || "",
-      son_hash: r.son_hash || "",
-      guven: typeof r.guven === "number" ? r.guven : null,
-    })));
-  }, [gidenQ.data, gidenQ.error, user]);
+  // Kalıcı kayıt hidrasyonu (işlemler + giden) — kabukVeri.js (union reconcile sözleşmesi orada).
+  const { islemlerQ, gidenQ } = useKaliciKayitlar({ user, setHistory, setDrafts, setProcessedIds, setSentSampleIds, setOutbox });
 
   // history/outbox her değiştiğinde (DB reconcile VEYA canlı işlem sonucu eklenince) optimistik
   // önbelleği tazele → bir sonraki refresh son veriyi ANINDA gösterir. Yazma seyrek (kesikli
@@ -525,31 +449,10 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         ? { ...x, result: { ...x.result, onay_durumu: karar } } : x)));
   }, []);
 
-  // İşlenmemiş kuyruk için SLA rozetleri — statik örnek seti için BİR kez hesaplanır
-  // (react-query: geçici ağ hatasında kendini toparlar). Backend yoksa sessizce atlanır
-  // (rozetler görünmez, kuyruk aynen çalışır).
-  const slaQ = useQuery({
-    queryKey: ["sla-onizleme"],
-    queryFn: async () => {
-      const r = await fetch("/sla/onizleme", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ogeler: SAMPLE_DOCS.map((s) => ({ id: s.id, tur: s.tur || s.id, metin: s.text })) }),
-      });
-      if (!r.ok) throw new Error(`İstek başarısız (${r.status})`);
-      return r.json();
-    },
-  });
-  useEffect(() => {
-    if (!slaQ.data) return;
-    setSlaMap(Object.fromEntries((slaQ.data.sonuclar || []).map((x) => [x.id, x.sla_metadata])));
-  }, [slaQ.data]);
-
-  // Panel "süresi yaklaşan" kartı: kuyruktaki (henüz gönderilmemiş) örneklerin SLA'sı.
-  const kuyrukSla = slaMap
-    ? SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))
-        .map((s) => ({ id: s.id, label: s.konu || s.label, sla: slaMap[s.id] }))
-        .filter((x) => x.sla)
-    : [];
+  // Kuyruk SLA + kabuk sayaçları (kabukSayac.js): her sayı kendi kaynağının durumunu taşır —
+  // veri hiç gelmediyse null ("—"), hata+önbellek → "son bilinen". veriBayat: sicil başlığı.
+  const { slaQ, slaMap, kuyrukSla } = useSlaOnizleme(sentSampleIds);
+  const { sayac, sicil, bayat: veriBayat } = useKabukSayac({ inboxCount, draftCount, gidenCount, kuyrukSla, history, outbox, islemlerQ, gidenQ, slaQ });
 
   // Taslak düzenle (metni güncelle) / sil — Taslaklar görünümünden çağrılır.
   // Güncelleme KALICIDIR: oturum state'i anında (optimistik), DB PATCH arkada — eskiden
@@ -1006,6 +909,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
       fileUrl={fileUrl} onFileDrop={onFileDropOnamli} onTelefon={() => setTelefonAcik(true)}
       onMevzuatAc={mevzuatAc}
       onMevzuatSec={secMevzuat} seciliMevzuat={seciliMevzuat} dayanakUretiliyor={dayanakUretiliyor}
+      hataMesaji={error && !busy ? error : ""} onTekrarDene={canRetry && !errorKind ? retry : null}
     />
   );
 
@@ -1024,12 +928,12 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onClick={(e) => { e.preventDefault(); document.getElementById("nu-main")?.focus(); }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
-        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} user={user} onLogout={logout} tema={tema} onTemaDegistir={onTemaDegistir} kota={kota} />
+        <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} busy={busy} sayac={sayac} sicil={sicil} veriBayat={veriBayat} user={user} onLogout={logout} tema={tema} onTemaDegistir={onTemaDegistir} kota={kota} />
 
         {/* tabIndex -1: atlama bağlantısı odağı GERÇEKTEN içeriğe taşısın — yoksa odak body'ye düşer
             ve hash #nu-main'e döner (geri tuşu bir "görünüm" daha sayardı). Programatik odak
             halkası çizilmez; içerikteki ilk Tab sonraki öğeye gider. */}
-        <main id="nu-main" tabIndex={-1} style={{ outline: "none", flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+        <main id="nu-main" className="ke-ana" tabIndex={-1} style={{ outline: "none", flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
           {/* Görünüm başına hata sınırı: bir görünüm çökerse kabuk (kenar çubuğu, asistan)
               ayakta kalır; key=activeView → başka görünüme geçince sınır kendini sıfırlar. */}
           <HataSiniri key={activeView} tam baslik="Bu görünüm gösterilemedi">
@@ -1039,9 +943,14 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
 
         <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>{toast}</div>
         {/* sonner: katmanlı/istiflenen bildirimler — eski tek-toast görünümüyle aynı dil (koyu yüzey). */}
-        <Toaster containerAriaLabel="Bildirimler" position="bottom-center" duration={3200} gap={8} visibleToasts={3}
-          toastOptions={{ style: { background: PAL.inkSurf, color: PAL.onInk, border: "none", borderRadius: RAD.pop, boxShadow: SH.modal, fontFamily: SANS, fontSize: 14, lineHeight: "20px", fontWeight: 500, padding: "12px 16px" } }} />
-        {error && !busy && <ErrorBar msg={error} canRetry={canRetry && !errorKind} onRetry={retry} onDismiss={dismissError} />}
+        {/* Bildirimler "zımbalı havale pusulası" (kabukAtomlari.fisToast — custom çizim, ton = işlendi/
+            bilgi/uyarı/hata). Telefonda alt kulakçık şeridinin ÜSTÜNDE durur. */}
+        <Toaster containerAriaLabel="Bildirimler" position="bottom-center" gap={8} visibleToasts={3}
+          mobileOffset={{ bottom: "calc(76px + env(safe-area-inset-bottom))" }} toastOptions={{ unstyled: true }} />
+        {/* Canlı akışta bir masa hata verdiyse sebep + «Tekrar dene» sahnenin kendisinde (MerkezHata);
+            köşe bildirimi aynı şeyi ikinci kez söyler ve kaynak belgeyi örter → orada basılmaz. */}
+        {error && !busy && !(activeView === "isleniyor" && nodes.some((x) => x.status === "error")) && <ErrorBar msg={error} canRetry={canRetry && !errorKind} onRetry={retry} onDismiss={dismissError} />}
+        <DenemeSeridi sorgular={[islemlerQ, gidenQ, slaQ]} />
 
         {user && asistanHazir && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} ekran={ekranBaglami} onEvrakAc={evrakAc} /></Suspense>}
 

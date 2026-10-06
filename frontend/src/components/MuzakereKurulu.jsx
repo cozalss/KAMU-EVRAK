@@ -13,12 +13,11 @@
    odak kapat düğmesine, kapanışta tetikleyiciye döner, body scroll kilitlenir.
    prefers-reduced-motion → son (karar) kare statik; turlar aria-live ile duyurulur. */
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { DISPLAY, Damga, T, V, PAL, DERIN, DERIN_OF, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, Icon, Btn, odakDongusu } from "./neonUi.jsx";
+import { createPortal } from "react-dom";
+import { DISPLAY, T, PAL, DERIN_OF, BANT, TYPE, TNUM, RAD, SP, SH, Icon, Btn, odakDongusu } from "./neonUi.jsx";
 import { UYE, uyeGor, turEtiketi, RISK, aksanRenk, KurulMasasi, duruslariCikar, TurSeridi, TutanakMaddesi, Yaziyor, TaslakKarti, KurulYukleniyor } from "./KurulMasasi.jsx";
-import { DuzeltmeDiff } from "./NeonDetayParts.jsx";
-import { muzakereKurgusu, editUygula, nihaiTaslak, sunucuKurgusu, kurguUzlasiMetni, metniSatirlara, kaynakEtiketi, kurulRiskOzeti } from "../lib/muzakere.js";
-import { gonderimDenetimi } from "../lib/gonderimHazirlik.js";
-import GonderimOnayFisi from "./GonderimOnayFisi.jsx";
+import { KurulTutanagi, kurulHukmu } from "./KurulKarar.jsx";
+import { muzakereKurgusu, editUygula, nihaiTaslak, sunucuKurgusu, kurguUzlasiMetni, metniSatirlara, kurulRiskOzeti } from "../lib/muzakere.js";
 import { apiStream } from "../lib/authApi.js";
 
 // Yalnız AÇILIŞ turunu bekler (sonrası akışla gelir): açılış gelmezse deterministik motora düş.
@@ -27,18 +26,15 @@ import { apiStream } from "../lib/authApi.js";
 const KURUL_FETCH_TIMEOUT_MS = 45000;
 
 const THINK = 900, READ = 1700;
+// Telefon başlığı: ürün öneki ve metin "Kapat" düğmesi gizlenir, ikon kapat künye satırına çıkar.
+const KURUL_BASLIK_CSS = `.ke-kurul-kapat-ikon{display:none}
+@media (max-width:720px){.ke-kurul-kapat-ikon{display:grid}.ke-kurul-kapat-metin{display:none}}
+@media (max-width:480px){.ke-kurul-onek{display:none}}
+@media (max-width:720px){.ke-kurul-kap{padding-bottom:calc(72px + env(safe-area-inset-bottom))!important}}`;
 // Tutanak antetindeki toplantı tarihi (gg.aa.yyyy — resmî biçim).
 const bugun = () => new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
 // Tutanak tur başlıklarının sıra numarası (resmî tutanak dili: I., II., III.).
 const ROMA = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
-
-// Tutanak öneri tipi → semantik renk + etiket (düzelt=amber · ekle=yeşil · çıkar=kırmızı).
-const TIP = {
-  duzelt: { etiket: "Düzelt", col: BANT.sari.c },
-  ekle: { etiket: "Ekle", col: BANT.yesil.c },
-  cikar: { etiket: "Çıkar", col: BANT.kirmizi.c },
-};
-const TIP_SIRA = ["cikar", "ekle", "duzelt"];   // en sert eylem en üstte
 
 function useAzHareket() {
   const [az, setAz] = useState(() => typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
@@ -52,234 +48,10 @@ function useAzHareket() {
   return az;
 }
 
-/* Gönderime hazır — kurul incelemesinden SONRA memur taslağın doğruluğunu onaylar ve
-   gönderir (Giden Evrak'a). İkinci adım uygulamanın TEK onay fişidir (GonderimOnayFisi —
-   sonuç ekranı ve Taslaklar ile aynı bileşen, aynı gonderimDenetimi): künye metinden okunur,
-   içi boş / "aşağıda" vaatli / [DOĞRULA]'lı yazı kilitlenir.
-   finalMetin: revize varsa kurulun revize metni (onay = revizeyi kabul), yoksa mevcut taslak. */
-function GonderimeHazir({ kurgu, aksan, onGonder, r = null, onDuzenle = null, az = false }) {
-  const [fisAcik, setFisAcik] = useState(false);
-  const [gonderiyor, setGonderiyor] = useState(false);
-  const [hata, setHata] = useState(false);   // gönderim başarısız → fiş açık kalır, tekrar dene
-  const revizeVar = !!kurgu.uzlasi_uygulanabilir;
-  // Birim Amiri çekince bildirdiyse (sarı/kırmızı bant) "kurulca uygun bulundu" DENMEZ.
-  const cekince = kurgu.risk === "sari" || kurgu.risk === "kirmizi";
-  const onayRenk = cekince ? T : DERIN.yesil;
-  const finalMetin = revizeVar
-    ? (kurgu.uzlasi_metni || "")
-    : (kurgu.taslak || []).map((l) => l.metin).join("\n");
-  const denetim = useMemo(() => gonderimDenetimi(finalMetin), [finalMetin]);
-  // Birim Amiri'nin (risk_guard) kapanış sözü — gönderim kararının dayanağı.
-  const amirSoz = (kurgu.turlar || []).filter((t) => t.who === "birim_amiri").slice(-1)[0]?.text || "";
-  const gonder = async () => {
-    if (gonderiyor || !denetim.hazir) return;
-    setGonderiyor(true); setHata(false);
-    try {
-      const ok = await onGonder(finalMetin);   // TaslaklarView onSend sonucu (bool)
-      if (ok === false) setHata(true); else setFisAcik(false);
-    } catch {
-      setHata(true);
-    } finally {
-      setGonderiyor(false);
-    }
-  };
-  return (
-    <div style={{ marginTop: SP.l, animation: az ? "none" : "nu-rise .28s var(--ke-ease-out) both" }}>
-      {amirSoz && (
-        /* Amirin sözü tutanakta ALINTI gibi durur: kalın kenar + kendi rengi + adı altta imza gibi. */
-        <figure style={{ margin: `0 0 ${SP.l}px`, padding: "4px 0 4px 16px", boxShadow: `inset 3px 0 0 ${aksan}` }}>
-          <blockquote style={{ margin: 0, fontFamily: DISPLAY, fontSize: 16, lineHeight: "23px", fontWeight: 500, fontStretch: "100%", color: PAL.ink }}>“{amirSoz}”</blockquote>
-          <figcaption style={{ marginTop: 6, display: "flex", alignItems: "center", gap: SP.xs, ...TYPE.meta, fontWeight: 600, color: DERIN_OF(aksan) }}>
-            <Icon.shield width={13} height={13} /> Birim Amiri · kurulun ölçtüğü bant üzerinden gönderim değerlendirmesi
-          </figcaption>
-        </figure>
-      )}
-      <div style={{ display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap", padding: "14px 16px", borderRadius: RAD.card, background: PAL.surf2, border: `1px solid ${PAL.line}` }}>
-        <span aria-hidden="true" style={{ display: "flex", color: !denetim.hazir ? DERIN.kirmizi : cekince ? DERIN_OF(aksan) : DERIN.yesil }}>{!denetim.hazir || cekince ? <Icon.alert /> : <Icon.shield />}</span>
-        <span style={{ minWidth: 0, flex: "1 1 260px" }}>
-          <span style={{ display: "block", ...TYPE.data, fontWeight: 600, color: PAL.ink }}>
-            {!denetim.hazir ? "Yazı henüz gönderilemez"
-              : revizeVar ? "Kurulun revize taslağı gönderime hazır"
-              : cekince ? "Kurul revize önermedi — Birim Amiri çekince bildirdi"
-                : "Taslak kurulca uygun bulundu — gönderime hazır"}
-          </span>
-          <span style={{ display: "block", ...TYPE.meta, color: denetim.hazir ? PAL.mut2 : DERIN.kirmizi }}>
-            {!denetim.hazir ? denetim.engel[0]?.metin
-              : revizeVar ? "Onay fişinde künyeyi görüp onaylarsanız revize sürüm Giden Evrak'a gönderilir."
-              : "Onay fişinde künyeyi görüp onaylarsanız Giden Evrak'a gönderilir."}
-          </span>
-        </span>
-        <span style={{ marginLeft: "auto" }}>
-          <Btn primary accent={onayRenk} onClick={() => { setHata(false); setFisAcik(true); }}
-            ariaLabel="Onayla ve gönder — önce onay fişi açılır">
-            <Icon.check /> Onayla ve gönder
-          </Btn>
-        </span>
-      </div>
-      {fisAcik && (
-        <GonderimOnayFisi denetim={denetim} r={r} gonderiliyor={gonderiyor} hata={hata}
-          onOnayla={gonder} onVazgec={() => setFisAcik(false)}
-          onDuzenle={() => { setFisAcik(false); onDuzenle?.(); }} />
-      )}
-    </div>
-  );
-}
-
-/* Kurul Tutanağı — REVİZYON ÖNERİSİ: taslakta neyin düzeltilmesi/eklenmesi/çıkarılması
-   gerektiği (tip-renkli + kaynak sinyal rozetli), sonra uygulanacak revize taslağının
-   önce→sonra farkı. Kalıcı yazım MEMUR kararıdır (HITL) — kurul kendiliğinden uygulamaz.
-   onOneriIsle: "tavsiye" kalan (revizeye işlenmemiş) öneriyi TEK TEK revize taslağa katlar
-   (/yazi/dogrula talimat yolu) — yine yalnız öneriyi işler, kalıcı yazım "uygula"da kalır.
-   onGonder: memur doğruluğu onaylayıp gönderir (Giden Evrak) — kurulun kapanış eylemi. */
-function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, isleyen = null, onGonder = null, r = null }) {
-  const oneriler = Array.isArray(kurgu.oneriler) ? kurgu.oneriler : [];
-  const sirali = TIP_SIRA.flatMap((t) => oneriler.filter((o) => o.tip === t));
-  const uygulanabilir = !!onUygula && !!kurgu.uzlasi_uygulanabilir;
-  // GÖRÜNÜR ONAY (HITL): revize taslağı memura uygulamadan ÖNCE önce→sonra farkıyla gösterilir.
-  const diff = kurgu.uzlasi_uygulanabilir
-    ? { eski: (kurgu.taslak || []).map((l) => l.metin).join("\n"), yeni: kurgu.uzlasi_metni || "" }
-    : null;
-  const sayim = TIP_SIRA
-    .map((t) => ({ t, n: oneriler.filter((o) => o.tip === t).length }))
-    .filter((x) => x.n)
-    .map((x) => `${x.n} ${TIP[x.t].etiket.toLocaleLowerCase("tr-TR")}`)
-    .join(" · ");
-  const uygulanan = oneriler.filter((o) => o.uygulanabilir).length;   // grounded işlenen öneri sayısı
-
-  return (
-    <section aria-label="Kurul kararı" style={{ marginTop: SP.xxl, background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: "20px clamp(16px, 2.4vw, 24px) 22px", animation: az ? "none" : "nu-rise .25s var(--ke-ease-out) both" }}>
-      {/* Kararın başlığı — tutanağın son bölümü. Hüküm TEK damgadır (ekranın tek damgası):
-          revize önerildi mi, önerilmedi mi. Uygunluk/risk iddiası damgaya YÜKLENMEZ — o
-          Birim Amiri'nin sözünde ve risk bandında, kendi kelimeleriyle durur. */}
-      <div style={{ display: "flex", alignItems: "center", gap: SP.l, flexWrap: "wrap", paddingBottom: SP.m, marginBottom: SP.m, borderBottom: `1px solid ${PAL.lineHi}` }}>
-        <div style={{ minWidth: 0 }}>
-          <div style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", marginBottom: 4 }}>Kurul kararı · revize önerisi</div>
-          <h3 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{kurgu.uzlasi_uygulanabilir ? "Kurul revize taslağı önerdi" : "Kurul değişiklik önermedi"}</h3>
-        </div>
-        <Damga ton={kurgu.uzlasi_uygulanabilir ? V : aksan} egim={-5} oncelik={1} animasyon={!az}>{kurgu.uzlasi_uygulanabilir ? "Revize önerildi" : "Değişiklik yok"}</Damga>
-        {oneriler.length > 0 && (
-          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: SP.s, ...TNUM }}>
-            {uygulanan > 0 && <span style={{ ...TYPE.meta, fontWeight: 600, color: DERIN.yesil }}>{uygulanan} işlendi</span>}
-            {sayim && <span style={{ ...TYPE.meta, color: PAL.mut3 }}>{sayim}</span>}
-          </span>
-        )}
-      </div>
-
-      {/* ÖLÇÜLEN yakınsama — kurulun asıl kanıtı. "İşlendi" kaç öneri UYGULANDIĞINI söyler;
-          bu satır revizenin NE İŞE YARADIĞINI söyler: revize taslak sunucuda yeniden
-          verify/risk_guard'dan geçirildi ve uyarılar YENİDEN SAYILDI. Ölçüm yoksa (mock,
-          ölçüm hatası, revize düştü) satır hiç görünmez — kanıtsız kazanım iddia edilmez. */}
-      {kurgu.yakinsama && (() => {
-        const y = kurgu.yakinsama;
-        const temiz = !y.duran && !y.yeni;                       // duran da yok, yeni de yok
-        const renk = temiz ? BANT.yesil.c : BANT.sari.c;
-        return (
-          <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s, marginBottom: SP.m, padding: "8px 12px", borderRadius: RAD.card, background: ALFA(renk) }}>
-            <span aria-hidden="true" style={{ display: "flex", marginTop: 1, color: DERIN_OF(renk) }}>
-              <Icon.scale width={15} height={15} />
-            </span>
-            <span style={{ ...TYPE.data, color: PAL.ink2, ...TNUM }}>
-              <strong style={{ fontWeight: 600 }}>{y.tur} tur müzakere</strong>{" · revize uygulanırsa: "}
-              <strong style={{ fontWeight: 600, color: DERIN.yesil }}>{y.dusen} uyarı düşüyor</strong>
-              {!!y.duran && <>{" · "}<strong style={{ fontWeight: 600, color: DERIN_OF(BANT.sari.c) }}>{y.duran} uyarı duruyor</strong></>}
-              {/* "Yeni uyarı" AYRI gösterilir: revizyonun kendi ürettiği sorun, net farkın
-                  içinde eritilirse memur bunu hiç görmez (canlı koşum bulgusu). */}
-              {!!y.yeni && <>{" · "}<strong style={{ fontWeight: 600, color: DERIN_OF(BANT.kirmizi.c) }}>revizyon {y.yeni} yeni uyarı üretiyor</strong></>}
-              {temiz && " — taslakta işaretli uyarı kalmıyor."}
-              <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, marginTop: 2 }}>
-                Sayılar revize metin üzerinde yeniden ölçüldü (kurulun beyanı değil).
-              </span>
-            </span>
-          </div>
-        );
-      })()}
-
-      {sirali.length === 0 ? (
-        <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.data, color: DERIN.yesil }}>
-          <Icon.check width={15} height={15} /> {kurgu.risk === "sari" || kurgu.risk === "kirmizi"
-            ? "Kurul taslakta değişiklik önermedi; risk çekincesi Birim Amiri'nin sözünde."
-            : "Kurul taslakta değişiklik önermedi — taslak bu hâliyle uygun görüldü."}
-        </div>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {sirali.map((o, i) => {
-            const t = TIP[o.tip] || TIP.duzelt;
-            return (
-              <div key={`${o.tip}-${o.kaynak}-${i}`} style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: SP.s, padding: "8px 0", borderTop: i ? `1px solid ${PAL.line}` : "none" }}>
-                <span style={{ flex: "none", marginTop: 1, ...TYPE.meta, fontWeight: 600, color: DERIN_OF(t.col), background: ALFA(t.col), borderRadius: RAD.chip, padding: "2px 8px", minWidth: 52, textAlign: "center" }}>{t.etiket}</span>
-                {/* flex-basis 220: dar ekranda metin tek-kelimelik sütuna ezilmez; eylem + kaynak
-                    satırın altına iner (390px'te ölçülen kırılma, tur-3). */}
-                <span style={{ flex: "1 1 220px", minWidth: 0, ...TYPE.data, color: PAL.ink2 }}>
-                  {o.metin}
-                  {/* DÜRÜST bayrak: grounded uygulandıysa "işlendi" (yeşil), yoksa "tavsiye" (nötr) —
-                      revize taslağa işlendi rozeti YALNIZ diff'te gerçekten değişen öneride görünür. */}
-                  {o.uygulanabilir ? (
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 3, marginLeft: SP.s, ...TYPE.meta, fontWeight: 500, color: DERIN.yesil }}>
-                      <Icon.check width={11} height={11} /> revize taslağa işlendi
-                    </span>
-                  ) : (
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 3, marginLeft: SP.s, ...TYPE.meta, fontWeight: 500, color: PAL.mut3 }}>
-                      tavsiye · memur değerlendirir
-                    </span>
-                  )}
-                </span>
-                {/* Tavsiye kalan öneri TEK TIKLA revize taslağa katılır (AI revize yolu) —
-                    aynı anda tek istek (isleyen kilidi); işlenmiş öneride buton yok. */}
-                <span style={{ flex: "none", marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: SP.s }}>
-                {!o.uygulanabilir && onOneriIsle && (
-                  <span style={{ flex: "none" }}>
-                    <Btn onClick={() => onOneriIsle(o)} disabled={isleyen != null}
-                      ariaLabel={`Öneriyi revize taslağa işle: ${String(o.metin).slice(0, 60)}`}
-                      style={{ padding: "3px 10px", minHeight: 26 }}>
-                      {isleyen === o
-                        ? <><Icon.spin width={12} height={12} /> İşleniyor…</>
-                        : <><Icon.plus width={12} height={12} /> Taslağa işle</>}
-                    </Btn>
-                  </span>
-                )}
-                {kaynakEtiketi(o.kaynak) && <span style={{ flex: "none", ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase" }}>{kaynakEtiketi(o.kaynak)}</span>}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Revize taslağı → uygulamadan ÖNCE önce→sonra farkı (görünür HITL onayı) */}
-      {diff && (
-        <div style={{ marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
-          <div style={{ ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>Kurulun hazırladığı revize taslağı — mevcut taslakla fark</div>
-          <div style={{ ...TYPE.meta, color: PAL.mut3, marginBottom: SP.s }}>Eklenen satır “+”, çıkarılan satır “−” ile işaretlidir. Onaylamadan uygulanmaz.</div>
-          <DuzeltmeDiff eski={diff.eski} yeni={diff.yeni} />
-        </div>
-      )}
-
-      {uygulanabilir && (
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: SP.m, marginTop: SP.m, paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
-          <span style={{ ...TYPE.meta, color: PAL.mut2, flex: "1 1 220px" }}>
-            {onGonder
-              ? "İsterseniz yalnız taslağa kaydedip sonra gönderebilirsiniz:"
-              : "Kalıcı yazım memur kararıdır — kurul hiçbir değişikliği kendiliğinden uygulamaz."}
-          </span>
-          <span style={{ marginLeft: "auto" }}>
-            {/* onGonder varsa primary "Onayla ve gönder"e devredilir → uygula ikincil kalır (tek primary). */}
-            <Btn primary={!onGonder} accent={aksan} onClick={onUygula} style={{ whiteSpace: "nowrap" }}>
-              <Icon.check /> {onGonder ? "Yalnız taslağa kaydet" : "Revize taslağını uygula"}
-            </Btn>
-          </span>
-        </div>
-      )}
-
-      {/* Kurulun kapanışı — memur doğruluğu onaylar ve gönderime hazırlar (Giden Evrak). */}
-      {onGonder && <GonderimeHazir kurgu={kurgu} aksan={aksan} onGonder={onGonder} r={r} onDuzenle={onUygula} az={az} />}
-    </section>
-  );
-}
-
 /* Müzakere sahnesi — animasyon state'inin TEK sahibi. CANLI AKIŞ: kurgu.turlar akışla büyür
    (açılış → +çapraz), reveal restart ETMEDEN devam eder (`akan`=stream sürüyor). Key yalnız
    kaynak değişince (llm↔deterministik) verilir → aynı akış içinde remount yok. */
-function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, isleyen = null, onGonder = null, belgeBant = "", r = null }) {
+function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, onTumunuIsle = null, isleyen = null, onGonder = null, belgeBant = "", r = null }) {
   const aksan = aksanRenk(kurgu.risk);
   // Belgenin işlem anındaki bandı ile kurulun YENİDEN ölçtüğü bant ayrı olgulardır; farklıysa
   // masa bunu açıkça söyler (tur-4: fiş "SARI", kurul "yüksek risk" — hangisi doğru?).
@@ -364,8 +136,10 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
   const gorunenTurlar = useMemo(() => TURLAR.slice(0, turnIdx), [TURLAR, turnIdx]);
   // Koltuk mühürleri tutanağa GEÇMİŞ maddelerden türer (açılmamış madde mühür basmaz).
   const durus = useMemo(() => duruslariCikar(gorunenTurlar), [gorunenTurlar]);
-  // Başlık: revizyon çıktısı odaklı (verdict değil). Bitince revize var mı yok mu söyler.
+  // Başlık: revizyon çıktısı odaklı (verdict değil). Hüküm TEK kaynaktan (KurulKarar.kurulHukmu):
+  // masa, tutanağın son satırı ve karar bölümü aynı cümleyi kurar (tur 6 çelişkisi).
   const degisiklikN = kurgu.degisiklik || (kurgu.oneriler || []).filter((o) => o.uygulanabilir).length;
+  const hukum = kurulHukmu(kurgu);
   // BEKLEME DURUMU: akış açık ama oynatılacak tur kalmadı → sunucu SIRADAKİ turu üretiyor.
   // Bu bekleme 40-90 sn sürebilir (reasoning modeli düşünüyor). Göstergesiz bırakılınca ekran
   // "3/3 tur" + donmuş transkriptle TAKILMIŞ gibi okunuyordu (kullanıcı bildirimi, 7 Ağu 2026).
@@ -374,7 +148,7 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
     ? "Çapraz eleştiri" : "Denetim";
   const durum = !done
     ? (bekliyor ? `${sonrakiTur} turu hazırlanıyor${bekleyenSn ? ` · ${bekleyenSn} sn` : ""}` : "Müzakere sürüyor")
-    : kurgu.uzlasi_uygulanabilir ? `Revize önerisi hazır${degisiklikN ? ` · ${degisiklikN} değişiklik` : ""}` : "Değişiklik önerilmedi";
+    : hukum.tur === "revize" ? `Revize önerisi hazır${degisiklikN ? ` · ${degisiklikN} değişiklik` : ""}` : hukum.durum;
   const durumRenk = done ? aksan : T;
   // Bitince sağ panelde REVİZE taslağını göster (memur uygulayacağı sürümü görür).
   const revizeGoster = done && kurgu.uzlasi_uygulanabilir;
@@ -424,7 +198,10 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
               {akan ? `${TURLAR.length} madde · sürüyor` : `${Math.min(turnIdx, TURLAR.length)}/${TURLAR.length} madde`}
             </span>
           </div>
-          <div ref={feedRef} style={{ display: "flex", flexDirection: "column", maxHeight: 460, overflowY: "auto", paddingRight: SP.xs, borderTop: `2px solid ${PAL.ink}` }}>
+          {/* Besleme kendi içinde kayar (masaüstü); tur şeritleri YAPIŞKAN — otomatik kaydırmada
+              bölüm başlığı çift çizginin altında yarım kesilmez, üst kenar 12px'te solar.
+              Telefonda iç kaydırma YOK (başparmak tuzağı): tutanak modal akışında büyür. */}
+          <div ref={feedRef} className="ke-kurul-besleme" style={{ display: "flex", flexDirection: "column", paddingRight: SP.xs, borderTop: `2px solid ${PAL.ink}` }}>
             {/* Turlar kaynağında SIRALI-GRUPLU gelir (motor [*acilis,*capraz,moderatör]; sunucu da
                 aynı sırada) — şerit bu bitişik-tur değişimine göre çizilir; ara-sıralama gerekmez. */}
             {(() => {
@@ -458,9 +235,7 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
             )}
             {done && (
               <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "10px 0 2px", borderTop: `1px solid ${PAL.line}`, ...TYPE.data, color: DERIN_OF(aksan), fontWeight: 500, animation: az ? "none" : "nu-rise .2s var(--ke-ease-out) both" }}>
-                <Icon.check /> {kurgu.uzlasi_uygulanabilir
-                  ? "Kurul revize taslağını hazırladı; memur onayına sunuluyor."
-                  : "Kurul taslakta değişiklik önermedi."}
+                <Icon.check /> {hukum.satir}
               </div>
             )}
           </div>
@@ -471,7 +246,7 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, i
       </div>
 
       {/* Tartışmanın sonucu — tutanak yalnız müzakere bitince açılır (canlı gerilim korunur) */}
-      {done && <KurulTutanagi kurgu={kurgu} aksan={aksan} az={az} onUygula={onUygula} onOneriIsle={onOneriIsle} isleyen={isleyen} onGonder={onGonder} r={r} />}
+      {done && <KurulTutanagi kurgu={kurgu} aksan={aksan} az={az} onUygula={onUygula} onOneriIsle={onOneriIsle} onTumunuIsle={onTumunuIsle} isleyen={isleyen} onGonder={onGonder} r={r} />}
     </div>
   );
 }
@@ -542,6 +317,38 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
       console.warn("Kurul önerisi taslağa işlenemedi", err);
       onToast("Öneri taslağa işlenemedi — bağlantıyı kontrol edip tekrar deneyin.");
     } finally {
+      setIsleyen(null);
+    }
+  };
+  // "Önerileri taslağa işle" (tur 6): Birim Amiri çekince bildirdiğinde birincil eylem budur.
+  // Tavsiye kalan öneriler SIRAYLA aynı /yazi/dogrula talimat yolundan geçer; her biri bir
+  // öncekinin ürettiği metnin üzerine işlenir (yarış yok). Kalıcı yazım yine memurun kararı.
+  const oneriIsleHepsi = async () => {
+    if (!onRevize || isleyen != null) return;
+    const bekleyen = (kurgu.oneriler || []).filter((o) => !o.uygulanabilir);
+    if (!bekleyen.length) return;
+    setIsleyen("hepsi");
+    let taban = kurguUzlasiMetni(kurgu);
+    const islenen = [];
+    try {
+      for (const o of bekleyen) {
+        const d = await onRevize(taban, `Kurul önerisini taslağa işle (tip: ${o.tip}): ${o.metin}`);
+        if (d?.taslak_md && d.taslak_md.trim() !== taban.trim()) { taban = d.taslak_md; islenen.push(o); }
+      }
+    } catch (err) {
+      console.warn("Kurul önerileri taslağa işlenemedi", err);
+      onToast("Öneriler işlenirken bağlantı koptu — işlenenler korundu, kalanı tek tek deneyin.");
+    } finally {
+      if (islenen.length) {
+        setKurgu((k) => ({
+          ...k,
+          oneriler: k.oneriler.map((o) => (islenen.includes(o) ? { ...o, uygulanabilir: true } : o)),
+          uzlasi_metni: taban, uzlasi_uygulanabilir: true, degisiklik: (k.degisiklik || 0) + islenen.length,
+        }));
+      }
+      onToast(islenen.length === bekleyen.length
+        ? `${islenen.length} öneri revize taslağa işlendi — farkı inceleyip onaya geçebilirsiniz.`
+        : `${islenen.length}/${bekleyen.length} öneri metinde değişiklik üretti; diğerleri tavsiye olarak kaldı.`);
       setIsleyen(null);
     }
   };
@@ -634,7 +441,10 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
     // hareket etmez (Apple materyal kuralı). Karartı tonu tek kaynaktan: PAL.scrimKoyu.
     /* Simetrik pay (tur-4: üstte 32px, altta 0 — kâğıt pencere dibine yapışıyordu): kâğıt
        pencereye sığar, kaydırma kâğıdın İÇİNDEdir; antet her zaman aynı yerde başlar. */
-    <div role="dialog" aria-modal="true" aria-label="Bürokrasi Kurulu" onClick={() => kapatIstegiRef.current()} onKeyDown={odakDongusu}
+    // Portal (z 80): onay fişi (GonderimOnayFisi, kendi portalı, z 80) DOM'da SONRA geldiği
+    // için kurulun ÜSTÜNDE açılır — kurul z'sini yükseltmek fişi arkada bırakırdı (akış kırılır).
+    // Telefonda alt sekme şeridi (z 90) kâğıdın dibini örtmesin diye kap altta pay bırakır.
+    createPortal(<div role="dialog" aria-modal="true" aria-label="Bürokrasi Kurulu" className="ke-kurul-kap" onClick={() => kapatIstegiRef.current()} onKeyDown={odakDongusu}
       style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: PAL.scrimKoyu, display: "flex", padding: "clamp(12px, 4vh, 32px) clamp(8px, 2vw, 32px)", boxSizing: "border-box", animation: "nu-sol .16s var(--ke-ease-out) both" }}>
       {/* ref+tabIndex: açılışta odak diyalog kabına girer (WCAG dialog deseni; bug avı: kapatRef
           hiçbir öğeye bağlı değildi → focus no-op, odak arka planda kalıyordu). */}
@@ -642,13 +452,21 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
 
         {/* Toplantı tutanağı kâğıdı — antet başlığı (künye satırı · başlık · çift çizgi) kâğıdın
             KENDİSİNDE; eskiden karartının üstünde yüzen bir şeritti ve arka sayfayla karışıyordu. */}
-        <div data-kurul-kagit="" style={{ background: PAL.bg, borderRadius: RAD.pop, boxShadow: SH.modal, padding: "20px clamp(16px, 3vw, 28px) 28px", overflowY: "auto", overscrollBehavior: "contain", minHeight: 0 }}>
+        <div data-kurul-kagit="" style={{ background: PAL.bg, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, padding: "20px clamp(16px, 3vw, 28px) 28px", overflowY: "auto", overscrollBehavior: "contain", minHeight: 0 }}>
           <header style={{ marginBottom: SP.xl }}>
-            <div aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.m, minWidth: 0 }}>
-              <span style={{ whiteSpace: "nowrap" }}>T.C. · KAMU-EVRAK</span>
-              <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>TOPLANTI TUTANAĞI</span>
-              <span style={{ flex: 1, height: 1, background: PAL.line, minWidth: 16 }} />
-              <span style={{ whiteSpace: "nowrap", ...TNUM }}>{bugun()}</span>
+            {/* Künye: "T.C." yok (bağımsız ürün devlet kimliği taşımaz — ViewWrap kararı); telefonda
+                ürün öneki gizlenir, değişken kısım ("TOPLANTI TUTANAĞI") kesilmez. Kapat telefonda
+                künyeyle aynı satırda 44×44 ikon (tur 6: akışın ortasında koca bir düğmeydi). */}
+            <style>{KURUL_BASLIK_CSS}</style>
+            <div style={{ ...TYPE.antet, color: PAL.mut3, display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.m, minWidth: 0 }}>
+              <span aria-hidden="true" className="ke-kurul-onek" style={{ whiteSpace: "nowrap" }}>KAMU-EVRAK ·</span>
+              <span aria-hidden="true" style={{ whiteSpace: "nowrap" }}>TOPLANTI TUTANAĞI</span>
+              <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line, minWidth: 16 }} />
+              <span aria-hidden="true" style={{ whiteSpace: "nowrap", ...TNUM }}>{bugun()}</span>
+              <button type="button" className="ke-kurul-kapat-ikon" onClick={() => kapatIstegiRef.current()} aria-label="Kurulu kapat" data-press=""
+                style={{ cursor: "pointer", width: 44, height: 44, margin: "-12px -10px -12px 0", placeItems: "center", border: "none", borderRadius: RAD.ctl, background: "transparent", color: PAL.ink2 }}>
+                <Icon.x width={18} height={18} />
+              </button>
             </div>
             <div style={{ display: "flex", alignItems: "flex-end", gap: SP.l, flexWrap: "wrap" }}>
               <div style={{ minWidth: 0, flex: "1 1 320px" }}>
@@ -665,7 +483,7 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
                     : "Dört üye, taslağın ölçülmüş doğrulama sinyalleri üzerinden müzakere eder."}
                 </p>
               </div>
-              <Btn onClick={() => kapatIstegiRef.current()} ariaLabel="Kurulu kapat"><Icon.x width={13} height={13} /> Kapat</Btn>
+              <span className="ke-kurul-kapat-metin"><Btn onClick={() => kapatIstegiRef.current()} ariaLabel="Kurulu kapat"><Icon.x width={13} height={13} /> Kapat</Btn></span>
             </div>
             {onbellekten && (
               <p role="note" style={{ margin: `${SP.m}px 0 0`, display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", ...TYPE.meta, color: PAL.mut2 }}>
@@ -700,12 +518,13 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
               onUygula={onUygula ? () => onUygula(kurguUzlasiMetni(kurgu)) : null}
               // Örnek (etiketli kurgu) senaryoda gerçek revize/gönder çağrısı anlamsız → buton yok.
               onOneriIsle={onRevize && kurgu.kaynak !== "ornek" ? oneriIsle : null}
+              onTumunuIsle={onRevize && kurgu.kaynak !== "ornek" ? oneriIsleHepsi : null}
               isleyen={isleyen}
               onGonder={onGonder && kurgu.kaynak !== "ornek" ? onGonder : null}
             />
           )}
         </div>
       </div>
-    </div>
+    </div>, document.body)
   );
 }

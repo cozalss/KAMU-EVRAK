@@ -43,7 +43,10 @@ import "./styles/gecis.css";
 
 // Tarayıcı çubuğu rengi = html zemini (THEME_CSS --ke-bg). app.html'deki iki media'lı
 // theme-color meta'sı OS tercihini karşılar; kullanıcı açıkça seçince ikisi de o renge çekilir.
-const TEMA_RENK = { light: "#eceee9", dark: "#0c0e14" };
+// Hex tek kaynakta (temaCss.js): değerler THEME_CSS'in iki kök bloğundan OKUNUR (tur 6 — burada elle
+// yazılmış ikinci kopya vardı; zemin token'ı değişince tarayıcı çubuğu eski renkte kalırdı).
+const zeminOku = (bas) => /--ke-bg:\s*(#[0-9a-f]{3,8})/i.exec(THEME_CSS.slice(Math.max(0, THEME_CSS.indexOf(bas))))?.[1];
+const TEMA_RENK = { light: zeminOku(":root{"), dark: zeminOku(':root[data-theme="dark"]{') };
 
 // Açık/koyu mod tercihi: kalıcı (localStorage), yoksa OS prefers-color-scheme. Kök <html>
 // [data-theme] alır (THEME_CSS bunu :root[data-theme="dark"] ile seçer) — Splash/AuthPage/
@@ -64,8 +67,35 @@ function useTema() {
     document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute("content", TEMA_RENK[tema]));
     try { localStorage.setItem(TEMA_ANAHTAR, tema); } catch { /* özel mod — tercih oturumluk kalır */ }
   }, [tema]);
-  const toggleTema = React.useCallback(() => setTemaState((v) => (v === "dark" ? "light" : "dark")), []);
+  const toggleTema = React.useCallback((koken) => {
+    temaGecisi(koken, () => setTemaState((v) => (v === "dark" ? "light" : "dark")));
+  }, []);
   return [tema, toggleTema];
+}
+
+/* Tema geçişi "masa lambası" (tur 6, jüri: tek karede sert kesme, tasarlanmamış geçiş). Yeni tema,
+   onu açan anahtarın konumundan yayılan bir daire olarak gelir (View Transition clip-path,
+   420 ms EASE.out; CSS styles/kamu-evrak.css "ke-lamba"). koken: anahtar öğesi ya da {x,y};
+   yoksa ekran ortası. Destek yoksa / hareket azaltılmışsa anında. */
+function kokenNoktasi(koken) {
+  if (koken && Number.isFinite(koken.x) && Number.isFinite(koken.y)) return koken;
+  const el = koken?.getBoundingClientRect ? koken : null;
+  if (el) { const r = el.getBoundingClientRect(); return { x: r.right - 22, y: r.top + r.height / 2 }; }
+  return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+}
+function temaGecisi(koken, degistir) {
+  if (!document.startViewTransition || hareketAz()) { degistir(); return; }
+  const { x, y } = kokenNoktasi(koken);
+  const kok = document.documentElement;
+  const yaricap = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+  kok.style.setProperty("--ke-lamba-x", `${Math.round(x)}px`);
+  kok.style.setProperty("--ke-lamba-y", `${Math.round(y)}px`);
+  kok.style.setProperty("--ke-lamba-r", `${Math.ceil(yaricap)}px`);
+  kok.setAttribute("data-tema-gecis", "");
+  const t = document.startViewTransition(() => { flushSync(degistir); });
+  const temizle = () => kok.removeAttribute("data-tema-gecis");
+  t.finished.then(temizle, temizle);
+  [t.ready, t.updateCallbackDone].forEach((p) => p?.catch(() => {}));
 }
 
 // Giriş → çalışma alanı geçişi: antet (view-transition-name: ke-antet-baslik) giriş

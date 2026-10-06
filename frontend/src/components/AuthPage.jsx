@@ -11,6 +11,8 @@ import { PAL, T, MONO, SANS, DISPLAY, TYPE, TNUM, RAD, SP, SH, DERIN, ALFA, BANT
 import { birimleriGetir } from "../lib/authApi.js";
 import { useAuth } from "../lib/useAuth.jsx";
 import AuthMasa, { GRAIN } from "./AuthMasa.jsx";
+import { LOGOTYPE } from "./kabukAtomlari.jsx";
+import { ScrollText } from "lucide-react";
 
 const bugun = () => new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
 
@@ -28,7 +30,7 @@ const VAAT = ["Evrak gelir.", "Ajan okur.", "Memur imzalar."];
    geri açılır (dalga). Yalnız pointer:fine + hareket azaltılmamışsa; dokunmatikte statik.
    Harf merkezleri dinlenme hâlinde ölçülüp önbelleğe alınır (her karede ölçmek, genişlik
    değiştikçe kendi kendini besleyen titreşim yapardı). rAF ile kare başına tek yazım. */
-const LOGO = "KAMU-EVRAK";
+const LOGO = LOGOTYPE;   // tek yazım (kabukAtomlari) — rayda "KAMU·EVRAK", burada "KAMU-EVRAK" idi
 function Logotype() {
   const ref = useRef(null);
   useEffect(() => {
@@ -52,9 +54,9 @@ function Logotype() {
     return () => { clearTimeout(zaman); cancelAnimationFrame(raf); window.removeEventListener("pointermove", hareket); window.removeEventListener("resize", olc); };
   }, []);
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: SP.m }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: SP.m, flexShrink: 0 }}>
       <MarkaKaro size={34} nokta={false} />
-      <span ref={ref} aria-label={LOGO} role="img" style={{ display: "inline-flex", alignItems: "baseline", gap: 5 }}>
+      <span ref={ref} aria-label={LOGO} role="img" style={{ display: "inline-flex", alignItems: "baseline", gap: 5, whiteSpace: "nowrap", flexShrink: 0 }}>
         <span aria-hidden="true" style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 15, lineHeight: "18px", letterSpacing: ".06em", color: PAL.ink }}>
           {[...LOGO].map((h, n) => <span key={n} data-harf="" style={{ fontStretch: "125%", transition: "font-stretch .35s var(--ke-ease-out)" }}>{h}</span>)}
         </span>
@@ -168,16 +170,16 @@ const GozIkon = {
 // Parola alanı — göster/gizle düğmesi; düğme odağı çalmaz (mousedown preventDefault).
 // Büyük harf kilidi uyarısı: "parolam doğru ama girmiyor"un en sık sebebi. Yalnız alan
 // odaktayken ve kilit GERÇEKTEN açıkken (getModifierState) görünür; metin + ikon.
-function ParolaField({ label, no, value, onChange, autoComplete, placeholder, hatali, describedBy }) {
+function ParolaField({ label, no, value, onChange, autoComplete, placeholder, hatali, describedBy, hataEk }) {
   const [goster, setGoster] = useState(false);
   const [buyukHarf, setBuyukHarf] = useState(false);
   const kilitOku = (e) => setBuyukHarf(!!e.getModifierState?.("CapsLock"));
   return (
-    <Field label={label} no={no} id="ke-f-parola" ek={buyukHarf && (
+    <Field label={label} no={no} id="ke-f-parola" ek={<>{buyukHarf && (
       <span role="status" style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, ...TYPE.meta, color: DERIN.sari }}>
         <Icon.alert width={13} height={13} />Büyük harf kilidi açık
       </span>
-    )}>
+    )}{hataEk}</>}>
       <span style={{ position: "relative", display: "block" }}>
         <Girdi id="ke-f-parola" type={goster ? "text" : "password"} value={value} onChange={onChange} autoComplete={autoComplete} required placeholder={placeholder} style={{ paddingRight: 48 }}
           aria-invalid={hatali || undefined} aria-describedby={describedBy} onKeyDown={kilitOku} onKeyUp={kilitOku} onBlur={() => setBuyukHarf(false)} />
@@ -213,17 +215,18 @@ function ModeTabs({ mode, onChange }) {
   );
 }
 
+const ALAN_ID = { ad: "ke-f-ad", eposta: "ke-f-eposta", parola: "ke-f-parola", ikisi: "ke-f-eposta" };
 const sureYaz = (sn) => `${Math.floor(sn / 60)}:${String(sn % 60).padStart(2, "0")}`;
 
 /* Hata notu — iki ton: kimlik/doğrulama hatası (kırmızı: ne oldu, ne yapmalı) ve hız sınırı
    (sarı: hata DEĞİL geçici kilit — bekleyince kendiliğinden açılır). role=alert yalnız
    ilk iletide okunur; geri sayım SR'yi her saniye rahatsız etmez (süre düğme metninde). */
-function HataNotu({ metin, kilit }) {
+function HataNotu({ metin, kilit, alanAlti = false }) {
   const c = kilit ? BANT.sari.c : BANT.kirmizi.c;
   return (
     <motion.div role="alert" id="ke-auth-hata"
       initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2, ease: EASE_BEZIER.out }}
-      style={{ display: "flex", gap: SP.s, alignItems: "flex-start", padding: "10px 12px", marginBottom: SP.l, borderRadius: RAD.ctl, background: ALFA(c), borderLeft: `3px solid ${c}`, color: kilit ? DERIN.sari : DERIN.kirmizi, ...TYPE.data }}>
+      style={{ display: "flex", gap: SP.s, alignItems: "flex-start", padding: "10px 12px", margin: alanAlti ? `${SP.s}px 0 0` : `0 0 ${SP.l}px`, borderRadius: RAD.ctl, background: ALFA(c), borderLeft: `3px solid ${c}`, color: kilit ? DERIN.sari : DERIN.kirmizi, ...TYPE.data }}>
       <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginTop: 2 }}>{kilit ? <Icon.clock width={14} height={14} /> : <Icon.alert />}</span>
       <span style={{ minWidth: 0 }}>
         {kilit
@@ -237,7 +240,7 @@ function HataNotu({ metin, kilit }) {
 function TemaDugme({ tema, onTemaDegistir }) {
   const koyu = tema === "dark";
   return (
-    <button type="button" className="ke-ust-link" onClick={() => onTemaDegistir?.()} {...focusRing} title={koyu ? "Açık moda geç" : "Koyu moda geç"}>
+    <button type="button" className="ke-ust-link" onClick={(e) => onTemaDegistir?.(e.currentTarget)} {...focusRing} title={koyu ? "Açık moda geç" : "Koyu moda geç"}>
       {koyu ? (
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="4" />
@@ -259,23 +262,35 @@ export default function AuthPage({ tema, onTemaDegistir }) {
   const [form, setForm] = useState({ eposta: "", parola: "", ad_soyad: "", birim_kod: "", unvan: "" });
   const [birimler, setBirimler] = useState([]);
   const [hata, setHata] = useState("");
-  const [hataDurum, setHataDurum] = useState(0);        // 401/422 → alanlar aria-invalid; 429 → kilit
+  // Alan düzeyinde kesinlik (tur 6, jüri): boş alan ön denetimi YALNIZ o alanı işaretler; 401/422
+  // sunucu yanıtı kimliği birlikte reddeder → ikisi. null = işaretli alan yok.
+  const [hataliAlan, setHataliAlan] = useState(null);   // "ad" | "eposta" | "parola" | "ikisi" | null
+  // Hata notunun YERİ (tur 6 düzeltme): alana bağlı hata o alanın hemen altında durur ("Parolamı
+  // unuttum"un altında, alandan kopuk duruyordu). Kimlik reddi (ikisi) parola altında; hız
+  // sınırı / ağ hatası formun genel yerinde. Alan düzeltilince işaret kalkar, not yerinde kalır.
+  const [hataYer, setHataYer] = useState("genel");
   const [kilitSn, setKilitSn] = useState(0);            // hız sınırı geri sayımı (sn)
   const [busy, setBusy] = useState(false);
   const [sifreNot, setSifreNot] = useState(false);     // "şifremi unuttum" yönlendirme notu açık mı
   const kagitRef = useRef(null);                       // hata → form kâğıdı iki kez yatay sallanır (WAAPI)
   const kayit = mode === "kayit";
   // Kullanıcı alanı düzeltmeye başlayınca kırmızı çerçeve kalkar (hata metni bir sonraki gönderime dek durur).
-  const set = (k) => (v) => { setForm((f) => ({ ...f, [k]: v })); if (hataDurum === 401 || hataDurum === 422) setHataDurum(-1); };
-  const changeMode = (id) => { setMode(id); setHata(""); setHataDurum(0); setSifreNot(false); };
+  const set = (k) => (v) => { setForm((f) => ({ ...f, [k]: v })); if (hataliAlan) setHataliAlan(null); };
+  const changeMode = (id) => { setMode(id); setHata(""); setHataliAlan(null); setSifreNot(false); };
   const kilitli = kilitSn > 0;
-  const alanHatali = hataDurum === 401 || hataDurum === 422;
+  const hatali = (alan) => hataliAlan === alan || (hataliAlan === "ikisi" && (alan === "eposta" || alan === "parola"));
+  const hataSlot = (yer) => (
+    <AnimatePresence initial={false}>
+      {hata && (kilitli ? yer === "genel" : hataYer === yer) && <HataNotu key={kilitli ? "kilit" : "hata"} metin={hata} kilit={kilitli} alanAlti={yer !== "genel"} />}
+    </AnimatePresence>
+  );
+  const odakla = (alan) => requestAnimationFrame(() => document.getElementById(ALAN_ID[alan])?.focus());
 
   // 429 geri sayımı — saniyede bir; sıfırlanınca hata notu da kalkar (artık geçerli değil).
   useEffect(() => {
     if (!kilitli) return undefined;
     const t = setTimeout(() => {
-      if (kilitSn <= 1) { setHata(""); setHataDurum(0); }
+      if (kilitSn <= 1) { setHata(""); }
       setKilitSn((s) => Math.max(0, s - 1));
     }, 1000);
     return () => clearTimeout(t);
@@ -297,10 +312,10 @@ export default function AuthPage({ tema, onTemaDegistir }) {
   const submit = async (e) => {
     e?.preventDefault?.();
     if (kilitli) return;
-    setHata(""); setHataDurum(0);
+    setHata(""); setHataliAlan(null);
     // İstemci ön denetimi: boş alan için sunucuya gidilip giriş hakkı (5/dk) yakılmaz.
-    const eksik = kayit && !form.ad_soyad.trim() ? "Ad soyad" : !form.eposta.trim() ? "E-posta" : !form.parola ? "Parola" : "";
-    if (eksik) { setHata(`${eksik} alanı boş bırakılamaz.`); setHataDurum(422); salla(); return; }
+    const eksik = kayit && !form.ad_soyad.trim() ? ["ad", "Ad soyad"] : !form.eposta.trim() ? ["eposta", "E-posta"] : !form.parola ? ["parola", "Parola"] : null;
+    if (eksik) { setHata(`${eksik[1]} alanı boş bırakılamaz.`); setHataliAlan(eksik[0]); setHataYer(eksik[0]); salla(); odakla(eksik[0]); return; }
     setBusy(true);
     try {
       if (kayit) {
@@ -314,7 +329,9 @@ export default function AuthPage({ tema, onTemaDegistir }) {
       // başarı → AuthProvider status="auth" → Root dashboard'a geçer (unmount).
     } catch (err) {
       setHata(err.message || "Bir hata oluştu.");
-      setHataDurum(err.status || 0);
+      const kimlik = err.status === 401 || err.status === 422;
+      setHataYer(kimlik ? "parola" : "genel");
+      if (kimlik) { setHataliAlan("ikisi"); odakla("ikisi"); }
       if (err.status === 429) setKilitSn(err.tekrarSaniye || 60);
       salla();
       setBusy(false);
@@ -335,10 +352,10 @@ export default function AuthPage({ tema, onTemaDegistir }) {
 
         {/* Sol — masa: antet, vaat, sahne. */}
         <section className="ke-auth-sol" aria-label="Ürün tanıtımı">
-          <motion.div variants={SOL} style={{ display: "flex", alignItems: "center", gap: SP.l, minWidth: 0 }}>
+          <motion.div variants={SOL} className="ke-auth-logo-satir" style={{ display: "flex", alignItems: "center", gap: SP.l, minWidth: 0 }}>
             <Logotype />
             <motion.span variants={CIZGI} aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.lineHi, transformOrigin: "left", minWidth: 24 }} />
-            <span className="ke-antet-tarih" style={{ ...TYPE.antet, color: PAL.mut3, whiteSpace: "nowrap", ...TNUM }}>T.C. · {bugun()}</span>
+            <span className="ke-antet-tarih" style={{ ...TYPE.antet, color: PAL.mut3, whiteSpace: "nowrap", textTransform: "uppercase", ...TNUM }}>Evrak masası · {bugun()}</span>
           </motion.div>
 
           <div className="ke-auth-vaat-blok">
@@ -379,13 +396,14 @@ export default function AuthPage({ tema, onTemaDegistir }) {
 
               <form onSubmit={submit} noValidate>
                 {kayit && (
-                  <Field label="Ad soyad" no="01" id="ke-f-ad">
-                    <Girdi id="ke-f-ad" value={form.ad_soyad} onChange={set("ad_soyad")} autoComplete="name" required placeholder="Ayşe Yılmaz" />
+                  <Field label="Ad soyad" no="01" id="ke-f-ad" ek={hataSlot("ad")}>
+                    <Girdi id="ke-f-ad" value={form.ad_soyad} onChange={set("ad_soyad")} autoComplete="name" required placeholder="Ayşe Yılmaz"
+                      aria-invalid={hatali("ad") || undefined} aria-describedby={hatali("ad") ? "ke-auth-hata" : undefined} />
                   </Field>
                 )}
-                <Field id="ke-f-eposta" label="E-posta" no={kayit ? "02" : "01"}>
+                <Field id="ke-f-eposta" label="E-posta" no={kayit ? "02" : "01"} ek={hataSlot("eposta")}>
                   <Girdi id="ke-f-eposta" type="email" value={form.eposta} onChange={set("eposta")} autoComplete="email" required placeholder="ad.soyad@kurum.gov.tr"
-                    inputMode="email" spellCheck={false} aria-invalid={alanHatali || undefined} aria-describedby={hata ? "ke-auth-hata" : undefined} />
+                    inputMode="email" spellCheck={false} aria-invalid={hatali("eposta") || undefined} aria-describedby={hatali("eposta") ? "ke-auth-hata" : undefined} />
                 </Field>
                 {kayit && (
                   <>
@@ -403,10 +421,10 @@ export default function AuthPage({ tema, onTemaDegistir }) {
                     </Field>
                   </>
                 )}
-                <ParolaField label="Parola" no={kayit ? "05" : "02"} hatali={alanHatali} describedBy={hata ? "ke-auth-hata" : undefined} value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} placeholder={kayit ? "En az 8 karakter" : "••••••••"} />
+                <ParolaField label="Parola" no={kayit ? "05" : "02"} hatali={hatali("parola")} describedBy={hatali("parola") ? "ke-auth-hata" : undefined} hataEk={hataSlot("parola")} value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} placeholder={kayit ? "En az 8 karakter" : "••••••••"} />
 
                 {!kayit && (
-                  <div style={{ marginTop: -SP.s, marginBottom: SP.l, textAlign: "right" }}>
+                  <div style={{ marginTop: -SP.l, marginBottom: SP.m, textAlign: "right" }}>
                     <button type="button" className="ke-metin-link" onClick={() => setSifreNot((v) => !v)} aria-expanded={sifreNot} {...focusRing}>
                       Parolamı unuttum
                     </button>
@@ -421,9 +439,7 @@ export default function AuthPage({ tema, onTemaDegistir }) {
                   </div>
                 )}
 
-                <AnimatePresence initial={false}>
-                  {hata && <HataNotu key={kilitli ? "kilit" : "hata"} metin={hata} kilit={kilitli} />}
-                </AnimatePresence>
+                {hataSlot("genel")}
 
                 <div className="ke-cta">
                   <Btn primary type="submit" disabled={busy || kilitli} style={{ width: "100%", justifyContent: "center", minHeight: 48, fontWeight: 600, ...TNUM }}>
@@ -435,7 +451,7 @@ export default function AuthPage({ tema, onTemaDegistir }) {
               </form>
 
               <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.xl, paddingTop: SP.l, borderTop: `1px dashed ${PAL.lineHi}`, ...TYPE.meta, color: PAL.mut2 }}>
-                <span aria-hidden="true" style={{ display: "flex", color: DERIN.T }}><Icon.shield width={15} height={15} /></span>
+                <span aria-hidden="true" style={{ display: "flex", color: DERIN.T }}><ScrollText size={15} strokeWidth={1.75} /></span>
                 <span>Her oturum <span style={{ fontFamily: MONO, fontSize: 11 }}>SHA-256</span> denetim izine işlenir.</span>
               </div>
             </motion.div>
@@ -452,16 +468,20 @@ export default function AuthPage({ tema, onTemaDegistir }) {
 const AUTH_CSS = `
 .ke-auth-root{ --z:1; zoom:1; position:relative; width:100%; min-height:calc(100vh / var(--z)); box-sizing:border-box;
   background:${PAL.bg}; color:${PAL.ink}; font-family:${SANS};
-  display:grid; grid-template-columns:minmax(0,1fr); grid-template-areas:"ust" "sol" "sag";
+  display:grid; grid-template-columns:minmax(0,1fr); grid-template-areas:"sol" "sag";
   padding:16px 16px 40px; row-gap:24px; overflow-x:clip; }
 .ke-auth-lif{ position:absolute; inset:0; background-size:160px 160px; opacity:.05; mix-blend-mode:multiply; pointer-events:none; }
 :root[data-theme="dark"] .ke-auth-lif{ mix-blend-mode:screen; opacity:.035; }
-.ke-auth-ust{ grid-area:ust; position:relative; display:flex; align-items:center; justify-content:flex-end; gap:12px; }
-.ke-auth-sol{ grid-area:sol; position:relative; display:flex; flex-direction:column; gap:28px; min-width:0; }
+/* Telefon/tablet (tur 6, jüri): tema düğmesi kendi satırını kaplıyordu, "Giriş yap" ilk ekranın
+   altında kalıyordu. Düğme logo satırının sağına biner (mutlak), vaat sıkışır, açıklama düşer. */
+.ke-auth-ust{ grid-area:ust; position:absolute; top:16px; right:16px; z-index:2; display:flex; align-items:center; justify-content:flex-end; gap:12px; }
+.ke-auth-logo-satir{ padding-right:132px; min-height:36px; }
+.ke-auth-sol{ grid-area:sol; position:relative; display:flex; flex-direction:column; gap:20px; min-width:0; }
 .ke-auth-sag{ grid-area:sag; position:relative; display:flex; justify-content:center; min-width:0; }
 .ke-auth-sahne{ display:none; }
 .ke-auth-vaat-blok{ display:flex; flex-direction:column; gap:16px; }
-.ke-vaat{ font-family:${DISPLAY}; font-weight:800; font-stretch:100%; font-size:40px; line-height:.98; letter-spacing:-.035em; }
+.ke-vaat{ font-family:${DISPLAY}; font-weight:800; font-stretch:100%; font-size:32px; line-height:1; letter-spacing:-.03em; }
+.ke-auth-alt{ display:none; }
 .ke-antet-tarih{ display:none; }
 .ke-form-kagit{ position:relative; width:100%; max-width:440px; box-sizing:border-box; background:${PAL.surf}; border:1px solid ${PAL.line};
   border-radius:${RAD.card}px; box-shadow:${SH.kagit}; padding:24px 20px 20px; }
@@ -474,11 +494,13 @@ const AUTH_CSS = `
 .ke-girdi::placeholder{ color:${PAL.mut3}; opacity:1; }
 .ke-girdi:hover{ border-color:color-mix(in srgb, ${PAL.ink} 45%, transparent); }
 .ke-girdi[aria-invalid="true"]{ border-color:${BANT.kirmizi.c}; }
-.ke-girdi:focus-visible, .ke-girdi:focus{ border-color:${T}; box-shadow:0 0 0 4px color-mix(in srgb, ${T} 18%, transparent); }
-.ke-goz{ position:absolute; right:6px; top:50%; transform:translateY(-50%); display:inline-flex; align-items:center; justify-content:center;
-  width:36px; height:36px; padding:0; border:none; background:transparent; color:${PAL.mut2}; cursor:pointer; border-radius:${RAD.ctl}px; transition:color .12s ease, background .12s ease; }
+/* Odak: yumuşak 4 px parıltı (üçüncü bir odak dili) kaldırıldı — girdi odağı küresel tek kaynaktan
+   (kamu-evrak.css "ODAK: TEK KAYNAK"): kenar tükenmez mavisi + aynı ailenin dış ince çizgisi. */
+.ke-girdi:focus{ border-color:${T}; }
+.ke-goz{ position:absolute; right:2px; top:50%; transform:translateY(-50%); display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; padding:0; border:none; background:transparent; color:${PAL.mut2}; cursor:pointer; border-radius:${RAD.ctl}px; transition:color .12s ease, background .12s ease; }
 .ke-goz:hover{ color:${PAL.ink}; background:${PAL.hov}; }
-.ke-metin-link{ background:none; border:none; padding:2px 0; cursor:pointer; font:500 13px/18px ${SANS}; color:${DERIN.T}; border-radius:${RAD.chip}px;
+.ke-metin-link{ background:none; border:none; padding:0 2px; min-height:44px; display:inline-flex; align-items:center; cursor:pointer; font:500 13px/18px ${SANS}; color:${DERIN.T}; border-radius:${RAD.chip}px;
   text-decoration:underline; text-decoration-color:color-mix(in srgb, ${DERIN.T} 35%, transparent); text-underline-offset:3px; transition:text-decoration-color .15s ease; }
 .ke-metin-link:hover{ text-decoration-color:${DERIN.T}; }
 .ke-cta .ke-ok{ display:inline-flex; transition:transform .25s var(--ke-ease-out); }
@@ -487,6 +509,9 @@ const AUTH_CSS = `
 :root:not([data-theme="dark"]) .ke-murekkep{ mix-blend-mode:multiply; }
 @media(min-width:700px){
   .ke-auth-root{ padding:24px 32px 48px; }
+  .ke-auth-ust{ top:24px; right:32px; }
+  .ke-auth-alt{ display:block; }
+  .ke-auth-sol{ gap:28px; }
   .ke-vaat{ font-size:56px; font-stretch:108%; }
   .ke-form-kagit{ padding:32px 32px 24px; }
 }
@@ -494,14 +519,17 @@ const AUTH_CSS = `
   .ke-auth-root{ height:calc(100vh / var(--z)); min-height:640px; grid-template-columns:minmax(0,1fr) 500px;
     grid-template-rows:auto minmax(0,1fr); grid-template-areas:"sol ust" "sol sag"; padding:0; row-gap:0; overflow:hidden; }
   .ke-auth-sol{ padding:32px 0 0 48px; gap:clamp(20px, 3.4vh, 36px); overflow:hidden; }
-  .ke-auth-ust{ padding:28px 48px 0 40px; }
+  .ke-auth-ust{ position:relative; top:auto; right:auto; padding:28px 48px 0 40px; }
+  .ke-auth-logo-satir{ padding-right:0; }
   .ke-auth-sag{ align-items:center; padding:0 48px 40px 40px; }
   .ke-auth-sahne{ display:block; flex:1; min-height:0; position:relative; padding-right:48px;
     -webkit-mask-image:linear-gradient(to bottom, black 78%, transparent); mask-image:linear-gradient(to bottom, black 78%, transparent); }
   .ke-antet-tarih{ display:inline; }
   .ke-auth-vaat-blok{ flex-direction:row; align-items:flex-end; justify-content:space-between; gap:32px; flex-wrap:wrap; }
   .ke-vaat{ font-size:clamp(54px, 5vw, 92px); font-stretch:112%; line-height:.94; }
-  .ke-auth-alt{ max-width:280px!important; padding-bottom:6px; }
+  /* Paragrafın SAĞ kenarı kâğıdın sağ kenarına hizalanır (sahnenin 48 px sağ dolgusu kadar içeri) —
+     1440'ta başlıkla kâğıt arasında havada asılı duruyordu (jüri). */
+  .ke-auth-alt{ max-width:280px!important; padding-bottom:6px; margin-right:48px!important; }
   .ke-form-kagit{ padding:36px 36px 28px; }
 }
 @media(min-width:1100px) and (max-width:1379px){ .ke-masa{ grid-template-columns:minmax(0,1fr)!important; } .ke-masa-defter{ display:none!important; } }

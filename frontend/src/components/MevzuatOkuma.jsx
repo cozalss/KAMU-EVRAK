@@ -7,6 +7,7 @@
    asılı (hanging marginalia), kenar başlığı madde başı; solda yapışkan madde dizini
    (scroll-spy), üstte okuma ilerleme çizgisi. Telefonda tam ekran kâğıt + yatay madde şeridi. */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Icon, Btn, Damga, MONO, DISPLAY, T, V, R, PAL, DERIN, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, SR_ONLY, focusRing, odakDongusu } from "./neonUi.jsx";
 import { kunyeCoz, kaynakNotuCoz, NITELIK, notTemizle } from "../lib/mevzuatKunye.js";
 import { dogrulaParcala, vurguParcala } from "../lib/mevzuatVurgu.js";
@@ -116,7 +117,7 @@ function NitelikSeridi({ kunye, metin }) {
       <strong style={{ fontWeight: 650, color: mulga ? DERIN.R : DERIN.sari }}>{baslik}</strong>
       <span className={mulga ? undefined : "mo-serit-govde"}>{govde}</span>
       {not.url && !mulga && (
-        <a href={not.url} target="_blank" rel="noopener noreferrer" {...focusRing} style={{ color: DERIN.T, fontWeight: 600, textUnderlineOffset: 3, borderRadius: RAD.chip, whiteSpace: "nowrap" }}>
+        <a href={not.url} target="_blank" rel="noopener noreferrer" className="mo-resmi-bag" {...focusRing} style={{ color: DERIN.T, fontWeight: 600, textUnderlineOffset: 3, borderRadius: RAD.chip, whiteSpace: "nowrap" }}>
           Resmî metni aç<span aria-hidden="true"> ↗</span><span style={SR_ONLY}> ({not.host}, yeni sekmede)</span>
         </a>
       )}
@@ -127,7 +128,11 @@ function NitelikSeridi({ kunye, metin }) {
 function KunyeSatiri({ kunye, metin, yer }) {
   const kn = kunyeCoz(kunye);
   const not = kaynakNotuCoz(String(metin || "").slice(0, 1200));
-  const nit = not.nitelik ? NITELIK[not.nitelik] : null;
+  // Şerit (NitelikSeridi) basılıyorsa nitelik ve resmî bağlantı YALNIZ şeritte durur — başlıkta
+  // "yakın-lafzî" iki kez, kaynak bağlantısı iki kez basılıyordu (tur 6). Künye yalnız olgu taşır.
+  const seritNitelik = not.nitelik === "ozet" || not.nitelik === "yakin";
+  const seritBaglanti = seritNitelik && kn.durum !== "mulga";
+  const nit = not.nitelik && !seritNitelik ? NITELIK[not.nitelik] : null;
   const parca = [
     kn.kabul && ["Kabul", kn.kabul],
     kn.rgTarih && ["RG", kn.rgSayi ? `${kn.rgTarih} / ${kn.rgSayi}` : kn.rgTarih],
@@ -149,7 +154,7 @@ function KunyeSatiri({ kunye, metin, yer }) {
           {nit.ad}<span style={SR_ONLY}>: {nit.aciklama}</span>
         </span>
       )}
-      {not.url && (
+      {not.url && !seritBaglanti && (
         <a href={not.url} target="_blank" rel="noopener noreferrer" {...focusRing}
           style={{ display: "inline-flex", alignItems: "center", gap: 4, color: DERIN.T, textDecoration: "underline", textUnderlineOffset: 3, whiteSpace: "nowrap", borderRadius: RAD.chip }}>
           {not.host}<span aria-hidden="true">↗</span><span style={SR_ONLY}> (resmî kaynak, yeni sekmede açılır)</span>
@@ -170,7 +175,7 @@ function KaynakNotu({ govde }) {
     <aside className="mo-satir" aria-label="Kaynak notu" style={{ marginBottom: SP.xxl }}>
       <div className="mo-kenar" aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, paddingTop: 3 }}>KAYNAK<br className="mo-kenar-br" /> NOTU</div>
       <details open={acik} className="mo-not" style={{ borderLeft: `1px solid ${PAL.line}`, paddingLeft: SP.l, maxWidth: OLCU }}>
-        <summary className="mo-not-ozet" {...focusRing} style={{ cursor: "pointer", ...TYPE.data, color: DERIN.T, fontWeight: 600, borderRadius: RAD.chip, padding: "6px 0", minHeight: 32 }}>
+        <summary className="mo-not-ozet" {...focusRing} style={{ cursor: "pointer", ...TYPE.data, color: DERIN.T, fontWeight: 600, borderRadius: RAD.chip, padding: "6px 0", minHeight: 44, display: "flex", alignItems: "center" }}>
           Kaynak notunu göster · {ps.length} paragraf
         </summary>
         {ps.map((p, i) => <p key={i} style={{ margin: `0 0 ${SP.s}px`, ...TYPE.data, color: PAL.mut2, overflowWrap: "anywhere", textWrap: "pretty" }}>{notTemizle(p)}</p>)}
@@ -312,7 +317,9 @@ const OKUMA_CSS = `
   .mo-dizin-liste::-webkit-scrollbar{display:none}
   .mo-dizin-liste li{scroll-snap-align:start;flex-shrink:0}
   .mo-dizin-ad{display:none}
-  .mo-dizin-oge{min-height:36px;align-items:center!important}
+  .mo-dizin-oge{min-height:44px;min-width:44px;align-items:center!important}
+  .mo-resmi-bag{display:inline-flex;align-items:center;min-height:44px}
+  .mo-serit{padding-block:0!important;align-items:center!important}
   .mo-satir{grid-template-columns:minmax(0,1fr);row-gap:${SP.xs}px}
   .mo-satir[data-vurgu]{padding-left:${SP.l}px!important}
   .mo-kenar{text-align:left!important;display:flex;align-items:baseline;gap:${SP.s}px}
@@ -463,7 +470,9 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", sorgu = "", onC
   const mulga = hazir && kunyeCoz(icerik.kunye).durum === "mulga";
   const tekrarDene = () => { closeRef.current?.focus(); setDeneme((n) => n + 1); }; // düğme kaybolunca odak diyalog içinde kalsın
 
-  return (
+  // Portal (tur 7): görünüm ağacının içinde kalınca telefonda alt sekme şeridi (z 90, kabuk
+  // yığın bağlamı) okuma kâğıdının dibini örtüyordu — metnin son satırları şeridin altında kalıyordu.
+  return createPortal(
     // nu-sol: scrim tek karede çakılmak yerine solarak gelir (içerik nu-rise ile — iki katman
     // birlikte doğar, parlaklık sıçraması yok).
     <div role="presentation" onClick={onClose} className="mo-kok" style={{ position: "fixed", inset: 0, zIndex: 400, background: PAL.scrimKoyu, display: "flex", alignItems: "center", justifyContent: "center", animation: "nu-sol .16s var(--ke-ease-out) both" }}>
@@ -473,7 +482,7 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", sorgu = "", onC
         <header style={{ flexShrink: 0, padding: `${SP.l}px clamp(16px,3vw,32px) 0` }}>
           <div aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, display: "flex", alignItems: "center", gap: SP.m, minWidth: 0 }}>
             <span style={{ whiteSpace: "nowrap" }}>RESMÎ METİN</span>
-            {tur && <span style={{ whiteSpace: "nowrap", textTransform: "uppercase" }}>{tur}</span>}
+            {tur && <><span style={{ color: PAL.mut3 }}>·</span><span style={{ whiteSpace: "nowrap", textTransform: "uppercase" }}>{tur}</span></>}
             <span style={{ flex: 1, height: 1, background: PAL.line, minWidth: 12 }} />
           </div>
           <div style={{ display: "flex", alignItems: "flex-start", gap: SP.l, marginTop: SP.m }}>
@@ -528,6 +537,7 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", sorgu = "", onC
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

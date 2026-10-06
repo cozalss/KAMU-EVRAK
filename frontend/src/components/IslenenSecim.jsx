@@ -14,7 +14,7 @@ export function SecimKutu({ secili, karisik = false, onDegis, etiket }) {
   const ref = useRef(null);
   useEffect(() => { if (ref.current) ref.current.indeterminate = karisik && !secili; }, [karisik, secili]);
   return (
-    <label data-dokunma="" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}
+    <label data-dokunma="" data-sd-secim="" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}
       style={{ display: "inline-grid", placeItems: "center", width: 32, height: 32, margin: -8, borderRadius: RAD.ctl, cursor: "pointer" }}>
       <input ref={ref} type="checkbox" checked={secili} onChange={onDegis} aria-label={etiket} {...focusRing}
         style={{ width: 16, height: 16, margin: 0, accentColor: T, cursor: "pointer" }} />

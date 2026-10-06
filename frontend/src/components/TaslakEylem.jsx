@@ -12,6 +12,7 @@
    düğmesiyle (sağ alt, 52px) aynı tabana oturur; sağ ucu o düğmeye yer bırakır — ikisi tek bir
    "dok" gibi okunur, biri ötekini örtmez. */
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Lock } from "lucide-react";
 import { Btn, Damga, Icon, MONO, DISPLAY, PAL, DERIN, BANT, TYPE, TNUM, RAD, SP, SH, focusRing, ViewWrap } from "./neonUi.jsx";
 
 const TAM_GENIS = { width: "100%", justifyContent: "center" };
@@ -55,6 +56,28 @@ export function MetinEylem({ onClick, renk = DERIN.T, ariaLabel, disabled, child
 function GonderimCumlesi({ birim }) {
   if (!birim || birim === "—") return <>Yazı Giden Evrak&apos;a kalıcı kaydedilecek. Emin misiniz?</>;
   return <>Yazı <strong style={{ fontWeight: 600, color: PAL.ink }}>{birim}</strong> birimine gönderilecek ve Giden Evrak&apos;a kalıcı kaydedilecek. Emin misiniz?</>;
+}
+
+const CUBUK_CSS = ".ke-karar-cubuk{bottom:24px}@media (max-width:720px){.ke-karar-cubuk{bottom:calc(70px + env(safe-area-inset-bottom, 0px))}}";
+const KOMPAKT_IKINCIL = { flexDirection: "column", gap: 2, minWidth: 56, minHeight: 48, padding: "4px 8px", justifyContent: "center" };
+const KOMPAKT_ETIKET = { fontSize: 11, lineHeight: "13px", fontWeight: 500 };
+
+/* Birincil Gönder — kilitliyken kilit ikonu + "Eksik var" (kilit nedeni karar fişinde yazılı). */
+function GonderDugmesi({ ad, kilit, disabled, onClick, style }) {
+  return (
+    <Btn primary onClick={onClick} disabled={disabled} style={kilit ? { ...style, border: `1px dashed ${PAL.lineHi}` } : style}
+      ariaLabel={kilit ? `${ad} gönderime hazır değil — önce eksiği giderin` : `${ad} taslağını gönder — önce onay istenir`}
+      title={kilit ? "Gönderime hazır değil — karar fişindeki eksiği giderin" : undefined}>
+      {kilit ? (
+        <span style={{ display: "inline-flex", alignItems: "center", gap: SP.s }}>
+          <Lock size={14} strokeWidth={1.75} aria-hidden="true" />
+          <span style={{ display: "grid", textAlign: "left", lineHeight: "15px" }}>
+            Gönder<span style={{ fontSize: 11, lineHeight: "13px", fontWeight: 500 }}>Eksik var</span>
+          </span>
+        </span>
+      ) : <><Icon.send width={14} height={14} /> Gönder</>}
+    </Btn>
+  );
 }
 
 /**
@@ -105,25 +128,26 @@ export function KararEylemleri({ ad, birim, sendBusy, kompakt = false, durum, ha
       <Btn onClick={() => setDurum("bos")} disabled={sendBusy} style={ikincilStil}>Vazgeç</Btn>
     </>
   ) : kompakt ? (
+    /* Telefon çubuğu: ikincil eylemler İKON + KISA ETİKET (terazi tek başına "Kurul" demiyordu).
+       Gönder kilitliyse kilit ikonu + "Eksik var" alt satırı — kilitli birincil, ikincilden
+       şekil ve metinle ayrılır, yalnız gri tonla değil. */
     <>
-      <Btn onClick={onDuzenle} disabled={sendBusy} ariaLabel={`${ad} taslağını düzenle`} title="Düzenle" style={{ minWidth: 44, minHeight: 44, padding: 0, justifyContent: "center" }}><KALEM width={16} height={16} /></Btn>
-      <Btn onClick={onKurul} disabled={sendBusy} ariaLabel={`${ad} taslağı için Bürokrasi Kurulu'nu topla`} title="Kurulu topla" style={{ minWidth: 44, minHeight: 44, padding: 0, justifyContent: "center" }}><Icon.scale width={16} height={16} /></Btn>
-      <Btn primary onClick={() => setDurum("gonder")} disabled={sendBusy || gonderKilit} style={{ flex: 1, justifyContent: "center", minHeight: 44 }} ariaLabel={`${ad} taslağını gönder — önce onay istenir`}>
-        <Icon.send width={14} height={14} /> Gönder
-      </Btn>
+      <Btn onClick={onDuzenle} disabled={sendBusy} ariaLabel={`${ad} taslağını düzenle`} style={KOMPAKT_IKINCIL}><KALEM width={15} height={15} /><span style={KOMPAKT_ETIKET}>Düzenle</span></Btn>
+      <Btn onClick={onKurul} disabled={sendBusy} ariaLabel={`${ad} taslağı için Bürokrasi Kurulu'nu topla`} style={KOMPAKT_IKINCIL}><Icon.scale width={15} height={15} /><span style={KOMPAKT_ETIKET}>Kurul</span></Btn>
+      <GonderDugmesi ad={ad} kilit={gonderKilit} disabled={sendBusy || gonderKilit} onClick={() => setDurum("gonder")} style={{ flex: 1, justifyContent: "center", minHeight: 48 }} />
     </>
   ) : (
     <>
-      <Btn primary onClick={() => setDurum("gonder")} disabled={sendBusy || gonderKilit} style={{ ...TAM_GENIS, minHeight: 42 }} ariaLabel={`${ad} taslağını gönder — önce onay istenir`}>
-        <Icon.send width={14} height={14} /> Gönder
-      </Btn>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: SP.s }}>
+      <GonderDugmesi ad={ad} kilit={gonderKilit} disabled={sendBusy || gonderKilit} onClick={() => setDurum("gonder")} style={{ ...TAM_GENIS, minHeight: 44 }} />
+      {/* İki ikincil yan yana (dar karar sütununda alt alta düşüp "Kurulu topla"yı ekran dışına
+          itiyordu — 1440x900 jüri ölçümü). Kısa etiket, tam ad aria-label'da. */}
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: SP.s }}>
         <Btn onClick={onDuzenle} disabled={sendBusy} style={TAM_GENIS} ariaLabel={`${ad} taslağını düzenle`}><KALEM /> Düzenle</Btn>
-        <Btn onClick={onKurul} disabled={sendBusy} style={TAM_GENIS} ariaLabel={`${ad} taslağı için Bürokrasi Kurulu'nu topla`}>
-          <Icon.scale width={14} height={14} /> Kurulu topla
+        <Btn onClick={onKurul} disabled={sendBusy} style={TAM_GENIS} ariaLabel={`${ad} taslağı için Bürokrasi Kurulu'nu topla`} title="Bürokrasi Kurulu'nu topla">
+          <Icon.scale width={14} height={14} /> Kurul
         </Btn>
       </div>
-      <div style={{ marginTop: SP.xs }}>
+      <div>
         <MetinEylem onClick={() => setDurum("sil")} disabled={sendBusy} renk={DERIN.kirmizi} ariaLabel={`${ad} taslağını sil`}><COP /> Sil</MetinEylem>
       </div>
     </>
@@ -131,9 +155,11 @@ export function KararEylemleri({ ad, birim, sendBusy, kompakt = false, durum, ha
 
   if (kompakt) {
     return (
-      <div ref={kapRef} onKeyDown={esc} role="group" aria-label="Karar çubuğu"
-        style={{ position: "sticky", bottom: 24, zIndex: 5, display: "flex", flexDirection: "column", gap: SP.s, padding: 4, paddingRight: fabVar ? FAB_PAY : 4, minHeight: 52, boxSizing: "border-box",
+      <div ref={kapRef} onKeyDown={esc} role="group" aria-label="Karar çubuğu" className="ke-karar-cubuk"
+        style={{ position: "sticky", zIndex: 5, display: "flex", flexDirection: "column", gap: SP.s, padding: 4, paddingRight: fabVar ? FAB_PAY : 4, minHeight: 52, boxSizing: "border-box",
           background: PAL.surf, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.pop }}>
+        {/* Taban: telefonda (≤720) kabuğun alt sekme şeridi (58px + güvenli alan) üstünde durur. */}
+        <style>{CUBUK_CSS}</style>
         {mesaj && <div style={{ padding: "8px 8px 0" }}>{mesaj}</div>}
         <div style={{ display: "flex", gap: SP.xs, alignItems: "center" }}>{dugmeler}</div>
       </div>

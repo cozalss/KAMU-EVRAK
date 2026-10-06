@@ -14,12 +14,11 @@ import {
 } from "lucide-react";
 
 export const MONO = "'IBM Plex Mono',ui-monospace,monospace";
-// Gövde + UI fontu: Source Sans 3 (kullanıcı tercihi, 2026-07-17) — latin-ext (ç/ş/ğ/İ tam),
-// app.html'de variable font olarak tek dosya iner. İnmezse Segoe UI (Windows sistem) fallback.
+// Gövde + UI fontu: Instrument Sans (Antet & Damga, 2026-10) — latin-ext (ç/ş/ğ/İ tam),
+// styles/fonts.css'ten yerel iner. İnmezse Segoe UI (Windows sistem) fallback.
 export const SANS = "'Instrument Sans','Segoe UI',system-ui,sans-serif";
-/* DISPLAY: başlık katmanı da Segoe UI (kullanıcı tercihi, 2026-07-17) — tüm arayüz tek
-   ailede. Token korunur (TYPE.h1/disp fontFamily: DISPLAY) ki ileride ayrı bir başlık
-   fontu istenirse tek yerden değişsin; şu an değeri SANS ile birebir aynıdır. */
+/* DISPLAY: Archivo — GENİŞLİK ekseni (62–125, fontStretch) olan başlık/rakam/damga/logotype
+   fontu. Gövdeye yayılmaz (MASTER "Token'lar"). */
 export const DISPLAY = "'Archivo','Segoe UI',system-ui,sans-serif";
 /* V (Görev 2 semantiği): lavanta → MÜHÜR moru (2026-07 revizyonu). Pastel "AI moru"ndan
    çıkış; ıstampa/mühür mürekkebi — resmî evrak dünyasının kendi rengi. Radix ruby/plum
@@ -125,7 +124,7 @@ export const TYPE = {
   num: { fontFamily: DISPLAY, fontSize: 26, lineHeight: "30px", fontWeight: 700, fontStretch: "112%", letterSpacing: "-.02em", fontVariantNumeric: "tabular-nums" },
   h1: { fontFamily: DISPLAY, fontSize: 38, lineHeight: "42px", fontWeight: 800, fontStretch: "118%", letterSpacing: "-.03em" },
   disp: { fontFamily: DISPLAY, fontSize: 44, lineHeight: "48px", fontWeight: 800, fontStretch: "115%", letterSpacing: "-.03em", fontVariantNumeric: "tabular-nums" },
-  /* antet: başlık üstündeki resmî künye satırı (T.C. · birim · tarih) — makine verisi değil
+  /* antet: başlık üstündeki künye satırı (KAMU-EVRAK · künye · tarih) — makine verisi değil
      ama antet dilinin parçası; mono + açık izleme. damga: lastik mühür harfi. */
   antet: { fontFamily: MONO, fontSize: 11, lineHeight: "14px", letterSpacing: ".08em", fontWeight: 500 },
   damga: { fontFamily: DISPLAY, fontSize: 11, lineHeight: "12px", letterSpacing: ".1em", fontWeight: 800, fontStretch: "125%", textTransform: "uppercase" },
@@ -153,15 +152,15 @@ export const SH = {
   kagit: "var(--ke-sh-kagit)",
 };
 
-/* Yalnız KLAVYE odağında halka (:focus-visible; tık sonrası halka "yapışık" kalmaz). Tur 3:
-   ÇİFT ÇİZGİ — kalın 2px + 2px boşluk + ince 1px: antet çizgisi ve Damga çerçevesiyle aynı dil. */
+/* Odak halkası artık TEK KAYNAKTA, CSS'te (styles/kamu-evrak.css "ODAK: TEK KAYNAK", tur 6):
+   :focus-visible → çift çizgi (2px tükenmez + 2px boşluk + 1px ince). Eskiden burası JS ile
+   box-shadow yazıyordu ve eski CSS outline'ı ile aynı öğede üst üste biniyordu (jüri ölçümü).
+   focusRing nesnesi GERİYE UYUM için kalır (161 çağrı yeri spread eder; TaslaklarView
+   onFocus/onBlur'u doğrudan çağırır) — işleyiciler artık no-op, data-odak yalnız işaret.
+   FOCUS_HALKA: halkayı elle çizmek zorunda kalan istisnalar için aynı dizge. */
 export const FOCUS_HALKA = `0 0 0 1px ${PAL.bg}, 0 0 0 3px ${T}, 0 0 0 5px ${PAL.bg}, 0 0 0 6px ${T}`;
-export const focusRing = {
-  onFocus: (e) => {
-    if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = FOCUS_HALKA;
-  },
-  onBlur: (e) => { e.currentTarget.style.boxShadow = "none"; },
-};
+const odakNoop = () => {};
+export const focusRing = { "data-odak": "", onFocus: odakNoop, onBlur: odakNoop };
 export const SR_ONLY = { position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 };
 
 /* Odak döngüsü — aria-modal diyaloglarda Tab'ı içeride tutar (WCAG 2.4.3; jüri bulgusu:
@@ -186,7 +185,8 @@ export const odakDongusu = (e) => {
 export const NEON_KEYFRAMES = `
 @keyframes nu-spin{to{transform:rotate(360deg)}}
 @keyframes nu-think{0%,100%{opacity:.3}50%{opacity:1}}
-@keyframes nu-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* --nu-rise-y: yükselme mesafesi (varsayılan 8px; sicil satırları gibi küçük öğeler 4px verir). */
+@keyframes nu-rise{from{opacity:0;transform:translateY(var(--nu-rise-y,8px))}to{opacity:1;transform:translateY(0)}}
 /* nu-sol: scrim/perde girişi — YALNIZ opacity. Karartma perdesi mekânda hareket ETMEZ
    (Apple: materyal katman solar, içerik hareket eder) — nu-rise scrim'e verilmez. */
 @keyframes nu-sol{from{opacity:0}to{opacity:1}}
@@ -194,6 +194,9 @@ export const NEON_KEYFRAMES = `
    (tur 4, jüri C#28: önizleme/düzenle 160 ms düz opacity, asistan 400 ms yay, mevzuat rise —
    üç dil). Yalnız transform+opacity; 220 ms var(--ke-ease-out). Perde nu-sol alır, kâğıt bunu. */
 @keyframes nu-kagit{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+/* nu-kagit-pop: yerinde açılan küçük katman (menü, ipucu) — kökenden .96 → 1, kayma yok.
+   transform-origin'i çağıran verir (Radix --radix-*-content-transform-origin). 160–180 ms. */
+@keyframes nu-kagit-pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
 /* nu-sirt: kenar çubuğu dosya sırtının girişi — soldan sağa açılır; son kare her zaman tam sırt. */
 @keyframes nu-sirt{from{clip-path:inset(0 100% 0 0 round 12px 0 0 12px)}to{clip-path:inset(-12px -1px -12px 0)}}
 /* nu-damga: lastik mührün kâğıda inişi — büyükten, saydamdan; hafif ezilip yerine oturur. */
@@ -345,7 +348,7 @@ const antetTarih = () => {
 };
 
 /* Görünüm kabuğu — "Antet" başlığı (2026-10, Antet & Damga teması).
-   Resmî yazının üst bloğu gibi kurulur: mono künye satırı (T.C. · birim · tarih) → geniş
+   Resmî yazının üst bloğu gibi kurulur: mono künye satırı (KAMU-EVRAK · künye · tarih) → geniş
    Archivo başlık (+ isteğe bağlı Damga) → alt başlık → ÇİFT ANTET ÇİZGİSİ (kalın + ince;
    resmî form/antet çizgisinin kendisi). Süs değil: görünümün bir "evrak" olduğunu söyler.
 
@@ -353,14 +356,20 @@ const antetTarih = () => {
    ustSik: PENCEREYE KİLİTLİ görünümler (Taslaklar) — künye satırı düşer, başlık küçülür;
    kilitli düzende her piksel A4 boyutuna gider. damga: { metin, ton } — başlığın yanında
    basılan lastik mühür (görünümün en önemli tek olgusu: "9 gecikmiş", "15 evrak"). */
-export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = false, damga, kunye = "Çalışma alanı", children }) {
+/* İçerik azami genişliği (tur 6, jüri: 2560'ta bölüm 2324 px'e yayılıyordu; giriş ekranı 1680'de
+   duruyor, kabuk durmuyordu). Antet çizgisi de bu kutuya bağlıdır. genis: pencereye kilitli
+   (ustSik) düzenler — A4 + karar paneli her pikseli kullanır; varsayılan olarak istisnadır. */
+export const ICERIK_AZAMI = 1600;
+export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = false, genis = ustSik, damga, kunye = "Çalışma alanı", children }) {
   return (
     <section aria-labelledby={id} style={{ position: "relative", padding: `${ustSik ? 16 : 28}px clamp(16px, 4vw, 40px) ${altDolgu}px`, minHeight: "calc(100vh - 1px)" }}>
+      <div style={genis ? undefined : { maxWidth: ICERIK_AZAMI, marginInline: "auto" }}>
       <header style={{ position: "relative", zIndex: 1, marginBottom: ustSik ? SP.l : SP.xl + 4, animation: "nu-rise .32s var(--ke-ease-out) both" }}>
         {!ustSik && (
           <div aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.m, minWidth: 0 }}>
-            <span style={{ whiteSpace: "nowrap" }}>T.C. · KAMU-EVRAK</span>
-            <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textTransform: "uppercase" }}>{kunye}</span>
+            {/* "T.C." YOK (tur 6): bağımsız ürün devlet kimliğini kendi anteti gibi taşıyamaz. Künye
+                ürün adından '·' ile ayrılır — "KAMU-EVRAK SABAH BRİFİNGİ" tek ad gibi okunuyordu. */}
+            <span style={{ whiteSpace: "nowrap", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", textTransform: "uppercase" }}>KAMU-EVRAK<span style={{ margin: "0 .6em" }}>·</span>{kunye}</span>
             <span style={{ flex: 1, height: 1, background: PAL.line, minWidth: 16 }} />
             <span style={{ whiteSpace: "nowrap", ...TNUM }}>{antetTarih()}</span>
           </div>
@@ -379,6 +388,7 @@ export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = fals
         <div aria-hidden="true" style={{ marginTop: ustSik ? SP.m : SP.l, height: 5, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: .9 }} />
       </header>
       <div style={{ position: "relative", zIndex: 1, viewTransitionName: "ke-icerik" }}>{children}</div>
+      </div>
     </section>
   );
 }

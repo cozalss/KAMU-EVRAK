@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BIRIM_GOSTER, EVRAK_TR } from "./result-cards.jsx";
+import { BIRIM_GOSTER, EVRAK_TR } from "../lib/evrakEtiket.js";
 import { hukumYorum, denetimRozeti, havaleYorum } from "../lib/detayYorum.js";
 import { MONO, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, RAD, SP, SR_ONLY, Icon, focusRing, Damga } from "./neonUi.jsx";
 import { arr } from "./sonucOrtak.js";
@@ -146,6 +146,9 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
   const kontrolSayisi = eksik.length + uyari.length + tutar.length + arr(r.lint_2646?.uyari).length;
   const riskEtiket = r.risk_metadata?.bant ? `${band === "sari" ? "sarı" : band === "kirmizi" ? "kırmızı" : "yeşil"} risk bandı` : "risk bandı yok";
   const durumSatiri = kuyruk.length ? kuyruk.join(" · ") : riskEtiket;
+  const bolum = durumSatiri.lastIndexOf(" ");
+  const durumBas = bolum > 0 ? durumSatiri.slice(0, bolum + 1) : "";
+  const durumSon = bolum > 0 ? durumSatiri.slice(bolum + 1) : durumSatiri;
   // Şeritte TEK karar slotu: "ne yapacağım + kime" (havale/devir). Saf türetim
   // lib/detayYorum'da (orada test edilir); birim kodu→ad görünüm işi olduğu için
   // BIRIM_GOSTER enjekte edilir. Evrak türü (özet+belgede zaten var) ve yasal süre
@@ -237,9 +240,10 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
         <div className="kd-hukum-baslik">
           <h2 id="sc-decision-title" ref={baslikRef} tabIndex={-1} style={{ outline: "none" }}>{ana}</h2>
           <span className="sc-decision-status-line" style={{ color: TON[hy.ton] || DERIN.sari }}>
-            {durumSatiri}
+            {bantVar ? durumBas : durumSatiri}
             {bantVar && (
-              <span className="sc-risk-help" onKeyDown={(e) => { if (e.key === "Escape") setAcikYardim(null); }}>
+              /* Son kelime + '?' BÖLÜNMEZ: dar ekranda '?' tek başına bir satıra düşüyordu (tur 6). */
+              <span style={{ whiteSpace: "nowrap" }}>{durumSon}<span className="sc-risk-help" onKeyDown={(e) => { if (e.key === "Escape") setAcikYardim(null); }}>
                 <button
                   type="button"
                   className="sc-risk-help-trigger"
@@ -251,13 +255,14 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
                   ?
                 </button>
                 {acikYardim === "risk" && (
-                  <span className="sc-risk-help-popover" role="dialog" aria-label="Risk bandı açıklaması">
+                  <span className="sc-risk-help-popover" role="dialog" aria-label="Risk bandı açıklaması" style={{ whiteSpace: "normal" }}>
                     <span>{riskAciklama}</span>
                     <button type="button" onClick={kontroleGit} {...focusRing}>
                       Risk değerlendirmesine git
                     </button>
                   </span>
                 )}
+              </span>
               </span>
             )}
           </span>
@@ -271,7 +276,7 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
           {taslakVar && (
             <button type="button" className="kd-hukum-karar" onClick={() => kararaGit(true)} data-press="" {...focusRing}
               aria-label={engel ? "Gönderimi engelleyen eksiği gör — onay fişi açılır" : "Yazıyı incele ve onayla — önce gönderim onay fişi açılır"}>
-              <Icon.send width={13} height={13} aria-hidden="true" /> {engel ? "Eksiği gör" : "İncele ve onayla"}
+              {engel ? "Eksiği gör" : "Taslağa in ve onayla"} <Icon.arrow width={14} height={14} aria-hidden="true" style={{ transform: "rotate(90deg)" }} />
             </button>
           )}
         </p>

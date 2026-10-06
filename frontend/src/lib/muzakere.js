@@ -17,6 +17,17 @@ const trKatla = (s) => String(s).toLocaleLowerCase("tr-TR")
   .replace(/ş/g, "s").replace(/ğ/g, "g").replace(/ı/g, "i")
   .replace(/[^a-z0-9]/g, "");
 
+/** Alıntıyı SÖZCÜK sınırında kısaltır ve "…" ekler (tur 6: '…değerlendirilmesini ve fatur"'
+    kelime ortasında kesilip yazım hatası gibi okunuyordu). Boşluk yoksa sert keser. */
+export function sozcukteKes(metin, azami) {
+  const s = String(metin ?? "").trim();
+  if (s.length <= azami) return s;
+  const kesik = s.slice(0, azami);
+  const bosluk = kesik.lastIndexOf(" ");
+  const govde = bosluk >= azami * 0.6 ? kesik.slice(0, bosluk) : kesik;
+  return `${govde.replace(/[\s,;:.—–-]+$/u, "")}…`;
+}
+
 const YAZI_TR = {
   ust_yazi: "üst yazı", cevabi_yazi: "cevabi yazı", bilgilendirme: "bilgilendirme yazısı",
   olur: "olur yazısı", muzekkere: "müzekkere", gorus_mutalaa: "görüş yazısı",
@@ -195,10 +206,10 @@ export function muzakereKurgusu(r) {
   // ağır üsluptan çok daha pahalı bir hatadır (vatandaş yeniden başvurur, süre yeniden işler).
   if (cevapsiz.length) {
     T0("vatandas", "muzakere",
-      `Muhatabın "${cevapsiz[0].slice(0, 70)}" talebinin taslakta hiçbir karşılığı yok; bu hâliyle yazı başvuruyu cevapsız bırakıyor.`);
+      `Muhatabın "${sozcukteKes(cevapsiz[0], 70)}" talebinin taslakta hiçbir karşılığı yok; bu hâliyle yazı başvuruyu cevapsız bırakıyor.`);
     cevapsiz.slice(0, MAKS_ITIRAZ).forEach((t) => oneriler.push({
       tip: "ekle", kaynak: "muzakere",
-      metin: `Cevapsız talep: "${t.slice(0, 90)}" — taslakta karşılığı yok, yanıtlanmalı ya da neden karşılanamadığı belirtilmeli.`,
+      metin: `Cevapsız talep: "${sozcukteKes(t, 90)}" — taslakta karşılığı yok, yanıtlanmalı ya da neden karşılanamadığı belirtilmeli.`,
     }));
   } else if (uslupUyari.length) {
     T0("vatandas", "lint_2646", `Üslup denetimi uyarı verdi: ${uslupUyari[0].mesaj || uslupUyari[0].kural} — resmî yazıda gündelik kalıp kalamaz.`);
@@ -256,12 +267,12 @@ export function muzakereKurgusu(r) {
   editler.forEach((e) => {
     T1("hukukcu", "lint_duzeltme",
       e.vurgu === "dayanak"
-        ? `Dayanak eksik yazılmış — 2646 düzeltme önerisini taslağa uyguluyorum: "${e.yeni.trim().slice(0, 70)}"`
-        : `Yönetmelik-2646 format düzeltmesini taslağa uyguluyorum: "${e.yeni.trim().slice(0, 70)}"`,
+        ? `Dayanak eksik yazılmış — 2646 düzeltme önerisini taslağa uyguluyorum: "${sozcukteKes(e.yeni, 70)}"`
+        : `Yönetmelik-2646 format düzeltmesini taslağa uyguluyorum: "${sozcukteKes(e.yeni, 70)}"`,
       "taslakci", "karsi", { edit: e });
     oneriler.push({
       tip: "duzelt", kaynak: "lint_duzeltme", uygulanabilir: true,
-      metin: `Satır düzeltmesi hazır: "${e.yeni.trim().slice(0, 90)}" — müzakerede taslağa işlendi.`,
+      metin: `Satır düzeltmesi hazır: "${sozcukteKes(e.yeni, 90)}" — müzakerede taslağa işlendi.`,
     });
   });
 
@@ -293,11 +304,17 @@ export function muzakereKurgusu(r) {
   T1("hukukcu", "muzakere",
     mevzuatTemiz(mev[0]) ? `Dayanak (${mev[0].baslik}) yerinde; itirazlarımı önerilere geçirdim.`
       : mev[0] ? "Dayanak önerisi insan doğrulaması kaydıyla not edildi." : "Dayanak yönünden ek itirazım yok.");
+  // Taslakçı Hukukçu'nun kapanışına KATILIR (itirazlar önerilere geçti / ek itiraz yok). Eskiden
+  // revize yokken "karsi" basılıyordu → tutanakta "Hukuk 'ek itirazım yok' derken Yazı Sorumlusu
+  // karşı çıkıyor" ve imza bloğunda gerekçesi "uygun görünüyor" olan bir ŞERH (iç çelişki).
+  // "Gönderime uygun" hükmü de Taslakçı'nın değil, risk bandını sahiplenen Birim Amiri'nindir.
   T1("taslakci", "yazi_taslak",
     uzlasi_uygulanabilir
       ? `Önerileri değerlendirdim — ${oneriOzet} Revize taslağı hazırladım; kararı memur verir.`
-      : `${oneriOzet} Taslak bu hâliyle gönderime uygun görünüyor.`,
-    "hukukcu", uzlasi_uygulanabilir ? "katil" : "karsi");
+      : oneriler.length
+        ? `${oneriler.length} öneri tutanağa geçti; satıra kendiliğinden işlenemediği için memurun değerlendirmesine bırakıyorum.`
+        : "Taslakta değişiklik gerektiren bir bulgu görmedik; metin yönünden ek önerim yok. Gönderim kararı Birim Amiri'nin ölçtüğü banda ve memura ait.",
+    "hukukcu", "katil");
   // Moderatör/Birim Amiri (tur 2): risk bandını sahiplenen deterministik kapanış sesi.
   turlar.push({ ...birimAmiriTuru(bant), tur: 2 });
 

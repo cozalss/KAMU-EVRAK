@@ -7,21 +7,18 @@
    Düzenleme yüzeyi TEK kalır: A4 kâğıt modalı (BelgeModal); kurul = KurulModal. */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, Btn, BuyutIkon, EmptyState, Icon, MONO, T, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing } from "./neonUi.jsx";
+import { ViewWrap, Btn, EmptyState, Icon, MONO, PAL, RAD, SP, SH } from "./neonUi.jsx";
 import BelgeModal from "./BelgeModal.jsx";
-import A4Belge from "./A4Belge.jsx";
 import TaslakImza from "./TaslakImza.jsx";
-import KararFisi from "./TaslakKararFisi.jsx";
-import { KararEylemleri, KuyrukTemiz, MetinEylem, COP } from "./TaslakEylem.jsx";
+import { KuyrukTemiz } from "./TaslakEylem.jsx";
 import { KurulModal } from "./MuzakereKurulu.jsx";
-import { SecimKutusu } from "./FilterBar.jsx";
 import { useFilter, deriveOptions } from "../hooks/useFilter.js";
-import { EVRAK_TR, BIRIM_LBL, BIRIM_GOSTER, YAZI_TR, cleanDemoText } from "./result-cards.jsx";
-import { A4_GEN_MM, A4_YUK_MM } from "../lib/a4Sayfalama.js";
+import { EVRAK_TR, BIRIM_LBL, cleanDemoText } from "../lib/evrakEtiket.js";
 import { sutunButcesi, BOSLUK, KUYRUK_AZAMI } from "../lib/taslakSutun.js";
-import { gonderimDenetimi } from "../lib/gonderimHazirlik.js";
-import { SATIR_H, MASA_PAY, KENAR_X, defterZemini, useIslemDurumu, IskeletSatirlar, KararIskeleti } from "./TaslakDefter.jsx";
-import GonderimOnayFisi from "./GonderimOnayFisi.jsx";
+import { gonderimDenetimi, taslakKunyesi } from "../lib/gonderimHazirlik.js";
+import { SATIR_H, defterZemini, useIslemDurumu, IskeletSatirlar, KararIskeleti } from "./TaslakDefter.jsx";
+import { AracCubugu, DefterBasligi, KuyrukSatiri, BosFiltre, Tus, icOdak, ikizKumesi } from "./TaslakKuyruk.jsx";
+import KararPaneli, { BosMasa } from "./TaslakKararPaneli.jsx";
 
 /* Düzenlenen metni DOĞRUDAN DOCX indir (pipeline yok → /yazi/render). Gövde olduğu gibi. */
 async function docxIndir(text, name, onToast) {
@@ -50,7 +47,7 @@ async function docxIndir(text, name, onToast) {
    görünsün (İşlenen→Düzenle akışı; kullanıcı isteği 2026-07-17). SLA/kuyruk adaleti için
    "En eski önce" seçenekte durur. */
 const BASE_CONFIG = {
-  search: { enabled: true, placeholder: "Taslak adı…" },
+  search: { enabled: true, placeholder: "Konu, dosya adı…" },
   select: [
     { id: "evrak_turu", label: "Evrak türü", options: [] },
     { id: "hedef_birim", label: "Hedef birim", options: [] },
@@ -58,7 +55,7 @@ const BASE_CONFIG = {
   sort: { enabled: true, default: "ts_desc", options: [
     { value: "ts_desc", label: "En yeni" }, { value: "ts_asc", label: "En eski" }, { value: "name_asc", label: "Ad (A–Z)" },
   ] },
-  dataMapping: { search: ["name", "konu"], evrak_turu: "evrak_turu", hedef_birim: "hedef_birim", dateField: "ts" },
+  dataMapping: { search: ["name", "konu", "muhatap"], evrak_turu: "evrak_turu", hedef_birim: "hedef_birim", dateField: "ts" },
 };
 
 
@@ -84,278 +81,8 @@ function taslakOzeti(md) {
   return { konu, govde: govde || temiz };
 }
 
-/* Meta satırı — YALNIZ dolu parçaları "·" ile birleştirir.
-   BIRIM_LBL/EVRAK_TR bilinmeyen değerde "—" döndürdüğü için satırlar "Üst Yazı · —" ya da
-   "Bilgilendirme Yazısı · — · Orta risk" gibi çıkıyordu: boş bir alanı görünür kılmak memura
-   hiçbir şey söylemiyor, yalnız gürültü ekliyor. Bilinmeyen değer artık satırdan düşer;
-   ayraç da onunla birlikte gider (yalnız kalan "·" bırakmaz). */
-const metaSatiri = (...parcalar) =>
-  parcalar.map((p) => String(p ?? "").trim()).filter((p) => p && p !== "—").join(" · ");
-
-/* Kompakt tek-satır araç çubuğu — Gelen Evrak'ın kalıcı FilterBar panelinden bilinçli
-   ayrışma (o panel Gelen'in dili; kuyruk dikey alanı listeye bırakır). Arama kutusu Mevzuat
-   sayfasıyla AYNI dilde (ikon + "/" odak kısayolu, 2026-07-23) — uygulama genelinde tek bir
-   "arama" hissi. */
-/* icerde: araç çubuğu kuyruk kartının tepesinde (geniş ve dar düzen); kuyruk boşken
-   (filtre hiçbir şey bulamadı) kartın dışında, boş durumun üstünde durur — arama kutusu
-   yazarken kaybolmasın. */
-function AracCubugu({ filter, turSecenek, birimSecenek, icerde = false }) {
-  const f = filter.filters;
-  const aramaRef = useRef(null);
-  const [aramaOdakta, setAramaOdakta] = useState(false);
-  useEffect(() => {
-    const dinle = (e) => {
-      if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
-      const a = document.activeElement;
-      if (a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA" || a.isContentEditable)) return;
-      e.preventDefault();
-      aramaRef.current?.focus();
-    };
-    document.addEventListener("keydown", dinle);
-    return () => document.removeEventListener("keydown", dinle);
-  }, []);
-  return (
-    /* minWidth:0 — ViewWrap'in eylem kutusu daralsa bile bu kök esnek öğe kendi min-content'i
-       (en uzun <select> seçeneği) kadar geniş kalıyordu; zinciri kırmak için İKİSİNE de
-       gerekiyor (ölçüldü 2026-08-12: dış kutu 209'a indi, bu kök 290'da kaldı). */
-    /* 2026-10: araç çubuğu süzdüğü KUYRUĞUN tepesinde (kullanıcı: "sağ üstte kopuk yüzüyor"). */
-    /* 2026-10 tur-4: native <select>'ler kırpılıyordu ("Tüm birim…", "En ye…") ve işletim
-       sistemi okuyla temadan kopuyordu. Artık Gelen/Denetim'deki AYNI seçim kabuğu
-       (FilterBar.SecimKutusu: ince chevron, token renkleri, 36px). Düzen iki satır:
-       arama + sıralama · tür + birim — üç seçici tek satıra sıkışmaz. */
-    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 118px)", gap: SP.s, minWidth: 0, maxWidth: "100%", padding: icerde ? SP.m : 0, marginBottom: icerde ? 0 : SP.l, borderBottom: icerde ? `1px solid ${PAL.line}` : "none" }}>
-      {/* minWidth:0 — esnek öğenin otomatik asgari boyutu içeriğinin min-content'idir; girdi
-          telefonda 16px'e çıkınca (iOS zoom kuralı) bu değer büyüyüp kabı itiyordu. */}
-      <div style={{ position: "relative", minWidth: 0 }}>
-        <span aria-hidden="true" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", display: "flex", color: PAL.mut3, pointerEvents: "none" }}><Icon.search /></span>
-        <input ref={aramaRef} type="search" value={f.search} onChange={(e) => filter.setSearch(e.target.value)}
-          placeholder="Taslak adı, konu…" aria-label="Taslaklarda ara"
-          onFocus={(e) => { focusRing.onFocus(e); setAramaOdakta(true); }}
-          onBlur={(e) => { focusRing.onBlur(e); setAramaOdakta(false); }}
-          style={{ width: "100%", height: 36, boxSizing: "border-box", padding: "0 12px 0 34px", borderRadius: RAD.ctl,
-            border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: PAL.ink, ...TYPE.data }} />
-        {!f.search && !aramaOdakta && (
-          <span aria-hidden="true" style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", ...TYPE.meta, color: PAL.mut3, border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, padding: "1px 6px", background: PAL.surfHi, pointerEvents: "none" }}>/</span>
-        )}
-      </div>
-      <SecimKutusu id="tas-sira" label="Sıralama" value={f.sortBy} onChange={(e) => filter.setSortBy(e.target.value)}
-        options={BASE_CONFIG.sort.options} minW={58} />
-      <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: SP.s, minWidth: 0 }}>
-        <SecimKutusu id="tas-tur" label="Evrak türü" value={f.select.evrak_turu} onChange={(e) => filter.setSelect("evrak_turu", e.target.value)}
-          options={[{ value: "", label: "Tüm türler" }, ...turSecenek]} minW={400} />
-        <SecimKutusu id="tas-birim" label="Hedef birim" value={f.select.hedef_birim} onChange={(e) => filter.setSelect("hedef_birim", e.target.value)}
-          options={[{ value: "", label: "Tüm birimler" }, ...birimSecenek]} minW={400} />
-      </div>
-      {filter.hasActiveFilters && (
-        <button type="button" onClick={filter.clearAll} {...focusRing} data-press=""
-          style={{ gridColumn: "1 / -1", justifySelf: "start", cursor: "pointer", padding: "2px 4px", border: "none", background: "transparent", borderRadius: RAD.ctl, ...TYPE.meta, fontWeight: 500, color: DERIN.T, transition: "transform .14s var(--ke-ease-out)" }}>
-          Filtreleri temizle
-        </button>
-      )}
-    </div>
-  );
-}
-
-/* Kuyruk satırı — kart DEĞİL: iki satırlık seçilebilir öğe (konu + meta), eylemsiz.
-   Seçili: sol 2px T şeridi + press zemini + 600 başlık (renk tek sinyal olmasın). Ekrandaki
-   demo taslaklar sık sık aynı önekle başlayıp kırpılıyor ("4982 sayılı ... kapsam…" ekran
-   görüntüsünde 6 kez) — title tooltip'i tam metni hover'da verir (MevzuatView künye kırpması
-   ile aynı çözüm); data-press diğer seçim kutucuklarıyla aynı dokunma dili. */
-/* Defter cetveli — kuyruk bir SİCİL DEFTERİ sayfası gibi çizilir: her satır SATIR_H yüksekliğinde
-   ve zemin aynı adımla yatay cetvel taşır, böylece tek taslak olsa bile sütunun geri kalanı
-   boş defter satırlarıyla dolar (yarım ekran boş beyaz kart yerine). Soldaki kırmızı KENAR
-   çizgisi sıra numarasını konudan ayırır — gerçek kayıt defterinin kenar boşluğu. Satır
-   yüksekliği SABİT olmak zorunda: cetvel arka plan olduğundan satırlar ondan kaymamalı. */
-const MOBIL_SAHNE = 360;   // telefonda kâğıt sahnesinin mantıksal genişliği (px) — 360/793 > ASGARI_OLCEK
-/* İç odak halkası — liste, köşeleri kırpan (overflow:hidden) defter kartının içinde; dış
-   halka (focusRing) kırpılırdı. Yine yalnız :focus-visible'da. */
-const icOdak = {
-  onFocus: (e) => { if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = `inset 0 0 0 2px ${T}`; },
-  onBlur: (e) => { e.currentTarget.style.boxShadow = "none"; },
-};
-function KuyrukSatiri({ h, konu, sira, secili, onSec, onAc, optId }) {
-  const tarih = Number.isFinite(h.ts) ? new Date(h.ts).toLocaleDateString("tr-TR") : "";
-  const baslik = konu || h.name;
-  const meta = metaSatiri(
-    YAZI_TR(h.result?.yazi_turu) || "Taslak",
-    BIRIM_GOSTER(h.result?.hedef_birim || h.hedef_birim, h.result?.evrak_turu || h.evrak_turu),
-  );
-  const zemin = secili ? ALFA(T) : "transparent";
-  return (
-    <div role="option" id={optId} aria-selected={secili} onClick={onSec} onDoubleClick={onAc} data-press=""
-      style={{ cursor: "pointer", height: SATIR_H, boxSizing: "border-box", display: "flex", alignItems: "center",
-        // Seçim: iç gölgeyle 3px mürekkep şeridi (yerleşim kaymaz) + tint + 600 başlık + mavi sıra no
-        // — renk tek sinyal değil.
-        boxShadow: secili ? `inset 3px 0 0 ${T}` : "none", background: zemin,
-        transition: `background .14s ease-out, transform .14s ${EASE.out}` }}
-      onMouseEnter={(e) => { if (!secili) e.currentTarget.style.background = PAL.hov; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = zemin; }}>
-      <span aria-hidden="true" style={{ width: KENAR_X, flexShrink: 0, textAlign: "center", fontFamily: MONO, fontSize: 12, ...TNUM, fontWeight: secili ? 600 : 400, color: secili ? DERIN.T : PAL.mut3 }}>
-        {String(sira).padStart(2, "0")}
-      </span>
-      <div style={{ flex: 1, minWidth: 0, padding: "0 14px 1px 12px" }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: SP.s }}>
-          <span title={baslik} style={{ ...TYPE.ui, fontWeight: secili ? 600 : 500, color: PAL.ink, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            {baslik}
-          </span>
-          {tarih && <span style={{ fontFamily: MONO, fontSize: 11, letterSpacing: ".02em", color: PAL.mut3, ...TNUM, flexShrink: 0 }}>{tarih}</span>}
-        </div>
-        <div title={meta} style={{ ...TYPE.meta, color: PAL.mut, marginTop: 3, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {meta}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* Klavye tuşu — kuyruk altbilgisindeki kısayol ipucu. */
-const Tus = ({ children }) => (
-  <kbd style={{ display: "inline-block", minWidth: 16, padding: "0 4px", marginRight: 3, borderRadius: 4, border: `1px solid ${PAL.lineHi}`, borderBottomWidth: 2, background: PAL.surf, fontFamily: MONO, fontSize: 10, lineHeight: "14px", textAlign: "center", color: PAL.ink2 }}>{children}</kbd>
-);
-
-/* Defter başlığı — sütun etiketleri antet dilinde (mono, izlemeli). Listbox'ın DIŞINDA durur:
-   role=listbox yalnız option çocuk taşımalı. */
-function DefterBasligi({ adet }) {
-  return (
-    <div aria-hidden="true" style={{ display: "flex", alignItems: "center", height: 34, flexShrink: 0, borderBottom: `1px solid ${PAL.lineHi}`, ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>
-      <span style={{ width: KENAR_X, textAlign: "center" }}>No</span>
-      <span style={{ flex: 1, paddingLeft: 12 }}>Konu · yazı türü · birim</span>
-      <span style={{ paddingRight: 14, ...TNUM }}>{adet == null ? "yükleniyor" : `${adet} kayıt`}</span>
-    </div>
-  );
-}
-
-/* Karar paneli — İKİ SÜTUN: solda KÂĞIT, sağda karar sütunu (üst-veri + eylemler).
-   React fragment döner; iki parça üst grid'in AYRI hücreleridir (kuyruk | kâğıt | karar).
-
-   NEDEN İKİYE AYRILDI (kullanıcı isteği + ölçülebilir gerekçe): önceki sürümde kâğıt ve
-   eylem çubuğu TEK bir geniş kartın içindeydi. A4 dikey (oran 0.707), kart ise yatay bir
-   kutuydu; kâğıt yüksekliğe göre ölçeklendiğinden kartın yarısına yakını ÖLÜ BEYAZ ALAN
-   olarak kalıyordu (1600px ekranda ~944px kart, ~424px kâğıt → ~520px boşluk). Eylemler
-   kendi sütununa alınınca kâğıt sütunu daralıyor ve TAM A4 ORANINDA kuruluyor: sütun
-   genişliği ölçülen yükseklikten türetiliyor (`kagitSutunGenisligi = sutunH × A4_ORAN`),
-   böylece kâğıt sütunu birebir dolduruyor — kenarında boşluk kalmıyor.
-
-   Karar sütunu bir "inspector": önce KİMLİK (konu · dosya · tarih · tür/birim), sonra
-   EYLEMLER dikey yığın hâlinde. Gönder ekranın tek primary'si; Sil en altta, ayrı, çıplak
-   kırmızı metin (yanlış-tıklama sigortası olarak araya boşluk girer). Onay durumları
-   (sil/gönder) eylem yığınının YERİNE geçer — iki karar aynı anda açık kalamaz. */
-function KararPaneli({ h, konu, govde, tamMetin, genis, sutunH, sira = 1, toplam = 1, sendBusy, komut, onDuzenle, onKurul, onGonder, onSil }) {
-  // Eylem durumu: "bos" | "gonder" (iki adımlı gönderim onayı) | "sil". Tek state → iki karar
-  // aynı anda açık kalamaz. Gönderim onaylı: resmî yazı GİDEN EVRAK'a kalıcı yazılır.
-  const [durum, setDurumHam] = useState("bos");
-  const [hata, setHata] = useState(false);   // son gönderim başarısız → onay açık + satır içi hata
-  // Gönderimin İKİNCİ adımı uygulamanın TEK onay fişidir (GonderimOnayFisi — sonuç ekranı ve
-  // Kurul ile aynı bileşen, aynı saf denetim lib/gonderimHazirlik): künye metinden okunur, içi
-  // boş / "aşağıda" vaatli / [DOĞRULA]'lı yazıda onay kilitlidir. "Gönder" ve G kısayolu fişi
-  // açar; satır içi onay yalnız Sil için kalır. Engel varsa karar fişi bunu önceden söyler.
-  const denetim = useMemo(() => gonderimDenetimi(tamMetin), [tamMetin]);
-  const [fisAcik, setFisAcik] = useState(false);
-  const setDurum = (d) => {
-    setHata(false);
-    if (d === "gonder") { setDurumHam("bos"); setFisAcik(true); return; }
-    setDurumHam(d);
-  };
-  const tarih = Number.isFinite(h.ts) ? new Date(h.ts).toLocaleDateString("tr-TR") : "";
-  const r = h.result || {};
-  // key={secili.id} remount zaten sıfırlar — bu effect, key kalkarsa emniyet kemeri.
-  useEffect(() => { setDurumHam("bos"); setHata(false); }, [h.id]);
-  // Klavye kısayolu (kuyrukta G): gönderim ONAYINI açar — tek tuşla kalıcı kayıt üretilmez.
-  useEffect(() => { if (komut?.tip === "gonder" && !sendBusy) setDurum("gonder"); }, [komut]); // eslint-disable-line react-hooks/exhaustive-deps
-  const gonderOnayli = async () => {
-    if (!denetim.hazir) return;
-    setHata(false);
-    const ok = await onGonder();
-    if (ok === false) setHata(true); else setFisAcik(false);
-  };
-  const ad = konu || h.name;
-  // Telefon kâğıt sahnesi — kabın genişliği ölçülüp zoom'a çevrilir (bkz. aşağıdaki not).
-  const [kagitKap, setKagitKap] = useState(null);
-  const [mobilZoom, setMobilZoom] = useState(1);
-  useLayoutEffect(() => {
-    if (genis || !kagitKap || typeof ResizeObserver === "undefined") return undefined;
-    const olc = () => { const w = kagitKap.clientWidth; if (w > 0) setMobilZoom(Math.min(1, w / MOBIL_SAHNE)); };
-    olc();
-    const ro = new ResizeObserver(olc);
-    ro.observe(kagitKap);
-    return () => ro.disconnect();
-  }, [genis, kagitKap]);
-  const metin = cleanDemoText(tamMetin) || govde;
-  const eylemler = (
-    <KararEylemleri gonderKilit={!denetim.hazir} ad={ad} birim={BIRIM_GOSTER(r.hedef_birim, r.evrak_turu)} sendBusy={sendBusy} kompakt={!genis}
-      durum={durum} hata={hata} setDurum={setDurum} onGonder={gonderOnayli}
-      onDuzenle={onDuzenle} onKurul={onKurul} onSil={onSil} />
-  );
-  return (
-    <>
-      {/* ── SÜTUN 1: MASA + KÂĞIT ───────────────────────────────────────────────────
-          2026-10 (kullanıcı geri bildirimi, 2560px ekran: "yerleşim kötü"): sütun bütçesinin
-          SAĞ ARTIĞI artık ölü boşluk değil — bu hücre `minmax(kâğıt, 1fr)` olduğundan artık
-          MASAYA gider (bütçe sözleşmesi korunur: aralara dağıtılmaz, sütunlar bitişik kalır).
-          Masa hafif çökük bir zemin; kâğıt onun ortasında TAM A4 oranında (aspect-ratio)
-          durur ve yüksekliğe sığar — eni ne olursa olsun yatay kutu olamaz.
-          Tıkla/Enter → A4 düzenleme (BelgeModal). */}
-      <div style={{ minWidth: 0, height: genis ? (sutunH ?? undefined) : undefined, display: "flex", justifyContent: "center", alignItems: "flex-start",
-        padding: genis ? MASA_PAY : SP.m, boxSizing: "border-box", borderRadius: RAD.card, background: PAL.bg2,
-        boxShadow: `inset 0 1px 3px color-mix(in srgb, ${PAL.ink} 7%, transparent)`, animation: "nu-rise .32s var(--ke-ease-out) .08s both" }}>
-        <div role="button" tabIndex={0} title="Düzenle (A4 görünüm)" aria-label={`${ad} taslağını A4 görünümde düzenle`} {...focusRing}
-          data-karar-kagit="" data-kagit="" ref={setKagitKap}
-          onClick={onDuzenle}
-          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDuzenle(); } }}
-          style={{
-            position: "relative",
-            height: genis ? "100%" : undefined, aspectRatio: genis ? `${A4_GEN_MM} / ${A4_YUK_MM}` : undefined, maxWidth: "100%",
-            width: genis ? undefined : "100%", maxHeight: genis ? undefined : "76vh",
-            overflowY: "auto", overscrollBehavior: "contain", cursor: "zoom-in", minWidth: 0,
-          }}>
-          {/* Büyüteç rozeti — hover/klavye odağında belirir, kâğıdın açılabilir olduğunu
-              söyler. `sticky` + `height:0`: akışta yer KAPLAMAZ (sayfalama/ölçek matematiği
-              değişmez). Salt görsel; tıklama ve Enter yolu kabın kendisindedir. */}
-          <div aria-hidden="true" style={{ position: "sticky", top: SP.s, height: 0, zIndex: 2, display: "flex", justifyContent: "flex-end", paddingRight: SP.s, pointerEvents: "none" }}>
-            <span data-kagit-buyut="" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 26, height: 26, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.mut, boxShadow: SH.card }}>
-              <BuyutIkon />
-            </span>
-          </div>
-          {genis ? (
-            <A4Belge metin={metin} baslikIpucu="Düzenle (A4 görünüm)" />
-          ) : (
-            /* Telefon: A4Belge'nin ASGARI_OLCEK tabanı (0,42 → 333px) 390px ekranda sayfayı
-               sağdan kırpıyordu. Kâğıt sabit 360px'lik bir sahnede dizilir ve sahne CSS `zoom`
-               ile kaba sığdırılır — ölçek matematiği (a4Sayfalama) DEĞİŞMEZ, yalnız sunum. */
-            <div style={{ width: MOBIL_SAHNE, zoom: mobilZoom }}>
-              <A4Belge metin={metin} baslikIpucu="Düzenle (A4 görünüm)" sigdir="genislik" />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ── SÜTUN 2: KARAR ──────────────────────────────────────────────────────────
-          Yukarıdan aşağı bir karar FİŞİ: konu → hüküm (risk bandı) → özet → muhatap/dayanak →
-          eylemler. Eylemler içeriğin hemen altındadır (dibe yaslanmaz — arada boşluk
-          kalmasın); kart içeriği kadar uzar, sütunu aşarsa kendi içinde kayar. */}
-      <aside aria-label="Karar paneli"
-        style={{ position: genis ? "sticky" : "static", top: SP.xl, display: "flex", flexDirection: "column", minWidth: 0,
-          maxHeight: genis ? (sutunH ?? undefined) : undefined, overflowY: "auto",
-          background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card,
-          animation: "nu-rise .32s var(--ke-ease-out) .14s both" }}>
-        <KararFisi h={h} r={r} ad={ad} govde={govde} tarih={tarih} sira={sira} toplam={toplam}
-          govdeUyari={denetim.hazir ? null : denetim.engel[0]?.metin} onDuzenle={onDuzenle} />
-        {genis ? eylemler : (
-          /* Telefonda eylemler sayfa dibine yapışık karar çubuğunda; fişte yalnız sessiz Sil. */
-          <div style={{ padding: "4px 12px 12px", borderTop: `1px solid ${PAL.line}` }}>
-            <MetinEylem onClick={() => setDurum("sil")} disabled={sendBusy} renk={DERIN.kirmizi} ariaLabel={`${ad} taslağını sil`}><COP /> Sil</MetinEylem>
-          </div>
-        )}
-      </aside>
-      {!genis && eylemler}
-      {fisAcik && (
-        <GonderimOnayFisi denetim={denetim} r={r} gonderiliyor={sendBusy} hata={hata}
-          onOnayla={gonderOnayli} onVazgec={() => { setFisAcik(false); setHata(false); }}
-          onDuzenle={() => { setFisAcik(false); onDuzenle(); }} />
-      )}
-    </>
-  );
-}
+/* Kuyruk parçaları (araç çubuğu · defter başlığı · satır · boş filtre) → TaslakKuyruk.jsx;
+   masa + karar sütunu → TaslakKararPaneli.jsx (dosya <800 kuralı, tur 6). */
 
 /* Geniş ekran eşiği — altında liste + panel alt alta yığılır (iki ayrı desen icat edilmez). */
 function useGenisEkran() {
@@ -481,10 +208,14 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
   // Arama, satırda görünen KONU başlığını da taramalı; özet türetimi tek geçişte saklanır.
   const aramaKaynagi = useMemo(() => drafts.map((d) => {
     const ozet = taslakOzeti(d.result?.yazi_taslak_md);
-    return { ...d, konu: ozet.konu, _govde: ozet.govde };
+    // Muhatap kuyruk satırında birim yokken ayırıcıdır (aynı konulu taslaklar) — metnin
+    // kendisinden okunur (gonderim fişiyle aynı çözücü), uydurulmaz.
+    const muhatap = taslakKunyesi(cleanDemoText(d.result?.yazi_taslak_md)).muhatap;
+    return { ...d, konu: ozet.konu, muhatap, _govde: ozet.govde };
   }), [drafts]);
   const filter = useFilter(aramaKaynagi, config);
   const sonuc = filter.results;
+  const ikizler = useMemo(() => ikizKumesi(sonuc), [sonuc]);
 
   // Seçim türetilir: seçili id listede yoksa (gönderildi/silindi/filtrelendi) ilk satıra düşer.
   const secili = sonuc.find((d) => d.id === seciliId) || sonuc[0] || null;
@@ -618,8 +349,9 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
     );
   }
 
-  const aracProps = { filter, turSecenek: config.select[0].options.slice(1), birimSecenek: config.select[1].options.slice(1) };
-  const aracIcerde = <AracCubugu {...aracProps} icerde />;
+  const dar = !genis || (butce?.kuyruk ?? KUYRUK_AZAMI) < 360;
+  const aracIcerde = <AracCubugu filter={filter} dar={dar} siraSecenek={BASE_CONFIG.sort.options}
+    turSecenek={config.select[0].options.slice(1)} birimSecenek={config.select[1].options.slice(1)} />;
   const oturumEki = karar.gonderildi + karar.silindi > 0 ? ` · oturumda ${karar.gonderildi + karar.silindi} karar` : "";
   /* altDolgu (JS yorumu — JSX yorumu DEĞİL; kök elemanın önüne konsa iki kardeş doğar ve
      sözdizimi hatası verir, bu depoda daha önce yaşandı): geniş düzende sütunlar pencereye
@@ -642,9 +374,9 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
         <div ref={gridRef} style={{
           display: "grid",
           gridTemplateColumns: !genis ? "minmax(0, 1fr)"
-            // Filtre hiçbir şey bulamadı: kuyruk kartı KENDİ genişliğinde kalır (tam ekrana
-            // yayılmaz) — arama kutusu yazarken yerinden oynamaz, odak kaybolmaz.
-            : !secili && !yukleniyor ? `minmax(0, ${butce?.kuyruk || KUYRUK_AZAMI}px)`
+            // Filtre hiçbir şey bulamadı: üç sütun KORUNUR (kuyruk aynı genişlikte — arama kutusu
+            // yazarken yerinden oynamaz); kâğıt+karar yerine tek "boş masa" hücresi (BosMasa).
+            : !secili && !yukleniyor && !butce ? `minmax(0, ${KUYRUK_AZAMI}px) minmax(0, 1fr)`
             : butce ? `${butce.kuyruk}px minmax(${butce.kagit}px, 1fr) ${butce.karar}px`
             // Ölçüm gelmeden önceki tek kare: oransal yedek — ilk karede de üç sütun görünür.
             : "minmax(260px, 420px) minmax(0, 0.8fr) minmax(236px, 300px)",
@@ -658,23 +390,20 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
           <div style={{ display: "flex", flexDirection: "column", minWidth: 0, background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, overflow: "hidden",
             height: genis ? (sutunH ?? undefined) : undefined, animation: "nu-rise .32s var(--ke-ease-out) .04s both" }}>
             {aracIcerde}
-            <DefterBasligi adet={yukleniyor ? null : sonuc.length} />
+            <DefterBasligi adet={yukleniyor ? null : sonuc.length} toplam={drafts.length} dar={dar}
+              filtreli={!yukleniyor && filter.hasActiveFilters} onTemizle={filter.clearAll} />
             {yukleniyor && <IskeletSatirlar />}
             {/* Liste kabı boşken de DOM'da kalır (hidden): auto-animate'in çıkış hayaletleri
                 sökülen kabın yerine boş durumun üstüne biniyordu (tur-3 ölçümü). */}
-            {sonuc.length === 0 && !yukleniyor && (
-              <div role="status" style={{ ...defterZemini(4), flex: 1, minHeight: SATIR_H * 4, display: "flex", flexDirection: "column", alignItems: "flex-start", gap: SP.s, padding: `${SP.l}px 16px ${SP.l}px ${KENAR_X + 12}px` }}>
-                <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Eşleşen taslak yok</span>
-                <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Kuyrukta {drafts.length} taslak var; arama ya da filtre hiçbirini kapsamıyor.</span>
-                <Btn onClick={filter.clearAll} style={{ marginTop: SP.xs }}>Filtreleri temizle</Btn>
-              </div>
-            )}
+            {sonuc.length === 0 && !yukleniyor && <BosFiltre toplam={drafts.length} onTemizle={filter.clearAll} />}
             <div ref={listeRef} role="listbox" hidden={sonuc.length === 0 || yukleniyor} aria-label="Taslak kuyruğu" tabIndex={0} onKeyDown={klavye}
               aria-activedescendant={secili ? optIdOf(secili.id) : undefined} {...icOdak}
               style={{ ...defterZemini(sonuc.length), flex: 1, minHeight: genis ? 0 : SATIR_H * 3, overflowY: "auto", outline: "none",
-                maxHeight: genis ? undefined : 420 }}>
+                // Telefonda 4,5 satır: yarım görünen satır kaydırılabilirliği söyler ve kâğıt
+                // ilk ekrana yaklaşır (tur 6: belge y=800'de başlıyordu).
+                maxHeight: genis ? undefined : Math.round(SATIR_H * 4.5) }}>
               {sonuc.map((h, i) => (
-                <KuyrukSatiri key={h.id} h={h} konu={h.konu} sira={i + 1} secili={secili?.id === h.id} optId={optIdOf(h.id)}
+                <KuyrukSatiri key={h.id} h={h} konu={h.konu} muhatap={h.muhatap} sira={i + 1} ikiz={ikizler.has(h.id)} secili={secili?.id === h.id} optId={optIdOf(h.id)}
                   onSec={() => { if (!sendBusy) setSeciliId(h.id); }} onAc={() => { if (!sendBusy) acDuzenle(h.id); }} />
               ))}
             </div>
@@ -688,10 +417,11 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
             )}
           </div>
           {yukleniyor && <KararIskeleti genis={genis} sutunH={sutunH} />}
+          {!secili && !yukleniyor && genis && <BosMasa sutunH={sutunH} toplam={drafts.length} />}
           {secili && (
             <KararPaneli key={secili.id} h={secili} konu={secili.konu} govde={secili._govde}
               sira={sonuc.findIndex((d) => d.id === secili.id) + 1} toplam={sonuc.length}
-              tamMetin={secili.result?.yazi_taslak_md} genis={genis} sutunH={sutunH} sendBusy={sendBusy} komut={komut}
+              tamMetin={secili.result?.yazi_taslak_md} genis={genis} sutunH={sutunH} kagitGen={butce?.kagit} sendBusy={sendBusy} komut={komut}
               onDuzenle={() => acDuzenle(secili.id)} onKurul={() => acKurul(secili.id)}
               onGonder={() => gonderImzali(secili, secili.result.yazi_taslak_md)} onSil={() => sil(secili)} />
           )}

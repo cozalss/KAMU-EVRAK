@@ -1,4 +1,4 @@
-import { cleanDemoText } from "./result-cards.jsx";
+import { cleanDemoText } from "../lib/evrakEtiket.js";
 
 /* Sonuç çalışma alanının ortak saf yardımcıları (SonucCalismaAlani + bölünmüş kart dosyaları). */
 export const arr = (value) => (Array.isArray(value) ? value.filter(Boolean) : []);

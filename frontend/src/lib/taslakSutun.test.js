@@ -51,9 +51,10 @@ test("kâğıt her ekranda EN GENİŞ sütundur — odak listede değil belgede"
 test("canlı DOM ile birebir aynı: saf hesap tarayıcıdan sapmaz", () => {
   // Playwright ölçümü 2026-08-12 — bu üçlüler tarayıcıdan OKUNDU, elle yazılmadı.
   assert.deepEqual(sutunButcesi(...EKRAN.hd1080), { kuyruk: 440, kagit: 584, karar: 344 });
-  assert.deepEqual(sutunButcesi(...EKRAN.hd1080_125), { kuyruk: 440, kagit: 451, karar: 259 });
+  // Tur 6: KARAR_MIN 236 → 272 (karar eylemleri dar sütunda taşıyordu); fark kuyruktan.
+  assert.deepEqual(sutunButcesi(...EKRAN.hd1080_125), { kuyruk: 440, kagit: 451, karar: 272 });
   assert.deepEqual(sutunButcesi(...EKRAN.qhd1440), { kuyruk: 440, kagit: 839, karar: 360 });
-  assert.deepEqual(sutunButcesi(...EKRAN.dar), { kuyruk: 333, kagit: 333, karar: 241 });
+  assert.deepEqual(sutunButcesi(...EKRAN.dar), { kuyruk: 333, kagit: 333, karar: 272 });
 });
 
 test("her sütun kendi asgari/azami sınırları içinde kalır", () => {

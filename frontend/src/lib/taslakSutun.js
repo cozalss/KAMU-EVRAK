@@ -26,9 +26,12 @@ import { kagitSutunGenisligi, KAGIT_ASGARI_GEN } from "./a4Sayfalama.js";
    çıkınca listeyle belge eşit genişliğe geliyor ve odak dağılıyordu. */
 export const KUYRUK_MIN = 260;
 export const KUYRUK_AZAMI = 440;
-/* Karar paneli sabit içeriktir (başlık + künye + dikey buton yığını): 236 altında butonlar
-   sıkışır, 360 üstünde başlık satırı gereksiz uzar. */
-export const KARAR_MIN = 236;
+/* Karar paneli sabit içeriktir (başlık + künye + buton bloğu): 360 üstünde başlık satırı
+   gereksiz uzar. Taban 236 → 272 (jüri tur 6, 1440x900): 236'da Düzenle/Kurul yan yana
+   sığmıyor, alt alta düşüp "Kurulu topla"yı ve Sil'i sütunun dışına itiyordu. Fark kuyruktan
+   gelir (1440'ta 362 → 326) — konu başlığı kuyrukta zaten tek satır kırpılır, tam metni
+   karar fişinde. Sıralama kuralı (kâğıt önce doyar) değişmedi. */
+export const KARAR_MIN = 272;
 export const KARAR_AZAMI = 360;
 /* Sütun arası boşluk — grid `gap` ile AYNI değer olmalı (TaslaklarView buradan okur). */
 export const BOSLUK = 16;

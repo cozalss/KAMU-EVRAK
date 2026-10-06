@@ -1,4 +1,4 @@
-/* RevizePaneli — "AI ile revize et" alanı: memur doğal-dil talimatla taslağı DeepSeek'e
+/* RevizePaneli — "Yapay zekâ ile düzelt" alanı: memur doğal-dil talimatla taslağı DeepSeek'e
    düzenletir; öneri diff + değişiklik özeti + kalite kapılarıyla sunulur, memur Uygula/
    Vazgeç ile karar verir (HITL — AI hiçbir zaman doğrudan uygulamaz). Güçlendirilmiş akış:
    hazır talimat çipleri · sesle talimat · aşamalı bekleme + saniye sayacı · talimat
@@ -8,7 +8,8 @@
 import { useEffect, useRef, useState } from "react";
 import { PAL, DERIN, DERIN_OF, T, V, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, Icon, Btn, focusRing } from "./neonUi.jsx";
 import { DuzeltmeDiff } from "./NeonDetayParts.jsx";
-import { cleanDemoText } from "./result-cards.jsx";
+import A4Belge from "./A4Belge.jsx";
+import { cleanDemoText } from "../lib/evrakEtiket.js";
 import { useSpeechToText } from "../hooks/useSpeechToText.js";
 
 /* Tek tıkla gönderilen hazır talimatlar — memurun en sık ihtiyaç duyduğu düzenlemeler. */
@@ -29,6 +30,49 @@ const asamaMetni = (sn) =>
   : "Doğrulama kapılarından geçiriliyor…";
 
 const RISK_TR = { yesil: "düşük", sari: "orta", kirmizi: "yüksek" };
+/* Telefonda girdi 16px (iOS odakta sayfayı yakınlaştırmasın). */
+const GIRDI_CSS = "@media (max-width:720px){.ke-revize-girdi{font-size:16px !important}}";
+
+/* İstek sürerken kâğıt GİZLENMEZ (BelgeModal düzenleme kâğıdını kaldırır — yarış koruması):
+   aynı metin burada yerinde, soluk ve KİLİTLİ görünür; üstünde ne olduğunu söyleyen şerit.
+   Jüri tur 6: kâğıt kaybolunca arkadaki sayfanın kâğıdı modalın kâğıdı sanılıyordu. */
+function KilitliKagit({ metin }) {
+  return (
+    <div aria-hidden="true" style={{ pointerEvents: "none", userSelect: "none" }}>
+      {/* Durum şeridi kâğıdın ÜSTÜNDE, akış içinde — kâğıdın üstüne bindiğinde antet
+          bölgesini (T.C. / idare adı) örtüyordu (tur 6 doğrulaması). */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: SP.m }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: SP.s, padding: "8px 14px", borderRadius: RAD.ctl,
+          background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, boxShadow: SH.card, ...TYPE.data, fontWeight: 600, color: PAL.ink }}>
+          <Icon.spin width={13} height={13} /> Revize ediliyor — kâğıt kilitli
+        </span>
+      </div>
+      {/* Kâğıt OPAK kalır (A4Belge solgun opaklığı arkadaki sayfayı geçiriyordu); soluk
+          görünüm üstteki kâğıt renkli perdeden gelir. */}
+      <div style={{ position: "relative" }}>
+        <A4Belge metin={metin} />
+        <div style={{ position: "absolute", inset: 0, background: "color-mix(in srgb, var(--kd-kagit) 52%, transparent)" }} />
+      </div>
+    </div>
+  );
+}
+
+/* Hata şeridi — sola hizalı, ikonlu; çıkış yolu sunar: aynı talimatla tekrar dene ya da
+   talimatı düzenle (durum eksiksizliği). */
+function HataSeridi({ metin, onTekrar, onDuzenle }) {
+  return (
+    <div role="alert" style={{ display: "flex", alignItems: "flex-start", gap: SP.s, flexWrap: "wrap", padding: "10px 12px", borderRadius: RAD.ctl, background: PAL.surf, border: `1px solid ${BANT.kirmizi.c}`, boxShadow: SH.card }}>
+      <Icon.alert width={15} height={15} style={{ flexShrink: 0, marginTop: 2, color: DERIN.kirmizi }} />
+      <span style={{ flex: "1 1 220px", minWidth: 0, ...TYPE.data, fontWeight: 500, color: DERIN.kirmizi }}>{metin}</span>
+      {(onTekrar || onDuzenle) && (
+        <span style={{ display: "flex", gap: SP.s, marginLeft: "auto" }}>
+          {onDuzenle && <Btn onClick={onDuzenle}>Talimatı düzenle</Btn>}
+          {onTekrar && <Btn onClick={onTekrar}><Icon.undo width={12} height={12} /> Tekrar dene</Btn>}
+        </span>
+      )}
+    </div>
+  );
+}
 
 /* Semantik durum rozeti — kalite kapısı sonuçları bant rengiyle (yeşil/sarı/kırmızı). */
 function KapiRozet({ bant, children }) {
@@ -50,6 +94,131 @@ function BeklemeDurumu({ sure }) {
   );
 }
 
+/* Giriş şeridi — talimat yaz/söyle ya da hazır talimata tek tıkla. Revize masası: kâğıdın
+   üstünde duran ince bir talimat şeridi — havada duran katman (surfPop + SH.pop), kâğıttan
+   ayrı okunur. Hazır talimatlar hap biçimli, sessiz. */
+function GirisSeridi({ busy, sure, talimat, setTalimat, setHata, girisRef, stt, revizeIste }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: "10px 12px", borderRadius: RAD.card, background: PAL.surfPop, border: `1px solid ${PAL.line}`, boxShadow: SH.pop }}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+        <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 30, height: 30, borderRadius: RAD.ctl, background: ALFA(V), color: DERIN.V, flexShrink: 0 }}>
+          <Icon.sparkle width={15} height={15} />
+        </span>
+        {busy ? <BeklemeDurumu sure={sure} /> : (
+          <>
+            <input ref={girisRef} value={talimat}
+              onChange={(e) => { setTalimat(e.target.value); setHata(null); }}
+              onKeyDown={(e) => { if (e.key === "Enter") revizeIste(); }}
+              placeholder="Yapay zekâ ile düzelt (örn. “ilgi yazıya atıf yap”)"
+              aria-label="Yapay zekâya düzeltme talimatı" {...focusRing} className="ke-revize-girdi"
+              style={{ flex: 1, minWidth: 0, flexBasis: 200, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, padding: "8px 12px", background: PAL.bg, color: PAL.ink, ...TYPE.ui }} />
+            {stt.destekleniyor && (
+              <button type="button" onClick={stt.toggle} aria-pressed={stt.dinliyor}
+                aria-label={stt.dinliyor ? "Talimat diktesini durdur" : "Talimatı sesle söyle"}
+                title={stt.dinliyor ? "Dikteyi durdur" : "Talimatı sesle söyle (Türkçe)"} {...focusRing}
+                style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "7px 10px", minHeight: 32, borderRadius: RAD.ctl, border: `1px solid ${stt.dinliyor ? BANT.kirmizi.c : PAL.line}`, background: stt.dinliyor ? ALFA(BANT.kirmizi.c) : PAL.bg, color: stt.dinliyor ? DERIN.kirmizi : PAL.ink2 }}>
+                {stt.dinliyor && <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot, background: BANT.kirmizi.c, animation: "nu-think 1.1s infinite" }} />}
+                <Icon.mic width={13} height={13} />
+              </button>
+            )}
+            <Btn onClick={() => revizeIste()} disabled={!talimat.trim()}>Revize et</Btn>
+          </>
+        )}
+      </div>
+      {!busy && (
+        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", paddingLeft: 38 }} aria-label="Hazır revizyon talimatları">
+          <span aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", marginRight: 2 }}>Hazır</span>
+          {HAZIR_TALIMATLAR.map((h) => (
+            <button key={h.etiket} type="button" onClick={() => revizeIste(h.talimat)} title={h.talimat} {...focusRing}
+              data-press=""
+              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; e.currentTarget.style.borderColor = PAL.lineHi; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = PAL.line; }}
+              style={{ cursor: "pointer", padding: "3px 11px", borderRadius: RAD.chip, border: `1px solid ${PAL.line}`, background: "transparent", color: PAL.ink2, ...TYPE.meta, fontWeight: 500, transition: `background .12s ease-out, border-color .12s ease-out, transform .14s ${EASE.out}` }}>
+              {h.etiket}
+            </button>
+          ))}
+        </div>
+      )}
+      {stt.hata && <div role="alert" style={{ ...TYPE.meta, color: DERIN.kirmizi }}>{stt.hata}</div>}
+    </div>
+  );
+}
+
+/* Öneri kartı. SH.pop: modal İÇİNDE satır-içi bir bölge; komşu şeritlerle (giriş/geri-al/hata)
+   aynı düzlemde durur. */
+function OneriKarti({ oneri, metin, delta, busy, sure, gelistirTalimat, setGelistirTalimat, setHata, gelistir, uygula, onBirak }) {
+  return (
+    <div role="region" aria-label="Yapay zekâ düzeltme önerisi" style={{ display: "flex", flexDirection: "column", gap: SP.m, padding: "14px 16px", borderRadius: RAD.card, background: PAL.surfPop, border: `1px solid ${PAL.line}`, boxShadow: SH.pop, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.s, flexWrap: "wrap" }}>
+        <span style={{ minWidth: 0 }}>
+          <span style={{ display: "block", ...TYPE.antet, color: DERIN.V, textTransform: "uppercase", marginBottom: 2 }}>Önerilen düzeltme · {oneri.zincir.length} talimat</span>
+          <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{oneri.zincir.map((z) => `“${z}”`).join(" → ")}</span>
+        </span>
+        <span style={{ display: "flex", gap: SP.s }}>
+          {/* "Öneriyi bırak" — modal araç çubuğunun "Vazgeç"i (modalı kapatır) ile aynı
+              adı taşıyınca iki farklı eylem tek kelimede çakışıyordu (tur 6). */}
+          <Btn onClick={onBirak} ariaLabel="Öneriyi bırak, taslak değişmez">Öneriyi bırak</Btn>
+          <Btn primary onClick={uygula}><Icon.check width={12} height={12} /> Uygula</Btn>
+        </span>
+      </div>
+
+      {/* Kalite kapıları — öneri buraya verify + risk_guard'dan GEÇMİŞ hâliyle gelir */}
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+        <KapiRozet bant={oneri.formatUyumlu ? "yesil" : "sari"}>
+          {oneri.formatUyumlu ? "2646 format uyumlu" : "Format uyarısı"}
+        </KapiRozet>
+        <KapiRozet bant={oneri.uyariSayisi === 0 ? "yesil" : "sari"}>
+          {oneri.uyariSayisi === 0 ? "Doğrulama temiz" : `${oneri.uyariSayisi} doğrulama uyarısı`}
+        </KapiRozet>
+        {oneri.riskBant && (
+          <KapiRozet bant={oneri.riskBant}>Risk: {RISK_TR[oneri.riskBant] || oneri.riskBant}</KapiRozet>
+        )}
+        <span style={{ ...TYPE.meta, ...TNUM, color: PAL.mut2 }}>
+          {delta === 0 ? "uzunluk aynı" : `${delta > 0 ? "+" : "−"}${Math.abs(delta)} karakter`}
+        </span>
+      </div>
+
+      {/* Değişiklik özeti — model ne yaptığını maddeler hâlinde açıklar */}
+      {oneri.degisiklikler.length > 0 && (
+        <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 2 }}>
+          {oneri.degisiklikler.map((d, i) => (
+            <li key={i} style={{ display: "flex", alignItems: "baseline", gap: SP.s, ...TYPE.data, color: PAL.ink2 }}>
+              <span aria-hidden="true" style={{ color: DERIN.yesil, flexShrink: 0 }}><Icon.check width={11} height={11} /></span>
+              {d}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Uygulanamayan kısım — model kaynakta olmayan bilgiyi uydurmayı REDDETTİ */}
+      {oneri.uygulanamayan && (
+        <div role="alert" style={{ display: "flex", alignItems: "baseline", gap: SP.s, padding: "6px 10px", borderRadius: RAD.ctl, background: ALFA(BANT.sari.c), border: `1px solid ${BANT.sari.c}`, ...TYPE.data, color: DERIN.sari }}>
+          <span aria-hidden="true" style={{ flexShrink: 0 }}><Icon.alert width={12} height={12} /></span>
+          <span><strong>Uygulanmadı:</strong> {oneri.uygulanamayan}</span>
+        </div>
+      )}
+
+      <DuzeltmeDiff eski={metin} yeni={oneri.metin} />
+
+      {/* Çok-turlu geliştirme — beğenilmeyen öneri üstüne yeni talimat verilir */}
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
+        <Icon.sparkle width={13} height={13} style={{ color: DERIN_OF(T), flexShrink: 0 }} />
+        {busy ? <BeklemeDurumu sure={sure} /> : (
+          <>
+            <input value={gelistirTalimat}
+              onChange={(e) => { setGelistirTalimat(e.target.value); setHata(null); }}
+              onKeyDown={(e) => { if (e.key === "Enter") gelistir(); }}
+              placeholder="Öneriyi geliştir (örn. “son paragrafı biraz daha kısalt”)"
+              aria-label="Öneri üzerine ek düzeltme talimatı" {...focusRing} className="ke-revize-girdi"
+              style={{ flex: 1, minWidth: 200, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, padding: "6px 10px", background: PAL.bg, color: PAL.ink, ...TYPE.data }} />
+            <Btn onClick={gelistir} disabled={!gelistirTalimat.trim()}>Tekrar revize et</Btn>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti }) {
   const [talimat, setTalimat] = useState("");
   const [busy, setBusy] = useState(false);
@@ -59,6 +228,7 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
   const [oneri, setOneri] = useState(null);
   const [gelistirTalimat, setGelistirTalimat] = useState("");
   const [sonUygulanan, setSonUygulanan] = useState(null); // { onceki, yeni, talimatlar }
+  const [sonIstek, setSonIstek] = useState(null);           // { taban, talimat, zincir } — Tekrar dene
   const girisRef = useRef(null);
 
   // Üst bileşen (BelgeModal) öneri açıkken A4 kâğıdı gizler — durumu bildir. `busy` de
@@ -91,6 +261,7 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
   });
 
   const istek = async (tabanMetin, tekTalimat, zincir) => {
+    setSonIstek({ taban: tabanMetin, talimat: tekTalimat, zincir });
     setBusy(true);
     setHata(null);
     try {
@@ -112,7 +283,7 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
         // Model taslağı değiştirmeden nedenini açıkladıysa (uydurma-reddi) nedeni göster.
         setHata(s?.revize_uygulanamayan
           ? `Revizyon uygulanmadı — ${s.revize_uygulanamayan}`
-          : "Talimat uygulanamadı; taslakla ilgisiz olabilir ya da AI şu an kullanılamıyor.");
+          : "Talimat uygulanamadı; taslakla ilgisiz olabilir ya da yapay zekâ hizmeti şu an yanıt vermiyor.");
       }
     } catch (err) {
       setHata(/429|limit/i.test(String(err?.message || ""))
@@ -150,53 +321,9 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
 
   return (
     <>
+      <style>{GIRDI_CSS}</style>
       {/* Giriş şeridi — talimat yaz/söyle ya da hazır talimata tek tıkla */}
-      {!oneri && (
-        /* Revize masası: kâğıdın üstünde duran ince bir talimat şeridi — havada duran katman
-           (surfPop + SH.pop), kâğıttan ayrı okunur. Hazır talimatlar hap biçimli, sessiz. */
-        <div style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: "10px 12px", borderRadius: RAD.card, background: PAL.surfPop, border: `1px solid ${PAL.line}`, boxShadow: SH.pop }}>
-          <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-            <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 30, height: 30, borderRadius: RAD.ctl, background: ALFA(V), color: DERIN.V, flexShrink: 0 }}>
-              <Icon.sparkle width={15} height={15} />
-            </span>
-            {busy ? <BeklemeDurumu sure={sure} /> : (
-              <>
-                <input ref={girisRef} value={talimat}
-                  onChange={(e) => { setTalimat(e.target.value); setHata(null); }}
-                  onKeyDown={(e) => { if (e.key === "Enter") revizeIste(); }}
-                  placeholder="AI ile revize et (örn. “ilgi yazıya atıf yap”, “gerekçeyi güçlendir”)"
-                  aria-label="Taslak revizyon talimatı" {...focusRing}
-                  style={{ flex: 1, minWidth: 0, flexBasis: 200, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, padding: "8px 12px", background: PAL.bg, color: PAL.ink, ...TYPE.ui }} />
-                {stt.destekleniyor && (
-                  <button type="button" onClick={stt.toggle} aria-pressed={stt.dinliyor}
-                    aria-label={stt.dinliyor ? "Talimat diktesini durdur" : "Talimatı sesle söyle"}
-                    title={stt.dinliyor ? "Dikteyi durdur" : "Talimatı sesle söyle (Türkçe)"} {...focusRing}
-                    style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, padding: "7px 10px", minHeight: 32, borderRadius: RAD.ctl, border: `1px solid ${stt.dinliyor ? BANT.kirmizi.c : PAL.line}`, background: stt.dinliyor ? ALFA(BANT.kirmizi.c) : PAL.bg, color: stt.dinliyor ? DERIN.kirmizi : PAL.ink2 }}>
-                    {stt.dinliyor && <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot, background: BANT.kirmizi.c, animation: "nu-think 1.1s infinite" }} />}
-                    <Icon.mic width={13} height={13} />
-                  </button>
-                )}
-                <Btn onClick={() => revizeIste()} disabled={!talimat.trim()}>Revize et</Btn>
-              </>
-            )}
-          </div>
-          {!busy && (
-            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", paddingLeft: 38 }} aria-label="Hazır revizyon talimatları">
-              <span aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", marginRight: 2 }}>Hazır</span>
-              {HAZIR_TALIMATLAR.map((h) => (
-                <button key={h.etiket} type="button" onClick={() => revizeIste(h.talimat)} title={h.talimat} {...focusRing}
-                  data-press=""
-                  onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; e.currentTarget.style.borderColor = PAL.lineHi; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = PAL.line; }}
-                  style={{ cursor: "pointer", padding: "3px 11px", borderRadius: 999, border: `1px solid ${PAL.line}`, background: "transparent", color: PAL.ink2, ...TYPE.meta, fontWeight: 500, transition: `background .12s ease-out, border-color .12s ease-out, transform .14s ${EASE.out}` }}>
-                  {h.etiket}
-                </button>
-              ))}
-            </div>
-          )}
-          {stt.hata && <div role="alert" style={{ ...TYPE.meta, color: DERIN.kirmizi }}>{stt.hata}</div>}
-        </div>
-      )}
+      {!oneri && <GirisSeridi busy={busy} sure={sure} talimat={talimat} setTalimat={setTalimat} setHata={setHata} girisRef={girisRef} stt={stt} revizeIste={revizeIste} />}
 
       {/* Uygulanan revizyonu tek adım geri alma — kâğıt metni dışarıda değişmediyse görünür.
           Bu şerit modal KARARTISININ üstünde durur: zemin opak PAL.surf olmalı (yarı saydam
@@ -211,82 +338,18 @@ export default function RevizePaneli({ metin, onRevize, onUygula, onOneriDegisti
         </div>
       )}
 
-      {/* Hata da scrim üstünde — aynı nedenle opak zeminli şerit (çıplak koyu metin okunmuyordu). */}
-      {hata && (
-        <div role="alert" style={{ padding: "8px 12px", borderRadius: RAD.ctl, background: PAL.surf, border: `1px solid ${BANT.kirmizi.c}`, boxShadow: SH.card, ...TYPE.data, fontWeight: 500, color: DERIN.kirmizi, textAlign: "center" }}>{hata}</div>
+      {/* Hata da scrim üstünde — opak zeminli şerit (çıplak koyu metin okunmuyordu). */}
+      {hata && !busy && (
+        <HataSeridi metin={hata}
+          onTekrar={sonIstek ? () => istek(sonIstek.taban, sonIstek.talimat, sonIstek.zincir) : null}
+          onDuzenle={!oneri ? () => { setTalimat(sonIstek?.talimat || talimat); setHata(null); requestAnimationFrame(() => girisRef.current?.focus()); } : null} />
       )}
+
+      {busy && !oneri && <KilitliKagit metin={metin} />}
 
       {/* Öneri kartı — kalite kapıları + değişiklik özeti + diff + çok-turlu geliştirme */}
-      {oneri && (
-        // SH.card: bu kart modal İÇİNDE satır-içi bir bölge, yeni katman değil — komşu
-        // şeritlerle (giriş/geri-al/hata) aynı düzlemde durur; modal gölgesi katmana aittir.
-        <div role="region" aria-label="AI revizyon önerisi" style={{ display: "flex", flexDirection: "column", gap: SP.m, padding: "14px 16px", borderRadius: RAD.card, background: PAL.surfPop, border: `1px solid ${PAL.line}`, boxShadow: SH.pop, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.s, flexWrap: "wrap" }}>
-            <span style={{ minWidth: 0 }}>
-              <span style={{ display: "block", ...TYPE.antet, color: DERIN.V, textTransform: "uppercase", marginBottom: 2 }}>AI önerisi · {oneri.zincir.length} talimat</span>
-              <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{oneri.zincir.map((z) => `“${z}”`).join(" → ")}</span>
-            </span>
-            <span style={{ display: "flex", gap: SP.s }}>
-              <Btn onClick={() => setOneri(null)}>Vazgeç</Btn>
-              <Btn primary onClick={uygula}><Icon.check width={12} height={12} /> Uygula</Btn>
-            </span>
-          </div>
-
-          {/* Kalite kapıları — öneri buraya verify + risk_guard'dan GEÇMİŞ hâliyle gelir */}
-          <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-            <KapiRozet bant={oneri.formatUyumlu ? "yesil" : "sari"}>
-              {oneri.formatUyumlu ? "2646 format uyumlu" : "Format uyarısı"}
-            </KapiRozet>
-            <KapiRozet bant={oneri.uyariSayisi === 0 ? "yesil" : "sari"}>
-              {oneri.uyariSayisi === 0 ? "Doğrulama temiz" : `${oneri.uyariSayisi} doğrulama uyarısı`}
-            </KapiRozet>
-            {oneri.riskBant && (
-              <KapiRozet bant={oneri.riskBant}>Risk: {RISK_TR[oneri.riskBant] || oneri.riskBant}</KapiRozet>
-            )}
-            <span style={{ ...TYPE.meta, ...TNUM, color: PAL.mut2 }}>
-              {delta === 0 ? "uzunluk aynı" : `${delta > 0 ? "+" : "−"}${Math.abs(delta)} karakter`}
-            </span>
-          </div>
-
-          {/* Değişiklik özeti — model ne yaptığını maddeler hâlinde açıklar */}
-          {oneri.degisiklikler.length > 0 && (
-            <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 2 }}>
-              {oneri.degisiklikler.map((d, i) => (
-                <li key={i} style={{ display: "flex", alignItems: "baseline", gap: SP.s, ...TYPE.data, color: PAL.ink2 }}>
-                  <span aria-hidden="true" style={{ color: DERIN.yesil, flexShrink: 0 }}><Icon.check width={11} height={11} /></span>
-                  {d}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {/* Uygulanamayan kısım — model kaynakta olmayan bilgiyi uydurmayı REDDETTİ */}
-          {oneri.uygulanamayan && (
-            <div role="alert" style={{ display: "flex", alignItems: "baseline", gap: SP.s, padding: "6px 10px", borderRadius: RAD.ctl, background: ALFA(BANT.sari.c), border: `1px solid ${BANT.sari.c}`, ...TYPE.data, color: DERIN.sari }}>
-              <span aria-hidden="true" style={{ flexShrink: 0 }}><Icon.alert width={12} height={12} /></span>
-              <span><strong>Uygulanmadı:</strong> {oneri.uygulanamayan}</span>
-            </div>
-          )}
-
-          <DuzeltmeDiff eski={metin} yeni={oneri.metin} />
-
-          {/* Çok-turlu geliştirme — beğenilmeyen öneri üstüne yeni talimat verilir */}
-          <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
-            <Icon.sparkle width={13} height={13} style={{ color: DERIN_OF(T), flexShrink: 0 }} />
-            {busy ? <BeklemeDurumu sure={sure} /> : (
-              <>
-                <input value={gelistirTalimat}
-                  onChange={(e) => { setGelistirTalimat(e.target.value); setHata(null); }}
-                  onKeyDown={(e) => { if (e.key === "Enter") gelistir(); }}
-                  placeholder="Öneriyi geliştir (örn. “son paragrafı biraz daha kısalt”)"
-                  aria-label="Öneri üzerine ek revizyon talimatı" {...focusRing}
-                  style={{ flex: 1, minWidth: 200, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, padding: "6px 10px", background: PAL.bg, color: PAL.ink, ...TYPE.data }} />
-                <Btn onClick={gelistir} disabled={!gelistirTalimat.trim()}>Tekrar revize et</Btn>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      {oneri && <OneriKarti oneri={oneri} metin={metin} delta={delta} busy={busy} sure={sure} gelistirTalimat={gelistirTalimat}
+        setGelistirTalimat={setGelistirTalimat} setHata={setHata} gelistir={gelistir} uygula={uygula} onBirak={() => setOneri(null)} />}
     </>
   );
 }

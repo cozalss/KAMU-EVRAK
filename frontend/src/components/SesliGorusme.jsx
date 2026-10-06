@@ -22,16 +22,12 @@ import {
   aracArgumanlari, aracCiktisiniYaz, aracTamamlandiMi, aracTuruOlustur, realtimeBaglan,
   sonrakiSesliDurum, yanitIste,
 } from "../lib/realtimeSes.js";
-import SesliOrb from "./SesliOrb.jsx";
+import { PAL, SP, EASE_BEZIER, TYPE, SR_ONLY } from "./neonUi.jsx";
 import {
-  PAL, T, V, DERIN, SP, RAD, SH, EASE, EASE_BEZIER, TYPE, Icon, focusRing, SR_ONLY,
-} from "./neonUi.jsx";
+  DURUM_ETIKET, MASA_GENISLIK, MASA_ORB, MASA_SAHNE, TELEFON_ORB, TELEFON_DOK, TELEFON_SAHNE,
+  DurumKunyesi, SesliOrbDugme, SesliKontroller,
+} from "./SesliSahne.jsx";
 
-// Yuvarlak olan şey ORB'UN KENDİSİ — arkasında koyu tabak yok (kullanıcı kararı: zemin
-// kahverengi bir daire olarak okunuyordu). Sohbet panelinin ayak izinde durur; sayfa
-// görünür kalır. Kap saydam olduğu için TIKLAMA GEÇİRİR (pointerEvents) — aksi halde
-// görünmeyen bir kutu arkadaki listeleri tıklanamaz yapardı.
-const ORB_BOYUT = "min(210px, calc(100vw - 96px), calc(100vh - 220px))";
 // MALİYET KORUMASI — realtime'da ses açık kaldığı sürece ücretlendirilir ve eski zincirdeki
 // kullanıcı-başına TTS karakter kotası artık hiçbir şeyi korumuyor (TTS'i biz çağırmıyoruz).
 // Açık unutulan bir sekme sessizce fatura yazardı. İki sınır: konuşulmadan geçen süre ve
@@ -44,15 +40,12 @@ const FFT = 1024;                 // ~512 bin; research deseni (smoothingTimeCon
 // Genlik yumuşatma artık ZAMAN tabanlı ve asimetrik (lib/sesGorusme.yumusatZamanli);
 // ölçek/nefes/kenar/durum-tabanı katsayıları lib/orbCizim.orbKare'de (düzenekle paylaşılır).
 
-const DURUM_ETIKET = {
-  [DURUM.HAZIR]: "Hazır", [DURUM.DINLIYOR]: "Dinliyor",
-  [DURUM.DUSUNUYOR]: "Düşünüyor", [DURUM.KONUSUYOR]: "Yanıtlıyor",
-};
 
 function azHareketMi() {
   return typeof window !== "undefined" &&
     !!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 }
+
 
 // onKomut(komut): sesli komut ÇALIŞTIRILIR (görünüm değiştir / evrak aç). Sahne bu işi
 // kendisi yapmaz — kabuk (DashboardApp) yapar; sahne yalnız komutu çözer ve bildirir.
@@ -632,8 +625,8 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     return () => mq.removeEventListener?.("change", din);
   }, [acik]);
 
-  // Orb px boyutu sıvı kenarı besler ve ORB_BOYUT viewport'a bağlıdır (min(210px, 100vw-96,
-  // 100vh-220)). Tek seferlik ölçüm pencere yeniden boyutlanınca bayatlıyor: kutu küçülürse
+  // Orb px boyutu sıvı kenarı besler ve MASA_ORB viewport'a bağlıdır (min(168px,
+  // 100vh-300)). Tek seferlik ölçüm pencere yeniden boyutlanınca bayatlıyor: kutu küçülürse
   // clip taşar ve KENAR DALGALANMASI TAMAMEN KAYBOLUR, büyürse küre kutusundan küçük kalır.
   useEffect(() => {
     const el = orbRef.current;
@@ -689,7 +682,6 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
   }, [dinle]);
 
   const konusuyor = durum === DURUM.KONUSUYOR;
-  const dinliyor = durum === DURUM.DINLIYOR;
   const dusunuyor = durum === DURUM.DUSUNUYOR;
 
   return (
@@ -700,70 +692,32 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
 
       <AnimatePresence>
       {acik && (
-        <motion.div ref={dialogRef} tabIndex={-1} role="dialog" aria-label="Sesli görüşme" onKeyDown={(e) => { if (e.key === "Escape") kapat(); }}
-          // ke-disk-gir'in motion karşılığı + SİMETRİK çıkış: disk kendisini açan butondan
-          // büyür, kapanırken AYNI köşeye geri çekilir (girişteki zarafetin çıkış yarısı).
-          // MotionConfig reducedMotion="user" azaltmada animasyonu söndürür.
+        // motion kabı YALNIZ hareket taşır; ref/rol/odak içteki düz div'de. AnimatePresence
+        // (PopChild) çocuğun props.ref'ini okur → React 18'de her açılışta "`ref` is not a
+        // prop" uyarısı basıyordu (tur 6 konsol bulgusu).
+        <motion.div key="ke-sesli"
           initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.94 }}
           transition={{ duration: 0.2, ease: EASE_BEZIER.out }}
-          style={{
-            outline: "none",
-            // Sohbet panelinin ayak izi (aynı çapa): panel kapanır, orb oraya doğar.
-            position: "fixed", zIndex: 170,
-            ...(konum ? { left: konum.left, bottom: konum.bottom + SP.xl } : { left: 0, right: 0, marginInline: "auto", bottom: SP.xl }),
-            width: ORB_BOYUT,
-            display: "flex", flexDirection: "column", alignItems: "center", gap: SP.l,
-            // Kap görünmez: zemin/gölge YOK ve tıklamayı yutmaz — yalnız çocukları tıklanabilir.
-            pointerEvents: "none",
-            // Köken-farkında giriş/çıkış: orb, panelin çıktığı köşeye (sol-alt) bağlı kalır.
-            transformOrigin: konum ? "bottom left" : "bottom center",
-          }}>
-          {/* Durum etiketi (aria-live) */}
-          <div aria-live="polite" style={SR_ONLY}>{DURUM_ETIKET[durum]}</div>
-          {/* zIndex: orb'un aura/halo katmanları konumlandırılmış olduğu için akış içindeki
-              içeriğin ÜSTÜNE boyanır — etiket ve düğmeler bu yüzden kendi katmanına alınır. */}
-          {/* Durum künyesi — havada duran tek satır fiş: mono antet harfi + durum noktası
-              (renk tek sinyal değil: metin her durumda yazılı). Arkadaki herhangi bir
-              ekranın üstünde okunur kalsın diye kendi yüzeyi var. */}
-          <div aria-hidden="true" style={{ position: "relative", zIndex: 1, display: "inline-flex", alignItems: "center", gap: SP.s, padding: "5px 12px 5px 10px", borderRadius: RAD.pop, background: PAL.surfPop, border: `1px solid ${PAL.line}`, boxShadow: SH.pop, ...TYPE.antet, textTransform: "uppercase", color: PAL.ink2 }}>
-            <span style={{ width: 7, height: 7, borderRadius: RAD.dot, flexShrink: 0, background: konusuyor ? V : dinliyor ? T : dusunuyor ? DERIN.T : PAL.mut3, animation: dinliyor || dusunuyor ? "nu-think 1.2s ease-in-out infinite" : "none" }} />
-            {DURUM_ETIKET[durum]}{dinliyor ? "…" : ""}
+          style={{ position: "fixed", zIndex: 170, pointerEvents: "none",
+            ...(konum ? { left: konum.left, bottom: konum.bottom, width: MASA_GENISLIK } : TELEFON_DOK),
+            // Köken-farkında giriş/çıkış: masaüstünde panelin çıktığı köşeye (sol-alt) bağlı.
+            transformOrigin: konum ? "bottom left" : "bottom center" }}>
+          <div ref={dialogRef} tabIndex={-1} role="dialog" aria-label="Sesli görüşme" onKeyDown={(e) => { if (e.key === "Escape") kapat(); }}
+            style={konum ? MASA_SAHNE : TELEFON_SAHNE}>
+            <div aria-live="polite" style={SR_ONLY}>{DURUM_ETIKET[durum]}</div>
+            {!konum && <SesliOrbDugme boyut={TELEFON_ORB} konusuyor={konusuyor} kes={kes} dusunuyor={dusunuyor} azHareket={azHareket} orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />}
+            <div style={konum ? { display: "contents" } : { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: SP.m, minWidth: 0, flex: 1 }}>
+              <DurumKunyesi durum={durum} ortala={!!konum} />
+              {konum && <SesliOrbDugme boyut={MASA_ORB} konusuyor={konusuyor} kes={kes} dusunuyor={dusunuyor} azHareket={azHareket} orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />}
+              {/* Konuşulan metin GÖRÜNMEZ (kullanıcı kararı: altyazı yok); ekran okuyucuya açık. */}
+              <div style={SR_ONLY}>{sonUser}{sonYanit ? ` — ${sonYanit}` : ""}</div>
+              <SesliKontroller susturuldu={susturuldu} susturDegistir={susturDegistir} kapat={kapat} />
+              {/* Uyarı ALTYAZI DEĞİL: izin yok / TTS yok gibi sessiz kalınca anlaşılamayacak durumlar. */}
+              {uyari && (
+                <p role="status" aria-live="polite" style={{ position: "relative", zIndex: 1, margin: 0, maxWidth: "100%", textAlign: konum ? "center" : "left", ...TYPE.meta, color: PAL.mut }}>{uyari}</p>
+              )}
+            </div>
           </div>
-
-          {/* ORB — dokununca konuşmayı keser (barge-in). Görsel katmanlar SesliOrb'da. */}
-          {/* data-press KOŞULLU: press geri bildirimi yalnız orb GERÇEKTEN tıklanabilirken
-              verilir. kes() konuşmuyorken erken dönüyor; her hâlde basılma animasyonu göstermek
-              olmayan bir eylemi varmış gibi göstermek olurdu (hareket=bilgi kuralı). */}
-          <button type="button" onClick={kes} {...(konusuyor ? { "data-press": "" } : {})}
-            aria-label={konusuyor ? "Yanıtı durdur" : "Sesli görüşme küresi"} {...focusRing}
-            style={{ position: "relative", pointerEvents: "auto", width: ORB_BOYUT, aspectRatio: "1 / 1", flexShrink: 0, borderRadius: RAD.dot, border: "none", background: "none", padding: 0, cursor: konusuyor ? "pointer" : "default" }}>
-            <SesliOrb dusunuyor={dusunuyor} azHareket={azHareket}
-              orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />
-          </button>
-
-          {/* Konuşulan metin GÖRÜNMEZ (kullanıcı kararı: altyazı yok — ses zaten konuşuyor).
-              Ekran okuyucu için erişilebilir kalır; aria-live YOK, yoksa akan her token
-              yeniden seslendirilirdi. */}
-          <div style={SR_ONLY}>{sonUser}{sonYanit ? ` — ${sonYanit}` : ""}</div>
-
-          {/* Kontroller — sustur + bitir. Artık AÇIK zeminde duruyorlar: koyu tabak yok,
-              bu yüzden yüzey/kenarlık token'ları (PAL) kullanılır, yarı saydam siyah değil. */}
-          <div style={{ position: "relative", zIndex: 1, pointerEvents: "auto", display: "flex", alignItems: "center", gap: SP.l, flexShrink: 0 }}>
-            <button type="button" data-press onClick={susturDegistir} aria-pressed={susturuldu} aria-label={susturuldu ? "Susturmayı kaldır" : "Mikrofonu sustur"} {...focusRing}
-              style={{ cursor: "pointer", width: 44, height: 44, borderRadius: RAD.dot, border: `1px solid ${susturuldu ? DERIN.R : PAL.line}`, background: susturuldu ? DERIN.R : PAL.surf, color: susturuldu ? PAL.onAccent : PAL.ink2, display: "grid", placeItems: "center", boxShadow: SH.card, transition: `background .14s ${EASE.out}, color .14s ${EASE.out}` }}>
-              {susturuldu ? <Icon.micOff /> : <Icon.mic width={17} height={17} />}
-            </button>
-            <button type="button" data-press onClick={kapat} aria-label="Sesli görüşmeyi bitir" {...focusRing}
-              style={{ cursor: "pointer", width: 48, height: 48, borderRadius: RAD.dot, border: "none", background: DERIN.R, color: PAL.onAccent, display: "grid", placeItems: "center", boxShadow: SH.pop }}>
-              <Icon.x width={19} height={19} />
-            </button>
-          </div>
-
-          {/* Uyarı ALTYAZI DEĞİL: mikrofon izni yok / TTS anahtarı yok gibi sessiz kalırsa
-              kullanıcının asla anlayamayacağı durumlar. Yalnız doluyken görünür. */}
-          {uyari && (
-            <p role="status" aria-live="polite" style={{ position: "relative", zIndex: 1, margin: 0, maxWidth: "100%", textAlign: "center", ...TYPE.meta, color: PAL.mut }}>{uyari}</p>
-          )}
         </motion.div>
       )}
       </AnimatePresence>

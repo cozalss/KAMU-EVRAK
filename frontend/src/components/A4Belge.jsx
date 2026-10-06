@@ -49,7 +49,7 @@ const TUR_AZAMI = 4;
    yönetmeliğin öngördüğünden ~%25 küçük çıkar (ilk sürümde bu hata vardı). Bu yüzden ölçü
    birimi açıkça `pt` verilir; sayfa boyutu da aynı 96dpi referansına dayandığı için ikisi
    tutarlı kalır. */
-const BELGE_FONT = 'Arial, "Helvetica Neue", Helvetica, sans-serif';
+export const BELGE_FONT = 'Arial, "Helvetica Neue", Helvetica, sans-serif';
 /* Punto ve satır aralığı DIŞARI AÇIK: kaynak belge paneli aynı değerleri kullanarak metnini
    kâğıtla aynı okuma boyutuna getirir (KaynakBelge). Tek kaynak — yönetmelik Times 12'ye
    çevrilirse iki panel birlikte döner, elle senkron gerekmez. Yazı tipi AİLESİ paylaşılmaz:
@@ -58,13 +58,13 @@ export const BELGE_PUNTO_PT = 11;
 export const BELGE_SATIR = 1.45;
 /* Matbaa siyahı — kâğıt üstünde UI gri tonları kullanılmaz. Kâğıt iki temada da açık
    kaldığı için (kagitDoku.js) mürekkep de kâğıdın kendi token'ından gelir. */
-const BELGE_MURAKKEP = "var(--kd-kagit-murekkep)";
+export const BELGE_MURAKKEP = "var(--kd-kagit-murekkep)";
 
 /* Satır rolüne göre dizgi (lib/a4Antet.js sınıflandırır). Gerçek resmî yazı düzeni:
    antet ortalı (T.C. + idare adı kalın), tarih Sayı hizasında sağda, muhatap ortalı,
    paragraf başı 1,25 cm içeride, imza bloğu sağ yarıda ortalı. Ölçüm katmanı AYNI stili
    kullanır — sarma farklı çıkarsa sayfalama kayardı. */
-const ROL_STIL = {
+export const ROL_STIL = {
   antet: { textAlign: "center" },
   antetKalin: { textAlign: "center", fontWeight: 700 },
   muhatap: { textAlign: "center" },
@@ -103,7 +103,41 @@ function stilYukle() {
 /* imzaKatmani → ilk İMZA satırına göre mutlak konumlanan katman (HukumMuhru: ıslak paraf +
    karar mührü). Kâğıdın içinde olduğu için A4 ölçeğiyle birlikte ölçeklenir; mutlak olduğu
    için ölçüm katmanına/sayfalamaya hiç girmez. İmza satırı yoksa son satıra düşer. */
-export default function A4Belge({ metin = "", onAc = null, solgun = false, baslikIpucu = "", sigdir = "kutu", imzaKatmani = null }) {
+/* DAR EKRAN OKUMA DÜZENİ (tur 6 doğrulaması): "genislik" kipinde ölçek OKUMA_OLCEK'in altına
+   düşünce (390px telefonda 0,438 → gövde ~6 px) sayfa küçültülmez; AYNI dizgi kuralları
+   (ROL_STIL: ortalı antet, Sayı hizasında tarih, ortalı muhatap, paragraf girintisi, imza
+   sağ yarıda) kâğıt genişliğine yeniden akıtılır ve gerçek okuma puntosunda dizilir.
+   Bağlayıcı biçim yine A4'tür: kâğıda dokunmak (onAc) tam sayfayı açar. Taslaklar masası
+   kendi Okuma/Sayfa anahtarını taşıdığı için `okumaYedegi={false}` verir. */
+export const OKUMA_OLCEK = 0.62;
+const OKUMA_PX = 15;
+
+function A4OkumaDuzeni({ satirlar, roller, onAc, solgun, baslikIpucu, imzaIdx, imzaKatmani }) {
+  const temel = { margin: 0, fontFamily: BELGE_FONT, fontSize: OKUMA_PX, lineHeight: 1.55, color: BELGE_MURAKKEP,
+    whiteSpace: "pre-wrap", wordBreak: "break-word", minHeight: OKUMA_PX * 1.55 };
+  return (
+    <>
+      <div className="ke-a4-sayfa" data-okuma-duzeni="" title={onAc ? (baslikIpucu || "A4 sayfa olarak aç") : undefined} onClick={onAc || undefined}
+        style={{ boxSizing: "border-box", padding: "22px 18px 28px", backgroundColor: "var(--kd-kagit)", backgroundImage: "var(--kd-doku)",
+          border: `1px solid ${PAL.line}`, boxShadow: SH.kagit, cursor: onAc ? "zoom-in" : "inherit",
+          opacity: solgun ? 0.55 : 1, transition: "opacity .15s ease-out" }}>
+        {satirlar.map((s, i) => {
+          const rol = roller[i] || { tip: "duz", metin: s };
+          const ic = rol.tip === "sayi"
+            ? (<><span>{rol.metin}</span><span style={{ flexShrink: 0 }}>{rol.sag}</span></>)
+            : (rol.tip === "duz" ? (s === "" ? " " : s) : rol.metin);
+          const stil = { ...temel, ...ROL_STIL[rol.tip], ...(rol.tip === "imza" ? { marginLeft: "40%" } : null) };
+          return <div key={i} style={i === imzaIdx ? { ...stil, position: "relative" } : stil}>{ic}{i === imzaIdx && imzaKatmani}</div>;
+        })}
+      </div>
+      <div style={{ ...TYPE.meta, color: PAL.mut3, textAlign: "center", marginTop: SP.s }}>
+        Okuma düzeni · bağlayıcı biçim A4{onAc ? " — dokunun, tam sayfa açılır" : ""}
+      </div>
+    </>
+  );
+}
+
+export default function A4Belge({ metin = "", onAc = null, solgun = false, baslikIpucu = "", sigdir = "kutu", imzaKatmani = null, okumaYedegi = true }) {
   const sarmalRef = useRef(null);
   const olcerRef = useRef(null);
   const [olcek, setOlcek] = useState(1);
@@ -316,6 +350,15 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
   const kirpik = sigdir === "genislik" && liste.length === 1 && icerikYuk > 0;
   const sayfaYuk = kirpik ? kirpikSayfaYuk(icerikYuk) : A4_YUK_PX;
   const yigunYuk = (sayfaYuk * liste.length + SAYFA_ARASI_PX * (liste.length - 1)) * olcek;
+
+  if (sigdir === "genislik" && okumaYedegi && olcek < OKUMA_OLCEK) {
+    return (
+      <div ref={sarmalRef} style={{ width: "100%" }}>
+        <A4OkumaDuzeni satirlar={satirlar} roller={roller} onAc={onAc} solgun={solgun} baslikIpucu={baslikIpucu}
+          imzaIdx={imzaIdx} imzaKatmani={imzaKatmani} />
+      </div>
+    );
+  }
 
   return (
     <div ref={sarmalRef} style={{ width: "100%" }}>

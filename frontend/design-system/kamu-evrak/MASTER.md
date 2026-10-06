@@ -21,7 +21,7 @@ malzemelerinden gelir — jenerik SaaS panelinden değil:
 
 ## İmza öğeleri (bunlar sitenin "hatırlanan" yüzü — bozma)
 
-1. **Antet başlığı** (`ViewWrap`): `T.C. · KAMU-EVRAK  <KÜNYE> ———— gg.aa.yyyy` mono satırı →
+1. **Antet başlığı** (`ViewWrap`): `KAMU-EVRAK · <KÜNYE> ———— gg.aa.yyyy` mono satırı →
    Archivo 800 / %118 genişlikte başlık → alt başlık → **çift antet çizgisi** (2px + 1px ink).
    `kunye` prop'u görünüme özgü künye yazar ("Evrak sicil defteri"). `damga={{metin, ton}}`
    başlığın yanına mühür basar.
@@ -41,6 +41,13 @@ malzemelerinden gelir — jenerik SaaS panelinden değil:
    durumu bozulunca sırt tıklamada "beyaz yanıp sönüyor", aktif metin lacivert üstünde koyu
    kalıyordu (kullanıcı bulgusu, 2026-10-03). Geri dönme.
 
+## Kimlik: "T.C." YOK (tur 6)
+
+Bağımsız ürün devlet kimliğini kendi anteti gibi taşımaz. Antet, iskelet, kip künyesi, giriş
+satırı: `KAMU-EVRAK · …`. "T.C." yalnız bir İDARE yazısının kendi metninde (A4 taslak, örnek
+evrak metni) geçer; vatandaş dilekçesi "T.C." ile başlamaz (giriş sahnesi buna uyar).
+Logotype tek yazım: `LOGOTYPE = "KAMU-EVRAK"` (`kabukAtomlari.jsx`, tire; orta nokta yok).
+
 ## Token'lar
 
 - Renk: yalnız `PAL` / `T` `V` `R` / `BANT` / `DERIN` / `ALFA()` / `IRIS`. Hex yalnız
@@ -56,7 +63,13 @@ malzemelerinden gelir — jenerik SaaS panelinden değil:
   - `SANS` = Instrument Sans — tüm gövde/UI.
   - `MONO` = IBM Plex Mono — makine verisi (evrak no, tarih, hash, maskeli PII) + antet satırı.
 - Radius `RAD`: chip 5 · ctl 8 · card 12 · pop 14. Boşluk `SP`. Gölge `SH` (border-first).
-- Hareket: `EASE.out / inOut / spring`; `data-press` → `:active scale(.97)`.
+- İçerik azami genişliği `ICERIK_AZAMI` = 1600 (ViewWrap; antet çizgisi bu kutuya bağlı).
+  Pencereye kilitli `ustSik` görünümler varsayılan `genis` (istisna).
+- Hareket: `EASE.out / inOut / spring`; `data-press` → `:active scale(.97)`. Sözcükler:
+  `nu-kagit` (diyalog inişi, 220 ms, y 8 + .985) · `nu-kagit-pop` (yerinde açılan menü/ipucu,
+  .96→1, köken Radix transform-origin, 160–180 ms) · `nu-rise` (`--nu-rise-y` ile mesafe) ·
+  `nu-sirt` / `nu-kulak` (dosya sırtı / mobil kulakçık girişi, clip-path). Motion ile yazılan
+  kipler aynı değerleri `EASE_BEZIER.out` ile taşır.
   `prefers-reduced-motion` her animasyonu kapatır (global kural).
 
 ## Yüzey dili
@@ -86,7 +99,7 @@ yükseklik ışıkla (iç üst-kenar parlaması).
 
 ## Kütüphaneler
 
-`motion` · Radix · `vaul` · `embla` · `lucide-react` · shadcn/ui (`src/components/ui/`).
+`motion` · Radix · `vaul` · `embla` · `lucide-react` · `sonner` (yalnız `fisToast` üzerinden).
 Tailwind YALNIZ çalışma alanında (`tailwind.app.config.js`, renkler `var(--ke-*)`,
 preflight kapalı, `@tailwind base` satırı SİLİNMEZ). AGPL bağımlılık yok.
 
@@ -99,11 +112,11 @@ preflight kapalı, `@tailwind base` satırı SİLİNMEZ). AGPL bağımlılık yo
   GEÇİCİ bir sırt satırı belirir — "neredeyim" sorusu cevapsız kalmaz.
 - **Asistan cevabı = danışma notu fişi** (tur 4): mono künye satırı (Karşılama · Danışma notu ·
   İşlem durdu + saat) + kesikli ayraç + gövde, sol kenarda ıstampa moru çizgi. Sık sorulanlar
-  numaralı liste (01–06), hap çip değil. Panel künyesi "T.C. · KAMU-EVRAK · DANIŞMA · yapay
+  numaralı liste (01–06), hap çip değil. Panel künyesi "KAMU-EVRAK · DANIŞMA · yapay
   zekâ yanıtı | kural tabanlı yanıt" ("Havale notu" sevk notu demektir — yanlış etiketti).
   Ham kodlar (`bilgi_edinme`, `tarih_yok`) ve tek yıldızlı italik `lib/sohbetMetin` ile
   insan diline çevrilir.
-- **Modal hareket sözcüğü:** `nu-kagit` (translateY 8px + scale .985 → yerinde, 220 ms
+- **Modal hareket sözcüğü:** `nu-kagit` (menü/ipucu: `nu-kagit-pop`) (translateY 8px + scale .985 → yerinde, 220 ms
   `--ke-ease-out`); perde `nu-sol`. Yeni diyaloglar bunu kullanır.
 
 - **Asistan tetiği kenar çubuğundadır, yüzen düğme YOK.** Sağ-alt FAB her ekranda bir köşeyi
@@ -125,10 +138,57 @@ preflight kapalı, `@tailwind base` satırı SİLİNMEZ). AGPL bağımlılık yo
 
 ## Erişilebilirlik tabanı
 
-`focusRing` her tıklanabilirde — **çift çizgi halka** (`FOCUS_HALKA`: 2 px tükenmez + 2 px
-boşluk + 1 px ince; antet çizgisi/Damga çerçevesiyle aynı dil) · renk tek sinyal değil (ikon +
-metin) · telefonda 44px dokunma hedefi (`data-dokunma`) · 16px girdi puntosu (iOS zoom) · AA
-kontrast iki temada.
+**Odak halkası TEK KAYNAK, CSS'te** (`styles/kamu-evrak.css` "ODAK: TEK KAYNAK", tur 6):
+her `:focus-visible` → çift çizgi (1 px boşluk + 2 px tükenmez + 2 px boşluk + 1 px ince),
+renkler var() ile ÖĞENİN kapsamında çözülür (rayda ray mavisi, kâğıtta kâğıt mavisi).
+Girdiler: kenar tükenmez + dış ince çizgi. Etkin sırt öğesinde halka çizilmez: sırt çizgisi
+3→5 px + etiket altı çizgisi. `[data-odak-ic]` kaydırma kabında kırpılan satırlar için içe
+tek çizgi. `focusRing` nesnesi geriye uyum için durur (işleyiciler no-op) — JS ile box-shadow
+YAZMA, eski outline kuralını geri getirme (jüri: üç çizgili çamur). · renk tek sinyal değil
+(ikon + metin) · telefonda 44px dokunma hedefi (`data-dokunma`) · 16px girdi puntosu (iOS
+zoom) · AA kontrast iki temada (ray kapsamı artık `derin-kirmizi`/`derin-sari`yı da ölçer).
+
+## Kabuk (tur 6)
+
+- **Telefon (≤ 720 px) = alt kulakçık şeridi** (`KabukAltSerit`): ray gizlenir; 5 sekme
+  (Panel · Gelen · Taslaklar · Giden · Daha), lacivert cilt, etkin kulakçık sayfa zemininden
+  sarkar (dosya sırtının mobil ikizi). "Daha" vaul sayfası: kalan bölümler + yükle + asistan +
+  hesap. Ana alan `.ke-ana` alt boşluk alır; toast şeridin üstünde.
+- **Rozet = sayı + aciliyet** (`SayiRozet`): Gelen `9 / 15` (gecikmiş kısmı ACELE kırmızısı
+  çerçeve). Dar ray / alt şerit tek sayılık: gecikmiş varsa KIRMIZI yazılan sayı GECİKMİŞ
+  sayısıdır (toplam ipucu + aria-label'da) — kırmızı toplam "15 gecikmiş" diye okunuyordu.
+  Her sayı KENDİ kaynağının durumunu taşır (`lib/kabukSicil.kabukSayaclari`, `kabukSayac.js`):
+  hata + önbellek → kesikli "son bilinen"; veri HİÇ gelmedi → kesikli "—" (00 yazmak yanlış olgu).
+- **Dar ray ipucu**: Radix Tooltip (`RayIpucu`, sağda, `nu-kagit-pop`) — yerel `title` yok.
+  Dar rayda daralt düğmesi en altta; marka karosunda kırmızı nokta yok.
+- **İkon dili**: İşlenen = arşiv kutusu, Giden = gönderim, Denetim izi = rulo kayıt, KVKK =
+  kilit. Kalkan hiçbir gezinme anlamında kullanılmaz. Gezinme ikonları 18 px kutuda.
+- **Günlük sicil** (`KabukSicil`): rayın orta boşluğunda mono sicil satırları — bugün işlenen ·
+  bugün giden · karar bekleyen · gecikmiş (yalnız kabuğun bildiği olgulardan, `lib/kabukSicil`).
+  Bilinmeyen satır "—"; kaynak hata verdiyse başlıkta sarı "YANIT YOK". Yükseklik ≥ 960'ta altına
+  "Son kayıtlar" (saat + konu; ≥ 1040'ta beş satır). Yükseklik < 820'de gizli. Tıklanmaz.
+- **Tema geçişi "masa lambası"**: anahtarın konumundan açılan View Transition dairesi (420 ms,
+  `ke-lamba`); menü açık kalır; reduced-motion'da anında.
+- **Durum ailesi**: hata = `HataFisi` (künye HATA/UYARI KAYDI · saat · başlık · ne yapılmalı ·
+  birincil "Yeniden dene" · `<details>` teknik). HataSiniri ve ErrorBar (kompakt) bundan türer;
+  görünüm bantları da bunu kullanmalı. Kabuk sorguları yeniden denenirken üstte ortalı
+  `DenemeSeridi` → `DenemeKunye` ("Sunucuya 2. kez yazıldı · en çok 4"; denemeler tükenince
+  görünümün kendi hata fişi devralır — aynı anda iki hata dili yok).
+- **Alan hatası odakta da kırmızı**: `[aria-invalid="true"]` odak kuralının tükenmez mavisini
+  ezer (kenar + halka ACELE kırmızısı); hata notu ilgili alanın HEMEN altında (kimlik reddi →
+  parola altında; hız sınırı/ağ → form geneli).
+- **Kip odağı girdi kipine bağlı** (`lib/girdiKipi`): klavyeyle açılan kipte kapat düğmesi (halka
+  görünür), fareyle açılanda kabın kendisi (tabindex=-1, halka yok).
+- **Dokunma hedefi ≥ 44 px**: parola göster, "Parolamı unuttum", toast kapat (görsel ikon küçük,
+  vuruş alanı 44).
+- **Bildirim = zımbalı havale pusulası** (`fisToast`): kâğıt yüzey, sol kenar ton çizgisi, zımba
+  izi, mono künye `saat · İŞLENDİ/BİLGİ/UYARI/HATA`, kesikli ayraç. Ton çağırandan
+  (`showToast(m, { ton })`) ya da metinden (`lib/toastTon` — veri kaybı uyarısı başarıdan
+  ayrılır). Uyarı/hata ≥ 7 sn.
+- **Giriş sahnesi**: kâğıt ve havale fişi EĞİMSİZ (yalnız dikey kayma + opaklık); eğim yalnız
+  damgada. Form hataları alan düzeyinde (`hataliAlan`), ilk hatalı alana odak.
+- `components/ui/*` (shadcn, ikinci token dünyası, hiç import edilmiyordu) SİLİNDİ; kullanılacak
+  atom neonUi/kabukAtomlari'dır.
 
 ## Teslim öncesi
 
@@ -137,3 +197,4 @@ kontrast iki temada.
 - [ ] Ekran başına ≤2 damga (bütçe kodda zorlanır; yine de `[data-damga-cip]` sayısına bak), 1 primary buton
 - [ ] `npm test` — temaKontrast sözleşmesi yeşil
 - [ ] Elle hex yok (`grep '#[0-9a-f]\{6\}'` yalnız THEME_CSS)
+- [ ] Telefonda (390) alt şerit içeriği örtmüyor; antet künyesinde "T.C." yok

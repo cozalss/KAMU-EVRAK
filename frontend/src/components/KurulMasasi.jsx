@@ -67,7 +67,10 @@ export const aksanRenk = (risk) => RISK[risk]?.c || V;
    masa üste çıkar, koltuklar 2×2 dizilir. */
 const MASA_CSS = `
 .ke-kurul-masa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) minmax(0,1fr);grid-template-areas:". hukukcu ." "taslakci masa birim_amiri" ". vatandas .";gap:10px 18px;align-items:center}
-@media (max-width:720px){.ke-kurul-masa{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"masa masa" "taslakci hukukcu" "vatandas birim_amiri"}.ke-kurul-masa > [data-koltuk]{justify-self:stretch!important;padding:8px 6px!important}}
+@media (max-width:720px){.ke-kurul-masa{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"masa masa" "taslakci hukukcu" "vatandas birim_amiri"}.ke-kurul-masa > [data-koltuk]{justify-self:stretch!important;width:auto!important;padding:8px 6px!important}.ke-kurul-masa > [data-koltuk] [data-koltuk-metin]{white-space:normal!important}}
+.ke-kurul-besleme{max-height:460px;overflow-y:auto;overscroll-behavior:contain}
+[data-tur-serit]{position:sticky;top:0;z-index:1;background:var(--ke-bg);box-shadow:0 10px 8px -8px var(--ke-bg)}
+@media (max-width:720px){.ke-kurul-besleme{max-height:none;overflow:visible}}
 @keyframes ke-koltuk-soz{0%{box-shadow:0 0 0 0 var(--soz)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
 `;
 
@@ -97,9 +100,10 @@ function KoltukMuhru({ renk, durus, az }) {
   const c = DERIN_OF(renk);
   const serh = durus === "karsi";
   return (
-    <span aria-hidden="true" style={{ "--egim": "-14deg", position: "absolute", right: -7, bottom: -7, width: 21, height: 21, borderRadius: RAD.dot,
+    <span aria-hidden="true" style={{ "--egim": "-14deg", position: "absolute", right: -10, bottom: -10, width: 21, height: 21, borderRadius: RAD.dot,
       display: "grid", placeItems: "center", color: c, background: PAL.surf, border: `1.5px ${serh ? "dashed" : "solid"} ${c}`,
-      outline: serh ? "none" : `1px solid ${c}`, outlineOffset: 1.5, transform: "rotate(-14deg)",
+      // Avatarın DIŞINA oturur + zemin renginde halka: mühür avatarın çerçevesini kesmez (tur 6).
+      boxShadow: `0 0 0 2px ${PAL.bg}`, outline: serh ? "none" : `1px solid ${c}`, outlineOffset: 1.5, transform: "rotate(-14deg)",
       fontFamily: MONO, fontSize: 11, fontWeight: 700, lineHeight: 1,
       animation: az ? "none" : "nu-damga .42s var(--ke-ease-spring) both" }}>
       {m.glif === "check" ? <Icon.check width={11} height={11} strokeWidth={2.4} />
@@ -127,19 +131,22 @@ export function Avatar({ uye, size = 36, aktif, durus, az }) {
 /* Koltuklar masaya YÖNELİR: yandakiler masaya doğru yaslanır, üst/alttakiler ortalanır.
    Telefonda (2×2) hepsi hücreyi doldurur — medya kuralı justify-self'i ezer. */
 const HIZA = { taslakci: "end", birim_amiri: "start", hukukcu: "center", vatandas: "center" };
+/* Sabit plaka genişliği (tur 6): durum satırı ("söz alıyor…" ↔ rol) değiştikçe içerik genişliği
+   değişiyor, masa her söz değişiminde ≈70 px zıplıyordu. Aktiflik yalnız zemin rengiyle. */
+const KOLTUK_GENISLIK = 236;
 
 function Koltuk({ uye, aktif, durus, yukleniyor, az, i }) {
   const oy = !!DURUS[durus];
   const durum = yukleniyor ? "taslağı okuyor…" : aktif ? "söz alıyor…" : oy ? DURUS[durus].etiket : uye.rol;
   return (
-    <div data-koltuk="" style={{ gridArea: uye.id, justifySelf: HIZA[uye.id] || "stretch", maxWidth: "100%", minWidth: 0, display: "flex", alignItems: "center", gap: SP.m, padding: "8px 12px", borderRadius: RAD.card,
+    <div data-koltuk="" style={{ gridArea: uye.id, justifySelf: HIZA[uye.id] || "stretch", width: KOLTUK_GENISLIK, maxWidth: "100%", boxSizing: "border-box", minWidth: 0, display: "flex", alignItems: "center", gap: SP.m, padding: "8px 12px", borderRadius: RAD.card,
       background: aktif ? ALFA(uye.col) : "transparent", transition: "background .2s ease-out",
       animation: az ? "none" : `nu-rise .36s var(--ke-ease-out) ${0.06 + i * 0.06}s both`,
       ...(yukleniyor && !az ? { opacity: 0.85 } : null) }}>
       <Avatar uye={uye} aktif={aktif} durus={durus} az={az} />
-      <span style={{ minWidth: 0 }}>
-        <span style={{ display: "block", ...TYPE.data, fontWeight: 600, color: PAL.ink }}>{uye.ad}</span>
-        <span style={{ display: "block", ...TYPE.meta, color: aktif || oy ? DERIN_OF(uye.col) : PAL.mut3, fontWeight: aktif || oy ? 500 : 400, maxWidth: 190,
+      <span style={{ minWidth: 0, flex: 1 }}>
+        <span data-koltuk-metin="" style={{ display: "block", ...TYPE.data, fontWeight: 600, color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{uye.ad}</span>
+        <span data-koltuk-metin="" style={{ display: "block", ...TYPE.meta, color: aktif || oy ? DERIN_OF(uye.col) : PAL.mut3, fontWeight: aktif || oy ? 500 : 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
           animation: yukleniyor && !az ? `nu-think 1.4s ease-in-out ${i * 0.2}s infinite` : "none" }}>{durum}</span>
       </span>
     </div>
@@ -171,7 +178,7 @@ export function KurulMasasi({ speaking = null, durus = {}, aksan, orta, yukleniy
 /* Tutanak tur başlığı — antet dilinde: çift çizgi arasında mono büyük harf. */
 export function TurSeridi({ etiket, no }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: SP.m, margin: `${SP.s}px 0 ${SP.xs}px` }}>
+    <div data-tur-serit="" style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.s}px 0 ${SP.xs + 2}px` }}>
       <span style={{ ...TYPE.antet, color: PAL.ink2, textTransform: "uppercase", whiteSpace: "nowrap" }}>
         {no != null && <span style={{ color: PAL.mut3, marginRight: SP.s, ...TNUM }}>{no}.</span>}{etiket}
       </span>
@@ -237,7 +244,10 @@ function satirDuzeni(draft) {
     const ham = String(l.metin || "");
     const bas = (ham.match(/^[\t ]*/)?.[0] || "").replace(/ {4}/g, "\t").replace(/ /g, "").length;
     const govde = ham.replace(/^[\t ]+/, "").replace(/\s+$/, "");
-    const parcalar = govde.split(/\t+/).map((x) => x.trim()).filter(Boolean);
+    let parcalar = govde.split(/\t+/).map((x) => x.trim()).filter(Boolean);
+    // "Sayı : … 06.10.2026" sekmesiz gelirse de tarih satırın SAĞINA hizalanır (Yön. 2646 düzeni).
+    const sayiTarih = parcalar.length === 1 && govde.match(/^(Sayı\s*:.*?)\s+(\d{2}\.\d{2}\.\d{4})$/);
+    if (sayiTarih) parcalar = [sayiTarih[1].trim(), sayiTarih[2]];
     const hiza = bas >= 3 ? (antetBitis < 0 || i < antetBitis ? "orta" : "imza") : bas >= 1 ? "girinti" : "duz";
     return { ...l, govde, parcalar, hiza, bos: !govde.trim() };
   });

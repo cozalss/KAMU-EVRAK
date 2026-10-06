@@ -11,7 +11,7 @@
    != null) footer kaldırılır + başlıktaki Tür/Büyüt yerine durum rozeti geçer; pager'da başka
    taslağa gidip GERİ dönünce bu rozet KAYBOLMAMALI (bkz. AltTaslakPager'daki mount-koruma notu). */
 import { useEffect, useRef, useState } from "react";
-import { cleanDemoText } from "./result-cards.jsx";
+import { cleanDemoText } from "../lib/evrakEtiket.js";
 import TurSecici from "./TurSecici.jsx";
 import BelgeModal from "./BelgeModal.jsx";
 import A4Belge from "./A4Belge.jsx";

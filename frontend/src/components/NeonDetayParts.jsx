@@ -2,9 +2,8 @@
    Ayrı dosya: NeonDetay <800 satır kalsın; parçalar tek başına test edilebilir.
    Desen kaynağı: Langfuse/Braintrust (skor barı + eşik + kalite kapısı satırı),
    Stripe (mono kimlik + kopyala), Phoenix (atıf satırı + kaynak alt-satırı). */
-import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { diffLines } from "diff";
-import { cleanDemoText } from "./result-cards.jsx";
+import { useEffect, useId, useRef, useState } from "react";
+import { cleanDemoText } from "../lib/evrakEtiket.js";
 import { MONO, SANS, T, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, focusRing, SR_ONLY, Icon } from "./neonUi.jsx";
 import { lintGrupla, slaKonum } from "../lib/detayYorum.js";
 
@@ -322,32 +321,9 @@ export function KanitAlinti({ span, metin, children }) {
   );
 }
 
-/* 2646 düzeltme önerisi — mevcut taslakla satır-diff (jsdiff): memur NEYİN değiştiğini görür.
-   Renk tek sinyal değil (+/− önekleri); eski taslak yoksa düz metin fallback'i. */
-export function DuzeltmeDiff({ eski, yeni }) {
-  const satirStil = { fontFamily: MONO, fontSize: 12, lineHeight: "18px", whiteSpace: "pre-wrap", wordBreak: "break-word" };
-  // downloading vb. üst-state değişimlerinde tam metin diff'i yeniden hesaplanmasın.
-  const parcalar = useMemo(() => (eski ? diffLines(eski, yeni) : []), [eski, yeni]);
-  if (!eski) {
-    return <pre style={{ margin: 0, padding: SP.m, ...satirStil, color: PAL.ink2, maxHeight: 480, overflow: "auto", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>{yeni}</pre>;
-  }
-  return (
-    <div aria-label="Önerilen düzeltme farkı: eklenen satırlar artı, çıkarılan satırlar eksi işaretli"
-      style={{ maxHeight: 480, overflow: "auto", padding: "8px 0", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>
-      {parcalar.map((p, i) => {
-        const renk = p.added ? DERIN.yesil : p.removed ? DERIN.kirmizi : PAL.ink2;
-        const bg = p.added ? ALFA(BANT.yesil.c) : p.removed ? ALFA(BANT.kirmizi.c) : "transparent";
-        const onek = p.added ? "+" : p.removed ? "−" : " ";
-        return p.value.replace(/\n$/, "").split("\n").map((satir, j) => (
-          <div key={`${i}-${j}`} style={{ display: "flex", gap: SP.s, padding: "1px 12px", background: bg }}>
-            <span aria-hidden="true" style={{ ...satirStil, color: renk, flexShrink: 0, width: 10, textAlign: "center" }}>{onek}</span>
-            <span style={{ ...satirStil, color: renk, minWidth: 0, ...(p.removed ? { textDecoration: "line-through", textDecorationColor: PAL.lineHi } : null) }}>{satir || " "}</span>
-          </div>
-        ));
-      })}
-    </div>
-  );
-}
+/* 2646 düzeltme önerisi — "düzeltme kalemi" görünümü (kelime düzeyi fark, belge yazı tipi).
+   Uygulama DuzeltmeKalemi.jsx'te; ad geriye uyum için korunur (Kurul, revize, lint kartı). */
+export { default as DuzeltmeDiff } from "./DuzeltmeKalemi.jsx";
 
 /* Kalite kapısı satırı (CI-check deseni) — geçti/uyarı ikonu + kapı adı + sonuç değeri. */
 export function Vrow({ ok, label, val }) {

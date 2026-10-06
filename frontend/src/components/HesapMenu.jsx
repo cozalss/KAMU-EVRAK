@@ -11,6 +11,8 @@ import React, { useState, useRef } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { AnimatePresence, motion } from "motion/react";
+import { Lock, ScrollText } from "lucide-react";
+import { sonGirdiIsaretMi } from "../lib/girdiKipi.js";
 import { MONO, DISPLAY, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, SR_ONLY, focusRing, Icon } from "./neonUi.jsx";
 
 const ROL_TR = { memur: "Memur", yetkili: "Yetkili", yonetici: "Yönetici", sistem: "Sistem" };
@@ -27,7 +29,9 @@ const MIC = {
   kisi: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.6" stroke="currentColor" strokeWidth="1.6" /><path d="M5 20 C5 16.5 8 14.5 12 14.5 C16 14.5 19 16.5 19 20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>,
   tema: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M12 3.5 A8.5 8.5 0 0 1 12 20.5 Z" fill="currentColor" /></svg>,
   yardim: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.6" /><path d="M9.6 9.3 C9.6 7.9 10.7 7 12 7 C13.3 7 14.4 7.9 14.4 9.2 C14.4 11 12 11.2 12 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /><circle cx="12" cy="16.4" r="1" fill="currentColor" /></svg>,
-  kvkk: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 L19 6 V11 C19 15.5 16 19.2 12 21 C8 19.2 5 15.5 5 11 V6 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><path d="M9 11.5 L11.2 13.7 L15 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+  /* Tur 6 (jüri): kalkan dört anlamda kullanılıyordu. KVKK = kilit (gizlilik), Denetim izi = rulo kayıt. */
+  kvkk: <Lock size={15} strokeWidth={1.7} aria-hidden="true" />,
+  denetim: <ScrollText size={15} strokeWidth={1.7} aria-hidden="true" />,
   cikis: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 17l5-5-5-5M20 12H9M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>,
 };
 
@@ -51,6 +55,7 @@ const Cip = ({ renk, zemin, children }) => (
    stacking context'ini kurduğundan portal ŞARTTI) — Dialog.Portal aynı işi görür. */
 function Kip({ baslik, onKapat, donusRef, children }) {
   const kapatRef = useRef(null);
+  const kabRef = useRef(null);
   return (
     <Dialog.Root open onOpenChange={(v) => { if (!v) onKapat(); }}>
       {/* BelgeModal deseni: Portal forceMount + motion — scrim YALNIZ solar (karartma perdesi
@@ -63,19 +68,21 @@ function Kip({ baslik, onKapat, donusRef, children }) {
             transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
             style={{ position: "fixed", inset: 0, zIndex: 320, background: PAL.scrim, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
           <Dialog.Content asChild forceMount aria-label={baslik}
-            onOpenAutoFocus={(e) => { e.preventDefault(); kapatRef.current?.focus(); }}
+            // Klavyeyle açıldıysa kapat düğmesi (halka görünür); fareyle açıldıysa kabın kendisi
+            // (tabindex=-1 → halka yok; Tab yine kapat düğmesine gider). lib/girdiKipi.
+            onOpenAutoFocus={(e) => { e.preventDefault(); (sonGirdiIsaretMi() ? kabRef : kapatRef).current?.focus(); }}
             // Odak-iadesi Radix varsayılanına (kapanmadan önce en son odaklı öğe) bırakılmaz —
             // o öğe DropdownMenu.Item'dı ve menü zaten kapanıp unmount olacak; odak HER ZAMAN
             // hesap menüsü tetikleyicisine (kart) dönsün diye açıkça kontrol ediyoruz.
             onCloseAutoFocus={(e) => { e.preventDefault(); donusRef?.current?.focus(); }}>
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }}
-            transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
+          <motion.div ref={kabRef}
+            initial={{ opacity: 0, y: 8, scale: 0.985 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.985 }}
+            transition={{ duration: 0.22, ease: EASE_BEZIER.out }}
             style={{ width: "min(440px,100%)", maxHeight: "84vh", overflowY: "auto", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, outline: "none" }}>
             <Dialog.Description style={SR_ONLY}>{baslik} bilgi penceresi.</Dialog.Description>
             <div style={{ display: "flex", alignItems: "flex-end", gap: SP.s, padding: "16px 20px 0" }}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase" }}>T.C. · Kamu-Evrak · Hesap</div>
+                <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase" }}>KAMU-EVRAK · Hesap</div>
                 <Dialog.Title asChild>
                   <h2 style={{ margin: "4px 0 0", fontFamily: DISPLAY, fontWeight: 800, fontStretch: "112%", fontSize: 20, lineHeight: "24px", letterSpacing: "-.01em", color: PAL.ink }}>{baslik}</h2>
                 </Dialog.Title>
@@ -154,11 +161,12 @@ function YardimKip({ onKapat, donusRef }) {
       <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, margin: `${SP.l}px 0 ${SP.xs}px` }}>Klavye kısayolları</div>
       <Kisayol k="Esc" a="Açık menü ve pencereleri kapatır" />
       <Kisayol k="Tab" a="Tüm denetimlerde klavye gezinmesi (odak halkasıyla)" />
+      <Kisayol k={/Mac|iPhone|iPad/.test(navigator.platform || "") ? "⌘ ." : "Ctrl ."} a="Evrak asistanını açar / kapatır" />
     </Kip>
   );
 }
 
-function KvkkKip({ onKapat, donusRef }) {
+function KvkkKip({ onKapat, donusRef }) {   // donusRef: kapanınca odak hesap kartına döner (tur 6 — eksikti, odak body'ye düşüyordu)
   const Madde = ({ children }) => (
     <div style={{ display: "flex", gap: SP.s, padding: "6px 0", alignItems: "flex-start" }}>
       <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.yesil, marginTop: 2 }}><Icon.check width={12} height={12} /></span>
@@ -166,7 +174,7 @@ function KvkkKip({ onKapat, donusRef }) {
     </div>
   );
   return (
-    <Kip baslik="KVKK ve gizlilik" onKapat={onKapat}>
+    <Kip baslik="KVKK ve gizlilik" onKapat={onKapat} donusRef={donusRef}>
       <Madde>Çıkarılan kişisel veriler (TCKN, telefon) işleme sırasında <strong style={{ fontWeight: 600 }}>maskelenir</strong>; ham hâliyle saklanmaz.</Madde>
       <Madde>Sistem yalnız <strong style={{ fontWeight: 600 }}>sentetik/kurgu evrak</strong> ve kamuya açık mevzuatla çalışır; gerçek vatandaş verisi kullanılmaz.</Madde>
       <Madde>Her koşum SHA-256 <strong style={{ fontWeight: 600 }}>hash-zincirli denetim izi</strong> üretir — kayıtlar sonradan değiştirilemez (Denetim izi görünümünden doğrulanır).</Madde>
@@ -193,8 +201,10 @@ function DItem({ ikon, label, sag, tehlike, onSelect, isCheckbox, checked }) {
       {sag}
     </>
   );
+  /* Anahtar (tema): menü AÇIK kalır (preventDefault) — kayışın yeni hâli görülür, odak karta
+     sıçrayıp fare kullanıcısına klavye halkası göstermez (tur 6). Geçiş kökeni = bu satır. */
   return isCheckbox ? (
-    <DropdownMenu.CheckboxItem checked={checked} onCheckedChange={onSelect} {...vurgula} style={stil}>{inner}</DropdownMenu.CheckboxItem>
+    <DropdownMenu.CheckboxItem checked={checked} onSelect={(e) => { e.preventDefault(); onSelect?.(e.currentTarget); }} {...vurgula} style={stil}>{inner}</DropdownMenu.CheckboxItem>
   ) : (
     <DropdownMenu.Item onSelect={onSelect} {...vurgula} style={stil}>{inner}</DropdownMenu.Item>
   );
@@ -203,7 +213,7 @@ function DItem({ ikon, label, sag, tehlike, onSelect, isCheckbox, checked }) {
 /* Anahtar görseli (checkbox sağ ucu) — durum ayrıca aria-checked ile verilir (Radix CheckboxItem). */
 const Anahtar = ({ acik }) => (
   <span aria-hidden="true" style={{ width: 28, height: 16, flexShrink: 0, borderRadius: 8, background: acik ? DERIN.T : PAL.press, border: `1px solid ${acik ? DERIN.T : PAL.inputLine}`, position: "relative", transition: "background .15s ease-out" }}>
-    <span style={{ position: "absolute", top: 1, left: acik ? 13 : 1, width: 12, height: 12, borderRadius: RAD.dot, background: PAL.onAccent, transition: "left .15s ease-out" }} />
+    <span style={{ position: "absolute", top: 1, left: 1, width: 12, height: 12, borderRadius: RAD.dot, background: PAL.onAccent, transform: acik ? "translateX(12px)" : "none", transition: "transform .2s var(--ke-ease-out)" }} />
   </span>
 );
 
@@ -245,8 +255,7 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
             kapatıyoruz — NeonSidebar'daki "örnek evrak" dropdown'ıyla aynı gerekçe). */}
         <DropdownMenu.Portal>
           <DropdownMenu.Content side="top" align="start" sideOffset={8} collisionPadding={12}
-            style={{ width: 252, background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s, boxShadow: SH.modal, zIndex: 60, transformOrigin: "var(--radix-dropdown-menu-content-transform-origin)", animation: "ke-hesap-ac .18s var(--ke-ease-out) both", outline: "none" }}>
-            <style>{"@keyframes ke-hesap-ac{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}"}</style>
+            style={{ width: 252, background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s, boxShadow: SH.modal, zIndex: 60, transformOrigin: "var(--radix-dropdown-menu-content-transform-origin)", animation: "nu-kagit-pop .18s var(--ke-ease-out) both", outline: "none" }}>
             <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", padding: `${SP.xs}px 10px 0`, display: "flex", justifyContent: "space-between" }}>
               <span>Personel kartı</span><span>Oturum açık</span>
             </div>
@@ -265,9 +274,9 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
             <DropdownMenu.Separator style={{ height: 1, background: PAL.line, margin: `${SP.xs}px ${SP.s}px` }} />
             <DItem ikon={MIC.kisi} label="Profil bilgileri" onSelect={() => modalAc("profil")} />
             <DItem ikon={MIC.tema} label="Koyu görünüm" isCheckbox checked={tema === "dark"}
-              sag={<Anahtar acik={tema === "dark"} />} onSelect={() => onTemaDegistir?.()} />
+              sag={<Anahtar acik={tema === "dark"} />} onSelect={(el) => onTemaDegistir?.(el)} />
             <DItem ikon={MIC.yardim} label="Yardım ve kısayollar" onSelect={() => modalAc("yardim")} />
-            <DItem ikon={<Icon.shield width={15} height={15} />} label="Denetim izi" onSelect={() => onDenetimAc?.()} />
+            <DItem ikon={MIC.denetim} label="Denetim izi" onSelect={() => onDenetimAc?.()} />
             <DItem ikon={MIC.kvkk} label="KVKK ve gizlilik" onSelect={() => modalAc("kvkk")} />
             <DropdownMenu.Separator style={{ height: 1, background: PAL.line, margin: `${SP.xs}px ${SP.s}px` }} />
             <DItem ikon={MIC.cikis} label="Oturumu kapat" tehlike onSelect={() => onLogout?.()} />

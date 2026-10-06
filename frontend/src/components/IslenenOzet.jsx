@@ -13,7 +13,8 @@
      her sütun bir filtre düğmesidir (aria-pressed). Üstte orantılı şerit; sıfır kategori
      şeritte yer kaplamaz ama sütunda soluk "0" olarak durur (yokluk da bilgidir).
    Stripe/Linear dersi: birincil karo tek vurgulu, ikincil nötr; sayı + etiket + şekil. */
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import NumberFlow from "@number-flow/react";
 import { useDarEkran } from "../hooks/useMedya.js";
 import { MONO, T, PAL, BANT, TYPE, TNUM, RAD, SP, SH, ALFA, DERIN, DERIN_OF, focusRing } from "./neonUi.jsx";
@@ -131,8 +132,29 @@ function EtkinlikKarosu({ items, aktifSet, temizle, ortSn }) {
   );
 }
 
-/* Telefonda dört sayaç TEK satırda (2×2 ızgara defteri ekranın altına itiyordu — ölçüldü,
-   390px'te defter ilk ekranda hiç görünmüyordu); kısa etiket, açıklama notu gizli. */
+/* Telefonda karo yalnız ÖZET ŞERİDİ açılınca görünür (bkz. OzetSeridi); orada 2×2 ızgara
+   kısa etiketleri TAM yazar — 4 sütunda "Onayla…", "Düzenl…" diye kesiliyordu (jüri tur 6). */
+/* Karar karosunun tek düğmesi — sayı + etiket; dokununca listeyi o karara süzer. */
+function KararDugmesi({ k, n, aktif, dar, onSec }) {
+  return (
+    <button type="button" onClick={() => onSec(k.key)} aria-pressed={aktif}
+      aria-label={`${k.label}: ${n} evrak${aktif ? " — filtre açık" : ""}`}
+      {...focusRing} data-press="" data-dokunma=""
+      onMouseEnter={(e) => { if (!aktif) e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = aktif ? ALFA(k.renk) : "transparent"; }}
+      style={{ cursor: "pointer", textAlign: "left", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 4,
+        padding: dar ? "6px 6px" : "8px 10px", minWidth: 0, borderRadius: RAD.ctl, border: `1px solid ${aktif ? PAL.lineHi : "transparent"}`,
+        background: aktif ? ALFA(k.renk) : "transparent",
+        transition: "background .12s ease, border-color .12s ease, transform .14s var(--ke-ease-out)" }}>
+      <span style={{ ...TYPE.num, ...(dar ? { fontSize: 22, lineHeight: "26px" } : null), color: n ? (aktif ? DERIN_OF(k.renk) : PAL.ink) : PAL.mut3 }}><NumberFlow value={n} /></span>
+      <span style={{ display: "flex", alignItems: "center", gap: 6, ...TYPE.meta, color: n ? PAL.mut2 : PAL.mut3 }}>
+        {!dar && <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot, background: k.renk, opacity: n ? k.doluluk : 0.3, flexShrink: 0 }} />}
+        <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: dar ? "nowrap" : "normal", ...(dar ? { fontSize: 11, borderBottom: `2px solid ${k.renk}`, paddingBottom: 1 } : null) }}>{dar ? k.kisa : k.label}</span>
+      </span>
+    </button>
+  );
+}
+
 function KararKarosu({ say, aktifSet, onSec }) {
   const dar = useDarEkran();
   const toplam = KARARLAR.reduce((a, k) => a + say[k.key], 0);
@@ -156,28 +178,8 @@ function KararKarosu({ say, aktifSet, onSec }) {
         ))}
       </span>
       <div role="group" aria-label="Karar durumu — sütun listeyi filtreler"
-        style={{ display: "grid", gridTemplateColumns: dar ? "repeat(4, minmax(0, 1fr))" : "repeat(auto-fit, minmax(min(112px, 100%), 1fr))", gap: dar ? 2 : SP.xs, marginTop: SP.m, flex: 1 }}>
-        {KARARLAR.map((k) => {
-          const n = say[k.key];
-          const aktif = aktifSet.has(k.key);
-          return (
-            <button key={k.key} type="button" onClick={() => onSec(k.key)} aria-pressed={aktif}
-              aria-label={`${k.label}: ${n} evrak${aktif ? " — filtre açık" : ""}`}
-              {...focusRing} data-press="" data-dokunma=""
-              onMouseEnter={(e) => { if (!aktif) e.currentTarget.style.background = PAL.hov; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = aktif ? ALFA(k.renk) : "transparent"; }}
-              style={{ cursor: "pointer", textAlign: "left", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 4,
-                padding: dar ? "6px 6px" : "8px 10px", minWidth: 0, borderRadius: RAD.ctl, border: `1px solid ${aktif ? PAL.lineHi : "transparent"}`,
-                background: aktif ? ALFA(k.renk) : "transparent",
-                transition: "background .12s ease, border-color .12s ease, transform .14s var(--ke-ease-out)" }}>
-              <span style={{ ...TYPE.num, ...(dar ? { fontSize: 22, lineHeight: "26px" } : null), color: n ? (aktif ? DERIN_OF(k.renk) : PAL.ink) : PAL.mut3 }}><NumberFlow value={n} /></span>
-              <span style={{ display: "flex", alignItems: "center", gap: 6, ...TYPE.meta, color: n ? PAL.mut2 : PAL.mut3 }}>
-                {!dar && <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot, background: k.renk, opacity: n ? k.doluluk : 0.3, flexShrink: 0 }} />}
-                <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: dar ? "nowrap" : "normal", ...(dar ? { fontSize: 11, borderBottom: `2px solid ${k.renk}`, paddingBottom: 1 } : null) }}>{dar ? k.kisa : k.label}</span>
-              </span>
-            </button>
-          );
-        })}
+        style={{ display: "grid", gridTemplateColumns: dar ? "repeat(2, minmax(0, 1fr))" : "repeat(auto-fit, minmax(min(112px, 100%), 1fr))", gap: dar ? 2 : SP.xs, marginTop: SP.m, flex: 1 }}>
+        {KARARLAR.map((k) => <KararDugmesi key={k.key} k={k} n={say[k.key]} aktif={aktifSet.has(k.key)} dar={dar} onSec={onSec} />)}
       </div>
       {bekleyenPay > 0 && !dar && (
         <span style={{ ...TYPE.meta, color: PAL.mut2, marginTop: SP.s, paddingTop: SP.s, borderTop: `1px dashed ${PAL.line}` }}>
@@ -188,16 +190,62 @@ function KararKarosu({ say, aktifSet, onSec }) {
   );
 }
 
+/* Telefon ÖZET ŞERİDİ — iki karo telefonda ilk kaydı y=836'ya itiyordu (ölçüldü; ilk ekranda
+   hiç kayıt yoktu). Tek satır: "7 kayıt · 6 bekliyor · 1 onay" + dokununca karolar açılır
+   (disclosure). Bekleyen sayısı tükenmez mavisiyle — görünümün işi o. */
+function OzetSeridi({ items, say, acik, onDegis }) {
+  const parcalar = [`${items.length} kayıt`, say.bekliyor ? `${say.bekliyor} bekliyor` : null,
+    say.onaylandi + say.duzenlendi ? `${say.onaylandi + say.duzenlendi} onay` : null, say.reddedildi ? `${say.reddedildi} ret` : null].filter(Boolean);
+  return (
+    <button type="button" onClick={onDegis} aria-expanded={acik} aria-controls="isl-ozet-karo" {...focusRing} data-press="" data-dokunma=""
+      style={{ cursor: "pointer", width: "100%", display: "flex", alignItems: "center", gap: SP.s, padding: "10px 14px", textAlign: "left",
+        borderRadius: RAD.card, border: `1px solid ${PAL.line}`, background: PAL.surf, boxShadow: SH.card, color: PAL.ink2 }}>
+      <span style={{ ...kunye, color: PAL.mut2 }}>Sicil</span>
+      <span style={{ flex: 1, minWidth: 0, fontFamily: MONO, fontSize: 12, ...TNUM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        {parcalar.map((p, i) => <React.Fragment key={p}>{i > 0 && <span style={{ color: PAL.mut3 }}> · </span>}<span style={{ color: i === 1 && say.bekliyor ? DERIN.T : PAL.ink2, fontWeight: i === 1 && say.bekliyor ? 600 : 500 }}>{p}</span></React.Fragment>)}
+      </span>
+      <ChevronDown size={16} strokeWidth={1.75} aria-hidden="true" style={{ flexShrink: 0, transform: acik ? "rotate(180deg)" : "none", transition: "transform .2s var(--ke-ease-out)" }} />
+    </button>
+  );
+}
+
+/* Yükleme yer tutucusu — özetin birebir silüeti (masaüstü iki karo 206 px · telefon şerit):
+   kayıtlar gelince özet araya girip defteri aşağı itmez. */
+export function OzetIskelet() {
+  const dar = useDarEkran();
+  if (dar) return <div aria-hidden="true" style={{ ...karo, height: 44, padding: 0, marginBottom: SP.l }} />;
+  return (
+    <div aria-hidden="true" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: SP.m, marginBottom: SP.l }}>
+      {[0, 1].map((i) => (
+        <div key={i} style={{ ...karo, minHeight: 206, display: "flex", flexDirection: "column", gap: SP.m }}>
+          <span style={{ width: 120, height: 8, borderRadius: 3, background: PAL.line }} />
+          <span style={{ width: 64, height: 32, borderRadius: 4, background: PAL.line, opacity: .7 }} />
+          <span style={{ marginTop: "auto", height: 40, borderRadius: 4, background: PAL.line, opacity: .45 }} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function IslenenOzet({ items, filter, ortSn }) {
+  const dar = useDarEkran();
+  const [acik, setAcik] = useState(false);
   const say = { bekliyor: 0, onaylandi: 0, duzenlendi: 0, reddedildi: 0, islendi: 0 };
   for (const x of items) say[x._durum] = (say[x._durum] || 0) + 1;
   const aktifSet = filter.filters.chips.durum || new Set();
   const temizle = () => aktifSet.forEach((v) => filter.toggleChip("durum", v));
-  return (
-    /* auto-fit: dar ekranda tek sütuna iner (390px'te taşma yok — 2026-08-12 ölçümü). */
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: SP.m, marginBottom: SP.l, alignItems: "stretch" }}>
+  const karolar = (
+    /* auto-fit: dar ekranda tek sütuna iner (390px'te taşma yok). */
+    <div id="isl-ozet-karo" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: SP.m, marginBottom: SP.l, alignItems: "stretch", ...(dar ? { marginTop: SP.s, animation: "nu-rise .18s var(--ke-ease-out) both" } : null) }}>
       <EtkinlikKarosu items={items} aktifSet={aktifSet} temizle={temizle} ortSn={ortSn} />
       <KararKarosu say={say} aktifSet={aktifSet} onSec={(k) => filter.toggleChip("durum", k)} />
+    </div>
+  );
+  if (!dar) return karolar;
+  return (
+    <div style={{ marginBottom: acik ? 0 : SP.m }}>
+      <OzetSeridi items={items} say={say} acik={acik} onDegis={() => setAcik((a) => !a)} />
+      {acik && karolar}
     </div>
   );
 }

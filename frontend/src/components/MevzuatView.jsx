@@ -24,14 +24,14 @@ const CEKIRDEK_NO = new Set(["2709", "3071", "4982", "7201", "2646", "5018", "20
 
 /* Backend kapalıyken (statik dağıtım / demo) asgari referans listesi — eski davranış. */
 const STATIK_KATALOG = [
-  { no: "AY 2709", ad: "Türkiye Cumhuriyeti Anayasası (seçili md.)", aciklama: "Dilekçe/bilgi edinme hakkı (m.74), başvuru yollarının bildirilmesi (m.40), idari işleme karşı yargı yolu (m.125); evrak haklarının üst normu." },
-  { no: "3071 s.K.", ad: "Dilekçe Hakkının Kullanılmasına Dair Kanun", aciklama: "Zorunlu unsurlar (ad-soyad, imza, adres) ve 30 günlük cevap süresi (m.4, m.7)." },
-  { no: "4982 s.K.", ad: "Bilgi Edinme Hakkı Kanunu", aciklama: "Bilgi/belge taleplerinde 15 iş günü cevap süresi ve istisnalar." },
-  { no: "7201 s.K.", ad: "Tebligat Kanunu", aciklama: "Resmî tebligat usulü; dava açma sürelerinin başlangıcı." },
-  { no: "Yön. 2646", ad: "Resmî Yazışmalarda Usul ve Esaslar Yönetmeliği", aciklama: "Üst/cevabi/olur yazı formatı, sayı-konu-ilgi düzeni, e-imza." },
-  { no: "5018 s.K.", ad: "Kamu Mali Yönetimi ve Kontrol Kanunu", aciklama: "Ödeme/tahakkuk süreçleri; mali evrak yönlendirme." },
-  { no: "SDP 2005/7", ad: "Standart Dosya Planı (Başbakanlık Genelgesi)", aciklama: "Evrak saklama/arşiv kodları ve saklama süreleri." },
-  { no: "6698 s.K.", ad: "Kişisel Verilerin Korunması Kanunu (KVKK)", aciklama: "TCKN/telefon gibi kişisel verilerin maskelenmesi ve işlenme ilkeleri." },
+  { no: "2709", tur: "Anayasa", ad: "Türkiye Cumhuriyeti Anayasası (seçili md.)", aciklama: "Dilekçe/bilgi edinme hakkı (m.74), başvuru yollarının bildirilmesi (m.40), idari işleme karşı yargı yolu (m.125); evrak haklarının üst normu." },
+  { no: "3071", tur: "Kanun", ad: "Dilekçe Hakkının Kullanılmasına Dair Kanun", aciklama: "Zorunlu unsurlar (ad-soyad, imza, adres) ve 30 günlük cevap süresi (m.4, m.7)." },
+  { no: "4982", tur: "Kanun", ad: "Bilgi Edinme Hakkı Kanunu", aciklama: "Bilgi/belge taleplerinde 15 iş günü cevap süresi ve istisnalar." },
+  { no: "7201", tur: "Kanun", ad: "Tebligat Kanunu", aciklama: "Resmî tebligat usulü; dava açma sürelerinin başlangıcı." },
+  { no: "2646", tur: "Yönetmelik", ad: "Resmî Yazışmalarda Usul ve Esaslar Yönetmeliği", aciklama: "Üst/cevabi/olur yazı formatı, sayı-konu-ilgi düzeni, e-imza." },
+  { no: "5018", tur: "Kanun", ad: "Kamu Mali Yönetimi ve Kontrol Kanunu", aciklama: "Ödeme/tahakkuk süreçleri; mali evrak yönlendirme." },
+  { no: "2005-7", tur: "Genelge", ad: "Standart Dosya Planı (Başbakanlık Genelgesi)", aciklama: "Evrak saklama/arşiv kodları ve saklama süreleri." },
+  { no: "6698", tur: "Kanun", ad: "Kişisel Verilerin Korunması Kanunu (KVKK)", aciklama: "TCKN/telefon gibi kişisel verilerin maskelenmesi ve işlenme ilkeleri." },
 ];
 
 const trLower = (s) => String(s || "").toLocaleLowerCase("tr");
@@ -80,18 +80,18 @@ function oneriHedef(m, dosyalar) {
 
 /* ——— Görüntü türetmeleri (YALNIZ sunum; arama/filtre ham alanlar üzerinde çalışır) ——— */
 
-/* Başlıktan tür etiketi + numarasız kayıtlar için sırt kısaltması. */
+/* Başlıktan tür etiketi (sırtın alt satırı). */
 const TURLER = [
-  ["anayasa", "Anayasa", "AY"], ["yönetmeli", "Yönetmelik", "Yön."], ["tebliğ", "Tebliğ", "Teb."],
-  ["genelge", "Genelge", "Gen."], ["kararname", "Kararname", "CBK"], ["usul ve esas", "Usul ve Esas", "U-E"], ["esas ve usul", "Usul ve Esas", "U-E"],
-  ["kanun", "Kanun", "Kan."],
+  ["anayasa", "Anayasa"], ["yönetmeli", "Yönetmelik"], ["tebliğ", "Tebliğ"],
+  ["genelge", "Genelge"], ["kararname", "Kararname"], ["usul ve esas", "Usul ve Esas"], ["esas ve usul", "Usul ve Esas"],
+  ["kanun", "Kanun"],
 ];
 function turBul(m) {
   const b = trLower(m.baslik);
   // "… Hakkında Kanun" / "… Kanunu (G.V.K.)": ad kanunla bitiyorsa içinde "usul" geçse de kanundur.
-  if (/kanunu?$/.test(b.replace(/\s*\(.*?\)\s*/g, " ").trim()) && !b.includes("yönetmeli")) return { ad: "Kanun", kisa: "Kan." };
+  if (/kanunu?$/.test(b.replace(/\s*\(.*?\)\s*/g, " ").trim()) && !b.includes("yönetmeli")) return "Kanun";
   const bulunan = TURLER.find(([anahtar]) => b.includes(anahtar)) || (String(m.no).includes("-") ? TURLER[3] : null);
-  return bulunan ? { ad: bulunan[1], kisa: bulunan[2] } : { ad: "Mevzuat", kisa: "§" };
+  return bulunan ? bulunan[1] : "Mevzuat";
 }
 
 /* Künye satırı: RG tarih/sayı çözülürse onu, yoksa kabul/karar tarihi ya da alt başlığı gösterir
@@ -104,7 +104,7 @@ const mulgaMi = (m, kn) => kn.mulga || /\bMÜLGA\b/.test(m.baslik);
    İmza: kart üzerinde mevzuat numarası Archivo'nun GENİŞLİK ekseninde açılır (font-stretch) —
    sırt sütunu sabit genişlikte, komşu yerleşim kıpırdamaz. */
 const MV_CSS = `
-.mv-duzen{display:grid;grid-template-columns:232px minmax(0,1fr);gap:${SP.xxl + 8}px;align-items:start}
+.mv-duzen{display:grid;grid-template-columns:clamp(232px,17vw,296px) minmax(0,1fr);gap:${SP.xxl + 8}px;align-items:start}
 .mv-dizin{min-width:0;position:sticky;top:${SP.l}px;max-height:calc(100vh - ${SP.xxl}px);overflow-y:auto;overscroll-behavior:contain;padding-bottom:${SP.l}px;scrollbar-width:thin}
 .mv-dizin-oge:hover{background:var(--ke-hov)}
 .mv-dizin-oge:hover .mv-dizin-ad{color:var(--ke-ink)}
@@ -114,7 +114,14 @@ const MV_CSS = `
 .mv-kart:hover .mv-no,.mv-kart:focus-visible .mv-no{font-stretch:125%!important;letter-spacing:-.045em!important}
 .mv-kart .mv-ok{opacity:0;transform:translateX(-4px);transition:opacity .16s ease-out, transform .2s var(--ke-ease-out)}
 .mv-kart:hover .mv-ok,.mv-kart:focus-visible .mv-ok{opacity:1;transform:none}
-.mv-ara:focus-within{border-color:var(--ke-t)!important;box-shadow:0 0 0 3px color-mix(in srgb, var(--ke-t) 18%, transparent)}
+.mv-ara:focus-within{border-color:var(--ke-t)!important;box-shadow:0 0 0 3px color-mix(in srgb, var(--ke-t) 18%, transparent)!important}
+/* Tek odak halkası: halka KAPTA (label) çizilir; içteki girdi global :focus-visible kuralından
+   muaf (tur 6: iç içe iki dikdörtgen halka). Tarayıcının kalın "×" temizleme glifi gizli —
+   yerine token renkli kendi temizle düğmemiz var. */
+.mv-ara input:focus-visible{box-shadow:none!important;border-color:transparent!important;outline:none!important}
+.mv-ara input::-webkit-search-cancel-button,.mv-ara input::-webkit-search-decoration{-webkit-appearance:none;appearance:none;display:none}
+.mv-temizle{opacity:.72;transition:opacity .12s ease-out, background .12s ease-out}
+.mv-temizle:hover{opacity:1;background:var(--ke-hov)}
 .mv-bolum > summary{list-style:none}
 .mv-vurgu{color:inherit;border-radius:2px;padding:0;background-image:linear-gradient(color-mix(in srgb, var(--ke-bant-sari) 38%, transparent),color-mix(in srgb, var(--ke-bant-sari) 38%, transparent));background-repeat:no-repeat;background-position:0 85%;background-size:100% 70%;background-color:transparent;animation:mv-kalem .18s var(--ke-ease-out) both}
 @keyframes mv-kalem{from{background-size:0% 70%}to{background-size:100% 70%}}
@@ -125,7 +132,7 @@ const MV_CSS = `
   .mv-dizin-liste{display:flex!important;gap:${SP.xs}px;overflow-x:auto;padding:2px clamp(16px,4vw,40px) ${SP.s}px!important;scroll-snap-type:x proximity;scrollbar-width:none}
   .mv-dizin-liste::-webkit-scrollbar{display:none}
   .mv-dizin-liste > li{flex-shrink:0;scroll-snap-align:start}
-  .mv-dizin-oge{border:1px solid var(--ke-line)!important;border-radius:999px!important;padding:7px 14px!important;min-height:36px}
+  .mv-dizin-oge{border:1px solid var(--ke-line)!important;border-radius:999px!important;padding:7px 14px!important;min-height:44px;display:inline-flex!important;align-items:center}
   .mv-dizin-oge[aria-pressed="true"]{border-color:transparent!important}
   .mv-dizin-imlec{display:none}
   .mv-dizin-ad{white-space:nowrap}
@@ -135,8 +142,7 @@ const MV_CSS = `
   .mv-kisayol{display:none}
   .mv-ara{flex:none!important}
   .mv-kart{grid-template-columns:76px minmax(0,1fr)!important}
-  .mv-tur-uzun,.mv-sayi{display:none}
-  .mv-tur-kisa{display:inline!important}
+  .mv-tur{font-size:8.5px;letter-spacing:.03em}
 }
 `;
 
@@ -147,23 +153,38 @@ function Vurgulu({ metin, q }) {
   return vurguParcala(metin, q).map((p, i) => (p.vurgu ? <mark key={i} className="mv-vurgu">{p.metin}</mark> : p.metin));
 }
 
-/* Kitap sırtı kartı — sol sütun "sırt" (numara kahraman), sağda başlık + RG tarih satırı. */
-function SirtNumara({ m, tur, mulga, cekirdek }) {
-  const no = m.no || tur.kisa;
-  const uzun = String(no).length > 4;
+/* Kitap sırtı kartı — sol sütun "sırt" (numara kahraman), sağda başlık + RG tarih satırı.
+   Numarasız kayıt (yönetmelik/tebliğ) sırtta Resmî Gazete YILINI taşır — mono "RG" önekiyle,
+   soluk renkte (numarayla karışmaz); yıl da yoksa § glifi. "Yön."/"Gen." kısaltması YOK (tur 6).
+   ek: aynı numaralı ikinci kayıt (2646 — Elektronik Yazışma) sırtta kısa ek etiketi alır. */
+function SirtNumara({ no, yil, tur, mulga, cekirdek, ek }) {
+  const uzun = String(no || "").length > 4;
+  const ana = no || yil || "§";
+  const renk = mulga ? PAL.mut3 : cekirdek ? DERIN.T : no ? PAL.ink : PAL.mut2;
   return (
     <span aria-hidden="true" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", gap: SP.s, padding: `${SP.m + 2}px ${SP.s}px ${SP.m}px ${SP.m + 2}px`,
       background: cekirdek ? ALFA(T) : PAL.surf2, borderRight: `1px solid ${PAL.line}`, position: "relative", minWidth: 0 }}>
       {cekirdek && <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: T }} />}
-      <span className="mv-no" style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: m.no ? (uzun ? 19 : 28) : 18, lineHeight: m.no ? (uzun ? "22px" : "28px") : "22px",
-        fontStretch: "100%", letterSpacing: "-.03em", color: mulga ? PAL.mut3 : cekirdek ? DERIN.T : m.no ? PAL.ink : PAL.mut2,
-        textDecoration: mulga ? "line-through" : "none", textDecorationThickness: 2, whiteSpace: "nowrap", ...TNUM }}>{no}</span>
+      <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+        {!no && yil && <span style={{ ...TYPE.antet, fontSize: 9.5, color: PAL.mut3 }}>RG YILI</span>}
+        <span className="mv-no" style={{ fontFamily: DISPLAY, fontWeight: no ? 800 : 700, fontSize: uzun ? 19 : no ? 28 : 24, lineHeight: uzun ? "22px" : "28px",
+          fontStretch: "100%", letterSpacing: "-.03em", color: renk, textDecoration: mulga ? "line-through" : "none", textDecorationThickness: 2, whiteSpace: "nowrap", ...TNUM }}>{ana}</span>
+        {ek && <span style={{ alignSelf: "flex-start", fontFamily: MONO, fontSize: 10, lineHeight: "14px", fontWeight: 600, letterSpacing: ".06em", color: cekirdek ? DERIN.T : PAL.mut2, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.chip, padding: "0 5px" }}>EK · {ek}</span>}
+      </span>
       <span style={{ ...TYPE.antet, fontSize: 9.5, letterSpacing: ".1em", color: cekirdek ? DERIN.T : PAL.mut3, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-        <span className="mv-tur-uzun">{tur.ad}</span><span className="mv-tur-kisa" style={{ display: "none" }}>{tur.ad.length <= 7 ? tur.ad : tur.kisa}</span>
+        <span className="mv-tur">{tur}</span>
       </span>
     </span>
   );
 }
+
+/* Başlığın "— Ek Bölüm" kuyruğundan kısa ek etiketi: "Elektronik Yazışma" → "EY". */
+const ekKisaltma = (baslik) => {
+  const kuyruk = String(baslik || "").split(/\s[—–]\s/)[1];
+  if (!kuyruk) return null;
+  return kuyruk.split(/\s+/).filter((k) => k.length > 2).map((k) => k[0]).join("").toLocaleUpperCase("tr").slice(0, 3) || null;
+};
+const rgYili = (kn) => (String(kn.rgTarih || kn.kabul || kn.kararTarih || "").match(/(1[89]|20)\d\d/) || [null])[0];
 
 /* Metnin niteliği (sunucu katalogda hesaplar: lafzi | yakin | ozet | null). Korpusun çoğu
    madde özetidir → özet sessiz gri; yalnız lafzî metin yeşil. Açıklama title + ekran okuyucuda
@@ -174,43 +195,56 @@ function NitelikEtiketi({ nitelik }) {
   if (!n) return null;
   return (
     <span title={`${n.ad} — ${n.aciklama}`} style={{ color: nitelik === "lafzi" ? DERIN.yesil : nitelik === "yakin" ? PAL.mut2 : PAL.mut3, fontWeight: nitelik === "lafzi" ? 600 : 400 }}>
-      {NITELIK_KISA[nitelik]}<span aria-hidden="true"> ·</span><span style={SR_ONLY}>: {n.aciklama}</span>
+      {NITELIK_KISA[nitelik]}<span style={SR_ONLY}>: {n.aciklama}</span>
     </span>
   );
 }
 
-function KatalogKart({ m, onAc, sira = 0, q = "" }) {
+/* Künye satırı: RG tarih + sayı TEK PARÇA ve asla kırpılmaz (hukuki atfın kimliği); dar
+   kartta önce nitelik etiketi, sonra madde sayısı geri çekilir (tur 6: "S.…" kesiliyordu). */
+function KartKunye({ m, kn, mulga }) {
+  const yedek = kn.kabul ? `Kabul ${kn.kabul}` : kn.kararTarih ? `Karar ${kn.kararTarih}` : kn.duz ? "Düstur" : kn.altBaslik;
+  return (
+    <span style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: SP.s, minWidth: 0, fontFamily: MONO, fontSize: 11.5, lineHeight: "16px", color: PAL.mut2, ...TNUM }}>
+      {kn.rgTarih ? (
+        <span style={{ whiteSpace: "nowrap", flexShrink: 0 }}>
+          <span style={{ color: PAL.mut3 }}>RG </span>{kn.rgTarih}{kn.rgSayi && <span style={{ color: PAL.mut3 }}> · S.{kn.rgSayi}</span>}
+        </span>
+      ) : (
+        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>{yedek || "künye yok"}</span>
+      )}
+      {mulga && <span style={{ ...TYPE.meta, fontSize: 11, fontWeight: 600, color: DERIN.R, whiteSpace: "nowrap", flexShrink: 0 }}>Mülga</span>}
+      {kn.durum === "kismen" && <span style={{ ...TYPE.meta, fontSize: 11, fontWeight: 600, color: DERIN.sari, whiteSpace: "nowrap", flexShrink: 0 }}>Kısmen yürürlükte</span>}
+      <span style={{ marginLeft: "auto", flexShrink: 0, whiteSpace: "nowrap", color: PAL.mut3, display: "inline-flex", alignItems: "center", gap: SP.xs }}>
+        <span>{m.madde_sayisi > 0 ? `${m.madde_sayisi} md.` : "tam metin"}</span>
+        <span className="mv-ok" style={{ display: "inline-flex", color: DERIN.T, flexShrink: 0 }}><Icon.arrow width={14} height={14} /></span>
+      </span>
+    </span>
+  );
+}
+
+function KatalogKart({ m, onAc, sira = 0, q = "", ciftNo = false }) {
   const cekirdek = CEKIRDEK_NO.has(m.no);
   const kn = kunyeCoz(m.kunye);
   const mulga = mulgaMi(m, kn);
-  const tur = turBul(m);
-  const yedek = kn.kabul ? `Kabul ${kn.kabul}` : kn.kararTarih ? `Karar ${kn.kararTarih}` : kn.duz ? "Düstur" : kn.altBaslik;
   return (
     <button type="button" onClick={() => onAc({ dosya: m.dosya, maddeNo: null })} aria-haspopup="dialog" {...focusRing} data-press="" className="mv-kart"
       title={m.kunye || undefined} data-dosya={m.dosya}
       style={{ display: "grid", gridTemplateColumns: "92px minmax(0,1fr)", textAlign: "left", padding: 0, overflow: "hidden", borderRadius: RAD.card, background: PAL.surf,
         border: `1px solid ${PAL.line}`, cursor: "pointer", minHeight: 112, color: "inherit", font: "inherit",
         animation: `nu-rise .38s var(--ke-ease-out) ${Math.min(sira, 14) * 28}ms backwards` }}>
-      <SirtNumara m={m} tur={tur} mulga={mulga} cekirdek={cekirdek} />
+      <SirtNumara no={m.no} yil={rgYili(kn)} tur={turBul(m)} mulga={mulga} cekirdek={cekirdek} ek={ciftNo ? ekKisaltma(m.baslik) : null} />
       <span style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: `${SP.m + 2}px ${SP.l}px ${SP.m}px`, minWidth: 0 }}>
-        {cekirdek && <span title="Sınıflandırma ve yasal süre kurallarının dayandığı çekirdek mevzuat" style={{ ...TYPE.antet, fontSize: 10, color: DERIN.T, marginBottom: -4 }}>ÇEKİRDEK</span>}
-        <span style={{ ...TYPE.ui, fontWeight: 600, color: mulga ? PAL.mut2 : PAL.ink, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", textWrap: "pretty" }}><Vurgulu metin={m.baslik} q={q} /></span>
-        <span style={{ marginTop: "auto", display: "flex", alignItems: "center", gap: SP.s, minWidth: 0, fontFamily: MONO, fontSize: 11.5, lineHeight: "16px", color: PAL.mut2, ...TNUM }}>
-          {kn.rgTarih ? (
-            <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>
-              <span style={{ color: PAL.mut3 }}>RG </span>{kn.rgTarih}{kn.rgSayi && <span className="mv-sayi" style={{ color: PAL.mut3 }}> · S.{kn.rgSayi}</span>}
-            </span>
-          ) : (
-            <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>{yedek || "künye yok"}</span>
-          )}
-          {mulga && <span style={{ ...TYPE.meta, fontSize: 11, fontWeight: 600, color: DERIN.R, whiteSpace: "nowrap" }}>Mülga</span>}
-          {kn.durum === "kismen" && <span style={{ ...TYPE.meta, fontSize: 11, fontWeight: 600, color: DERIN.sari, whiteSpace: "nowrap" }}>Kısmen yürürlükte</span>}
-          <span style={{ marginLeft: "auto", whiteSpace: "nowrap", color: PAL.mut3, display: "inline-flex", alignItems: "center", gap: SP.xs }}>
-            <NitelikEtiketi nitelik={m.nitelik} />
-            {m.madde_sayisi > 0 ? `${m.madde_sayisi} md.` : "tam metin"}
-            <span className="mv-ok" style={{ display: "inline-flex", color: DERIN.T }}><Icon.arrow width={14} height={14} /></span>
+        {(cekirdek || NITELIK[m.nitelik]) && (
+          /* Üst künye: solda ÇEKİRDEK, sağda metnin niteliği — alt satırdaki RG sayısıyla yer
+             yarışmaz (tur 6: "S.…" ve "yakın-l…" kesiliyordu). */
+          <span style={{ display: "flex", alignItems: "baseline", gap: SP.s, marginBottom: -4, ...TYPE.antet, fontSize: 10 }}>
+            {cekirdek && <span title="Sınıflandırma ve yasal süre kurallarının dayandığı çekirdek mevzuat" style={{ color: DERIN.T }}>ÇEKİRDEK</span>}
+            <span className="mv-nit" style={{ marginLeft: "auto", fontFamily: MONO, letterSpacing: ".02em", whiteSpace: "nowrap" }}><NitelikEtiketi nitelik={m.nitelik} /></span>
           </span>
-        </span>
+        )}
+        <span style={{ ...TYPE.ui, fontWeight: 600, color: mulga ? PAL.mut2 : PAL.ink, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", textWrap: "pretty" }}><Vurgulu metin={m.baslik} q={q} /></span>
+        <KartKunye m={m} kn={kn} mulga={mulga} />
       </span>
     </button>
   );
@@ -313,7 +347,7 @@ const KART_IZGARA = { display: "grid", gridTemplateColumns: "repeat(auto-fill, m
    Katalog tek sayfada 304 kayıt = 18.7 ekranlık kesintisiz kaydırma (Playwright ölçümü) →
    memur konu grubunu göz ile arıyordu. <details> ile: klavye/erişilebilirlik native,
    reduced-motion'da anında, sıfır bağımlılık. Arama/filtre aktifken (acik) tüm gruplar açık gelir. */
-function KategoriGrup({ ad, sira, mevzuatlar, onAc, acik, q }) {
+function KategoriGrup({ ad, sira, mevzuatlar, onAc, acik, q, ciftNolar }) {
   return (
     <details open={acik} aria-label={`${ad} mevzuatı`} className="mv-bolum" style={{ borderTop: `1px solid ${PAL.lineHi}`, padding: `${SP.m}px 0 ${SP.l}px` }}>
       <summary style={{ cursor: "pointer", display: "flex", alignItems: "baseline", gap: SP.m, padding: `${SP.s}px ${SP.s}px ${SP.s}px 0`, borderRadius: RAD.ctl }}>
@@ -326,7 +360,7 @@ function KategoriGrup({ ad, sira, mevzuatlar, onAc, acik, q }) {
         <p style={{ margin: `0 0 ${SP.l}px 46px`, ...TYPE.data, color: PAL.mut2, maxWidth: 720 }}>{KATEGORI_ACIKLAMA[ad]}</p>
       )}
       <div style={KART_IZGARA}>
-        {mevzuatlar.map((m, i) => <KatalogKart key={m.dosya} m={m} onAc={onAc} sira={i} q={q} />)}
+        {mevzuatlar.map((m, i) => <KatalogKart key={m.dosya} m={m} onAc={onAc} sira={i} q={q} ciftNo={!!m.no && ciftNolar?.has(m.no)} />)}
       </div>
     </details>
   );
@@ -404,8 +438,8 @@ function StatikKatalog({ kod, onTekrar }) {
       <div style={{ ...TYPE.antet, color: PAL.mut3, margin: `0 0 ${SP.m}px` }}>ÇEVRİMDIŞI REFERANS · ÇEKİRDEK {STATIK_KATALOG.length} KAYNAK</div>
       <div style={KART_IZGARA}>
         {STATIK_KATALOG.map((k) => (
-          <div key={k.no} style={{ display: "grid", gridTemplateColumns: "92px minmax(0,1fr)", overflow: "hidden", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}` }}>
-            <span aria-hidden="true" style={{ padding: `${SP.m + 2}px ${SP.s}px ${SP.m}px ${SP.m + 2}px`, background: ALFA(T), boxShadow: `inset 3px 0 0 ${T}`, borderRight: `1px solid ${PAL.line}`, fontFamily: DISPLAY, fontWeight: 800, fontSize: 19, lineHeight: "22px", color: DERIN.T }}>{k.no}</span>
+          <div key={k.no} style={{ display: "grid", gridTemplateColumns: "92px minmax(0,1fr)", overflow: "hidden", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, minHeight: 112 }}>
+            <SirtNumara no={k.no} tur={k.tur} cekirdek />
             <div style={{ padding: `${SP.m + 2}px ${SP.l}px` }}>
               <div style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{k.ad}</div>
               <p style={{ margin: "4px 0 0", ...TYPE.data, color: PAL.mut2 }}>{k.aciklama}</p>
@@ -417,20 +451,31 @@ function StatikKatalog({ kod, onTekrar }) {
   );
 }
 
-/* Yükleniyor — kart iskeleti gerçek kartın geometrisinde (sırt + iki satır). */
+/* Yükleniyor — GERÇEK düzenin iskeleti: solda dizin çizgileri, sağda "§ 01" bölüm şeridi +
+   iki sütun kart (sırt + iki satır). Katalog gelince hiçbir blok yer değiştirmez (tur 6: üç
+   sütunlu iskeletten dizinli düzene sıçrama). */
+const IskeletCubuk = ({ w, h = 12 }) => <span style={{ display: "block", height: h, width: w, borderRadius: 3, background: PAL.press }} />;
 function KatalogIskelet() {
   return (
-    <div aria-busy="true" style={KART_IZGARA}>
+    <div aria-busy="true" className="mv-duzen">
       <span role="status" style={SR_ONLY}>Mevzuat kataloğu yükleniyor…</span>
-      {Array.from({ length: 9 }).map((_, i) => (
-        <div key={i} aria-hidden="true" style={{ display: "grid", gridTemplateColumns: "92px 1fr", height: 112, borderRadius: RAD.card, border: `1px solid ${PAL.line}`, overflow: "hidden", background: PAL.surf, animation: `nu-think 1.6s ease-in-out ${i * 90}ms infinite` }}>
-          <span style={{ background: PAL.surf2, borderRight: `1px solid ${PAL.line}`, padding: SP.m }}><span style={{ display: "block", width: 48, height: 22, borderRadius: 4, background: PAL.press }} /></span>
-          <span style={{ padding: SP.l, display: "grid", gap: SP.s, alignContent: "start" }}>
-            <span style={{ height: 12, width: "85%", borderRadius: 3, background: PAL.press }} />
-            <span style={{ height: 12, width: "55%", borderRadius: 3, background: PAL.press }} />
-          </span>
+      <div aria-hidden="true" className="mv-dizin" style={{ display: "grid", gap: SP.m, paddingLeft: 14, animation: "nu-think 1.6s ease-in-out infinite" }}>
+        <span className="mv-dizin-baslik" style={{ display: "block", paddingBottom: SP.s, borderBottom: `1px solid ${PAL.ink}` }}><IskeletCubuk w={56} h={10} /></span>
+        {[78, 64, 88, 58, 72, 84, 60, 70].map((w, i) => <IskeletCubuk key={i} w={`${w}%`} h={11} />)}
+      </div>
+      <div aria-hidden="true" style={{ minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.m + SP.s}px 0 ${SP.l}px`, borderTop: `1px solid ${PAL.lineHi}` }}>
+          <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3 }}>§ 01</span><IskeletCubuk w={220} h={16} />
         </div>
-      ))}
+        <div style={KART_IZGARA}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} style={{ display: "grid", gridTemplateColumns: "92px 1fr", height: 112, borderRadius: RAD.card, border: `1px solid ${PAL.line}`, overflow: "hidden", background: PAL.surf, animation: `nu-think 1.6s ease-in-out ${i * 90}ms infinite` }}>
+              <span style={{ background: PAL.surf2, borderRight: `1px solid ${PAL.line}`, padding: SP.m }}><IskeletCubuk w={48} h={22} /></span>
+              <span style={{ padding: SP.l, display: "grid", gap: SP.s, alignContent: "start" }}><IskeletCubuk w="85%" /><IskeletCubuk w="55%" /></span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -449,6 +494,12 @@ function AramaBasligi({ aramaRef, filtre, setFiltre, aramaModu, setAramaModu, sa
             aria-label={aramaModu === "derin" ? "Mevzuat maddelerinin içinde ara" : "Mevzuat kataloğunda ara"}
             onFocus={() => setOdakta(true)} onBlur={() => setOdakta(false)}
             style={{ flex: 1, minWidth: 0, height: "100%", border: "none", background: "transparent", ...TYPE.read, color: PAL.ink, outline: "none" }} />
+          {filtre && (
+            <button type="button" className="mv-temizle" onClick={() => { setFiltre(""); aramaRef.current?.focus(); }} aria-label="Aramayı temizle" {...focusRing} data-press=""
+              style={{ cursor: "pointer", display: "grid", placeItems: "center", width: 32, height: 32, flexShrink: 0, borderRadius: RAD.ctl, border: "none", background: "transparent", color: PAL.mut2, padding: 0 }}>
+              <Icon.x width={16} height={16} />
+            </button>
+          )}
           {!filtre && !odakta && (
             <span aria-hidden="true" className="mv-kisayol" style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, border: `1px solid ${PAL.line}`, borderBottomWidth: 2, borderRadius: RAD.chip, padding: "1px 7px", background: PAL.surf2, pointerEvents: "none" }}>/</span>
           )}
@@ -559,6 +610,13 @@ export default function MevzuatView({ history = [] }) {
     if (Array.isArray(katalog)) for (const m of katalog) sayim.set(m.kategori, (sayim.get(m.kategori) || 0) + 1);
     return sayim;
   }, [katalog]);
+  // Aynı numarayı taşıyan birden çok kayıt (2646 Yönetmelik + Elektronik Yazışma bölümü):
+  // sırtta ek etiketi alır — kahraman rakam aynı olunca kopya kayıt gibi okunuyordu (tur 6).
+  const ciftNolar = useMemo(() => {
+    const say = new Map();
+    if (Array.isArray(katalog)) for (const m of katalog) if (m.no) say.set(m.no, (say.get(m.no) || 0) + 1);
+    return new Set([...say].filter(([, n]) => n > 1).map(([no]) => no));
+  }, [katalog]);
   const cekirdekSayi = useMemo(() => (Array.isArray(katalog) ? katalog.filter((m) => CEKIRDEK_NO.has(m.no)).length : 0), [katalog]);
 
   // Gruplu görünüm: backend'in kategori sırasıyla, yalnız eşleşmesi olan gruplar.
@@ -659,7 +717,7 @@ export default function MevzuatView({ history = [] }) {
               // Açık gelenler: arama/filtre aktifse hepsi (sonuç zaten dar) VEYA tek grup varsa
               // o. Aksi halde yalnız ilk grup açık; gerisi katlı → memur konu seçip açar.
               gruplar.map(([ad, uyeler, sira], gi) => (
-                <KategoriGrup key={ad} ad={ad} sira={sira} mevzuatlar={uyeler} onAc={ac} q={trLower(filtre.trim())}
+                <KategoriGrup key={ad} ad={ad} sira={sira} mevzuatlar={uyeler} onAc={ac} q={trLower(filtre.trim())} ciftNolar={ciftNolar}
                   acik={!!filtre.trim() || !!kategori || gruplar.length === 1 || gi === 0} />
               ))
             )}

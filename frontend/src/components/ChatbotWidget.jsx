@@ -9,12 +9,11 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiPost, authFetch } from "../lib/authApi.js";
-import { mdSatirTipi } from "../lib/mdSatir.js";
-import { satirIciParcala, kayitAdi, notSaati } from "../lib/sohbetMetin.js";
 import { sttDestekleniyorMu } from "../lib/sesliMod.js";
 import { hafizaKaydet, hafizaTemizle, hafizaYukle } from "../lib/sohbetHafiza.js";
 import SesliGorusme from "./SesliGorusme.jsx";
-import { BANT, MONO, DISPLAY, PAL, T, V, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, Icon, Damga, focusRing, SR_ONLY } from "./neonUi.jsx";
+import { Balon, BeklemeFisi } from "./AsistanFis.jsx";
+import { MONO, DISPLAY, PAL, T, DERIN, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, Icon, focusRing, SR_ONLY } from "./neonUi.jsx";
 
 /* Panelin çapası: kenar çubuğu (cilt) sağ kenarının 12px yanı, tetikle aynı taban hizası.
    Telefonda (≤720) null → panel ekran genişliğinde alttan açılır (dar rayın yanında 300px'lik
@@ -29,10 +28,6 @@ function capaHesapla() {
   return { left: Math.round(ray.right + 12), bottom: Math.max(SP.s, Math.round(window.innerHeight - t.bottom)) };
 }
 
-const GORUNUM_ETIKET = {
-  gelen: "Gelen evrak", giden: "Giden evrak", taslaklar: "Taslaklar",
-  mevzuat: "Mevzuat", denetim: "Denetim", panel: "Panel", islenen: "İşlenen evrak",
-};
 const ONERILER = [
   "Son gelen evraklar", "Kaç evrak işledik?", "Son işlemin detayı",
   "Reddedilen giden evraklar", "Mevzuat kataloğu", "Risk bandı nedir?",
@@ -44,177 +39,20 @@ const KARSILAMA = {
     "mevzuatta madde bulurum. Sorunuzu yazın ya da aşağıdaki listeden seçin.",
 };
 
-/* Hafif markdown: **kalın** + *eğik* + satır sonu + "• " madde + "---" yatay ayraç
-   (kütüphanesiz). Bilinen evrak kodları (bilgi_edinme, dilekce, tarih_yok) Türkçe etikete
-   çevrilir — ham anahtar ve çıplak "*" ekrana/ekran okuyucuya sızmaz (lib/sohbetMetin). */
-function Md({ text }) {
-  return (text || "").split("\n").map((satir, i) => {
-    const tip = mdSatirTipi(satir);
-    if (tip === "hr") {
-      return <hr key={i} aria-hidden="true" style={{ border: "none", borderTop: `1px solid ${PAL.line}`, margin: "8px 0" }} />;
-    }
-    const madde = tip === "madde";
-    const icerik = satirIciParcala(madde ? satir.slice(2) : satir).map((p, j) =>
-      p.tip === "kalin" ? <strong key={j} style={{ fontWeight: 650, color: "inherit" }}>{p.metin}</strong>
-        : p.tip === "egik" ? <em key={j} style={{ fontStyle: "italic" }}>{p.metin}</em>
-          : <React.Fragment key={j}>{p.metin}</React.Fragment>);
-    return madde
-      ? <span key={i} style={{ display: "flex", gap: SP.s }}><span aria-hidden="true" style={{ color: DERIN.T }}>•</span><span style={{ minWidth: 0 }}>{icerik}</span></span>
-      : <span key={i} style={{ display: "block" }}>{icerik}</span>;
-  });
-}
-
-/* Tek kayıt kartı — tür-bilinçli alanlar (MONO yalnız makine-verisi meta satırı + risk noktası). */
-function KayitKart({ tur, k }) {
-  const ad = kayitAdi(k);   // dosya adı ("ornek-x.txt") başlık olmaz — konu / tür etiketi
-  const risk = k.risk || k.bant;
-  const satir2 = [
-    tur === "gelen" && k.evrak_no,
-    tur === "giden" && k.durum, tur === "giden" && k.alici_birim,
-    tur === "islem" && k.evrak_turu, tur === "islem" && k.hedef_birim,
-    tur === "taslak" && k.yazi_turu_kod,
-    tur === "mevzuat" && (k.kanun_no || k.no) && `${k.kanun_no || k.no} sayılı`,
-    tur === "mevzuat" && k.madde_no && `m. ${k.madde_no}`,
-    tur === "mevzuat" && k.madde_sayisi && `${k.madde_sayisi} madde`,
-    (k.olusturuldu || k.gonderim_tarihi || "").slice(0, 10),
-  ].filter(Boolean);
-  return (
-    <div style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderLeft: `2px solid ${PAL.lineHi}`, borderRadius: RAD.ctl, padding: "8px 12px", display: "grid", gap: SP.xs }}>
-      <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
-        {risk && BANT[risk] && <span title={BANT[risk].l} aria-label={`Risk: ${BANT[risk].l}`} style={{ width: 8, height: 8, borderRadius: RAD.dot, background: BANT[risk].c, flexShrink: 0 }} />}
-        <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{ad}</span>
-      </div>
-      {satir2.length > 0 && <span style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut2 }}>{satir2.join(" · ")}</span>}
-      {tur === "mevzuat" && k.snippet && <span style={{ ...TYPE.meta, color: PAL.mut }}>{k.snippet}</span>}
-    </div>
-  );
-}
-
-/* Mevzuat kaynak çipi — asistan cevabının dayandığı madde; tıklanınca okuma modalı
-   ilgili maddede açılır (DashboardApp köprüsü → MevzuatView.hedef). */
-function KaynakCip({ kaynak, onMevzuatAc, onClose }) {
-  const etiket = [kaynak.no && `${kaynak.no}`, kaynak.baslik, kaynak.madde_no != null && `m.${kaynak.madde_no}`]
-    .filter(Boolean).join(" · ");
-  return (
-    <button type="button" {...focusRing} title={`${kaynak.baslik}: tam metni oku`}
-      onClick={() => { onMevzuatAc?.({ dosya: kaynak.dosya, maddeNo: kaynak.madde_no ?? null }); onClose(); }}
-      style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, maxWidth: "100%", minHeight: 32, ...TYPE.meta, fontWeight: 500, color: DERIN.V, background: ALFA(V), border: "none", borderRadius: RAD.chip, padding: "4px 10px", transition: "background .12s ease-out" }}>
-      <Icon.book width={12} height={12} />
-      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{etiket}</span>
-    </button>
-  );
-}
-
-const KAYIT_TUR_ETIKET = { gelen: "Gelen", giden: "Giden", islem: "İşlem", taslak: "Taslak", mevzuat: "Mevzuat", panel: "Panel" };
-
-/* Zımba — araç sonucu kayıtları nota "zımbalı ek" olarak tutturulur (Hamle 14). Saf dekor. */
-const Zimba = () => (
-  <svg aria-hidden="true" width="24" height="8" viewBox="0 0 24 8" style={{ position: "absolute", left: 16, top: 0, zIndex: 1 }}>
-    <path d="M2.5 6.5 V4 H21.5 V6.5" fill="none" stroke={PAL.mut2} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M4 3.2 H20" stroke={PAL.surf} strokeWidth="1" strokeLinecap="round" opacity=".5" />
-  </svg>
-);
-
-/* Mesaj — kullanıcı sağda (tükenmez mavisi), asistan solda "danışma notu fişi" (beyaz kâğıt +
-   hairline). Hata fişi kırmızı kenar + ikonla ayrışır (renk tek sinyal değil). Araç sonucu:
-   kayıt kartları zımbalı ek olarak altta; EN SON araç sonucu mini damga taşır ("3 KAYIT ·
-   GELEN") — panel başına tek damga (dikkat bütçesi), eski mesajlar damgasız. */
-function Balon({ m, onNavigate, onClose, onTeyit, onMevzuatAc, bekliyor, damgali }) {
-  const kullanici = m.rol === "kullanici";
-  const kayitSayi = m.kayitlar?.length || 0;
-  const saat = notSaati(m.zaman);
-  // Künye: notun türü (mono) — Karşılama · Danışma notu · İşlem durdu; sağda saat.
-  const kunye = m.karsilama ? "Karşılama" : m.hata ? "İşlem durdu" : "Danışma notu";
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: kullanici ? "flex-end" : "flex-start", gap: SP.s, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
-      {kullanici ? (
-        /* Memurun sorusu — tükenmez mavisi dolgulu kısa not; balon kuyruğu yok (kâğıt köşesi). */
-        <div style={{ maxWidth: "88%", padding: "9px 13px", ...TYPE.ui, overflowWrap: "anywhere", background: DERIN.T, color: PAL.onAccent, borderRadius: RAD.ctl }}>
-          <Md text={m.icerik} />
-        </div>
-      ) : (
-        /* Asistanın cevabı = DANIŞMA NOTU FİŞİ (tur 4, jüri A#32/B#18): balon değil kâğıt —
-           mono künye satırı (tür · saat) + kesikli ayraç + gövde; sol kenarda ıstampa moru
-           cilt çizgisi. Karşılama da aynı fişle başlar: panelin ilk izlenimi sohbet balonu değil. */
-        <div style={{ position: "relative", width: "92%", background: PAL.surf, border: `1px solid ${PAL.line}`, borderLeft: `3px solid ${m.hata ? BANT.kirmizi.c : V}`, borderRadius: RAD.ctl, boxShadow: SH.card, color: PAL.ink2, overflowWrap: "anywhere" }}>
-          <div aria-hidden="true" style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "7px 12px 6px", borderBottom: `1px dashed ${PAL.lineHi}`, ...TYPE.antet, fontSize: 10, lineHeight: "14px", textTransform: "uppercase", color: m.hata ? DERIN.kirmizi : PAL.mut3 }}>
-            {m.hata && <Icon.alert width={12} height={12} />}
-            <span>{kunye}</span>
-            <span style={{ flex: 1 }} />
-            {saat && <span style={TNUM}>{saat}</span>}
-          </div>
-          <div style={{ padding: "9px 12px 11px", ...TYPE.ui }}><Md text={m.icerik} /></div>
-        </div>
-      )}
-      {kayitSayi > 0 && (
-        <div style={{ position: "relative", display: "grid", gap: SP.s, width: "88%", paddingTop: SP.xs }}>
-          <Zimba />
-          {damgali && (
-            <Damga ton={V} egim={-5} kucuk style={{ position: "absolute", right: 6, top: -12, zIndex: 2, background: PAL.surf }}>
-              {kayitSayi} kayıt{KAYIT_TUR_ETIKET[m.kayit_turu] ? ` · ${KAYIT_TUR_ETIKET[m.kayit_turu]}` : ""}
-            </Damga>
-          )}
-          {m.kayitlar.slice(0, 8).map((k, i) => <KayitKart key={i} tur={m.kayit_turu} k={k} />)}
-          {kayitSayi > 8 && <span style={{ ...TYPE.meta, color: PAL.mut2 }}>+{kayitSayi - 8} kayıt daha — tümü ilgili görünümde</span>}
-        </div>
-      )}
-      {m.mevzuat_kaynaklari?.length > 0 && (
-        <div role="group" aria-label="Cevabın mevzuat kaynakları" style={{ display: "flex", flexWrap: "wrap", gap: SP.s, maxWidth: "88%" }}>
-          {m.mevzuat_kaynaklari.map((k, i) => (
-            <KaynakCip key={`${k.dosya}-${k.madde_no ?? i}`} kaynak={k} onMevzuatAc={onMevzuatAc} onClose={onClose} />
-          ))}
-        </div>
-      )}
-      {m.onay_bekleyen && !m.onay_kullanildi && (
-        <div style={{ display: "flex", gap: SP.s }}>
-          {/* Başka bir mesaj akışta iken (bekliyor) devre dışı: aksi halde onTeyit balonu
-              hemen "kullanıldı" işaretler ama gonder() kendi bekliyor kontrolünde isteği
-              sessizce atlar — karar hiç gönderilmeden kaybolurdu (regresyon bulgusu). */}
-          <button type="button" {...focusRing} disabled={bekliyor} onClick={() => onTeyit(m, true)}
-            style={{ cursor: bekliyor ? "not-allowed" : "pointer", opacity: bekliyor ? 0.5 : 1, display: "inline-flex", alignItems: "center", gap: SP.s, ...TYPE.data, fontWeight: 500, color: PAL.onAccent, background: DERIN.T, border: "none", borderRadius: RAD.ctl, padding: "8px 12px", transition: "background .12s ease-out" }}>
-            <Icon.check /> Evet, uygula
-          </button>
-          <button type="button" {...focusRing} disabled={bekliyor} onClick={() => onTeyit(m, false)}
-            style={{ cursor: bekliyor ? "not-allowed" : "pointer", opacity: bekliyor ? 0.5 : 1, ...TYPE.data, fontWeight: 500, color: PAL.ink, background: PAL.surf, border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.ctl, padding: "8px 12px", transition: "background .12s ease-out" }}>
-            Vazgeç
-          </button>
-        </div>
-      )}
-      {m.oneri_gorunum && GORUNUM_ETIKET[m.oneri_gorunum] && (
-        <button type="button" {...focusRing}
-          onClick={() => { onNavigate?.(m.oneri_gorunum); onClose(); }}
-          style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: SP.xs, minHeight: 32, ...TYPE.data, fontWeight: 500, color: DERIN.T, background: ALFA(T), border: "none", borderRadius: RAD.ctl, padding: "4px 12px" }}>
-          {GORUNUM_ETIKET[m.oneri_gorunum]} görünümüne git <Icon.arrow width={13} height={13} />
-        </button>
-      )}
-      {m.hata && (
-        <button type="button" {...focusRing} onClick={m.tekrar}
-          style={{ cursor: "pointer", ...TYPE.data, fontWeight: 500, color: DERIN.kirmizi, background: ALFA(BANT.kirmizi.c), border: "none", borderRadius: RAD.ctl, padding: "4px 12px" }}>
-          Tekrar dene
-        </button>
-      )}
-    </div>
-  );
-}
-
-/* "Yazıyor" — üç nokta değil, kalem karalaması: tükenmez çizgisi kendini çizip silen döngü
-   (stroke-dashoffset). Reduced-motion'da global kural animasyonu söndürür → durağan çizgi kalır. */
-function Yaziyor() {
-  return (
-    <div role="status" aria-label="Asistan yazıyor" style={{ display: "inline-flex", alignItems: "center", gap: SP.s, padding: "8px 12px", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: `${RAD.chip}px ${RAD.card}px ${RAD.card}px ${RAD.card}px`, width: "fit-content" }}>
-      <svg width="46" height="16" viewBox="0 0 46 16" fill="none" aria-hidden="true">
-        <path className="ke-karala" d="M2 11 C6 3 9 3 9 9 C9 13 7 13 9 8 C11 4 15 4 15 9 C16 12 18 11 21 6 C23 3 25 6 24 10 C27 6 30 5 32 9 C34 12 37 10 44 5"
-          stroke={T} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" pathLength="100" />
-      </svg>
-      <span style={{ ...TYPE.meta, color: PAL.mut2 }}>yazıyor</span>
-    </div>
-  );
-}
-
 /* Bileşen-yerel kurallar (satır-içi stil :hover/@keyframes/medya yazamaz). */
 const SOHBET_CSS = `
-@keyframes ke-karala{0%{stroke-dashoffset:100}55%{stroke-dashoffset:0}100%{stroke-dashoffset:-100}}
-.ke-karala{stroke-dasharray:100;animation:ke-karala 1.5s cubic-bezier(0.77,0,0.175,1) infinite}
+@keyframes ke-kalem{0%{stroke-dashoffset:100;opacity:1}55%{stroke-dashoffset:0;opacity:1}85%{stroke-dashoffset:0;opacity:.25}100%{stroke-dashoffset:0;opacity:0}}
+.ke-kalem{stroke-dasharray:100;animation:ke-kalem 1.6s cubic-bezier(0.77,0,0.175,1) infinite}
+.ke-sohbet-dipnot:hover{background:${PAL.hov}!important}
+.ke-sohbet-dipnot .ke-sohbet-dipnot-ok{opacity:0;transform:translateX(-3px);transition:opacity .14s ease-out, transform .18s ${EASE.out}}
+.ke-sohbet-dipnot:hover .ke-sohbet-dipnot-ok,.ke-sohbet-dipnot:focus-visible .ke-sohbet-dipnot-ok{opacity:1;transform:none}
+@media (max-width:480px){.ke-sesli-etiket{display:none}}
+/* Dokunmatik: her hedef ≥44 px (CLAUDE.md a11y) — fare ile yoğun kalır. */
+@media (pointer:coarse){
+  .ke-sohbet-ikon{min-width:44px!important;height:44px!important}
+  .ke-sohbet-oneri{min-height:44px!important}
+  .ke-sohbet-dokun,.ke-sohbet-dipnot{min-height:44px!important}
+}
 .ke-sohbet-ikon:hover:not(:disabled){background:${PAL.hov}!important;color:${PAL.ink}!important}
 .ke-sohbet-oneri:hover{background:${PAL.hov}!important}
 .ke-sohbet-girdi:focus{border-color:${T}!important;box-shadow:0 0 0 3px color-mix(in srgb, ${T} 18%, transparent)}
@@ -273,9 +111,25 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
   const inputRef = useRef(null);
   const listeRef = useRef(null);
 
-  // Yeni mesaj/durumda en alta kay (kullanıcı son cevabı görsün).
+  // Okuma sırası (tur 6): memurun sorusu ve bekleme fişi → dibe kay; asistanın cevabı ise
+  // fişin ÜST kenarı görünür alanın tepesine hizalanır — uzun cevapta memur kuyruğu (çipler,
+  // "görünüme git") değil ilk cümleyi görür. Akan deltalar kaydırmayı yeniden tetiklemez:
+  // hizalama mesaj başına bir kez yapılır (sonHizalanan).
+  const sonFisRef = useRef(null);
+  const sonHizalanan = useRef(-1);
   useEffect(() => {
-    if (listeRef.current) listeRef.current.scrollTop = listeRef.current.scrollHeight;
+    const liste = listeRef.current;
+    if (!liste || !acik) return;
+    const i = mesajlar.length - 1;
+    const son = mesajlar[i];
+    if (son?.rol === "asistan" && !son.karsilama && i > 0) {
+      if (sonHizalanan.current === i) return;
+      sonHizalanan.current = i;
+      const fis = sonFisRef.current;
+      if (fis) liste.scrollTop = Math.max(0, fis.offsetTop - liste.offsetTop - SP.s);
+      return;
+    }
+    liste.scrollTop = liste.scrollHeight;
   }, [mesajlar, bekliyor, acik]);
   useEffect(() => { if (acik) inputRef.current?.focus(); }, [acik]);
 
@@ -456,19 +310,31 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
           <header style={{ padding: "14px 16px 0", background: PAL.surfPop }}>
             <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
               <div style={{ minWidth: 0, flex: 1 }}>
-                {/* Künye (tur 4, jüri B#18): "Havale notu" resmî yazışmada SEVK notudur — yanlış
-                    etiketti; "canlı model" jargondu. Danışma masası + son cevabın kaynağı. */}
-                <div style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", display: "flex", gap: SP.s, alignItems: "center" }}>
-                  <span aria-hidden="true">T.C. · Kamu-Evrak · Danışma</span>
-                  {kaynak && <span style={{ color: kaynak === "llm" ? DERIN.T : PAL.mut3 }}>· {kaynak === "llm" ? "yapay zekâ yanıtı" : "kural tabanlı yanıt"}</span>}
+                {/* Künye TEK satır (tur 6: cevap gelince iki-üç sütuna kırılıyordu); son cevabın
+                    kaynağı künyede değil başlığın yanında küçük mono rozet. "T.C." yok — bağımsız
+                    ürün devlet kimliğini kendi anteti gibi taşımaz (ViewWrap ile aynı karar). */}
+                <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>
+                  Kamu-Evrak · Danışma masası
                 </div>
-                <h2 style={{ margin: "2px 0 0", fontFamily: DISPLAY, fontWeight: 800, fontStretch: "112%", fontSize: 18, lineHeight: "22px", letterSpacing: "-.01em", color: PAL.ink }}>Evrak asistanı</h2>
+                <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, minWidth: 0, marginTop: 2, overflow: "hidden" }}>
+                  <h2 style={{ margin: 0, minWidth: 0, fontFamily: DISPLAY, fontWeight: 800, fontStretch: "112%", fontSize: 18, lineHeight: "22px", letterSpacing: "-.01em", color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Evrak asistanı</h2>
+                  {kaynak && (
+                    <span title={kaynak === "llm" ? "Son cevap yapay zekâ modeliyle üretildi" : "Son cevap kural tabanlı yedek motordan geldi"}
+                      style={{ flexShrink: 0, fontFamily: MONO, fontSize: 10, lineHeight: "14px", letterSpacing: ".04em", whiteSpace: "nowrap", padding: "1px 6px", borderRadius: RAD.chip,
+                        color: kaynak === "llm" ? DERIN.T : PAL.mut2, border: `1px solid ${kaynak === "llm" ? `color-mix(in srgb, ${T} 35%, transparent)` : PAL.lineHi}`, ...TNUM }}>
+                      {/* Kısa mono kod her genişlikte (tur 7: "YZ yanıtı" 1440/1920'de Sesli düğmesine
+                          çarpıp ortadan kırpılıyordu); açıklama title + aria-label'da. */}
+                      <span aria-hidden="true">{kaynak === "llm" ? "YZ" : "KURAL"}</span>
+                      <span style={SR_ONLY}>{kaynak === "llm" ? "Son cevap: yapay zekâ yanıtı" : "Son cevap: kural tabanlı"}</span>
+                    </span>
+                  )}
+                </div>
               </div>
               {sttVar && (
                 <button type="button" className="ke-sohbet-ikon" data-press="" onClick={() => { setSesliAcik(true); setAcik(false); }}
                   aria-label="Kamu Evrak ile sesli görüş" title="Sesli görüş" {...focusRing}
                   style={{ ...IKON_DUGME, width: "auto", padding: "0 10px", gap: 6, display: "inline-flex", alignItems: "center", color: DERIN.T, ...TYPE.meta, fontWeight: 600 }}>
-                  <Icon.audio width={16} height={16} /> Sesli
+                  <Icon.audio width={16} height={16} /> <span className="ke-sesli-etiket">Sesli</span>
                 </button>
               )}
               {mesajlar.length > 1 && (
@@ -487,8 +353,8 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
               mutasyona uğratır, her mutasyon SR kuyruğuna girerdi (result-cards daktilo idiomu).
               Tam yanıt aşağıdaki SR_ONLY role=status bölgesinden TEK seferde duyurulur. */}
           <div ref={listeRef} role="log" aria-live={bekliyor ? "off" : "polite"} aria-busy={bekliyor} aria-atomic="false" style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", display: "flex", flexDirection: "column", gap: SP.m, background: PAL.bg }}>
-            {mesajlar.map((m, i) => <Balon key={i} m={m} damgali={i === sonAracIdx && !m.akiyor} onNavigate={onNavigate} onClose={kapat} onTeyit={onTeyit} onMevzuatAc={onMevzuatAc} bekliyor={bekliyor} />)}
-            {bekliyor && mesajlar[mesajlar.length - 1]?.rol === "kullanici" && <Yaziyor />}
+            {mesajlar.map((m, i) => <Balon key={i} m={m} fisRef={i === mesajlar.length - 1 ? sonFisRef : undefined} damgali={i === sonAracIdx && !m.akiyor} onNavigate={onNavigate} onClose={kapat} onTeyit={onTeyit} onMevzuatAc={onMevzuatAc} bekliyor={bekliyor} />)}
+            {bekliyor && mesajlar[mesajlar.length - 1]?.rol === "kullanici" && <BeklemeFisi />}
             {ilkAcilis && !bekliyor && (
               <div style={{ marginTop: SP.xs }}>
                 {/* Sık sorulanlar = numaralı soru listesi (form maddesi gibi), hap çip değil (jüri A#32). */}
@@ -497,7 +363,7 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
                   {ONERILER.map((o, n) => (
                     <li key={o} style={{ borderTop: n ? `1px solid ${PAL.line}` : "none" }}>
                       <button type="button" className="ke-sohbet-oneri" {...focusRing} data-press="" onClick={() => gonder(o)}
-                        style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.m, width: "100%", minHeight: 36, padding: "6px 12px", ...TYPE.data, fontWeight: 500, color: PAL.ink2, background: "transparent", border: "none", textAlign: "left", transition: `background .12s ease, transform .14s ${EASE.out}` }}>
+                        style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.m, width: "100%", minHeight: 38, padding: "6px 12px", ...TYPE.data, fontWeight: 500, color: PAL.ink2, background: "transparent", border: "none", textAlign: "left", transition: `background .12s ease, transform .14s ${EASE.out}` }}>
                         <span aria-hidden="true" style={{ fontFamily: MONO, fontSize: 11, lineHeight: "16px", color: PAL.mut3, ...TNUM }}>{String(n + 1).padStart(2, "0")}</span>
                         <span style={{ flex: 1 }}>{o}</span>
                         <span aria-hidden="true" style={{ display: "flex", color: PAL.mut3 }}><Icon.arrow width={13} height={13} /></span>
@@ -517,12 +383,12 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
             <input ref={inputRef} type="text" value={girdi} onChange={(e) => setGirdi(e.target.value)}
               placeholder="Evrak sorun, mevzuat arayın…" aria-label="Asistana mesaj yaz"
               maxLength={1000} className="ke-sohbet-girdi"
-              style={{ flex: 1, minWidth: 0, ...TYPE.ui, fontSize: 16, color: PAL.ink, background: PAL.surf, border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.ctl, padding: "8px 12px", minHeight: 40, boxSizing: "border-box", outline: "none", transition: "border-color .15s ease, box-shadow .2s ease" }} />
+              style={{ flex: 1, minWidth: 0, ...TYPE.ui, fontSize: 16, color: PAL.ink, background: PAL.surf, border: `1px solid ${PAL.inputLine}`, borderRadius: RAD.ctl, padding: "8px 12px", minHeight: 44, boxSizing: "border-box", outline: "none", transition: "border-color .15s ease, box-shadow .2s ease" }} />
             <button type="submit" aria-label="Mesajı gönder" disabled={gonderPasif} {...focusRing} data-press=""
               onMouseEnter={(e) => { if (!gonderPasif) e.currentTarget.style.background = DERIN.Th; }}
               onMouseLeave={(e) => { if (!gonderPasif) e.currentTarget.style.background = DERIN.T; }}
               style={{
-                cursor: gonderPasif ? "not-allowed" : "pointer", width: 44, height: 40, borderRadius: RAD.ctl, border: "none",
+                cursor: gonderPasif ? "not-allowed" : "pointer", width: 44, height: 44, borderRadius: RAD.ctl, border: "none",
                 background: gonderPasif ? PAL.press : DERIN.T,
                 color: gonderPasif ? PAL.mut2 : PAL.onAccent, display: "grid", placeItems: "center", flexShrink: 0,
                 transition: `background .12s ease-out, transform .14s ${EASE.out}`,

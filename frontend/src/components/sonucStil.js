@@ -39,6 +39,9 @@ export const SONUC_CSS = `
   font-weight: 800; font-stretch: 112%; white-space: nowrap; letter-spacing: -.025em; text-wrap: balance;
 }
 .kd-sonuc .kd-hukum .sc-decision-status-line{ margin-top: 6px; font-size: 14px; line-height: 20px; font-weight: 600; }
+/* Blok akış: son kelime + '?' tek bölünmez birim (HukumKarti) — flex sarmada '?' yetim kalıyordu. */
+.kd-sonuc .kd-hukum .sc-decision-status-line{ display: block; }
+.kd-sonuc .kd-hukum .sc-decision-status-line .sc-risk-help{ margin-left: 6px; vertical-align: -5px; }
 .kd-sonuc .kd-hukum-havale{ grid-area: havale; min-width: 0; margin: 0; flex: none; }
 .kd-sonuc .kd-hukum-havale > div{ padding-left: 20px; border-left: 1px solid var(--ke-line); }
 .kd-sonuc .kd-hukum-havale dt{ font-size: 12px; line-height: 16px; letter-spacing: .02em; }
@@ -47,20 +50,33 @@ export const SONUC_CSS = `
   grid-area: not; margin: 0; padding-left: 20px; border-left: 1px solid var(--ke-line);
   font-size: 13px; line-height: 19px; color: var(--ke-mut2); text-wrap: pretty;
 }
+/* Tur 6: şeritteki eylem METİN BAĞLANTISIDIR (tükenmez, altı çizili) — ekranın tek dolu
+   primary'si taslağın altındaki "Onayla ve gönder"dir (görünüm başına 1 primary). Bağlantı
+   aynı düğmeye götürür ve fişi açar; iki ayrı karar yolu yok. */
 .kd-hukum-karar{
-  display: flex; width: fit-content; align-items: center; gap: 8px; margin-top: 10px; min-height: 40px; padding: 8px 16px;
-  /* Fold üstündeki birincil eylem: onay fişini açar (gönderim tek yoldan — taslak kartının düğmesi). */
-  border-radius: 8px; border: 1px solid transparent; background: var(--ke-derin-t); color: var(--ke-on-accent);
-  font: inherit; font-size: 14px; line-height: 20px; font-weight: 600; cursor: pointer; transition: background .12s ease, transform .14s var(--ke-ease-out);
+  /* flex (blok düzeyi): bağlantı daima KENDİ satırında — inline-flex metnin son satırına
+     oturup o satırın aralığını 34–40px'e açıyordu (Tur 6 doğrulaması). */
+  display: flex; width: fit-content; align-items: center; gap: 6px; margin-top: 6px; min-height: 32px; padding: 4px 2px;
+  border: none; border-radius: 6px; background: transparent; color: var(--ke-derin-t);
+  font: inherit; font-size: 14px; line-height: 20px; font-weight: 600; cursor: pointer;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, var(--ke-derin-t) 45%, transparent);
+  transition: text-decoration-color .14s ease, color .14s ease, transform .14s var(--ke-ease-out);
 }
-.kd-hukum-karar:hover{ background: var(--ke-derin-th); }
+.kd-hukum-karar:hover{ text-decoration-color: currentColor; color: var(--ke-derin-th); }
+.kd-hukum-karar svg{ transition: transform .18s var(--ke-ease-out); }
+.kd-hukum-karar:hover svg{ transform: translateX(2px); }
 @media (hover: none){ .kd-hukum-karar{ min-height: 44px; } }
+@media (prefers-reduced-motion: reduce){ .kd-hukum-karar:hover svg{ transform: none; } }
+/* Sabit üst bar (İşleniyor başlığı) altında çapalar kesilmesin. */
+.kd-sonuc .kd-hukum, .kd-sonuc .sc-review-anchor, .kd-sonuc .sc-review-section, .kd-sonuc .sc-quick-review-section{ scroll-margin-top: 128px; }
+@media (max-width: 720px){ .kd-sonuc .kd-hukum, .kd-sonuc .sc-review-anchor, .kd-sonuc .sc-review-section, .kd-sonuc .sc-quick-review-section{ scroll-margin-top: 96px; } }
 .kd-hukum-not-etiket{ display: block; margin-bottom: 3px; font-size: 12px; line-height: 16px; color: var(--ke-mut3); }
 /* overflow:clip + clip-margin: eğik damganın dış çizgisi/dönme köşeleri BOYANIR ama sayfanın
    kaydırma genişliğine KATILMAZ (390px'te 27px yatay kayma buradan geliyordu, TUR 3). */
 .kd-hukum-damga{ grid-area: damga; justify-self: end; padding: 6px 8px 6px 4px; overflow: clip; overflow-clip-margin: 14px; }
 .kd-damga-ic{ display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
-.kd-damga-ust{ font-size: 9px; line-height: 10px; letter-spacing: .22em; font-weight: 700; }
+.kd-damga-ust{ font-size: 10px; line-height: 12px; letter-spacing: .2em; font-weight: 700; }
 .kd-damga-ad{ font-size: 25px; line-height: 26px; letter-spacing: .06em; font-weight: 900; }
 
 @media (max-width: 1180px){
@@ -104,7 +120,11 @@ export const SONUC_CSS = `
   padding: calc(var(--kd-a4) * .07143) !important;
 }
 .kd-sonuc .sc-source-slot [data-kd="kaynak-kagit"] pre{
-  font-size: clamp(13px, calc(var(--kd-a4) * .018477), 16px) !important;
+  /* Tur 6: punto, yandaki taslağın ekrandaki puntosunu izler. Taslak sütunu kaynaktan
+     1,18/0,82 ≈ 1,44 kat geniştir ve 11 pt'yi (14,67 px) kendi ölçeğiyle basar →
+     14,67 × 1,44 / 793,7 ≈ 0,026 × kaynak genişliği. 1920'de 13 px'e karşı 15,9 px
+     ayrışıyordu (jüri); artık ~15 px'e karşı ~15,9 px. Taban 13 px okunurluk kilididir. */
+  font-size: clamp(13px, calc(var(--kd-a4) * .026), 16px) !important;
   line-height: 1.45 !important; letter-spacing: 0 !important;
 }
 @media (max-width: 760px){
@@ -184,6 +204,12 @@ export const SONUC_CSS = `
   transition: background .15s ease, border-color .15s ease;
 }
 .kd-ip-dugme:hover, .kd-ip-dugme[aria-pressed="true"]{ background: color-mix(in srgb, var(--kd-ip) 8%, var(--ke-surf)); border-color: color-mix(in srgb, var(--kd-ip) 45%, transparent); }
+/* Telefon: 44px dokunma hedefi (tur 6 doğrulaması: çipler 28px, '?' 22px idi). '?' görsel
+   olarak küçük kalır; tıklanabilir alanı görünmez ::after ile büyür. */
+@media (max-width: 640px){
+  .kd-ip-dugme{ min-height: 44px; padding: 4px 14px 4px 12px; }
+  .kd-sonuc .sc-risk-help-trigger::after{ inset: -11px; }
+}
 .kd-ip-dugme i{ width: 7px; height: 7px; border-radius: 50%; background: var(--kd-ip); flex: none; }
 .kd-ip-not{ flex-basis: 100%; color: var(--ke-mut3); }
 .kd-ip-not-dokun{ display: none; }

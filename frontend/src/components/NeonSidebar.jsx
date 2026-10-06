@@ -4,28 +4,12 @@
    tek menüde) — Denetim izi günlük iş akışının önünde durmasın diye ana NAV'da DEĞİL, burada.
    Örnek evrak dropdown'ı kaldırıldı; örnekler Gelen evrak görünümünden açılır. */
 import React, { useState, useEffect } from "react";
-import { DISPLAY, T, R, PAL, DERIN, TYPE, TNUM, RAD, SP, EASE, MONO, SR_ONLY, focusRing, FOCUS_HALKA, Icon, MarkaKaro } from "./neonUi.jsx";
-import { Activity, ScrollText } from "lucide-react";
+import { PAL, DERIN, TYPE, TNUM, RAD, SP, EASE, MONO, SR_ONLY, focusRing, MarkaKaro } from "./neonUi.jsx";
 import HesapMenu from "./HesapMenu.jsx";
-
-// Kurgu sırası iş akışını izler: Panel (özet) → İşlenen (tüm işlemlerin arşivi, rozet YOK —
-// birikimli arşive "iş bekliyor" rozeti yanlış sinyal olur) → Gelen (kuyruk) → İşleniyor
-// (canlı) → Taslaklar (karar bekleyen çalışma kuyruğu) → Giden (gönderilmiş) → Mevzuat.
-const NAV = [
-  { id: "panel", label: "Panel", icon: "grid" },
-  { id: "islenen", label: "İşlenen evrak", icon: "shield" },
-  { id: "gelen", label: "Gelen evrak", icon: "inbox", badge: true },
-  { id: "isleniyor", label: "İşleniyor", icon: "spin", live: true },
-  { id: "taslaklar", label: "Taslaklar", icon: "doc", count: "drafts" },
-  { id: "giden", label: "Giden evrak", icon: "arrow", count: "giden" },
-  { id: "mevzuat", label: "Mevzuat", icon: "book" },
-];
-/* Denetim izi ana NAV'da DEĞİL (hesap menüsünden açılır — günlük iş akışının önünde durmasın).
-   Ama açıkken hiçbir sekme etkin görünmüyordu (tur 4 jüri B#31: "neredeyim?"). Görünüm
-   açıkken listenin altında, ince bir ayraçtan sonra GEÇİCİ bir sırt satırı olarak belirir;
-   kapanınca kaybolur — yer bilgisi verilir, navigasyon kalabalıklaşmaz. */
-const DENETIM_OGE = { id: "denetim", label: "Denetim izi", icon: "denetim" };
-const DenetimIkon = (p) => <ScrollText size={18} strokeWidth={1.75} aria-hidden="true" {...p} />;
+import { NAV, DENETIM_OGE, NavBtn, RayIpucu, RayIpucuSaglayici } from "./kabukNav.jsx";
+import { Logotype, LOGOTYPE } from "./kabukAtomlari.jsx";
+import KabukSicil from "./KabukSicil.jsx";
+import KabukAltSerit from "./KabukAltSerit.jsx";
 
 /* Panel daralt/genişlet ikonu — ChatGPT kenar çubuğu toggle'ının çizgi-dili muadili. */
 const PanelIkon = (p) => (
@@ -35,136 +19,54 @@ const PanelIkon = (p) => (
   </svg>
 );
 
-/* "İşleniyor" ikonu: boşta DURAĞAN yarım yay "donmuş spinner" gibi okunuyordu (iptal
-   sonrası "hâlâ dönüyor mu?" şüphesi — tur 3 gözlemi). Boşta nabız çizgisi; yay yalnız
-   koşum GERÇEKTEN sürerken (busy) ve döner. Hareket = bilgi. */
-const BostaNabiz = ({ donuk: _donuk, ...p }) => <Activity size={18} strokeWidth={1.75} aria-hidden="true" {...p} />;
-
-function NavBtn({ item, active, onClick, busy, inboxCount, draftCount, gidenCount, dar }) {
-  const canli = item.live && active && busy;
-  // Koşum sürerken etkin "İşleniyor" satırında TEK dönen gösterge kalır (sağdaki halka); baştaki
-  // ikon nabız çizgisine döner — iki spinner yan yana "kırpık halka" gibi okunuyordu (jüri A#34).
-  const Ic = item.icon === "denetim" ? DenetimIkon : item.icon === "spin" && (!busy || canli) ? BostaNabiz : Icon[item.icon];
-  // Geri bildirim basış ANINDA (Apple response): hover zemin + data-press scale — görünüm
-  // değişimini beklemeden düğme "duyduğunu" söyler.
-  const base = { position: "relative", display: "flex", alignItems: "center", gap: SP.s, width: "100%", padding: dar ? "10px 0" : "9px 12px", borderRadius: RAD.card, ...TYPE.ui, textAlign: "left", cursor: "pointer", transition: `background .12s ease-out, transform .14s ${EASE.out}` };
-  const badgeVal = item.badge ? inboxCount : item.count === "drafts" ? draftCount : item.count === "giden" ? gidenCount : null;
-  const showBadge = badgeVal != null && badgeVal > 0;
-  return (
-    <button type="button" onClick={onClick} aria-current={active ? "page" : undefined}
-      aria-label={dar ? `${item.label}${showBadge ? ` (${badgeVal} öğe)` : ""}` : undefined}
-      title={dar ? item.label : undefined} {...focusRing} data-press="" data-dokunma=""
-      onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = PAL.hov; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-      style={active
-        ? { ...base, background: "transparent", border: "1px solid transparent", color: "var(--ke-sayfa-ink)", fontWeight: 600, justifyContent: dar ? "center" : showBadge ? "space-between" : "flex-start" }
-        : { ...base, border: "1px solid transparent", background: "transparent", color: PAL.mut, justifyContent: dar ? "center" : showBadge ? "space-between" : "flex-start" }}>
-      {/* DOSYA SIRTI — aktif öğe rayın sağ kenarına kadar uzanıp sayfa zeminiyle birleşir
-          (iç bükey köşeler iki küçük radyal maskeyle). DÜZ öğe, animasyon katmanına BAĞLI DEĞİL:
-          önceki sürüm motion layoutId ile öğeler arası kayıyordu; projeksiyon durumu bozulunca
-          (HMR sonrası, kullanıcı bulgusu 2026-10-03) sırt "beyaz yanıp" kayboluyor, aktif metin
-          lacivert üstünde koyu kalıyordu. Şimdi sırt HER ZAMAN çizilir; giriş yalnız soldan
-          açılan kısa bir clip-path (nu-sirt) — başarısız olsa bile son kare tam sırttır. */}
-      {active && (
-        <span aria-hidden="true"
-          style={{ position: "absolute", zIndex: 0, left: 0, right: dar ? -9 : -13, top: 0, bottom: 0, background: "var(--ke-sayfa)", borderRadius: `${RAD.card}px 0 0 ${RAD.card}px`, animation: `nu-sirt .22s ${EASE.out} both` }}>
-          <span style={{ position: "absolute", right: 0, top: -12, width: 12, height: 12, background: "radial-gradient(circle at 0 0, transparent 11.5px, var(--ke-sayfa) 12px)" }} />
-          <span style={{ position: "absolute", right: 0, bottom: -12, width: 12, height: 12, background: "radial-gradient(circle at 0 100%, transparent 11.5px, var(--ke-sayfa) 12px)" }} />
-          <span style={{ position: "absolute", left: 0, top: 9, bottom: 9, width: 3, borderRadius: 2, background: "var(--ke-sayfa-t)" }} />
-        </span>
-      )}
-      {dar ? (
-        /* İkon-ray modu: yalnız ikon; rozet/canlılık sağ-üst köşede küçük nokta olarak. */
-        <span style={{ position: "relative", display: "flex" }}>
-          <span style={{ position: "relative", zIndex: 1, color: active ? "var(--ke-sayfa-t)" : PAL.mut2, display: "flex" }}>{Ic && <Ic {...(item.icon === "spin" ? { donuk: !busy } : {})} />}</span>
-          {(showBadge || canli) && (
-            <span aria-hidden="true" style={{ position: "absolute", top: -3, right: -5, width: 7, height: 7, borderRadius: RAD.dot, background: T, animation: canli ? "nu-think 1.2s ease-in-out infinite" : "none" }} />
-          )}
-        </span>
-      ) : (
-        <>
-          <span style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: SP.s + 2 }}>
-            <span style={{ color: active ? "var(--ke-sayfa-t)" : PAL.mut2, display: "flex" }}>{Ic && <Ic {...(item.icon === "spin" ? { donuk: !busy } : {})} />}</span>{item.label}
-          </span>
-          {canli
-            /* İz halkası SAYFA mürekkebinden: etkin satırın zemini sayfa rengidir; ray'ın beyaz
-               %10 çizgisi açık sayfada görünmüyor, yalnız mavi yay kalıyordu ("◝"). */
-            ? <span aria-hidden="true" style={{ width: 14, height: 14, flexShrink: 0, boxSizing: "border-box", borderRadius: RAD.dot, border: "2px solid color-mix(in srgb, var(--ke-sayfa-ink) 16%, transparent)", borderTopColor: "var(--ke-sayfa-t)", animation: "nu-spin .8s linear infinite", marginLeft: "auto", position: "relative", zIndex: 1 }} />
-            : showBadge && <span aria-label={`${badgeVal} öğe`} style={{ position: "relative", zIndex: 1, ...TYPE.meta, ...TNUM, fontWeight: 600, minWidth: 22, textAlign: "center", padding: "1px 6px", borderRadius: 999, color: active ? "var(--ke-sayfa-ink)" : PAL.ink2, background: active ? "transparent" : PAL.surfHi }}>{badgeVal}</span>}
-        </>
-      )}
-    </button>
-  );
-}
-
-function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, draftCount = 0, gidenCount = 0, user, onLogout, tema, onTemaDegistir, kota }) {
-  // Daraltılmış ikon-ray modu (ChatGPT sidebar-toggle deseni) — tercih kalıcı (localStorage).
-  const [dar, setDar] = useState(() => {
-    try { return localStorage.getItem("nu-sidebar-dar") === "1"; } catch { return false; }
-  });
-  const [mobil, setMobil] = useState(() => window.matchMedia?.("(max-width: 720px)")?.matches ?? false);
+/* Telefon eşiği — ray yerine alt kulakçık şeridi (KabukAltSerit). */
+const MOBIL_SORGU = "(max-width: 720px)";
+function useMobil() {
+  const [mobil, setMobil] = useState(() => window.matchMedia?.(MOBIL_SORGU)?.matches ?? false);
   useEffect(() => {
-    const sorgu = window.matchMedia?.("(max-width: 720px)");
+    const sorgu = window.matchMedia?.(MOBIL_SORGU);
     if (!sorgu) return undefined;
     const guncelle = (e) => setMobil(e.matches);
     sorgu.addEventListener?.("change", guncelle);
     return () => sorgu.removeEventListener?.("change", guncelle);
   }, []);
-  const kompakt = dar || mobil;
-  const darDegistir = () => setDar((v) => {
+  return mobil;
+}
+
+/* Daralt/genişlet düğmesi — geniş rayda marka satırının sağında; DAR rayda en altta (marka karosuyla
+   üst üste iki eş ağırlıklı kare "iki logo" gibi okunuyordu — jüri). */
+function DaraltDugme({ dar, onClick }) {
+  const etiket = dar ? "Kenar çubuğunu genişlet" : "Kenar çubuğunu daralt";
+  return (
+    <RayIpucu acik={dar} etiket={etiket}>
+      <button type="button" onClick={onClick} aria-expanded={!dar} aria-label={etiket} title={dar ? undefined : etiket} {...focusRing} data-press=""
+        onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = dar ? "transparent" : PAL.surf; }}
+        style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: dar ? "100%" : 30, height: 30, marginLeft: dar ? 0 : "auto", borderRadius: RAD.ctl, border: `1px solid ${dar ? "transparent" : PAL.line}`, background: dar ? "transparent" : PAL.surf, color: dar ? PAL.mut2 : PAL.ink2, flexShrink: 0, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
+        <PanelIkon />
+      </button>
+    </RayIpucu>
+  );
+}
+
+/* Daraltılmış ikon-ray modu — tercih kalıcı (localStorage; özel modda oturumluk kalır). */
+function useDarRay() {
+  const [dar, setDar] = useState(() => {
+    try { return localStorage.getItem("nu-sidebar-dar") === "1"; } catch { return false; }
+  });
+  const degistir = () => setDar((v) => {
     const yeni = !v;
     try { localStorage.setItem("nu-sidebar-dar", yeni ? "1" : "0"); } catch { /* özel mod — tercih oturumluk kalır */ }
     return yeni;
   });
+  return [dar, degistir];
+}
 
+/* Yükle — cilt üstünde İKİNCİL dil (tur 4): birincil eylem görünümün kendisinde kalır. */
+function YukleDugme({ kompakt, busy, onUpload }) {
   return (
-    <aside data-ray="" aria-label="Çalışma alanı navigasyonu" style={{ width: kompakt ? 64 : 236, flexShrink: 0, background: PAL.bg2,
-      /* Cilt bezi dokusu + sağ kenar dikişi (THEME_CSS --ke-ray-doku/--ke-ray-kenar — tanımlıydı
-         ama hiçbir yere bağlanmamıştı). Dikiş inset gölgedir: etkin sırt 1 px taşarak dikişi tam
-         bağlandığı satırda keser. */
-      backgroundImage: "var(--ke-ray-doku)", boxShadow: "inset -1px 0 0 var(--ke-ray-kenar, transparent)", color: PAL.ink, display: "flex", flexDirection: "column", padding: kompakt ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
-      <div style={{ display: "flex", flexDirection: kompakt ? "column" : "row", alignItems: "center", gap: kompakt ? SP.s : SP.xs, paddingBottom: SP.l }}>
-        <button type="button" onClick={() => onNavigate("panel")} title={kompakt ? "kamu-evrak — Panel" : undefined} data-dokunma=""
-          onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = FOCUS_HALKA; }}
-          onBlur={(e) => { e.currentTarget.style.boxShadow = "none"; }}
-          style={{ display: "flex", alignItems: "center", gap: SP.s, padding: kompakt ? 0 : "4px 4px", background: "none", border: "none", cursor: "pointer", textAlign: "left", borderRadius: RAD.card, outline: "none", minWidth: 0 }}>
-          <MarkaKaro size={kompakt ? 32 : 36} nokta={kompakt} />
-          {!kompakt && (
-            /* Logotype — marka istisnası olarak büyük harf; imza noktası akış İÇİNDE durur,
-               toggle düğmesiyle asla çakışmaz. */
-            <span style={{ display: "flex", alignItems: "baseline", gap: SP.xs, minWidth: 0 }}>
-              <span style={{ fontFamily: DISPLAY, fontSize: 14, lineHeight: "24px", fontWeight: 800, fontStretch: "112%", letterSpacing: ".01em", color: PAL.ink, whiteSpace: "nowrap" }}>KAMU·EVRAK</span>
-              <span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: RAD.dot, background: R, flexShrink: 0 }} />
-            </span>
-          )}
-        </button>
-        {/* Daralt/genişlet — ChatGPT panel-toggle muadili */}
-        {!mobil && <button type="button" onClick={darDegistir} aria-expanded={!dar}
-          aria-label={dar ? "Kenar çubuğunu genişlet" : "Kenar çubuğunu daralt"}
-          title={dar ? "Kenar çubuğunu genişlet" : "Kenar çubuğunu daralt"} {...focusRing} data-press=""
-          onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = PAL.surf; }}
-          style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: 30, height: 30, marginLeft: dar ? 0 : "auto", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: PAL.surf, color: PAL.ink2, flexShrink: 0, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
-          <PanelIkon />
-        </button>}
-      </div>
-
-      {!kompakt && <div style={{ ...TYPE.antet, color: PAL.mut3, padding: "8px 12px 10px", textTransform: "uppercase" }}>Çalışma alanı</div>}
-      <nav aria-label="Bölümler" style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} inboxCount={inboxCount} draftCount={draftCount} gidenCount={gidenCount} dar={kompakt} />)}
-        {activeView === "denetim" && (
-          <>
-            <span aria-hidden="true" style={{ height: 1, margin: `${SP.s}px ${kompakt ? 6 : 12}px`, background: PAL.line }} />
-            <NavBtn item={DENETIM_OGE} active onClick={() => onNavigate("denetim")} busy={busy} dar={kompakt} />
-          </>
-        )}
-      </nav>
-
-      {/* Yükle — cilt üstünde İKİNCİL dil (tur 4, jüri A#25): dolu mavi düğme her görünümde
-          ekranın ikinci "primary"si oluyordu (Gelen'de başlıktaki "Yeni evrak yükle" ile çift).
-          Birincil eylem görünümün kendisinde kalır; ray'daki giriş her yerden erişilir ama
-          bağırmaz — cilt yüzeyi + açık çerçeve + tükenmez mavisi artı. */}
-      <button type="button" onClick={onUpload} disabled={busy} aria-label={kompakt ? "Yeni evrak yükle" : undefined} title={kompakt ? "Yeni evrak yükle" : undefined} {...focusRing} data-press="" data-dokunma=""
+    <RayIpucu acik={kompakt} etiket="Yeni evrak yükle">
+      <button type="button" onClick={onUpload} disabled={busy} aria-label={kompakt ? "Yeni evrak yükle" : undefined} {...focusRing} data-press="" data-dokunma=""
         onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = PAL.surfHi; }}
         onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = PAL.surf; }}
         style={{
@@ -174,19 +76,64 @@ function NeonSidebar({ activeView, onNavigate, onUpload, busy, inboxCount = 0, d
           background: busy ? "transparent" : PAL.surf, color: busy ? PAL.mut2 : PAL.ink,
           transition: `background .12s ease-out, transform .14s ${EASE.out}`,
         }}>
-        <span aria-hidden="true" style={{ display: "flex", color: busy ? PAL.mut2 : DERIN.T }}><Icon.plus /></span>{!kompakt && "Yeni evrak yükle"}
+        <span aria-hidden="true" style={{ display: "flex", color: busy ? PAL.mut2 : DERIN.T }}><Icon18Arti /></span>{!kompakt && "Yeni evrak yükle"}
       </button>
+    </RayIpucu>
+  );
+}
 
-      {/* Demo hak sayacı — sınırladığı kontrolün HEMEN ALTINDA. `kota` verilmediğinde
-          (demo kapalı) null render eder → bugünkü görünüm birebir korunur. */}
+function NeonSidebar(props) {
+  const { activeView, onNavigate, onUpload, busy, sayac, veriBayat = false, sicil, user, onLogout, tema, onTemaDegistir, kota } = props;
+  const [dar, darDegistir] = useDarRay();
+  const mobil = useMobil();
+  if (mobil) return <KabukAltSerit {...props} />;
+  const kompakt = dar;
+
+  return (
+    <RayIpucuSaglayici>
+    <aside data-ray="" aria-label="Çalışma alanı navigasyonu" style={{ width: kompakt ? 64 : 236, flexShrink: 0, background: PAL.bg2,
+      /* Cilt bezi dokusu + sağ kenar dikişi. Dikiş inset gölgedir: etkin sırt 1 px taşarak dikişi
+         tam bağlandığı satırda keser. */
+      backgroundImage: "var(--ke-ray-doku)", boxShadow: "inset -1px 0 0 var(--ke-ray-kenar, transparent)", color: PAL.ink, display: "flex", flexDirection: "column", padding: kompakt ? "16px 8px" : "16px 12px", position: "sticky", top: 0, height: "100vh", alignSelf: "flex-start", transition: "width .18s ease-out, padding .18s ease-out" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: kompakt ? "center" : "flex-start", gap: SP.xs, paddingBottom: SP.l }}>
+        <RayIpucu acik={kompakt} etiket={`${LOGOTYPE} · Panel`}>
+          <button type="button" onClick={() => onNavigate("panel")} aria-label={`${LOGOTYPE} — Panel`} data-dokunma="" {...focusRing}
+            style={{ display: "flex", alignItems: "center", gap: SP.s, padding: kompakt ? 0 : "4px 4px", background: "none", border: "none", cursor: "pointer", textAlign: "left", borderRadius: RAD.card, minWidth: 0 }}>
+            <MarkaKaro size={kompakt ? 32 : 36} nokta={false} />
+            {!kompakt && <Logotype />}
+          </button>
+        </RayIpucu>
+        {!kompakt && <DaraltDugme dar={false} onClick={darDegistir} />}
+      </div>
+
+      {!kompakt && <div style={{ ...TYPE.antet, color: PAL.mut3, padding: "8px 12px 10px", textTransform: "uppercase" }}>Çalışma alanı</div>}
+      <nav aria-label="Bölümler" style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        {NAV.map((it) => <NavBtn key={it.id} item={it} active={activeView === it.id} onClick={() => onNavigate(it.id)} busy={busy} sayac={sayac} dar={kompakt} />)}
+        {activeView === "denetim" && (
+          <>
+            <span aria-hidden="true" style={{ height: 1, margin: `${SP.s}px ${kompakt ? 6 : 12}px`, background: PAL.line }} />
+            <NavBtn item={DENETIM_OGE} active onClick={() => onNavigate("denetim")} busy={busy} dar={kompakt} />
+          </>
+        )}
+      </nav>
+
+      <YukleDugme kompakt={kompakt} busy={busy} onUpload={onUpload} />
+
       <DemoKotaSayaci kota={kota} kompakt={kompakt} />
+      {!kompakt && <KabukSicil sicil={sicil} bayat={veriBayat} />}
 
       <AsistanDugme kompakt={kompakt} />
+      {kompakt && <div style={{ paddingBottom: SP.s }}><DaraltDugme dar onClick={darDegistir} /></div>}
       <HesapMenu user={user} onLogout={onLogout} onDenetimAc={() => onNavigate("denetim")}
         tema={tema} onTemaDegistir={onTemaDegistir} dar={kompakt} />
     </aside>
+    </RayIpucuSaglayici>
   );
 }
+
+const Icon18Arti = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" /></svg>
+);
 
 /* Asistan tetiği — "havale notu" kenar çubuğunda durur (yüzen düğme içeriği örtüyordu; bkz.
    ChatbotWidget başı). Navigasyon öğesi DEĞİL (görünüm değiştirmez) → nav listesinin dışında,
@@ -213,10 +160,11 @@ function AsistanDugme({ kompakt }) {
           {kompakt ? <span style={SR_ONLY}>Çevrimdışı</span> : "Çevrimdışı"}
         </div>
       )}
+      <RayIpucu acik={kompakt} etiket="Evrak asistanı" ek={kisayol}>
       <button type="button" data-asistan-tetik="" data-press="" data-dokunma=""
         onClick={() => window.dispatchEvent(new CustomEvent("ke-asistan", { detail: { ac: "degistir" } }))}
         aria-expanded={acik} aria-haspopup="dialog" aria-keyshortcuts={mac ? "Meta+." : "Control+."}
-        aria-label={kompakt ? "Evrak asistanı" : undefined} title={kompakt ? `Evrak asistanı (${kisayol})` : undefined} {...focusRing}
+        aria-label={kompakt ? "Evrak asistanı" : undefined} {...focusRing}
         onMouseEnter={(e) => { if (!acik) e.currentTarget.style.background = PAL.hov; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = acik ? PAL.press : "transparent"; }}
         style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: kompakt ? "center" : "flex-start", gap: SP.s + 2, width: "100%", minHeight: 40, padding: kompakt ? "9px 0" : "9px 12px", borderRadius: RAD.card, border: `1px solid ${acik ? PAL.lineHi : PAL.line}`, background: acik ? PAL.press : "transparent", color: PAL.ink2, ...TYPE.ui, fontWeight: 500, textAlign: "left", transition: `background .12s ease-out, border-color .12s ease-out, transform .14s ${EASE.out}` }}>
@@ -226,6 +174,7 @@ function AsistanDugme({ kompakt }) {
         {!kompakt && <span style={{ flex: 1 }}>Asistan</span>}
         {!kompakt && <kbd className="ke-kisayol" style={{ fontFamily: MONO, fontSize: 11, lineHeight: "16px", padding: "0 5px", borderRadius: RAD.chip, border: `1px solid ${PAL.line}`, color: PAL.mut3, background: "transparent" }}>{kisayol}</kbd>}
       </button>
+      </RayIpucu>
       <style>{"@media (pointer: coarse){.ke-kisayol{display:none}}"}</style>
     </div>
   );

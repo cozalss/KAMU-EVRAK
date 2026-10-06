@@ -1,81 +1,78 @@
-/* AjanOrb → "ISTAMPA" — canlı işlem sahnesinin öznesi (Antet & Damga, 2026-10).
-   Eski orb jenerik bir mavi küreydi (kullanıcı: "kavramı yok"). Yerine konunun kendi
-   malzemesi geldi: mühür mürekkebi emdirilmiş keçe — ıstampa. Her GERÇEKTEN İŞ YAPAN adım
-   (akisKatman.adimDurumu === "calisti") bittiği anda keçeye kendi görevinin renginde bir
-   damla düşer: Görev 1 tükenmez mavisi (T), Görev 2 ıstampa moru (V); risk bandı adımı kendi
-   bandının renginde, hata kırmızı. Damlanın boyu adımın SUNUCU süresiyle orantılıdır
-   (nodeDurationMs) — uzun düşünen adım büyük leke bırakır. Damlalar zamanla keçede dağılır
-   (domain-warped fBm). Sahte "düşünme" titreşimi YOK: yeni mürekkep yalnız SSE olayından gelir.
+/* AjanOrb → "ISTAMPA · PARAF DEFTERİ" — canlı işlem sahnesinin öznesi (Antet & Damga, tur 6).
+   Tur 5'e kadar keçe, rastgele konumlu ve dağılan mürekkep lekeleri taşıyordu; jüri bunu
+   "mikroskop altındaki hücre / lav lambası" diye okudu: lekenin yeri hangi masaya ait olduğunu
+   söylemiyor, boyutu dışında hiçbir şey kodlamıyordu. Yeni hâl OKUNUR bir mühür defteridir:
+   · Keçede her masanın SABİT bir yuvası var — I. faz üst bant (tükenmez mavisi T), II. faz alt
+     bant (ıstampa moru V). Yuva yeri masa sırasından gelir (display = start.katmanlar dizilimi).
+   · GERÇEKTEN iş yapan masa (akisKatman.adimDurumu === "calisti") bittiği an kendi yuvasına
+     paraf izi basar: WebGL mürekkep halkası (keçe dokusuyla, keskin kenar — dağılma eskisinin
+     %30'u) + yuvanın içinde masanın baş harfleri. Risk bandı masası bandının renginde, hata
+     kırmızı mühür. "gerekmedi" → mürekkepsiz düz halka, "atlandi" → kesikli halka, bekleyen →
+     noktalı halka + sıra no. Koşmayan masa mürekkep BIRAKMAZ (CLAUDE.md §9).
+   · Çalışan masa (backend "başladı") kendi yuvasında keçeyi ıslatır; ıslaklık GERÇEK geçen
+     süreyle (t0 → şimdi) büyür, yuvadan taşmaz. Paralel katmanda birden çok yuva aynı anda
+     ıslanır — olgu: backend ikisinin de başladığını söyledi.
 
    Sözleşmeler:
-   · Bilgi tek kanal DEĞİL — aria-hidden. Aynı bilgi slip (metro), başlık işaretleri ve
-     aria-live bölgesinde metinle var; bu katman sökülse hiçbir bilgi kaybolmaz.
-   · "gerekmedi" / "atlandi" / "bekliyor" adımları mürekkep BIRAKMAZ (koşmayan adım tamamlandı
-     sayılmaz — CLAUDE.md §9). Paralel katmanlar aynı karede birlikte damlar (olgu).
-   · Mount anında zaten bitmiş adımlar "eski" sayılır (doğum = şimdi − 60 sn): görünüme geri
-     dönüşte sahte bir damla salvosu oynamaz.
-   · Ham WebGL1, paket yok. ≤30 fps, DPR ≤ 1,5; ekran dışı / gizli sekmede rAF durur; tüm
-     damlalar yerine oturup koşum bittiğinde döngü kendiliğinden söner.
-   · prefers-reduced-motion → shader tek kare (oturmuş hâl) çizip durur. WebGL yoksa (ya da
-     shader derlenemezse) AYRI bir Canvas 2D tuvalinde radyal leke yedeği — WebGL bağlamı alınmış
-     bir tuvalden 2D bağlam alınamaz, bu yüzden yedek kendi tuvalini taşır.
-
-   ISLAK LEKE (2026-10, backend "başladı" olayı): çalışan masa, damlasının düşeceği yerde keçeyi
-   ıslatmaya başlar — mürekkep yastığa siner. Lekenin büyüklüğü adımın GERÇEK geçen süresiyle
-   (t0 → şimdi) büyür; uydurma titreşim değil, saat. Paralel katmanda birden çok leke AYNI ANDA
-   ıslanır (olgu: backend ikisinin de başladığını söyledi). Adım bitince ıslak leke gider, yerine
-   tam damla açılır (paraf anı). */
-import { useEffect, useMemo, useRef } from "react";
+   · aria-hidden: aynı bilgi pusula satırlarında, cetvelde ve aria-live bölgesinde metinle var.
+   · Durum tek kaynaktan: sahneDurumu (CanliMetro) → adimDurumu (§10). Frontend durum türetmez.
+   · Mount anında zaten bitmiş masalar "eski" sayılır (doğum = şimdi − 60 sn): görünüme geri
+     dönüşte sahte bir paraf salvosu oynamaz.
+   · Ham WebGL1, paket yok. ≤30 fps, DPR ≤ 1,5; ekran dışı / gizli sekmede rAF durur; tüm izler
+     oturunca döngü kendiliğinden söner. reduced-motion → tek kare. WebGL yoksa Canvas 2D yedeği. */
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { T, V, PAL, BANT, RAD, SP, SH, MONO, TYPE, TNUM, DERIN_OF, EASE_BEZIER } from "./neonUi.jsx";
-import { adimDurumu } from "../lib/akisKatman.js";
-import { nodeDurationMs } from "../lib/pipelinePhases.js";
+import { T, V, PAL, BANT, RAD, SP, SH, MONO, DISPLAY, TYPE, TNUM, DERIN_OF, EASE_BEZIER } from "./neonUi.jsx";
+import { sahneDurumu } from "./CanliMetro.jsx";
+import { parafUret } from "./agent-flow/topology.js";
 
-const AZAMI_DAMLA = 20;
+const AZAMI_DAMLA = 24;
 const KARE_MS = 1000 / 30;
-const OTURMA_SN = 9;          // bu yaştan sonra damla gözle görülür biçimde değişmez
+const OTURMA_SN = 2.5;        // paraf bu yaştan sonra gözle görülür biçimde değişmez
 
 const VS = "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
+/* uD = (x, y, doğum, renk) · uK = yuva yarıçapı (hepsi uv; 1 = tuval yüksekliği).
+   renk ≥ 10 → ISLAK yuva (çalışan masa), renk-10 = gerçek renk. */
 const FS = `
 precision mediump float;
 uniform vec2 uRes;uniform float uT;uniform int uN;
 uniform vec3 uZemin;uniform vec3 uR0;uniform vec3 uR1;uniform vec3 uR2;uniform vec3 uR3;uniform vec3 uR4;
 uniform vec4 uD[${AZAMI_DAMLA}];uniform float uK[${AZAMI_DAMLA}];
-// uD.w >= 10 → ISLAK leke (çalışan masa): renk = w-10, yaş = başladığından beri geçen süre.
 float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
   return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
 float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<4;i++){s+=a*n(p);p=p*2.03+17.1;a*=.5;}return s;}
 vec3 renk(float k){k=mod(k,10.);if(k<.5)return uR0;if(k<1.5)return uR1;if(k<2.5)return uR2;if(k<3.5)return uR3;return uR4;}
+float halka(float r,float a,float b){return smoothstep(a-.012,a,r)-smoothstep(b,b+.012,r);}
 void main(){
   vec2 uv=gl_FragCoord.xy/uRes.y;
-  // Keçe: yönlü lif + ince gren (ölçülü — mürekkep kahraman kalsın).
   float lif=fbm(uv*vec2(5.,70.))*.5+n(uv*260.)*.5;
   vec3 c=uZemin*(.965+.07*lif);
   for(int i=0;i<${AZAMI_DAMLA};i++){
     if(i>=uN)break;
-    vec4 d=uD[i];float yas=uT-d.z;if(yas<0.)continue;
+    vec4 d=uD[i];float R=uK[i];float yas=uT-d.z;if(yas<0.)continue;
+    vec2 q=uv-d.xy;
     if(d.w>9.5){
-      // Islak leke: keçeye sinen mürekkep — yavaş büyür (gerçek saat), soluk gövde + koyu
-      // ıslak kenar. Sınır ~%70 boy: tam damla bitişte açılır, ıslaklık onu önceden çizmez.
-      float Rw=uK[i]*(.34+.5*(1.-exp(-yas*.3)));
-      vec2 qw=uv-d.xy;
-      vec2 ww=vec2(fbm(qw*6.+d.z),fbm(qw*6.-d.z))-.5;
-      float rw=length(qw+ww*Rw*.9);
-      float islak=smoothstep(Rw,Rw*.2,rw)*.3+(smoothstep(Rw*1.05,Rw*.92,rw)-smoothstep(Rw*.92,Rw*.7,rw))*.5;
-      c=mix(c,renk(d.w),clamp(islak*(.7+.3*fbm(qw*18.)),0.,.62));
+      // Islak yuva: keçeye sinen mürekkep — gerçek saatle yavaşça büyür, yuvadan taşmaz.
+      float Rw=R*(.3+.62*(1.-exp(-yas*.35)));
+      vec2 ww=vec2(fbm(q*40.+d.z),fbm(q*40.-d.z))-.5;
+      float rw=length(q+ww*Rw*.25);
+      float islak=smoothstep(Rw,Rw*.45,rw)*.2+(smoothstep(Rw*1.02,Rw*.9,rw)-smoothstep(Rw*.9,Rw*.72,rw))*.3;
+      c=mix(c,renk(d.w),clamp(islak,0.,.45));
       continue;
     }
-    // Yayılma: ilk saniyede hızlı açılır, sonra kılcal olarak yavaşça sürer.
-    float R=uK[i]*(1.-exp(-yas*2.2))*(1.+.035*sqrt(yas));
-    vec2 q=uv-d.xy;
-    vec2 w=vec2(fbm(q*5.+d.z*3.1+uT*.03),fbm(q*5.-d.z*1.7-uT*.025))-.5;
-    float r=length(q+w*R*1.25);
-    float govde=smoothstep(R,R*.35,r);
-    float kenar=smoothstep(R*1.04,R*.9,r)-smoothstep(R*.9,R*.62,r);   // kahve halkası kenarı
-    float doku=.62+.38*fbm(q*22.+d.z);
-    float yogun=clamp(govde*doku*.9+kenar*.4,0.,.94)*(1.-.18*clamp(yas/30.,0.,1.));
-    c=mix(c,renk(d.w),yogun);
+    // Paraf izi: basış anında hafif büyük gelir ve oturur; kenar keskin, keçe dokusu mürekkebi
+    // yer yer aç bırakır (gerçek lastik mühür izi). Dağılma eskisinin ~%30'u.
+    float bas=clamp(yas/.16,0.,1.);
+    float Rs=R*(1.+.14*(1.-smoothstep(0.,.3,yas)));
+    vec2 w=vec2(fbm(q*26.+d.z*3.),fbm(q*26.-d.z*2.))-.5;
+    float r=length(q+w*Rs*.12);
+    float dis=halka(r,Rs*.84,Rs*.98);
+    float ic=halka(r,Rs*.68,Rs*.74);
+    float govde=smoothstep(Rs*.84,Rs*.5,r)*.08;
+    float gren=smoothstep(.28,.62,fbm((uv+d.z)*150.));
+    float yogun=((dis*.92+ic*.62)*(.5+.5*gren)+govde)*bas;
+    c=mix(c,renk(d.w),clamp(yogun,0.,.92));
   }
   gl_FragColor=vec4(c,1.);
 }`;
@@ -96,22 +93,46 @@ function tokenRgb(el, css) {
 const KECE = `color-mix(in srgb, ${PAL.ink} 5%, ${PAL.surf2})`;
 const RENKLER = [T, V, BANT.yesil.c, BANT.sari.c, BANT.kirmizi.c];
 
-/* Deterministik konum: Görev 1 sol, Görev 2 sağ yarıda; aynı adım her koşumda aynı yere düşer. */
-function hash(s) { let x = 2166136261; for (const ch of s) { x ^= ch.charCodeAt(0); x = Math.imul(x, 16777619); } return (x >>> 0) / 4294967295; }
-function damlaKonum(a, oran) {
-  const u = hash(a.id), v = hash(`${a.id}·y`);
-  const sol = a.gorev === 2 ? 0.52 : 0.08;
-  return [(sol + u * 0.4) * oran, 0.2 + v * 0.6];
-}
-function damlaRengi(a) {
-  if (a.status === "error") return 4;
+function damlaRengi(a, durum) {
+  if (durum === "hata") return 4;
   if (a.id === "risk_guard" && a.bant) return { yesil: 2, sari: 3, kirmizi: 4 }[a.bant] ?? 1;
   return a.gorev === 2 ? 1 : 0;
 }
-function damlaBoyu(a) {
-  const ms = nodeDurationMs(a);
-  const sn = Number.isFinite(ms) ? ms / 1000 : 1;
-  return Math.min(0.3, 0.1 + 0.055 * Math.sqrt(sn));
+
+/* YERLEŞİM — saf: her masanın yuvası (piksel). Bant başına satır sayısı masa sayısından;
+   iki bant aynı sütun ızgarasını paylaşır (yuvalar alt alta hizalı okunur). */
+const PAD = { sol: 30, sag: 10, ust: 10, alt: 10, bant: 12 };
+/* Bant başına satır sayısı SABİT değil: 1..3 satır denenir, mühür yarıçapını en büyük yapan
+   ızgara seçilir (tur 6: sabit 2 satır geniş-alçak kutuda mühürleri ~28px'e sıkıştırıyordu). */
+function enIriIzgara(bantlar, W, H) {
+  let en = null;
+  for (let s = 1; s <= 3; s += 1) {
+    const satirlar = bantlar.map((b) => Math.min(s, b.length));
+    const sutun = Math.max(...bantlar.map((b, i) => Math.ceil(b.length / satirlar[i])));
+    const toplamSatir = satirlar.reduce((t, x) => t + x, 0);
+    const adimX = (W - PAD.sol - PAD.sag) / sutun;
+    const adimY = (H - PAD.ust - PAD.alt - PAD.bant * (bantlar.length - 1)) / toplamSatir;
+    const r = Math.max(9, Math.min(24, adimX * 0.4, adimY * 0.44));   // yatayda mühürler arası nefes
+    if (!en || r > en.r + 0.5) en = { satirlar, sutun, adimX, adimY, r };
+  }
+  return en;
+}
+export function defterYerlesimi(display, W, H) {
+  const bantlar = [display.filter((a) => a.gorev !== 2), display.filter((a) => a.gorev === 2)].filter((b) => b.length);
+  if (!bantlar.length || W <= 0 || H <= 0) return { yuvalar: [], bantlar: [] };
+  const { satirlar, sutun, adimX, adimY, r } = enIriIzgara(bantlar, W, H);
+  const yuvalar = [], bantBilgi = [];
+  let y0 = PAD.ust;
+  bantlar.forEach((b, bi) => {
+    const s = satirlar[bi];
+    bantBilgi.push({ gorev: b[0].gorev === 2 ? 2 : 1, ust: y0, yukseklik: s * adimY });
+    b.forEach((a, k) => {
+      const satir = Math.floor(k / sutun), sut = k % sutun;
+      yuvalar.push({ a, x: PAD.sol + adimX * (sut + 0.5), y: y0 + adimY * (satir + 0.5), r });
+    });
+    y0 += s * adimY + PAD.bant;
+  });
+  return { yuvalar, bantlar: bantBilgi };
 }
 
 function glKur(cv) {
@@ -134,7 +155,7 @@ function glKur(cv) {
   return { gl, u: { res: u("uRes"), t: u("uT"), n: u("uN"), zemin: u("uZemin"), d: u("uD"), k: u("uK"), r: [0, 1, 2, 3, 4].map((i) => u(`uR${i}`)) } };
 }
 
-/* Canvas 2D yedeği (WebGL yok): oturmuş lekeleri radyal gradyanla tek sefer çizer. */
+/* Canvas 2D yedeği (WebGL yok): oturmuş paraf halkalarını tek sefer çizer. */
 function yedekCiz(cv, damlalar, renkler, zemin) {
   const g = cv.getContext("2d");
   if (!g) return;
@@ -143,38 +164,31 @@ function yedekCiz(cv, damlalar, renkler, zemin) {
   g.fillStyle = css(zemin, 1); g.fillRect(0, 0, W, H);
   damlalar.forEach((d) => {
     const islak = d.renk >= 10, rk = renkler[d.renk % 10];
-    const x = (d.x / (W / H)) * W, y = H - d.y * H, r = d.k * H * (islak ? 0.6 : 1);
-    const gr = g.createRadialGradient(x, y, 0, x, y, r);
-    gr.addColorStop(0, css(rk, islak ? 0.14 : 0.75)); gr.addColorStop(0.8, css(rk, islak ? 0.3 : 0.55)); gr.addColorStop(1, css(rk, 0));
-    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+    const x = d.x * H, y = H - d.y * H, r = d.k * H;
+    g.beginPath(); g.arc(x, y, islak ? r * 0.8 : r * 0.91, 0, Math.PI * 2);
+    if (islak) { g.fillStyle = css(rk, 0.16); g.fill(); return; }
+    g.lineWidth = r * 0.14; g.strokeStyle = css(rk, 0.8); g.stroke();
   });
 }
 
-/* GELİŞ FİŞİ — ilk mürekkep düşene dek keçenin üstünde evrakın kendisi durur ("evrak masaya
-   geldi"). Bekleme anı boş bir keçe değil, bir OLGU: hangi evrak, ne zaman geldi (saat, koşumun
-   gerçek başlangıcından türetilir — uydurma kayıt no YOK). İlk paraf mürekkebi düşünce fiş
-   masaya alınır (sağa kayarak çıkar) ve keçe sahneyi devralır. Stripe globe dersi: ortam
-   hareketi yok, yalnız olay hareket ettirir — fişin tek hareketi iniş ve kalkıştır. */
-const FIS_GIRIS = { opacity: 0, y: -22, rotate: -7, scale: 1.04 };
+/* GELİŞ FİŞİ — ilk paraf düşene dek keçenin üstünde evrakın kendisi durur ("evrak masaya
+   geldi"): hangi evrak, ne zaman (saat koşumun gerçek başlangıcından — uydurma kayıt no YOK).
+   Fiş DÜZ durur (tur 6: eğik kâğıt kamu ciddiyetine aykırı — eğim yalnız Damga atomunun
+   imzası). Tek hareketi iniş (y + opaklık) ve masaya alınıştır. */
 function GelisFisi({ ad, meta, saat }) {
   return (
-    <motion.div key="fis" initial={FIS_GIRIS} animate={{ opacity: 1, y: 0, rotate: -2.2, scale: 1 }}
-      exit={{ opacity: 0, x: 90, rotate: 4, transition: { duration: 0.32, ease: EASE_BEZIER.inOut } }}
-      transition={{ type: "spring", stiffness: 380, damping: 26, mass: 0.9 }}
-      style={{ position: "absolute", left: "50%", top: "50%", width: "min(78%, 300px)", marginLeft: "calc(min(78%, 300px) / -2)", marginTop: -54, zIndex: 2, background: PAL.surf, borderRadius: 3, boxShadow: `${SH.pop}, 0 0 0 1px ${PAL.line}`, padding: `${SP.m}px ${SP.l}px`, pointerEvents: "none" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.antet, fontSize: 10, color: PAL.mut2, textTransform: "uppercase" }}>
-        <span>Evrak masaya geldi</span>
+    <motion.div key="fis" initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, x: 72, transition: { duration: 0.28, ease: EASE_BEZIER.inOut } }}
+      transition={{ duration: 0.22, ease: EASE_BEZIER.out }}
+      style={{ position: "absolute", left: "50%", top: "50%", width: "min(80%, 300px)", marginLeft: "calc(min(80%, 300px) / -2)", marginTop: -52, zIndex: 3, background: PAL.surf, borderRadius: 3, boxShadow: `${SH.pop}, 0 0 0 1px ${PAL.line}`, padding: `${SP.m}px ${SP.l}px`, pointerEvents: "none" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.antet, fontSize: 10, color: PAL.mut2, textTransform: "uppercase", whiteSpace: "nowrap" }}>
+        <span>Evrak geldi</span>
         <span style={{ flex: 1, height: 1, background: PAL.line }} />
         {saat && <span style={{ ...TNUM }}>{saat}</span>}
       </div>
       <div style={{ marginTop: 6, height: 3, borderTop: `1.5px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.85 }} />
       <div style={{ marginTop: SP.s, ...TYPE.ui, fontWeight: 600, color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{ad}</div>
-      <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: 2 }}>
-        <span style={{ fontFamily: MONO, fontSize: 11, lineHeight: "16px", color: PAL.mut2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0, flex: 1, ...TNUM }}>{meta || "okunmayı bekliyor"}</span>
-        {/* Paraf yuvası — ilk masa işini bitirince buraya değil keçeye mürekkep düşer;
-            kesikli halka yalnız "henüz paraf yok" olgusunu gösterir. */}
-        <span style={{ width: 22, height: 22, borderRadius: RAD.dot, border: `1.5px dashed ${DERIN_OF(T)}`, flexShrink: 0, opacity: 0.8, animation: "nu-spin 8s linear infinite" }} />
-      </div>
+      <div style={{ marginTop: 2, fontFamily: MONO, fontSize: 11, lineHeight: "16px", color: PAL.mut2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", ...TNUM }}>{meta || "okunmayı bekliyor"}</div>
     </motion.div>
   );
 }
@@ -185,56 +199,96 @@ const saatOf = (runBase) => {
   return d.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 };
 
-export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196, gelis = null, runBase = 0, children = null }) {
-  const kapRef = useRef(null);
-  const cvRef = useRef(null);
-  const cv2Ref = useRef(null);            // Canvas 2D yedeği (WebGL yok / shader derlenmedi)
-  const probRef = useRef(null);
-  const dogumRef = useRef(new Map());     // adım id → doğum (sn, performance saatine göre)
-  const ilkRef = useRef(true);
-  const durumRef = useRef({ damlalar: [], kosumda, ciz: () => {} });
+function egimOf(id) { let x = 0; for (const ch of id) x = (x * 31 + ch.charCodeAt(0)) % 997; return (x % 11) - 6; }
 
-  // Mürekkep düşüren adımlar — YALNIZ gerçekten iş yapan / hata veren (olgu). Sıra = display sırası.
-  const damlaAdimlari = useMemo(
-    () => display.filter((a) => { const d = adimDurumu(a); return d === "calisti" || d === "hata"; }),
-    [display],
+/* Yuvanın HTML katmanı — numara / baş harf / halka biçimi (renk tek sinyal değil). Mürekkebin
+   kendisi WebGL'dedir; burada yalnız keskin tipografi ve mürekkepsiz kipler çizilir. */
+function Yuva({ y, durum }) {
+  const { a, x, r } = y;
+  const col = a.gorev === 2 ? V : T;
+  const derin = DERIN_OF(durum === "hata" ? BANT.kirmizi.c : a.id === "risk_guard" && a.bant && BANT[a.bant] ? BANT[a.bant].c : col);
+  const no = String(a.sira + 1).padStart(2, "0");
+  const kutu = { position: "absolute", left: x - r, top: y.y - r, width: r * 2, height: r * 2, boxSizing: "border-box", borderRadius: RAD.dot, display: "flex", alignItems: "center", justifyContent: "center" };
+  const rakam = { fontFamily: MONO, fontSize: Math.max(10, r * 0.52), lineHeight: 1, ...TNUM };
+  if (durum === "calisti" || durum === "hata") {
+    const egim = egimOf(a.id);
+    return (
+      <span style={{ ...kutu, "--egim": `${egim}deg`, color: derin, fontFamily: DISPLAY, fontWeight: 800, fontStretch: "125%", fontSize: Math.max(10, r * 0.62), letterSpacing: ".02em", transform: `rotate(${egim}deg)`, animation: "ke-e-paraf .45s var(--ke-ease-out) both" }}>
+        {durum === "hata" ? "×" : parafUret(a.id, a.label)}
+      </span>
+    );
+  }
+  if (durum === "isleniyor") return (
+    <span style={{ ...kutu, color: derin }}>
+      <span style={{ position: "absolute", inset: 0, borderRadius: RAD.dot, border: `1.5px dashed ${col}`, animation: "nu-spin 6s linear infinite" }} />
+      <span style={{ ...rakam, fontWeight: 600 }}>{no}</span>
+    </span>
   );
-  // Şu an çalışan masalar (backend "başladı" dedi, henüz bitmedi) — ıslak leke bırakır.
-  const islakAdimlar = useMemo(() => display.filter((a) => a.status === "active"), [display]);
+  const kenar = {
+    gerekmedi: `1.5px solid ${PAL.lineHi}`, atlandi: `1.5px dashed ${PAL.lineHi}`,
+    kesildi: `1.5px dashed ${BANT.kirmizi.c}`, islenmedi: `1px dotted ${PAL.lineHi}`,
+  }[durum] || `1px dotted ${PAL.lineHi}`;
+  return (
+    <span style={{ ...kutu, border: kenar, color: durum === "kesildi" ? DERIN_OF(BANT.kirmizi.c) : PAL.mut3, opacity: durum === "islenmedi" ? 0.55 : 1 }}>
+      {durum === "gerekmedi" ? <span style={{ width: r * 0.6, height: 1.5, background: PAL.lineHi }} /> : <span style={rakam}>{no}</span>}
+    </span>
+  );
+}
 
+function useBoyut(ref) {
+  const [b, setB] = useState({ w: 0, h: 0 });
   useEffect(() => {
-    const simdi = performance.now() / 1000;
-    const dog = dogumRef.current;
-    const kimlikler = new Set(damlaAdimlari.map((a) => a.id));
-    // Yeni koşum (biten sayısı düştü / kimlik kayboldu) → defter sıfırlanır.
-    for (const id of [...dog.keys()]) if (!kimlikler.has(id)) dog.delete(id);
-    damlaAdimlari.forEach((a) => { if (!dog.has(a.id)) dog.set(a.id, ilkRef.current ? simdi - 60 : simdi); });
-    ilkRef.current = false;
-    const kap = kapRef.current;
-    const oran = kap ? Math.max(0.5, kap.clientWidth / Math.max(1, kap.clientHeight)) : 2;
-    const simdiSn = performance.now() / 1000;
-    const islak = islakAdimlar.slice(0, 4).map((a) => {
-      const [x, y] = damlaKonum(a, oran);
-      // Başlangıç = gerçek "başladı" damgası (runBase + t0, performance saati); yoksa şimdi.
-      const z = Number.isFinite(runBase) && runBase > 0 && Number.isFinite(a.t0) ? (runBase + a.t0) / 1000 : simdiSn;
-      return { x, y, z, renk: 10 + (a.gorev === 2 ? 1 : 0), k: 0.24 };
-    });
-    durumRef.current.damlalar = [...damlaAdimlari.slice(-(AZAMI_DAMLA - islak.length)).map((a) => {
-      const [x, y] = damlaKonum(a, oran);
-      return { x, y, z: dog.get(a.id), renk: damlaRengi(a), k: damlaBoyu(a) };
-    }), ...islak];
-    durumRef.current.kosumda = kosumda;
-    durumRef.current.ciz();
-  }, [damlaAdimlari, islakAdimlar, kosumda, runBase]);
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === "undefined") return undefined;
+    const ro = new ResizeObserver(() => setB({ w: el.clientWidth, h: el.clientHeight }));
+    ro.observe(el);
+    setB({ w: el.clientWidth, h: el.clientHeight });
+    return () => ro.disconnect();
+  }, [ref]);
+  return b;
+}
 
+/* Tek kare çizimi — WebGL varsa shader, yoksa Canvas 2D yedeği. `boya` = {renkler, zemin}. */
+function kareCizici(ctx, cv, cv2Ref, durumRef, boya) {
+  return (zamanSn) => {
+    const { damlalar } = durumRef.current;
+    if (!ctx) { if (cv2Ref.current) yedekCiz(cv2Ref.current, damlalar, boya.renkler, boya.zemin); return; }
+    const { gl, u } = ctx;
+    gl.uniform2f(u.res, cv.width, cv.height);
+    gl.uniform1f(u.t, zamanSn);
+    gl.uniform1i(u.n, damlalar.length);
+    gl.uniform3fv(u.zemin, boya.zemin);
+    u.r.forEach((l, i) => gl.uniform3fv(l, boya.renkler[i]));
+    const D = new Float32Array(AZAMI_DAMLA * 4), K = new Float32Array(AZAMI_DAMLA);
+    damlalar.forEach((d, i) => { D.set([d.x, d.y, d.z, d.renk], i * 4); K[i] = d.k; });
+    gl.uniform4fv(u.d, D); gl.uniform1fv(u.k, K);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  };
+}
+
+/* Boyut / görünürlük / tema gözlemcileri — temizleyici döndürür. */
+function gozlemle(kap, { boyutla, baslat, statik, renkOku, gorunurYap }) {
+  const ro = new ResizeObserver(() => { boyutla(); baslat(); statik(); });
+  ro.observe(kap);
+  const io = new IntersectionObserver((g) => { gorunurYap(g[g.length - 1].isIntersecting); });
+  io.observe(kap);
+  const gor = () => { if (!document.hidden) baslat(); };
+  document.addEventListener("visibilitychange", gor);
+  const mo = new MutationObserver(() => { renkOku(); statik(); baslat(); });
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => { ro.disconnect(); io.disconnect(); mo.disconnect(); document.removeEventListener("visibilitychange", gor); };
+}
+
+/* WebGL döngüsü — mount'ta bir kez kurulur; çizilecek izler durumRef'ten okunur. */
+function useMurekkep(kapRef, cvRef, cv2Ref, probRef, durumRef) {
   useEffect(() => {
     const cv = cvRef.current, kap = kapRef.current, prob = probRef.current;
     const durum = durumRef.current;
     if (!cv || !kap || !prob) return undefined;
     const az = azHareketMi();
     const ctx = glKur(cv);
-    let renkler = [], zemin = [1, 1, 1];
-    const renkOku = () => { renkler = RENKLER.map((c) => tokenRgb(prob, c)); zemin = tokenRgb(prob, KECE); };
+    const boya = { renkler: [], zemin: [1, 1, 1] };
+    const renkOku = () => { boya.renkler = RENKLER.map((c) => tokenRgb(prob, c)); boya.zemin = tokenRgb(prob, KECE); };
     renkOku();
     let raf = 0, son = 0, gorunur = true;
     const boyutla = () => {
@@ -245,21 +299,7 @@ export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196
       hedef.height = Math.max(1, Math.round(kap.clientHeight * dpr));
       ctx?.gl.viewport(0, 0, cv.width, cv.height);
     };
-    const kare = (zamanSn) => {
-      const { damlalar } = durumRef.current;
-      if (!ctx) { if (cv2Ref.current) yedekCiz(cv2Ref.current, damlalar, renkler, zemin); return; }
-      const { gl, u } = ctx;
-      gl.uniform2f(u.res, cv.width, cv.height);
-      gl.uniform1f(u.t, zamanSn);
-      gl.uniform1i(u.n, damlalar.length);
-      gl.uniform3fv(u.zemin, zemin);
-      u.r.forEach((l, i) => gl.uniform3fv(l, renkler[i]));
-      const D = new Float32Array(AZAMI_DAMLA * 4), K = new Float32Array(AZAMI_DAMLA);
-      damlalar.forEach((d, i) => { D.set([d.x, d.y, d.z, d.renk], i * 4); K[i] = d.k; });
-      gl.uniform4fv(u.d, D); gl.uniform1fv(u.k, K);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-    };
-    // Oturmuş hâl: tüm damlalar sabit yaşta (reduced-motion / yedek).
+    const kare = kareCizici(ctx, cv, cv2Ref, durumRef, boya);
     const statik = () => kare(performance.now() / 1000 + (az ? 600 : 0));
     const oturdu = () => {
       const t = performance.now() / 1000;
@@ -274,32 +314,72 @@ export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196
     const baslat = () => { if (az || !ctx) { statik(); return; } if (!raf) raf = requestAnimationFrame(dongu); };
     durum.ciz = baslat;
     boyutla(); baslat();
-    const ro = new ResizeObserver(() => { boyutla(); baslat(); if (az || !ctx) statik(); });
-    ro.observe(kap);
-    const io = new IntersectionObserver((g) => { gorunur = g[g.length - 1].isIntersecting; if (gorunur) baslat(); });
-    io.observe(kap);
-    const gor = () => { if (!document.hidden) baslat(); };
-    document.addEventListener("visibilitychange", gor);
-    // Tema değişimi (html[data-theme]) → token renkleri yeniden okunur.
-    const mo = new MutationObserver(() => { renkOku(); statik(); baslat(); });
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    const birak = gozlemle(kap, { boyutla, baslat, statik: () => { if (az || !ctx) statik(); }, renkOku: () => { renkOku(); statik(); }, gorunurYap: (g) => { gorunur = g; if (g) baslat(); } });
     return () => {
-      cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); mo.disconnect();
-      document.removeEventListener("visibilitychange", gor);
+      cancelAnimationFrame(raf); birak();
       // loseContext ÇAĞRILMAZ: StrictMode'un çift effect'inde aynı canvas'ın ikinci
       // getContext'i kayıp bağlamı döndürür ve sahne boş kalır.
       durum.ciz = () => {};
     };
-  }, []);
+  }, [kapRef, cvRef, cv2Ref, probRef, durumRef]);
+}
 
-  // Fiş yalnız koşum sürerken ve keçede henüz mürekkep yokken (ilk paraf öncesi) masadadır.
-  const fisGoster = !!gelis && kosumda && damlaAdimlari.length === 0;
+export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196, gelis = null, runBase = 0, durdu = null, children = null }) {
+  const kapRef = useRef(null);
+  const cvRef = useRef(null);
+  const cv2Ref = useRef(null);
+  const probRef = useRef(null);
+  const dogumRef = useRef(new Map());     // adım id → paraf doğumu (sn, performance saati)
+  const ilkRef = useRef(true);
+  const durumRef = useRef({ damlalar: [], kosumda, ciz: () => {} });
+  const { w, h } = useBoyut(kapRef);
+  const { yuvalar, bantlar } = useMemo(() => defterYerlesimi(display, w, h), [display, w, h]);
+  const durumlar = useMemo(() => yuvalar.map((y) => sahneDurumu(y.a, durdu)), [yuvalar, durdu]);
+  const parafSayisi = durumlar.filter((d) => d === "calisti" || d === "hata").length;
+
+  useEffect(() => {
+    if (!h) return;
+    const simdi = performance.now() / 1000;
+    const dog = dogumRef.current;
+    const izli = new Set();
+    const izler = [], islak = [];
+    yuvalar.forEach((y, i) => {
+      const d = durumlar[i];
+      const uv = { x: y.x / h, y: (h - y.y) / h, k: y.r / h };
+      if (d === "calisti" || d === "hata") {
+        izli.add(y.a.id);
+        if (!dog.has(y.a.id)) dog.set(y.a.id, ilkRef.current ? simdi - 60 : simdi);
+        izler.push({ ...uv, z: dog.get(y.a.id), renk: damlaRengi(y.a, d) });
+      } else if (d === "isleniyor") {
+        const z = Number.isFinite(runBase) && runBase > 0 && Number.isFinite(y.a.t0) ? (runBase + y.a.t0) / 1000 : simdi;
+        islak.push({ ...uv, z, renk: 10 + (y.a.gorev === 2 ? 1 : 0) });
+      }
+    });
+    // Yeni koşum (biten kayboldu) → defter sıfırlanır.
+    for (const id of [...dog.keys()]) if (!izli.has(id)) dog.delete(id);
+    ilkRef.current = false;
+    durumRef.current.damlalar = [...izler, ...islak].slice(-AZAMI_DAMLA);
+    durumRef.current.kosumda = kosumda;
+    durumRef.current.ciz();
+  }, [yuvalar, durumlar, kosumda, runBase, h]);
+
+  useMurekkep(kapRef, cvRef, cv2Ref, probRef, durumRef);
+
+  const fisGoster = !!gelis && kosumda && parafSayisi === 0;
   const saat = useMemo(() => saatOf(runBase), [runBase]);
   return (
     <div ref={kapRef} aria-hidden="true" style={{ position: "relative", width: "100%", height: yukseklik, borderRadius: RAD.ctl, overflow: "hidden", background: KECE }}>
       <canvas ref={cvRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }} />
       <canvas ref={cv2Ref} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block", pointerEvents: "none" }} />
       <span ref={probRef} style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }} />
+      {/* Bant künyeleri + bantlar arası ince dikiş — "I" üst bant, "II" alt bant. */}
+      {bantlar.map((b, i) => (
+        <span key={b.gorev} style={{ position: "absolute", left: 0, top: b.ust, height: b.yukseklik, width: PAD.sol - 6, display: "flex", alignItems: "center", justifyContent: "center", borderRight: `1px solid ${PAL.line}`, fontFamily: DISPLAY, fontWeight: 800, fontStretch: "120%", fontSize: 11, color: DERIN_OF(b.gorev === 2 ? V : T) }}>
+          {b.gorev === 2 ? "II" : "I"}
+          {i > 0 && <span style={{ position: "absolute", left: 6, top: -PAD.bant / 2 - 0.5, width: w - 12, height: 0, borderTop: `1px dashed ${PAL.lineHi}` }} />}
+        </span>
+      ))}
+      {yuvalar.map((y, i) => <Yuva key={y.a.id} y={y} durum={durumlar[i]} />)}
       <AnimatePresence>
         {fisGoster && <GelisFisi ad={gelis.ad} meta={gelis.meta} saat={saat} />}
       </AnimatePresence>

@@ -122,6 +122,9 @@ export const THEME_CSS = `
   --ke-hov:rgba(255,255,255,.06); --ke-press:rgba(255,255,255,.10); --ke-input-line:rgba(255,255,255,.26);
   --ke-t:#8aa2ff; --ke-derin-t:#aebdff; --ke-derin-th:#c3ceff; --ke-on-accent:#0d1124;
   --ke-derin-sari:#f0c168; --ke-alfa:14%;
+  /* ACELE kırmızısı cilt üstünde (tur 6): gecikmiş sayısı rozeti rayda/alt şeritte okunmalı —
+     açık temanın #a8261b'i lacivert bezde ~2:1 kalıyordu. */
+  --ke-derin-kirmizi:#ff9d8f; --ke-derin-r:#ff9d8f;
 }
 /* Koyu temada ray ≈ sayfa zemini (ölçüldü: 1,04:1) → dosya sırtı ve ray kenarı kayboluyordu.
    Lacivert hue + cilt bezi dokusu + sağ kenar dikiş çizgisi (--ke-ray-kenar) üç ayrı sinyal;
@@ -132,7 +135,7 @@ export const THEME_CSS = `
    (--ke-sayfa) taşıdığından lacivert cildin içine giren KOYU bir dil olarak okunur — açık
    temadaki "açık dil koyu cilde girer" ilişkisinin tersi, aynı geometri. Ölçüm: ray/sayfa
    parlaklık oranı 1,02 → 1,16; ray içi metinler yeniden ölçüldü (kontrast.mjs, hepsi ≥4,5). */
-:root[data-theme="dark"] [data-ray]{ --ke-bg:#121b3d; --ke-bg2:#121b3d; --ke-surf:#1b2652; --ke-surf2:#162047; --ke-surf-hi:rgba(255,255,255,.08); --ke-line:rgba(255,255,255,.12); --ke-ray-kenar:rgba(255,255,255,.10); }
+:root[data-theme="dark"] [data-ray]{ --ke-bg:#121b3d; --ke-bg2:#121b3d; --ke-surf:#1b2652; --ke-surf2:#162047; --ke-surf-hi:rgba(255,255,255,.08); --ke-line:rgba(255,255,255,.12); --ke-ray-kenar:rgba(255,255,255,.10); --ke-kulak-kenar:rgba(255,255,255,.18); }
 /* Cilt bezi: çok ince atkı/çözgü örgüsü — rayın "lacivert bez kapak" malzemesi. Statik,
    tek katman, metnin altında (ray zemininin background-image'ı). */
 [data-ray]{ --ke-ray-doku:repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, rgba(255,255,255,.016) 0 1px, transparent 1px 3px); }

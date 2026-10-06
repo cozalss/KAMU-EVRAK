@@ -1,6 +1,6 @@
 import { cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { EVRAK_TR } from "./result-cards.jsx";
+import { EVRAK_TR } from "../lib/evrakEtiket.js";
 import { Chip, slaInfo, Vrow, KanitAlinti } from "./NeonDetayParts.jsx";
 import { unsurEtiket, eksikYorum, canliKaynakYorum } from "../lib/detayYorum.js";
 import { T, V, PAL, BANT, DERIN, ALFA, RAD, SP, SH, NeonCard, Icon, odakDongusu, TYPE, focusRing } from "./neonUi.jsx";
@@ -107,7 +107,7 @@ function kanitSpanBul(spanlar, anahtar) {
   }) || null;
 }
 
-function SwapButton({ children, icon, onClick }) {
+function TakasDugmesi({ children, icon, onClick }) {
   return (
     <button
       type="button"
@@ -159,7 +159,7 @@ function SummarySwapPanel({ r, onBelge }) {
       <div className="sc-source-summary-head" style={{ borderBottomColor: PAL.line }}>
         <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.info /></span>
         <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink, flex: 1, minWidth: 60 }}>Özet</span>
-        <SwapButton icon={<Icon.doc width={13} height={13} />} onClick={onBelge}>Okunan belge</SwapButton>
+        <TakasDugmesi icon={<Icon.doc width={13} height={13} />} onClick={onBelge}>Okunan belge</TakasDugmesi>
       </div>
       <div className="sc-source-summary-body" style={{ background: PAL.surf2 }}>
         <div className="sc-source-summary-paper" style={{ borderColor: PAL.line, background: PAL.surf, boxShadow: SH.pop }}>
@@ -170,13 +170,14 @@ function SummarySwapPanel({ r, onBelge }) {
   );
 }
 
+/* Gösterilebilir bilgi unsurları — tek süzgeç (hızlı kart + ayrıntı paneli aynı kuralı okur). */
+const doluUnsurlar = (r) => Object.entries(r?.bilgi_unsurlari || {})
+  .filter(([k, v]) => k !== "pii_var" && v !== undefined && v !== null && v !== "" && v !== false && degerYaz(v, k) !== "");
+
 function ExtractedInfoQuickCard({ r, onOpen }) {
-  const unsurSayisi = Object.entries(r.bilgi_unsurlari || {})
-    .filter(([k, v]) => k !== "pii_var" && v !== undefined && v !== null && v !== "" && v !== false && degerYaz(v, k) !== "")
-    .length;
-  const entries = Object.entries(r.bilgi_unsurlari || {})
-    .filter(([k, v]) => k !== "pii_var" && v !== undefined && v !== null && v !== "" && v !== false && degerYaz(v, k) !== "")
-    .slice(0, 5);
+  const tum = doluUnsurlar(r);
+  const unsurSayisi = tum.length;
+  const entries = tum.slice(0, 5);
   const uy = unsurEtiket(r);
 
   return (
@@ -242,9 +243,7 @@ function QuickReviewSection({ r, band, bantC, onOpen }) {
 
 function ExtractedInfoPanel({ r }) {
   const uy = unsurEtiket(r);
-  const entries = Object.entries(r.bilgi_unsurlari || {})
-    .filter(([k, v]) => k !== "pii_var" && v !== undefined && v !== null && v !== "" && v !== false && degerYaz(v, k) !== "")
-    .slice(0, 18);
+  const entries = doluUnsurlar(r).slice(0, 18);
   const bools = Object.entries(r.bilgi_unsurlari || {}).filter(([, v]) => typeof v === "boolean");
   const kanitMetin = r.kanit_metadata?.metin || "";
   const spanlar = r.kanit_metadata?.spanlar;
@@ -510,9 +509,9 @@ export default function SonucCalismaAlani({
   const birimAday = arr(r.birim_alternatifleri)
     .filter((b) => b !== r.hedef_birim && b !== r.hedef_birim_oneri && b !== r.hedef_kategori).slice(0, 3);
   const ozetButonu = (
-    <SwapButton icon={<Icon.info width={13} height={13} />} onClick={() => setSourceView("ozet")}>
+    <TakasDugmesi icon={<Icon.info width={13} height={13} />} onClick={() => setSourceView("ozet")}>
       Özet
-    </SwapButton>
+    </TakasDugmesi>
   );
   const okunanPanel = sourceView === "ozet"
     ? <SummarySwapPanel r={r} onBelge={() => setSourceView("belge")} />

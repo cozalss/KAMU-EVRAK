@@ -1,7 +1,8 @@
 /* dashboardKabuk — DashboardApp kabuğunun saf, durumsuz parçaları (dosya < 800 satır kuralı):
    görünüm geçişi (View Transitions + yön), tembel görünüm iskeleti, ağ hata çubuğu. */
 import { flushSync } from "react-dom";
-import { PAL, DERIN, TYPE, RAD, SP, SH, ALFA, BANT, Icon, focusRing, SR_ONLY } from "./components/neonUi.jsx";
+import { PAL, TYPE, RAD, SP, SH, SR_ONLY, ICERIK_AZAMI } from "./components/neonUi.jsx";
+import { HataFisi, DenemeKunye } from "./components/kabukAtomlari.jsx";
 
 // Görünüm geçişini View Transitions API ile sar: destekleyen tarayıcıda yumuşak
 // çapraz-erime; destek yoksa ya da kullanıcı hareket azaltmışsa DÜZ geçiş (birebir eski
@@ -37,9 +38,9 @@ export function ViewFallback() {
   return (
     <section aria-busy="true" style={{ padding: "28px clamp(16px, 4vw, 40px) 96px", minHeight: "calc(100vh - 1px)", animation: "nu-sol .2s ease-out .16s both" }}>
       <span role="status" style={SR_ONLY}>Görünüm yükleniyor</span>
-      <div aria-hidden="true">
+      <div aria-hidden="true" style={{ maxWidth: ICERIK_AZAMI, marginInline: "auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.m, height: 14 }}>
-          <span style={{ ...TYPE.antet, color: PAL.mut3, whiteSpace: "nowrap" }}>T.C. · KAMU-EVRAK</span>
+          <span style={{ ...TYPE.antet, color: PAL.mut3, whiteSpace: "nowrap" }}>KAMU-EVRAK</span>
           <span style={{ flex: 1, height: 1, background: PAL.line }} />
         </div>
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap" }}>
@@ -57,27 +58,37 @@ export function ViewFallback() {
 }
 
 // Hata çubuğu — SAĞ ALTA demirli (ortada canlı sahnenin havale pusulasının orta satırlarını
-// örtüyordu, E ajanı ölçümü). Telefonda üstte, antetin altında: altta sabit Asistan düğmesi ve
-// liste son satırının eylemleri var; sol 76 px = 64 px kenar rayı + boşluk (logo örtülmez). Genişlik içeriğe göre, en çok 440 px; uzun mesaj sarar.
-const HATA_CSS = `.ke-hata{position:fixed;z-index:400;right:clamp(16px,3vw,32px);bottom:calc(24px + env(safe-area-inset-bottom));width:max-content;max-width:min(440px,calc(100vw - 32px));animation:nu-rise .22s var(--ke-ease-out) both}
-@media (max-width:640px){.ke-hata{left:76px;right:12px;bottom:auto;top:calc(12px + env(safe-area-inset-top));width:auto;max-width:none}}
+// örtüyordu). Tur 6: kendi lehçesi ("İŞLEM DURDU" kırmızı tint çubuk) yerine ortak HataFisi'nin
+// kompakt hâli — sistemde tek hata dili. Telefonda üstte; ray yerine alt şerit olduğundan sol
+// boşluk 12 px (eski 76 px = kenar rayı payıydı). Genişlik içeriğe göre, en çok 440 px.
+const HATA_CSS = `.ke-hata{position:fixed;z-index:400;right:clamp(16px,3vw,32px);bottom:calc(24px + env(safe-area-inset-bottom));width:min(440px,calc(100vw - 32px))}
+@media (max-width:720px){.ke-hata{left:12px;right:12px;bottom:auto;top:calc(12px + env(safe-area-inset-top));width:auto}}
 @media (pointer:coarse){.ke-hata button{min-height:44px;min-width:44px}}`;
 export function ErrorBar({ msg, canRetry, onRetry, onDismiss }) {
+  // zIndex 400: uyarı katmanı HER yüzeyin üstünde — modal (300) veya sheet (320) açıkken ağ hatası
+  // scrim arkasında görünmez kalıyordu; "Tekrar dene" her durumda erişilir.
   return (
-    // zIndex 400: uyarı katmanı HER yüzeyin üstünde — modal (300) veya sheet (320) açıkken
-    // ağ hatası scrim arkasında görünmez kalıyordu; "Tekrar dene" her durumda erişilir.
-    <div role="alert" className="ke-hata" style={{ background: PAL.surfPop, border: `1px solid ${PAL.line}`, borderLeft: `3px solid ${DERIN.kirmizi}`, borderRadius: RAD.pop, boxShadow: SH.modal, overflow: "hidden" }}>
+    <div className="ke-hata">
       <style>{HATA_CSS}</style>
-      <div style={{ display: "flex", alignItems: "flex-start", gap: SP.m, background: ALFA(BANT.kirmizi.c), color: DERIN.kirmizi, padding: "12px 12px 12px 14px" }}>
-        <span aria-hidden="true" style={{ display: "flex", paddingTop: 2 }}><Icon.alert /></span>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ ...TYPE.antet, marginBottom: 2 }}>İŞLEM DURDU</div>
-          <div style={{ ...TYPE.data, color: PAL.ink, overflowWrap: "anywhere" }}>{msg}</div>
-        </div>
-        <div style={{ display: "flex", gap: SP.s, alignItems: "center", flexShrink: 0 }}>
-          {canRetry && <button onClick={onRetry} {...focusRing} data-press="" style={{ cursor: "pointer", padding: "4px 12px", borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: DERIN.kirmizi, ...TYPE.data, fontWeight: 600, transition: "transform .14s var(--ke-ease-out)" }}>Tekrar dene</button>}
-          <button onClick={onDismiss} aria-label="Hata bildirimini kapat" {...focusRing} data-press="" style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: "4px 8px", borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "transparent", color: DERIN.kirmizi, transition: "transform .14s var(--ke-ease-out)" }}><Icon.x /></button>
-        </div>
+      <HataFisi kompakt onKapat={onDismiss} onYenidenDene={canRetry ? onRetry : undefined} yenidenDeneEtiket="Tekrar dene">{msg}</HataFisi>
+    </div>
+  );
+}
+
+/* Deneme şeridi — kabuğun veri sorguları (işlemler · giden · SLA) yeniden denenirken üstte mono
+   "Sunucuya 2. kez yazıldı" satırı. Hata ekranı gelmeden önceki ~10 sn sessiz iskelet "donmuş"
+   okunuyordu (jüri). Yalnız deneme SÜRERKEN görünür; denemeler tükenince görünümün kendi hata
+   fişi devralır (aynı anda iki hata dili yok). Yerleşimi kaydırmaz (sabit, üstte, ortalı). */
+const DENEME_CSS = `.ke-deneme{position:fixed;z-index:390;top:calc(10px + env(safe-area-inset-top));left:0;right:0;margin-inline:auto;width:max-content;max-width:calc(100vw - 32px);pointer-events:none}`;
+export function DenemeSeridi({ sorgular }) {
+  const deneyen = sorgular.filter((q) => q && q.isFetching && !q.isError && q.failureCount > 0);
+  if (!deneyen.length) return null;
+  const deneme = Math.max(...deneyen.map((q) => q.failureCount));
+  return (
+    <div className="ke-deneme">
+      <style>{DENEME_CSS}</style>
+      <div style={{ background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.ctl, boxShadow: SH.card, padding: `${SP.m}px ${SP.m}px 0` }}>
+        <DenemeKunye deneme={deneme} toplam={3} />
       </div>
     </div>
   );

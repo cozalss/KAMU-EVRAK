@@ -33,11 +33,18 @@ const GRAIN =
 // küre artık TÜKENMEZ MÜREKKEBİNİN kendi ailesinde: çekirdek T'nin kâğıda (onInk, iki temada
 // açık) karışmış hâli, kenarda istampa moru. "Mürekkep damlası ışığı"; hue birliği korunur.
 // Koyu temada T zaten açık bir mavi — kâğıda aynı oranda karışınca küre beyaza yıkanıyordu
-// (ölçüldü); orada mürekkep oranı yükselir. Oran tema başına tek CSS değişkeninde.
+// (ölçüldü). Tur 6: %86 T + kâğıt bile koyu zeminde lavanta-beyaz bir leke okutuyordu —
+// koyu temada gövde artık LACİVERT mürekkep (açık mavinin zeminle karışımı), parlak olan
+// yalnız merkez (gok-ust). Oran tema başına tek CSS değişkeninde.
 const GOK = "var(--ke-orb-gok)";
 const GOK_UST = "var(--ke-orb-gok-ust)";
-const ORB_CSS = `:root{--ke-orb-gok:color-mix(in srgb, ${T} 52%, ${PAL.onInk});--ke-orb-gok-ust:color-mix(in srgb, ${T} 16%, ${PAL.onInk})}
-:root[data-theme="dark"]{--ke-orb-gok:color-mix(in srgb, ${T} 86%, ${PAL.onInk});--ke-orb-gok-ust:color-mix(in srgb, ${T} 48%, ${PAL.onInk})}`;
+// ORB_T / ORB_V: gövdenin mürekkep ve mühür tonları. Açık temada token'ın kendisi; koyu temada
+// T ve V zaten AÇIK (periwinkle/lavanta) olduğundan zeminle karıştırılarak lacivert-erik
+// mürekkebe indirilir — yoksa küre koyu zeminde soluk bir lavanta lekesi okunuyordu.
+const ORB_T = "var(--ke-orb-t)";
+const ORB_V = "var(--ke-orb-v)";
+const ORB_CSS = `:root{--ke-orb-t:${T};--ke-orb-v:${V};--ke-orb-gok:color-mix(in srgb, ${T} 62%, ${PAL.onInk});--ke-orb-gok-ust:color-mix(in srgb, ${T} 22%, ${PAL.onInk})}
+:root[data-theme="dark"]{--ke-orb-t:color-mix(in srgb, ${T} 44%, ${PAL.bg});--ke-orb-v:color-mix(in srgb, ${V} 38%, ${PAL.bg});--ke-orb-gok:color-mix(in srgb, ${T} 52%, ${PAL.bg});--ke-orb-gok-ust:${T}}`;
 
 // Düşünme halkası kutunun kenarından DEĞİL kürenin GÖRÜNÜR kenarından doğmalı. Küre clip-path
 // ile r = 0.38·boyut çiziliyor, yani kutu yarıçapının %76'sı; halka inset:0 ile başlarsa
@@ -80,9 +87,13 @@ export default function SesliOrb({
           kendi kenarında bir iz olarak kalır. Duraklar kürenin görünür kenarının (r≈0.38·boyut)
           DIŞINDA olacak şekilde seçildi, yoksa yine görünmezler.
           pointerEvents ZORUNLU: kutunun dışına taşar; tıklamayı yutarsa alttaki düğmeler ölür. */}
-      <span aria-hidden="true" style={{ position: "absolute", inset: "-24%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${T} 0%, ${T} 52%, transparent 78%)`, filter: "blur(38px)", opacity: .11 }} />
+      {/* Tur 6: aura arkadaki tablo satırlarını ve kenar çubuğunu maviye boyuyordu (inset -24%,
+          blur 38). Artık kürenin hemen çevresinde kalan dar bir ışık (inset -10%, blur 18) ve
+          içerik üstünde ancak sezilen opaklık (.06) — arka ekran okunur kalır. */}
+      <span aria-hidden="true" style={{ position: "absolute", inset: "-10%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${ORB_T} 0%, ${ORB_T} 50%, transparent 72%)`, filter: "blur(18px)", opacity: .06 }} />
       {/* Halo — rAF opacity sürer; çekirdeğin hue'sunda, dar. */}
-      <span ref={haloRef} aria-hidden="true" style={{ position: "absolute", inset: "-15%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${GOK} 0%, ${GOK} 52%, ${T} 68%, transparent 82%)`, filter: "blur(20px)", opacity: .3 }} />
+      <span ref={haloRef} aria-hidden="true" style={{ position: "absolute", inset: "-8%", pointerEvents: "none", borderRadius: "50%", background: `radial-gradient(circle, ${GOK} 0%, ${GOK} 52%, ${ORB_T} 66%, transparent 76%)`, filter: "blur(14px)", opacity: .3,
+        WebkitMaskImage: "radial-gradient(circle, black 58%, transparent 72%)", maskImage: "radial-gradient(circle, black 58%, transparent 72%)" }} />
       {/* Küre — rAF scale + clipPath sürer. İÇ GÖLGE YOK (bkz. üstteki tasarım ilkesi).
           willChange clip-path'i de SAYAR: path() basit-şekil optimizasyonuna girmiyor, her
           karede maske olarak uygulanıyor; beyan edilmezse alt ağaç (blur + blend) boşuna
@@ -103,7 +114,7 @@ export default function SesliOrb({
             (ölçüldü) — buna karşılık filtrelenen katman her karede yeniden boyanıyordu.
             Algılanmayan bir efekt için ödenen bedel. İç canlılık artık gerçekten görünen
             şeyden geliyor: aşağıdaki blob'ların açık/koyu çalkantısı. */}
-        <span style={{ position: "absolute", inset: 0, background: `radial-gradient(circle closest-side at 50% 47%, ${GOK_UST} 0%, ${GOK} 18%, ${T} 40%, color-mix(in srgb, ${V} 62%, ${T}) 60%, color-mix(in srgb, ${T} 70%, ${GOK}) 80%, color-mix(in srgb, ${GOK} 62%, transparent) 100%)` }} />
+        <span style={{ position: "absolute", inset: 0, background: `radial-gradient(circle closest-side at 50% 47%, ${GOK_UST} 0%, ${GOK} 18%, ${ORB_T} 40%, color-mix(in srgb, ${ORB_V} 62%, ${ORB_T}) 60%, color-mix(in srgb, ${ORB_T} 70%, ${GOK}) 80%, color-mix(in srgb, ${GOK} 62%, transparent) 100%)` }} />
         {/* Dönen sıvı blob'lar — iç akış.
             BLEND KARIŞIMI KASITLI: eski sürümde hareketli katmanların HEPSİ `screen`'di ve
             screen yalnız AÇAR (sonuç ≥ max(a,b)). Sonuç iki katlıydı — (a) hiçbir katman iç
@@ -121,12 +132,12 @@ export default function SesliOrb({
             katman bu yönlü bileşeni büyük ölçüde söndürüyor ama çalkantıyı korumak için
             farklı periyotta koşuyor — eşit periyot olsaydı ikisi kilitlenip donuk bir maske
             oluştururdu. */}
-        <span style={{ position: "absolute", inset: "-18%", background: `radial-gradient(circle at 50% 50%, ${V} 0%, transparent 58%)`, filter: "blur(38px)", mixBlendMode: "overlay", opacity: .17, animation: anim("ke-orb-c 30s linear infinite") }} />
-        <span style={{ position: "absolute", inset: "-18%", background: `radial-gradient(circle at 50% 50%, ${V} 0%, transparent 58%)`, filter: "blur(38px)", mixBlendMode: "overlay", opacity: .17, animation: anim("ke-orb-c 23s linear infinite reverse") }} />
+        <span style={{ position: "absolute", inset: "-18%", background: `radial-gradient(circle at 50% 50%, ${ORB_V} 0%, transparent 58%)`, filter: "blur(38px)", mixBlendMode: "overlay", opacity: .17, animation: anim("ke-orb-c 30s linear infinite") }} />
+        <span style={{ position: "absolute", inset: "-18%", background: `radial-gradient(circle at 50% 50%, ${ORB_V} 0%, transparent 58%)`, filter: "blur(38px)", mixBlendMode: "overlay", opacity: .17, animation: anim("ke-orb-c 23s linear infinite reverse") }} />
         {/* Dönen ışık süpürmesi (conic) — yüzeyde gezinen enerji. Eski sürümde bu katmanın
             üstünde %90 alfalı sabit bir "sheen" duruyordu ve tam da hareketin yoğunlaştığı
             merkez–sol bölgeyi örtüyordu; sheen kaldırıldı, süpürme artık görünür. */}
-        <span aria-hidden="true" style={{ position: "absolute", inset: "-8%", borderRadius: "50%", background: `conic-gradient(from 0deg, transparent 0deg, color-mix(in srgb, ${GOK_UST} 62%, transparent) 26deg, transparent 70deg, transparent 200deg, color-mix(in srgb, ${T} 55%, transparent) 236deg, transparent 300deg)`, filter: "blur(12px)", mixBlendMode: "screen", opacity: .5, animation: anim("nu-spin 8s linear infinite") }} />
+        <span aria-hidden="true" style={{ position: "absolute", inset: "-8%", borderRadius: "50%", background: `conic-gradient(from 0deg, transparent 0deg, color-mix(in srgb, ${GOK_UST} 62%, transparent) 26deg, transparent 70deg, transparent 200deg, color-mix(in srgb, ${ORB_T} 55%, transparent) 236deg, transparent 300deg)`, filter: "blur(12px)", mixBlendMode: "screen", opacity: .5, animation: anim("nu-spin 8s linear infinite") }} />
         {/* ÇEKİRDEK PARLAMASI — rAF opacity sürer (genliğe bağlı). Durum dilinin asıl taşıyıcısı:
             "Yanıtlıyor" ile "Hazır" arasındaki fark artık kenar biçimi değil PARLAKLIK; bu,
             ses seviyesinin göze en hızlı ulaşan karşılığı ve bakışta okunuyor. */}

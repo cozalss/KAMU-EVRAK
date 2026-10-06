@@ -26,8 +26,8 @@ test("oran hesabı WCAG referansıyla uyumlu (siyah/beyaz 21, aynı renk 1)", ()
 test("açık tema: tüm metin token'ları tüm yüzeylerde AA", () => olc("açık", K.acik, METIN, YUZEY));
 test("koyu tema: tüm metin token'ları tüm yüzeylerde AA", () => olc("koyu", K.koyu, METIN, YUZEY));
 test("kenar çubuğu (ray) iki temada AA", () => {
-  olc("ray-açık", K.rayAcik, ["ink", "ink2", "mut", "mut2", "mut3", "derin-t"], ["bg", "surf"]);
-  olc("ray-koyu", K.rayKoyu, ["ink", "ink2", "mut", "mut2", "mut3", "derin-t"], ["bg", "surf"]);
+  olc("ray-açık", K.rayAcik, ["ink", "ink2", "mut", "mut2", "mut3", "derin-t", "derin-sari", "derin-kirmizi"], ["bg", "surf"]);
+  olc("ray-koyu", K.rayKoyu, ["ink", "ink2", "mut", "mut2", "mut3", "derin-t", "derin-sari", "derin-kirmizi"], ["bg", "surf"]);
 });
 test("koyu temada kâğıt kapsamı ([data-evrak-kagit]) AA", () => {
   olc("kâğıt-koyu", K.kagitKoyu, METIN, ["surf", "surf2", "surf-pop"]);

@@ -7,6 +7,7 @@
 import { useMemo } from "react";
 import { DISPLAY, TYPE, TNUM, SP, RAD, ALFA, DERIN_OF, PAL, BANT } from "./neonUi.jsx";
 import { olcumler, donemKiyas, fmtSn } from "../lib/sureRapor.js";
+import { kiyasCoker } from "../lib/panelBrifSaf.js";
 
 /* Trend rozeti — süre TERS yönlü metrik: düşüş yeşil aşağı ok, artış kırmızı yukarı ok.
    Yorum (`iyi`) lib'den gelir; burada yalnız renge çevrilir.
@@ -75,6 +76,18 @@ export default function SureKiyasBloku({ history = [] }) {
   const hafta = useMemo(() => donemKiyas(olcum, 7), [olcum]);
   const ay = useMemo(() => donemKiyas(olcum, 30), [olcum]);
   if (olcum.length === 0) return null;
+  /* Tur 6: iki pencere AYNI ölçüm kümesini kapsıyorsa (ilk kurulum — tüm ölçümler son 7
+     günde) iki karo aynı sayıyı ve aynı "geçmiş yok" cümlesini tekrar ediyordu. Blok tek
+     satıra çöker; karolar ancak pencereler ayrıştığında basılır. */
+  if (kiyasCoker(hafta, ay)) {
+    return (
+      <p style={{ margin: `${SP.l}px 0 0`, paddingTop: SP.s, borderTop: `1px solid ${PAL.line}`, ...TYPE.meta, color: PAL.mut2, textWrap: "pretty", ...TNUM }}>
+        <span style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, marginRight: SP.s }}>KIYAS</span>
+        Tüm {hafta.n} ölçüm son 7 günde — dönem kıyası için geçmiş birikiyor.
+        {hafta.trend && <> <TrendRozet t={hafta.trend} /></>}
+      </p>
+    );
+  }
   return (
     <>
       <h4 style={{ margin: `${SP.l}px 0 ${SP.s}px`, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>Kıyaslama</h4>

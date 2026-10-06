@@ -6,7 +6,7 @@
    Mevzuat satırı "öneri"dir (RAG), doğrulanmış dayanak iddiası taşımaz. */
 import { Fragment } from "react";
 import { Damga, Icon, MONO, DISPLAY, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, focusRing } from "./neonUi.jsx";
-import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR } from "./result-cards.jsx";
+import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR } from "../lib/evrakEtiket.js";
 
 const dolu = (v) => v != null && String(v).trim() && v !== "—";
 
@@ -14,7 +14,11 @@ const dolu = (v) => v != null && String(v).trim() && v !== "—";
    zaten ayıklanır). Kapanış kalıpları ("Bilgilerinize sunulur.") öz değildir. */
 function ozCikar(govde = "") {
   const paragraflar = String(govde).split(/\n\s*\n/).map((p) => p.replace(/\s+/g, " ").trim()).filter(Boolean);
-  return paragraflar.find((p) => p.length > 40 && !/^(Gereğini|Bilgilerinize|Bilgi ve gereğini|Saygılarımla)/i.test(p)) || paragraflar[0] || "";
+  // Künye artıkları da öz değildir: "İlgi : …" satırı, "Sayın …" hitabı ve BÜYÜK HARF muhatap
+  // ("PARK VE BAHÇELER MÜDÜRLÜĞÜNE") — tur 6'da "Yazının özü" alanında İlgi satırı görünüyordu.
+  const kunyeArtigi = (p) => /^((İlgi|Ilgi|Sayı|Konu)\s*:|Sayın\s)/i.test(p) || p === p.toLocaleUpperCase("tr-TR");
+  return paragraflar.find((p) => p.length > 40 && !kunyeArtigi(p) && !/^(Gereğini|Bilgilerinize|Bilgi ve gereğini|Saygılarımla)/i.test(p))
+    || paragraflar.find((p) => !kunyeArtigi(p)) || "";
 }
 
 const BaslikEtiket = ({ children }) => (
@@ -54,7 +58,7 @@ export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, 
   ].filter(([, v]) => dolu(v));
 
   return (
-    <div style={{ minWidth: 0 }}>
+    <div style={{ minWidth: 0, flex: "1 0 auto", display: "flex", flexDirection: "column" }}>
       {/* Antet şeridi — panelin ne olduğu + kuyruktaki yeri. */}
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "0 20px", height: 34, borderBottom: `1px solid ${PAL.lineHi}`, ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>
         <span>Karar fişi</span>
@@ -63,7 +67,7 @@ export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, 
         </span>
       </div>
 
-      <div style={{ padding: "18px 20px 18px", display: "flex", flexDirection: "column", gap: SP.l }}>
+      <div style={{ flex: "1 0 auto", padding: "18px 20px 18px", display: "flex", flexDirection: "column", gap: SP.l }}>
         <div>
           <BaslikEtiket>Konu</BaslikEtiket>
           {/* Konu başlığı ÖLÇÜLÜ (18px) ve 3 satırla kelepçeli — konu satırları paragraf
@@ -84,7 +88,9 @@ export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, 
         {oz && (
           <div>
             <BaslikEtiket>Yazının özü</BaslikEtiket>
-            <p title={oz} style={{ margin: 0, ...TYPE.data, color: PAL.ink2, display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 4, overflow: "hidden" }}>{oz}</p>
+            {/* 7 satır: künye sütun dibine oturduğundan özün altındaki boşluk okunur metne gider
+                (tur 6: 4 satırda fişin ortasında ~140px ölü alan kalıyordu). */}
+            <p title={oz} style={{ margin: 0, ...TYPE.data, color: PAL.ink2, display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 7, overflow: "hidden" }}>{oz}</p>
           </div>
         )}
 
@@ -99,7 +105,7 @@ export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, 
           </div>
         )}
 
-        <dl style={{ margin: 0, display: "grid", gridTemplateColumns: "auto minmax(0, 1fr)", columnGap: SP.m }}>
+        <dl style={{ margin: 0, marginTop: "auto", display: "grid", gridTemplateColumns: "auto minmax(0, 1fr)", columnGap: SP.m }}>
           {kunye.map(([k, v, mono]) => (
             <Fragment key={k}>
               <dt style={{ ...TYPE.meta, color: PAL.mut3, padding: "6px 0", borderTop: `1px solid ${PAL.line}` }}>{k}</dt>

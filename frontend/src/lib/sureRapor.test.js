@@ -170,3 +170,9 @@ test("eksenKademe sıfır/bozuk girdide güvenli varsayılan döner", () => {
   assert.deepEqual(eksenKademe(0), { tavanSn: 1, kademeler: [1, 0.5, 0] });
   assert.deepEqual(eksenKademe(null), { tavanSn: 1, kademeler: [1, 0.5, 0] });
 });
+
+test("olcumler konu alanını taşır (rapor adı feed ile aynı kaynaktan)", () => {
+  const o = olcumler([{ name: "evrak.txt", ts: 1, result: { sure_ms: 900, bilgi_unsurlari: { konu: "park aydınlatma talebi" } } }, { name: "x.txt", ts: 2, result: { sure_ms: 500 } }]);
+  assert.equal(o[0].konu, "park aydınlatma talebi");
+  assert.equal(o[1].konu, "");
+});

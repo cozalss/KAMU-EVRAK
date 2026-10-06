@@ -19,6 +19,8 @@ export function olcumler(history) {
     .map((h) => ({
       id: h.result.islem_id || h.id || "",
       ad: h.name || "—",
+      // İnsan-okur ad için evrak konusu (rapor ve feed AYNI adı göstersin — kayitAdi çağıranda).
+      konu: h.result?.bilgi_unsurlari?.konu || "",
       hedefBirim: h.hedef_birim || "",
       evrakTuru: h.evrak_turu || "",
       ms: h.result.sure_ms,

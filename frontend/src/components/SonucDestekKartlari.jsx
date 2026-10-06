@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR } from "./result-cards.jsx";
+import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR } from "../lib/evrakEtiket.js";
 import { kurumGorunur, katalogAdHaritasi, mevzuatGorunenAd, ondalikTr } from "../lib/sonucEtiket.js";
 import { Chip, slaInfo, subSlaRenk, MevzuatRow, SlaPanel, DuzeltmeDiff, Vrow, Lint2646Karti } from "./NeonDetayParts.jsx";
 import { mevzuatDipnot, birimDipnot, lintGiris, decomposeGiris, riskGerekceYorum, riskSkorYorum, canliKaynakYorum } from "../lib/detayYorum.js";

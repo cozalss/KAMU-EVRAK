@@ -6,6 +6,7 @@
    doğru kanundan: dilekçe 3071 → 30 gün, bilgi edinme 4982 → 15 iş günü.
    aria-hidden salt-sunum demo — ekran okuyucuya hiçbir şey vaat etmez.
    Reduced-motion: zamanlayıcı başlamaz, mühürlü son kare sabit durur (useReducedMotion).
+   Tur 6: kâğıt ve fiş eğimsiz; "T.C." yalnız idare yazısının antetidir, dilekçede yok.
    Koyu tema (tur 4, jüri A#26): kâğıt GECE DE KÂĞITTIR — sahne [data-evrak-kagit] kapsamında
    çizilir; THEME_CSS koyu temada o alt ağacın token'larını sıcak, kısık kâğıda çevirir
    (A4 taslakla aynı --ke-kagit). Lacivert "kâğıt" metaforu iki ekranda iki türlü anlatıyordu. */
@@ -53,6 +54,7 @@ const EVRAKLAR = [
       "bilgilerinize arz ederim.",
       "Ek: Güzergâh krokisi (1 sayfa)",
     ],
+    antet: "ÖRNEK ELEKTRİK DAĞITIM A.Ş.",
     imza: "Genel Müdür Yrd.", tur: "Kurum yazısı", ozet: "Kazı izni", kisi: "Örnek EDAŞ",
     birim: "İmar ve Şehircilik Md.", sure: "Kurum içi · normal",
   },
@@ -136,8 +138,10 @@ function Kagit({ evrak, adim }) {
     <div style={{ position: "relative", width: "100%", height: "100%", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: 3, boxShadow: SH.kagit, padding: "34px 34px 0", boxSizing: "border-box", overflow: "hidden", fontFamily: SANS, color: PAL.ink2 }}>
       {/* kâğıt lifi */}
       <div style={{ position: "absolute", inset: 0, backgroundImage: `url("${GRAIN}")`, backgroundSize: "140px", opacity: 0.06, mixBlendMode: "multiply", pointerEvents: "none" }} />
-      <div style={{ textAlign: "center", fontFamily: DISPLAY, fontWeight: 800, fontStretch: "118%", fontSize: 11, lineHeight: "14px", letterSpacing: ".12em", color: PAL.ink }}>T.C.</div>
-      <div style={{ textAlign: "center", fontFamily: DISPLAY, fontWeight: 700, fontStretch: "110%", fontSize: 10.5, lineHeight: "14px", letterSpacing: ".06em", color: PAL.ink, marginTop: 2 }}>{evrak.kurum}</div>
+      {/* Tur 6 (jüri): vatandaş dilekçesi "T.C." ile başlamaz — o, İDARENİN yazısının antetidir.
+          Dilekçe muhatap satırıyla açılır; şirket yazısı kendi antetini (gönderen) taşır. */}
+      {evrak.antet && <div style={{ textAlign: "center", fontFamily: DISPLAY, fontWeight: 800, fontStretch: "118%", fontSize: 10.5, lineHeight: "14px", letterSpacing: ".1em", color: PAL.ink, marginBottom: 14, paddingBottom: 8, borderBottom: `1px solid ${PAL.line}` }}>{evrak.antet}</div>}
+      <div style={{ textAlign: "center", fontFamily: DISPLAY, fontWeight: 700, fontStretch: "110%", fontSize: 10.5, lineHeight: "14px", letterSpacing: ".06em", color: PAL.ink }}>{evrak.kurum}</div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 22, fontFamily: MONO, fontSize: 9.5, lineHeight: "13px", color: PAL.mut }}>
         <span>{evrak.sayi}</span><span style={TNUM}>{evrak.no}</span>
       </div>
@@ -174,8 +178,8 @@ export { GRAIN };
 function HavaleFisi({ evrak }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: 48, rotate: 8 }} animate={{ opacity: 1, x: 0, rotate: 3 }} exit={{ opacity: 0, x: 20 }}
-      transition={{ type: "spring", stiffness: 260, damping: 22 }}
+      initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }}
+      transition={{ duration: 0.42, ease: EASE_BEZIER.out }}
       style={{ position: "absolute", right: -34, top: 196, zIndex: 3, width: 190, padding: "10px 12px 11px", background: PAL.surf2, border: `1px solid ${PAL.lineHi}`, borderRadius: 3, boxShadow: SH.pop }}>
       <span aria-hidden="true" style={{ position: "absolute", left: 18, top: -9, width: 10, height: 26, borderRadius: 6, border: `1.5px solid ${PAL.mut3}` }} />
       <div style={{ ...TYPE.antet, fontSize: 10, color: DERIN.V, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
@@ -224,9 +228,11 @@ export default function AuthMasa() {
       <div style={{ position: "relative", height: "100%", minHeight: 0, width: "100%", maxWidth: 400, justifySelf: "center" }}>
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.div key={evrak.no} data-evrak-kagit=""
-            initial={{ opacity: 0, y: 60, rotate: 4, scale: 0.98 }}
-            animate={cikiyor ? { opacity: 0, x: -120, y: 30, rotate: -7 } : { opacity: 1, x: 0, y: 0, rotate: -1.6, scale: 1 }}
-            transition={cikiyor ? { duration: 0.6, ease: EASE_BEZIER.inOut } : { type: "spring", stiffness: 140, damping: 20, mass: 0.9 }}
+            /* Kâğıt DÜZ durur (tur 6, ciddiyet: eğik kâğıt kusur). Hareket yalnız dikey kayma +
+               opaklık — kayıt masasına oturur, işlenince yukarı kalkıp çekilir. Eğim yalnız damgada. */
+            initial={{ opacity: 0, y: 24 }}
+            animate={cikiyor ? { opacity: 0, y: -16 } : { opacity: 1, y: 0 }}
+            transition={cikiyor ? { duration: 0.5, ease: EASE_BEZIER.inOut } : { duration: 0.7, ease: EASE_BEZIER.out }}
             style={{ position: "absolute", left: 0, right: 0, top: 0, height: 560, transformOrigin: "50% 80%" }}>
             <motion.div style={{ width: "100%", height: "100%" }}
               animate={adim === MUHUR ? { scale: [1, 0.988, 1] } : { scale: 1 }}

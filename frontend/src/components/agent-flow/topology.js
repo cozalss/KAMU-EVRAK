@@ -10,17 +10,17 @@
 export const PIPELINE = [
   { id: "oku", label: "Oku (OCR)", gorev: 1, desc: "PDF/görsel/Word → metin", col: 0, row: 1 },
   { id: "siniflandir", label: "Sınıflandır", gorev: 1, desc: "Evrak türü", col: 1, row: 1 },
-  { id: "cikar", label: "Bilgi Çıkar", gorev: 1, desc: "Gönderen/tarih/sayı/konu", col: 2, row: 1 },
-  { id: "eksik_tespit", label: "Eksik Tespit", gorev: 1, desc: "Zorunlu alan (3071 m.4)", col: 3, row: 1 },
+  { id: "cikar", label: "Bilgi çıkar", gorev: 1, desc: "Gönderen/tarih/sayı/konu", col: 2, row: 1 },
+  { id: "eksik_tespit", label: "Eksik tespit", gorev: 1, desc: "Zorunlu alan (3071 m.4)", col: 3, row: 1 },
   // VİTRİN — çok-konulu ayrıştırma: tek dilekçedeki N isteği ayırır → paralel fan-out kaynağı.
-  { id: "decompose", label: "Çok-Konulu Ayır", gorev: 1, desc: "Alt-taleplere böl → ayrı havale", col: 4, row: 1 },
-  { id: "mevzuat_oner", label: "Mevzuat Öner", gorev: 1, desc: "İlgili mevzuat", col: 5, row: 0 },
+  { id: "decompose", label: "Çok konulu ayır", gorev: 1, desc: "Alt-taleplere böl → ayrı havale", col: 4, row: 1 },
+  { id: "mevzuat_oner", label: "Mevzuat öner", gorev: 1, desc: "İlgili mevzuat", col: 5, row: 0 },
   { id: "ozetle", label: "Özetle", gorev: 1, desc: "Kısa öz özet", col: 5, row: 2 },
-  { id: "route_birim", label: "Birim Yönlendir", gorev: 2, desc: "Havale → doğru birim", col: 6, row: 1 },
-  { id: "yazi_taslak", label: "Yazı Taslağı", gorev: 2, desc: "Resmî yazı (Yön. 2646)", col: 7, row: 1 },
+  { id: "route_birim", label: "Birim yönlendir", gorev: 2, desc: "Havale → doğru birim", col: 6, row: 1 },
+  { id: "yazi_taslak", label: "Yazı taslağı", gorev: 2, desc: "Resmî yazı (Yön. 2646)", col: 7, row: 1 },
   { id: "verify", label: "Doğrula", gorev: 2, desc: "Uydurma veto + format", col: 8, row: 1 },
   // Risk bandı (trafik ışığı): verify sinyallerini yeşil/sarı/kırmızı'ya çevirir → koşullu onay.
-  { id: "risk_guard", label: "Risk Bandı", gorev: 2, desc: "Trafik ışığı + koşullu onay", col: 9, row: 1 },
+  { id: "risk_guard", label: "Risk bandı", gorev: 2, desc: "Trafik ışığı + koşullu onay", col: 9, row: 1 },
   { id: "finalize", label: "Bilgilendir", gorev: 2, desc: "Bilgilendirme + eksik talebi", col: 10, row: 1 },
 ];
 
@@ -43,6 +43,8 @@ export const EDGES = [
   { from: "risk_guard", to: "finalize" },
 ];
 
+// Etiketler Türkçe cümle düzeninde (tur 6: "Bilgi Çıkar" gibi İngilizce başlık büyük harfi
+// arayüzün geri kalanıyla çelişiyordu). Canlı sahnenin etiket kaynağı lib/nodeMeta.js'tir.
 // Geriye-uyum: bazı bileşenler NODES bekleyebilir (col/row zaten PIPELINE'da).
 export const NODES = PIPELINE.map((n) => ({ ...n, sub: n.desc }));
 export const NODE_LABEL = Object.fromEntries(PIPELINE.map((n) => [n.id, n.label]));

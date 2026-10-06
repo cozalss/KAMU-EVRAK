@@ -8,7 +8,7 @@
    POST + sahte animasyon kaldırıldı; backend .txt'i text-plain olarak kabul eder).
    + HITL resume (/process_doc/resume) + taslak indirme (/yazi/taslak). */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { toast as sonnerToast } from "sonner";
+import { fisToast } from "../components/kabukAtomlari.jsx";
 import { authFetch, parseError } from "./authApi.js";
 import { DEFAULT_NODE_IDS, makeNode } from "./nodeMeta.js";
 import { kapanisDurumlari, hataDurumlari, hataMesaji } from "./akisKatman.js";
@@ -70,8 +70,10 @@ export function usePipeline() {
 
   // Görsel bildirim sonner'a (katmanlı/istiflenen toast, DashboardApp'te <Toaster>);
   // toast state'i YALNIZ ekran okuyucu canlı bölgesini besler (SR_ONLY, davranış korunur).
-  const showToast = useCallback((msg) => {
-    sonnerToast(msg);
+  // Tur 6: tek tonlu hap yerine "havale pusulası" — ton çağırandan ({ ton }) ya da metinden
+  // (lib/toastTon: veri kaybı uyarısı başarıdan AYRILIR). İmza geriye uyumlu: showToast(msg).
+  const showToast = useCallback((msg, secenek) => {
+    fisToast(msg, secenek);
     clearTimeout(toastTimer.current);
     setToast(msg);
     toastTimer.current = setTimeout(() => setToast(""), 3200);

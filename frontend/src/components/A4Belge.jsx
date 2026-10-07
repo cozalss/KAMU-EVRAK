@@ -15,7 +15,7 @@
    satırlar bir kez ölçülüp sayfa yüksekliğine göre bölünür; baskıda W3C standardı
    `@page { size: A4 }` devreye girer, ekrandaki ile çıktı aynı olur. */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { PAL, SH, SP, TYPE } from "./neonUi.jsx";
+import { PAL, SH, SP, TYPE, MONO } from "./neonUi.jsx";
 import {
   A4_GEN_PX,
   A4_YUK_PX,
@@ -134,6 +134,21 @@ function A4OkumaDuzeni({ satirlar, roller, onAc, solgun, baslikIpucu, imzaIdx, i
         Okuma düzeni · bağlayıcı biçim A4{onAc ? " — dokunun, tam sayfa açılır" : ""}
       </div>
     </>
+  );
+}
+
+/* SAYFA AYAĞI (tur 8, jüri: "1920'de kâğıdın alt %30'u boş; sayfa sonu/numarası işareti yok").
+   Tam A4 sayfalarda alt kenar boşluğuna oturur: solda dürüst durum (taslaktır; imza ve
+   doğrulama kodu EBYS kaydında verilir — imzalı gibi GÖSTERİLMEZ), sağda "Sayfa n / N".
+   Kırpık önizlemede (tek sayfa, içerik boyu) basılmaz — yalancı sayfa sonu olmasın. */
+function SayfaAyagi({ no, toplam }) {
+  return (
+    <div aria-label={`Sayfa ${no} / ${toplam}`} style={{ position: "absolute", left: KENAR_MM * MM, right: KENAR_MM * MM, bottom: KENAR_MM * MM * 0.45,
+      display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 6, borderTop: `0.5pt solid ${PAL.line}`,
+      fontFamily: MONO, fontSize: "7.5pt", letterSpacing: ".06em", color: PAL.mut3, textTransform: "uppercase", pointerEvents: "none" }}>
+      <span>Taslak · imza ve doğrulama kodu EBYS kaydında verilir</span>
+      <span style={{ fontVariantNumeric: "tabular-nums" }}>Sayfa {no} / {toplam}</span>
+    </div>
   );
 }
 
@@ -390,10 +405,11 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
                üstüne geldiğinde büyüteç imleci yerine düz ok görüyordu — kâğıdın
                tıklanabilir olduğuna dair TEK ipucu kayboluyordu (2026-08-06 bulgusu). */
             <div key={si} className="ke-a4-sayfa"
-              style={{ ...sayfaStil, height: sayfaYuk, cursor: onAc ? "zoom-in" : "inherit" }}
+              style={{ ...sayfaStil, position: "relative", height: sayfaYuk, cursor: onAc ? "zoom-in" : "inherit" }}
               title={onAc ? (baslikIpucu || "Büyüt (A4 görünüm)") : (baslikIpucu || undefined)}
               onClick={onAc || undefined}>
               {satirlar.slice(bas, son).map((_, j) => satirBas(bas + j, false))}
+              {!kirpik && <SayfaAyagi no={si + 1} toplam={liste.length} />}
             </div>
           ))}
         </div>

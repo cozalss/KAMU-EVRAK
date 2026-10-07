@@ -90,7 +90,9 @@ export function MevzuatRow({ rank, m, ad = "", nli, ilk, onAc, secili = false, o
           {secili && <Icon.check width={12} height={12} />}
         </button>
       )}
-      <div style={{ display: "flex", flexDirection: "column", gap: SP.s, flex: 1, minWidth: 0 }}>
+      {/* kd-mev-* sınıfları: sonuç ekranında (sonucStil) masaüstü ölçüsü — metin 72ch, göreli
+          skor dar sağ künye sütununda (jüri tur 8: satır ölçüsü ~1100px'ti). */}
+      <div className="kd-mev-govde" style={{ display: "flex", flexDirection: "column", gap: SP.s, flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap" }}>
           <span aria-hidden="true" style={{ ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>{rank}.</span>
           {acilir ? (
@@ -119,16 +121,21 @@ export function MevzuatRow({ rank, m, ad = "", nli, ilk, onAc, secili = false, o
             <span title="Bu öneri, üstteki maddenin atıf verdiği mevzuattan otomatik genişletmeyle geldi (GraphRAG-lite)" aria-label="Atıf grafiği genişletmesiyle gelen öneri" style={{ ...TYPE.meta, color: PAL.mut }}>atıf grafiğinden</span>
           )}
           {!sade && pct > 0 && (
-            <span title="Skor, listenin ilk önerisine GÖRELİdir (ilk satır daima %100). Mutlak alaka ölçüsü değildir; onu güven bandı verir."
+            <span className="kd-mev-pct" title="Skor, listenin ilk önerisine GÖRELİdir (ilk satır daima %100). Mutlak alaka ölçüsü değildir; onu güven bandı verir."
               style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>
               %{pct} <span style={{ color: PAL.mut }}>göreli</span>
             </span>
           )}
         </div>
         {!sade && pct > 0 && (
-          <div style={{ position: "relative", height: 4, background: PAL.press, borderRadius: RAD.chip }} role="img"
-            aria-label={`Göreli BM25 skoru: ilk önerinin yüzde ${pct}'i${guven ? `; güven bandı: ${guven}` : ""}`}>
-            <div style={{ height: "100%", width: `${pct}%`, background: fill, borderRadius: RAD.chip }} />
+          <div className="kd-mev-cubuk">
+            <span className="kd-mev-cubuk-etiket" aria-hidden="true" style={{ display: "none", ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", marginBottom: 6, ...TNUM }}>
+              Alaka · %{pct} göreli
+            </span>
+            <div style={{ position: "relative", height: 4, background: PAL.press, borderRadius: RAD.chip }} role="img"
+              aria-label={`Göreli BM25 skoru: ilk önerinin yüzde ${pct}'i${guven ? `; güven bandı: ${guven}` : ""}`}>
+              <div style={{ height: "100%", width: `${pct}%`, background: fill, borderRadius: RAD.chip }} />
+            </div>
           </div>
         )}
         {snippet && <div style={{ ...TYPE.data, color: PAL.mut2 }}>{snippet}</div>}
@@ -182,13 +189,19 @@ export function SlaPanel({ sla, info }) {
   const kalanEtiket = konum
     ? (konum.kalan >= 0 ? `bugün · ${konum.kalan} gün kaldı` : `bugün · ${-konum.kalan} gün gecikti`)
     : null;
+  // Durum çipi YALNIZ durumu söyler (jüri tur 8: "Gecikmiş · -64g" ile "bugün · 64 gün gecikti"
+  // aynı bilgiyi iki işaretle, biri eksi işaretli, tekrarlıyordu). Gün sayısı çizelgede tek
+  // ifadeyle; çizelge yoksa çipte eksi işaretsiz "64 gün gecikti" olarak kalır.
+  const cipEtiket = konum
+    ? String(info.label).split(" · ")[0]
+    : String(info.label).replace(/-(\d+)\s*g(?![a-zçğışöü])/i, "$1 gün gecikti");
   // Uçlardaki "bugün" etiketi kart dışına taşmasın — yalnız ETİKET kelepçelenir, nokta gerçek konumda.
   const etiketSol = konum ? Math.min(86, Math.max(14, konum.oran * 100)) : 0;
   return (
     <div style={{ margin: "8px 0 4px", paddingTop: SP.m, borderTop: `1px solid ${PAL.line}` }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, marginBottom: SP.m }}>
         <span style={{ ...TYPE.meta, color: PAL.mut2 }}>Yasal süre durumu</span>
-        <span style={{ ...TYPE.meta, fontWeight: 500, color: dc, background: ALFA(info.color), borderRadius: RAD.chip, padding: "2px 8px", ...TNUM }}>{info.label}</span>
+        <span style={{ ...TYPE.meta, fontWeight: 500, color: dc, background: ALFA(info.color), borderRadius: RAD.chip, padding: "2px 8px", ...TNUM }}>{cipEtiket}</span>
       </div>
       {String(sla?.durum || "").toLowerCase() === "tarih_yok" && (
         <div style={{ marginBottom: SP.s, ...TYPE.meta, color: PAL.mut2 }}>

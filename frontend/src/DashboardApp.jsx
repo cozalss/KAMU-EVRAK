@@ -8,10 +8,10 @@
 import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { baslikAl, ekranBaglamiOlustur } from "./lib/ekranBaglami.js";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Toaster } from "sonner";
 import { MotionConfig } from "motion/react";
 import { usePipeline, ACCEPT } from "./lib/usePipeline.js";
-import { createSekans, sonrakiSecim } from "./lib/dayanakSecim.js";
+import { useTaslakTuru } from "./kabukTaslakTuru.js";
+import { useKararKaydi } from "./kabukKarar.js";
 import { apiDelete, apiGet, apiPatch, apiPost, cachedDashboard } from "./lib/authApi.js";
 import { islemIdCoz } from "./lib/taslakId.js";
 import { gonderimDenetimi } from "./lib/gonderimHazirlik.js";
@@ -22,9 +22,10 @@ import { useSlaOnizleme, useKabukSayac } from "./kabukSayac.js";
 import { kuyrukDurumuTuret } from "./lib/kuyrukDurumu.js";
 import { draftsFromHistory, SAMPLE_AD_ID, useKaliciKayitlar } from "./kabukVeri.js";
 import { ayniKosumMu, varyantBirlestir } from "./lib/sicilVaryant.js";
-import { PAL, DERIN, SANS, TYPE, RAD, SR_ONLY, NEON_KEYFRAMES } from "./components/neonUi.jsx";
+import { PAL, SANS, NEON_KEYFRAMES, AntetKunyeBaglam } from "./components/neonUi.jsx";
+import { antetKunyeSatirlari } from "./lib/kabukAntetKunye.js";
 import NeonSidebar from "./components/NeonSidebar.jsx";
-import { gecisle, ViewFallback, ErrorBar, DenemeSeridi } from "./dashboardKabuk.jsx";
+import { gecisle, ViewFallback, ErrorBar, DenemeSeridi, AtlamaBaglantisi, BildirimKatmani, BaglantiKaydi } from "./dashboardKabuk.jsx";
 import HataSiniri from "./components/HataSiniri.jsx";
 // PanelView VARSAYILAN açılış görünümü → EAGER: her refresh'te lazy chunk beklemesi
 // ("yükleniyor…" flash) yaşanmasın, panel anında görünsün. Bağımlılıkları (neonUi +
@@ -207,59 +208,8 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     return id;
   };
 
-  // done→persist arası (~20-27 sn soğuk Supabase) islem_id henüz yok — bu pencerede verilen
-  // karar eskiden SESSİZCE DB'siz kalıyordu (adversarial-verify bulgusu: 2. refresh'te evrak
-  // kuyruğa geri düşüyordu). Artık karar beklemeye alınır; persist merge'i gelince yazılır.
-  const bekleyenKararRef = useRef(new Map());   // result → secim
-  // Seçilen tür + metin de gönderilir: memur tür kutucuğuyla taslağı değiştirdiyse
-  // DB'deki taslak karar anında güncellenir → kalıcı kayıt gönderilen içeriği yansıtır.
-  const persistDecision = useCallback(async (res, secim) => {
-    if (!res) return;
-    if (!res.islem_id) { bekleyenKararRef.current.set(res, secim); return; }
-    try {
-      const yanit = await apiPost(`/islem/${encodeURIComponent(res.islem_id)}/onayla`, {
-        secim, yazi_turu: res.yazi_turu || "", metin: res.yazi_taslak_md || "",
-      });
-      // Gerçek resmî numara: optimistik satırın geçici numarasını DB'nin giden_no'suyla
-      // değiştir (islem_id eşleşmesi; persist-penceresi akışında islem_id'siz açılan satır
-      // için en yeni numarasız satıra düşülür). Ardından giden listesi DB gerçeğiyle tazelenir.
-      if (yanit?.giden_no) {
-        setOutbox((o) => {
-          const hedef = o.find((x) => x.islem_id === res.islem_id)
-            || o.find((x) => !x.islem_id);
-          return hedef ? o.map((x) => (x === hedef
-            ? { ...x, id: yanit.giden_no, islem_id: res.islem_id, numaraBekliyor: false } : x)) : o;
-        });
-        queryClient.invalidateQueries({ queryKey: ["giden-evrak"] });
-      }
-    } catch (err) {
-      console.warn("Onay/giden evrak DB'ye yazılamadı", err);
-      showToast("Evrak oturumda görünüyor; DB onay kaydı yazılamadı.");
-    }
-  }, [queryClient, showToast]);
-
-  // Çok-konulu alt-talep kararı için persist — ana akıştaki persistDecision ile AYNI
-  // done→persist yarışı koruması. islem_id henüz yoksa (~20-27 sn Supabase gecikmesi) karar
-  // beklemeye alınır, persist merge'i gelince yazılır. Eskiden alt-talep yolu bu ağa BAĞLI
-  // DEĞİLDİ: islem_id null'ken apiPost hiç denenmiyor ama başarı toast'ı + outbox commit
-  // yapılıyordu → karar sessizce DB'siz kalıyor, refresh'te audit izinden düşüyordu (bug avı).
-  const bekleyenAltKararRef = useRef(new Map());   // result → [{secim, sira, tur, metin}]
-  const persistAltKarar = useCallback((res, karar) => {
-    if (!res) return;
-    if (!res.islem_id) {
-      const liste = bekleyenAltKararRef.current.get(res) || [];
-      liste.push(karar);
-      bekleyenAltKararRef.current.set(res, liste);
-      return;
-    }
-    apiPost(`/islem/${encodeURIComponent(res.islem_id)}/alt-talep/${karar.sira}/onayla`, {
-      secim: karar.secim, yazi_turu: karar.tur || "", metin: karar.metin || "",
-    }).then(() => queryClient.invalidateQueries({ queryKey: ["giden-evrak"] }))
-      .catch((err) => {
-        console.warn("Birim kararı DB'ye yazılamadı", err);
-        showToast("Evrak oturumda görünüyor; birim kararı DB'ye yazılamadı.");
-      });
-  }, [queryClient, showToast]);
+  // Karar kalıcı yazımı + persist penceresi kuyruğu — kabukKarar.js (davranış birebir).
+  const { bekleyenKararRef, bekleyenAltKararRef, persistDecision, persistAltKarar } = useKararKaydi({ queryClient, showToast, setOutbox });
 
   // Sayfa yenilendiğinde kalıcı DB geçmişini yeniden kur (react-query: 3 deneme + üstel
   // geri çekilme — uzak Supabase'in DNS düşmelerine dayanıklı; provider varsayılanları
@@ -452,7 +402,9 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   // Kuyruk SLA + kabuk sayaçları (kabukSayac.js): her sayı kendi kaynağının durumunu taşır —
   // veri hiç gelmediyse null ("—"), hata+önbellek → "son bilinen". veriBayat: sicil başlığı.
   const { slaQ, slaMap, kuyrukSla } = useSlaOnizleme(sentSampleIds);
-  const { sayac, sicil, bayat: veriBayat } = useKabukSayac({ inboxCount, draftCount, gidenCount, kuyrukSla, history, outbox, islemlerQ, gidenQ, slaQ });
+  const { sayac, sicil, bayat: veriBayat, kaynak: kabukKaynak } = useKabukSayac({ inboxCount, draftCount, gidenCount, kuyrukSla, history, outbox, islemlerQ, gidenQ, slaQ });
+  // Antet sağ künyesi (brif #1): ViewWrap kendi başlık id'siyle sorar; yalnız kabuk sayaçları.
+  const antetKunye = useCallback((id) => antetKunyeSatirlari(id, { sayac, sicil }), [sayac, sicil]);
 
   // Taslak düzenle (metni güncelle) / sil — Taslaklar görünümünden çağrılır.
   // Güncelleme KALICIDIR: oturum state'i anında (optimistik), DB PATCH arkada — eskiden
@@ -514,7 +466,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     bekleyenKararRef.current.clear();
     bekleyenAltKararRef.current.clear();
     showToast("Önceki evrakın kararı kalıcı kayda yazılamadan yeni işlem başladı — kararı İşlenen evrak'tan yineleyin.");
-  }, [showToast]);
+  }, [showToast, bekleyenKararRef, bekleyenAltKararRef]);
   // Yükleme sarmalayıcısı. `uyar` DAVRANIŞI KORUR: sürükle-bırak yolu bekleyen kararı
   // uyarmaz (dosya seçici ve telefon yolları uyarır) — tek sarmalayıcıya indirirken bu
   // farkı düzleştirmek, dosya bırakan memurun bekleyen kararını sessizce temizlerdi.
@@ -689,129 +641,8 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
   };
   const onResend = () => showToast("Tekrar gönderme üretim entegrasyonunda etkinleşir.");
 
-  // ---- Yazı türü seçimi (resmî yazı türleri: üst yazı / cevabi / bilgilendirme / alternatif tür) ----
-  // Pipeline'ın önerdiği tür + tür başına üretilen taslaklar koşum-içi önbelleğe alınır
-  // (chip'ler arası anında geçiş; aynı tür için LLM'e ikinci kez gidilmez). Yeni koşum
-  // sinyali = denetim_izi referansının değişmesi (applyTaslak/persist merge'i onu korur).
-  const taslakCacheRef = useRef({});
-  const taslakOnerilenRef = useRef("");
-  const taslakDenetimRef = useRef(null);
-  const altDraftRef = useRef({});   // birim kartı "Düzenle" → sira başına TEK sanal sonuç (dedup)
-  const [turUretiliyor, setTurUretiliyor] = useState("");
-  // Dayanak kutucuk kurgusu: seçili mevzuat (state + ref eşzamanlı — updater'da yan etki yok),
-  // "yeniden yazılıyor" bayrağı ve yarış-guard sırası. taslakCacheRef her tür için DAYANAKSIZ
-  // base'i tutar → boş seçim base'e bire bir döner (undo). seq: hızlı toggle'da yalnız en son yanıt uygulanır.
-  const [seciliMevzuat, setSeciliMevzuat] = useState([]);
-  const seciliMevzuatRef = useRef([]);
-  const [dayanakUretiliyor, setDayanakUretiliyor] = useState(false);
-  const dayanakSekansRef = useRef(createSekans());
-  useEffect(() => {
-    const iz = result?.denetim_izi || null;
-    if (!result || iz === taslakDenetimRef.current) return;
-    taslakDenetimRef.current = iz;
-    taslakOnerilenRef.current = result.yazi_turu || "";
-    taslakCacheRef.current = result.yazi_taslak_md
-      ? { [result.yazi_turu]: { yazi_taslak_md: result.yazi_taslak_md, format_uyumlu: result.format_uyumlu } }
-      : {};
-    altDraftRef.current = {};
-    setTurUretiliyor("");
-    // Yeni koşum → dayanak seçimi sıfırlanır (eski evrakın maddeleri yeni taslağa taşınmasın).
-    seciliMevzuatRef.current = [];
-    setSeciliMevzuat([]);
-    setDayanakUretiliyor(false);
-  }, [result]);
-
-  // Seçili mevzuatı taslağa DETERMİNİSTİK dayanak olarak işle (/yazi/dayanak; LLM yok, anlık).
-  // Base (dayanaksız) taslak taslakCacheRef'te tür bazında tutulur → boş seçim base'e bire bir döner.
-  const uygulaDayanak = useCallback(async (secili, turOverride = null) => {
-    if (!result) return;
-    const tur = turOverride || result.yazi_turu;
-    const onbellek = taslakCacheRef.current[tur];
-    const base = onbellek?.yazi_taslak_md;
-    if (!base) return;
-    // Yarış guard'ı: HER çağrı (undo/boş seçim DÂHİL) sıra alır → uçuştaki eski /yazi/dayanak
-    // yanıtı, arada seçim boşaltılsa/değişse bile geçersiz olur (stale yanıt kaldırılan atfı
-    // geri getirmesin — bkz. dayanakSecim.test.js "YARIŞ REGRESYONU"). token'ı boş dalından ÖNCE al.
-    const token = dayanakSekansRef.current.al();
-    if (!secili.length) {
-      // "çıkarırsa geri alsın": base'e bire bir dön (fetch yok, anlık undo). token undo'yu da
-      // en-son yaptığından uçuştaki eski fetch stale olur; solma bayrağını BURADA temizle —
-      // stale fetch'in finally'si (artık güncel değil) temizlemez, aksi halde taslak kalıcı solar.
-      setDayanakUretiliyor(false);
-      applyTaslak({ yazi_turu: tur, yazi_taslak_md: base,
-        format_uyumlu: onbellek?.format_uyumlu ?? result.format_uyumlu });
-      return;
-    }
-    const izAtStart = taslakDenetimRef.current;
-    setDayanakUretiliyor(true);
-    try {
-      const res = await fetch("/yazi/dayanak", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ taslak_md: base, secili_mevzuat: secili, yazi_turu: tur }),
-      });
-      if (!res.ok) throw new Error(`Dayanak işlenemedi (${res.status})`);
-      const data = await res.json();
-      if (!data?.yazi_taslak_md) throw new Error("Dayanak işlenemedi — boş yanıt");
-      // Yalnız EN SON istek + hâlâ aynı koşum uygulanır (hızlı toggle/undo yarışı + evrak değişimi guard'ı).
-      if (!dayanakSekansRef.current.guncelMi(token) || taslakDenetimRef.current !== izAtStart) return;
-      applyTaslak({ yazi_turu: tur, yazi_taslak_md: data.yazi_taslak_md,
-        format_uyumlu: data.format_uyumlu });
-    } catch (err) {
-      showToast(err?.message || "Dayanak işlenemedi — backend çalışıyor mu?");
-    } finally {
-      if (dayanakSekansRef.current.guncelMi(token)) setDayanakUretiliyor(false);
-    }
-  }, [result, applyTaslak, showToast]);
-
-  // Kutucuk toggle: seçime ekle/çıkar (ref + state eşzamanlı; updater'da yan etki yok) → taslağı yeniden kur.
-  const secMevzuat = useCallback((m, checked) => {
-    const prev = seciliMevzuatRef.current;
-    const next = sonrakiSecim(prev, m, checked);
-    if (next === prev) return;   // no-op (aynı referans) → gereksiz istek yok
-    seciliMevzuatRef.current = next;
-    setSeciliMevzuat(next);
-    uygulaDayanak(next);
-  }, [uygulaDayanak]);
-
-  const secTaslakTuru = useCallback(async (tur) => {
-    if (!result || tur === result.yazi_turu || turUretiliyor) return;
-    const onbellek = taslakCacheRef.current;
-    if (onbellek[tur]) {
-      applyTaslak({ yazi_turu: tur, ...onbellek[tur] });
-      // Tür değişince mevcut dayanak seçimini yeni türün base'ine yeniden uygula (seçim korunur).
-      if (seciliMevzuatRef.current.length) uygulaDayanak(seciliMevzuatRef.current, tur);
-      return;
-    }
-    // Dosya yolunda ham metin sunucuda tutulmaz → maskeli kanıt metni yeterli girdi.
-    const metin = evrakText || result.kanit_metadata?.metin || "";
-    if (!metin) { showToast("Tür değiştirmek için evrak metni gerekli — evrakı yeniden işleyin."); return; }
-    // Bu fetch dönene kadar kullanıcı YENİ bir evrak yükleyebilir (yükleme butonu
-    // kilitlenmiyor) — hangi koşuma ait olduğunu işaretle, dönüşte hâlâ aynı koşumda
-    // mıyız kontrol et; değilse eski sonucu yeni evrakın üstüne YAZMA.
-    const izAtStart = taslakDenetimRef.current;
-    setTurUretiliyor(tur);
-    try {
-      const res = await fetch("/yazi/taslak-turu", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          evrak_text: metin, yazi_turu: tur,
-          bilgi_unsurlari: result.bilgi_unsurlari || {}, hedef_birim: result.hedef_birim || "", evrak_turu: result.evrak_turu || "",
-        }),
-      });
-      if (!res.ok) throw new Error(`Taslak üretilemedi (${res.status})`);
-      const data = await res.json();
-      if (!data?.yazi_taslak_md) throw new Error("Taslak üretilemedi — boş yanıt");
-      if (taslakDenetimRef.current !== izAtStart) return;   // bu arada yeni evrak yüklendi
-      onbellek[tur] = { yazi_taslak_md: data.yazi_taslak_md, format_uyumlu: data.format_uyumlu };
-      applyTaslak(data);
-      // Tür değişince mevcut dayanak seçimini yeni türün base'ine yeniden uygula (seçim korunur).
-      if (seciliMevzuatRef.current.length) uygulaDayanak(seciliMevzuatRef.current, tur);
-    } catch (err) {
-      showToast(err?.message || "Taslak üretilemedi — backend çalışıyor mu?");
-    } finally {
-      if (taslakDenetimRef.current === izAtStart) setTurUretiliyor("");
-    }
-  }, [result, evrakText, turUretiliyor, applyTaslak, showToast, uygulaDayanak]);
+  // Yazı türü seçimi + dayanak kutucuğu — kabukTaslakTuru.js (davranış birebir).
+  const { turUretiliyor, taslakOnerilenRef, altDraftRef, seciliMevzuat, dayanakUretiliyor, secMevzuat, secTaslakTuru, uretAltTaslakTuru } = useTaslakTuru({ result, evrakText, applyTaslak, showToast });
 
   // Çok-konulu evrakta HER birim kartının kendi Onayla&Gönder/Reddet kararı — ana sonuçtan
   // o birime özgü alanlarla (hedef/tür/metin) türetilmiş TEK KULLANIMLIK bir "sanal sonuç"
@@ -838,30 +669,6 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
     return true;
   };
 
-  // Birim kartında tür kutucuğu seçildi → o birimin taslağını SEÇİLEN türle yeniden üret.
-  // Girdi = alt-talebin kendi özeti (segment); muhatap birimi backend belirler (Yön. m.14).
-  // Dönüş: taslak verisi ya da null (hata toast'la bildirilir; kart eski taslağında kalır).
-  const uretAltTaslakTuru = useCallback(async (altTalep, tur) => {
-    const metin = altTalep.ozet || evrakText || result?.kanit_metadata?.metin || "";
-    if (!metin) { showToast("Tür değiştirmek için talep metni gerekli — evrakı yeniden işleyin."); return null; }
-    try {
-      const res = await fetch("/yazi/taslak-turu", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          evrak_text: metin, yazi_turu: tur,
-          bilgi_unsurlari: { ...(result?.bilgi_unsurlari || {}), konu: altTalep.ozet || "" },
-          hedef_birim: altTalep.birim || "", evrak_turu: result?.evrak_turu || "",
-        }),
-      });
-      if (!res.ok) throw new Error(`Taslak üretilemedi (${res.status})`);
-      const data = await res.json();
-      if (!data?.yazi_taslak_md) throw new Error("Taslak üretilemedi — boş yanıt");
-      return data;
-    } catch (err) {
-      showToast(err?.message || "Taslak üretilemedi — backend çalışıyor mu?");
-      return null;
-    }
-  }, [result, evrakText, showToast]);
 
   // Birim kartı "Düzenle" → ana karttaki onEdit ile aynı davranış: taslağı Taslaklar
   // kuyruğuna ekle ve oraya git (yerinde düzenleme yok — düzenleme tek yerde yapılır).
@@ -925,7 +732,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         // Zemin html'de (THEME_CSS) — burada opak boyanırsa body::before kâğıt dokusu örtülür.
         display: "flex", minHeight: "100vh", background: "transparent", color: PAL.ink, fontFamily: SANS,
       }}>
-        <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }} onClick={(e) => { e.preventDefault(); document.getElementById("nu-main")?.focus(); }} onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
+        <AtlamaBaglantisi />
         <input ref={fileRef} type="file" accept={ACCEPT} hidden onChange={onPick} tabIndex={-1} aria-hidden="true" />
 
         <NeonSidebar activeView={activeView} onNavigate={goView} onUpload={triggerUpload} busy={busy} sayac={sayac} sicil={sicil} veriBayat={veriBayat} user={user} onLogout={logout} tema={tema} onTemaDegistir={onTemaDegistir} kota={kota} />
@@ -936,17 +743,15 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         <main id="nu-main" className="ke-ana" tabIndex={-1} style={{ outline: "none", flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
           {/* Görünüm başına hata sınırı: bir görünüm çökerse kabuk (kenar çubuğu, asistan)
               ayakta kalır; key=activeView → başka görünüme geçince sınır kendini sıfırlar. */}
-          <HataSiniri key={activeView} tam baslik="Bu görünüm gösterilemedi">
-            <Suspense fallback={<ViewFallback />}>{view}</Suspense>
-          </HataSiniri>
+          <BaglantiKaydi kaynak={kabukKaynak} onYenidenDene={() => { islemlerQ.refetch(); gidenQ.refetch(); slaQ.refetch(); }} />
+          <AntetKunyeBaglam.Provider value={antetKunye}>
+            <HataSiniri key={activeView} tam baslik="Bu görünüm gösterilemedi">
+              <Suspense fallback={<ViewFallback />}>{view}</Suspense>
+            </HataSiniri>
+          </AntetKunyeBaglam.Provider>
         </main>
 
-        <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>{toast}</div>
-        {/* sonner: katmanlı/istiflenen bildirimler — eski tek-toast görünümüyle aynı dil (koyu yüzey). */}
-        {/* Bildirimler "zımbalı havale pusulası" (kabukAtomlari.fisToast — custom çizim, ton = işlendi/
-            bilgi/uyarı/hata). Telefonda alt kulakçık şeridinin ÜSTÜNDE durur. */}
-        <Toaster containerAriaLabel="Bildirimler" position="bottom-center" gap={8} visibleToasts={3}
-          mobileOffset={{ bottom: "calc(76px + env(safe-area-inset-bottom))" }} toastOptions={{ unstyled: true }} />
+        <BildirimKatmani toast={toast} />
         {/* Canlı akışta bir masa hata verdiyse sebep + «Tekrar dene» sahnenin kendisinde (MerkezHata);
             köşe bildirimi aynı şeyi ikinci kez söyler ve kaynak belgeyi örter → orada basılmaz. */}
         {error && !busy && !(activeView === "isleniyor" && nodes.some((x) => x.status === "error")) && <ErrorBar msg={error} canRetry={canRetry && !errorKind} onRetry={retry} onDismiss={dismissError} />}

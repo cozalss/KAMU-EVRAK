@@ -51,17 +51,17 @@ export function PostaDamgasi({ ts, tohum = "", olcek = 1, gecikme = 120 }) {
 
 /* Günün pulu ayracı — zimmet defterinin gün başlığı: solda gün adı + tarih + gönderi sayısı,
    sağda o günün posta damgası. Yapışkan değil (pul yüksekliği kayan satırları örterdi). */
-export function GunPuluBasligi({ etiket, tarih, sayi, ts, tohum }) {
+export function GunPuluBasligi({ etiket, tarih, sayi, ts, tohum, kolon = 4 }) {
   return (
-    <div data-sd-grup="" role="row" style={{ position: "relative", padding: `${SP.s}px 20px`, minHeight: 64, alignItems: "center" }}>
-      <span role="gridcell" aria-colspan={5} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.l, width: "100%", minWidth: 0 }}>
-        <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-          <span role="heading" aria-level={2} style={{ ...TYPE.antet, fontSize: 10, color: PAL.ink2, textTransform: "uppercase", whiteSpace: "nowrap" }}>
-            {etiket} <span style={{ color: PAL.mut2, ...TNUM }}>{tarih}</span>
-          </span>
-          <span style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, whiteSpace: "nowrap", ...TNUM }}>{sayi} gönderi · posta defteri</span>
+    /* Tur 8 jüri 2: iki satırlı başlık + tam boy pul tek kayıtta ~80 px tutuyordu → tek satır
+       künye, 56 px; pul satır çizgisine oturan küçültülmüş damga (yükseklik eklemez). */
+    <div data-sd-grup="" role="row" style={{ position: "relative", padding: `0 20px`, minHeight: 56, alignItems: "center" }}>
+      <span role="gridcell" aria-colspan={kolon} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.l, width: "100%", minWidth: 0 }}>
+        <span role="heading" aria-level={2} style={{ ...TYPE.antet, fontSize: 10, color: PAL.ink2, textTransform: "uppercase", whiteSpace: "nowrap", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>
+          {etiket} <span style={{ color: PAL.mut2, ...TNUM }}>{tarih}</span>
+          <span style={{ color: PAL.mut3, ...TNUM }}> · {sayi} gönderi · posta defteri</span>
         </span>
-        {ts != null && <span style={{ marginRight: SP.xl, flexShrink: 0 }}><PostaDamgasi ts={ts} tohum={tohum} olcek={1} /></span>}
+        {ts != null && <span style={{ marginRight: SP.xl, flexShrink: 0, height: 48, display: "flex", alignItems: "center" }}><PostaDamgasi ts={ts} tohum={tohum} olcek={0.72} /></span>}
       </span>
     </div>
   );

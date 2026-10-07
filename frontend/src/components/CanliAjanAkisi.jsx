@@ -5,10 +5,11 @@
    CanliPusula · kaynak kâğıdı CanliKaynakBelge · taslak + karar CanliTaslakKarti · boş hâl
    CanliBosHal · özet şeridi CanliAkisSeridi. Durum/eşzamanlılık tek kaynaktan: akisKatman +
    SSE start.katmanlar (CLAUDE.md §8-10); bu dosyalar hiçbir adım durumunu elle türetmez. */
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { AnimatePresence } from "motion/react";
 import { summarize } from "../lib/nodeMeta.js";
+import { sahneCiktisi } from "../lib/canliBicim.js";
 import { motorEtiketi } from "../lib/pipelinePhases.js";
 import { akanMetin } from "../lib/metinAkis.js";
 import { katmanGruplari, gerekmediMi, kostuMu, kesimSirasi, adimDurumu } from "../lib/akisKatman.js";
@@ -55,8 +56,17 @@ const TASLAK_VARSAYILAN = {
   onTurSec: bos, turUretiliyor: "", onerilenTur: "", dayanakUretiliyor: false,
 };
 
-/* Yüzen hata fişi (ErrorBar, sağ alt) yüksekliği + alt boşluğu. */
-const HATA_FISI_PAYI = 152;
+/* MASAÜSTÜ DÜZENİ (tur 8): pusula | kaynak kâğıt ızgarası. Eskiden flex tabanları (2 1 640 /
+   1 1 340) 1440'ta pusulayı 667 px iç genişlikte bırakıyor, iki hat 5 px farkla alt alta
+   düşüyordu (pusula ~1550 px uzuyordu). Izgara 1100 px üstünde 1,7fr / 1fr: pusula iki hattı
+   yan yana taşır; kâğıt 1440'ta ~410 px, kartsız + 14/22 puntoyla satır başına ~45 karakter. Altında eski
+   sarmalı flex düzeni aynen (telefon/tablet düzenine dokunulmaz). */
+const DUZEN_CSS = `
+.ke-e-duzen{display:flex;flex-wrap:wrap;align-items:flex-start}
+.ke-e-duzen>.ke-e-pusula{flex:2 1 640px;min-width:0;display:flex}
+.ke-e-duzen>.ke-e-kagit{flex:1 1 340px;min-width:0}
+@media (min-width:1100px){.ke-e-duzen{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(360px,1fr)}}
+`;
 
 /* Tür adı belge adıyla aynıysa (örnek evraklarda başlık türün kendisi) tekrar etmez. */
 const sade = (x) => String(x || "").toLocaleLowerCase("tr-TR").replace(/[^\p{L}\p{N}]/gu, "");
@@ -144,14 +154,19 @@ function useKapanis({ busy, runBase, result, sunumTamam, pendingOnay }) {
   useEffect(() => { setCanliGoruldu(false); setKapanisBitti(false); }, [runBase]);
   useEffect(() => { if (busy) setCanliGoruldu(true); }, [busy, runBase]);
   const azHareket = typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-  const kapanis = canliGoruldu && !kapanisBitti && !!result && sunumTamam && !pendingOnay && !azHareket;
+  // reduced-motion'da kapanış ATLANMAZ (tur 8): aynı hüküm karesi (15/15 + İŞLENDİ) 1,2 sn
+  // statik gösterilir, sonra geçişsiz sonuca geçilir — hükmün kendisi hareket değildir.
+  const kapanis = canliGoruldu && !kapanisBitti && !!result && sunumTamam && !pendingOnay;
+  const bitir = useCallback(() => (azHareket ? setKapanisBitti(true) : kapanisGecisi(() => setKapanisBitti(true))), [azHareket]);
   useEffect(() => {
     if (!kapanis) return undefined;
-    basaDon(true);
-    const id = setTimeout(() => kapanisGecisi(() => setKapanisBitti(true)), 1900);
+    basaDon(!azHareket);
+    const id = setTimeout(bitir, azHareket ? 1200 : 1900);
     return () => clearTimeout(id);
-  }, [kapanis]);
-  return kapanis;
+  }, [kapanis, azHareket, bitir]);
+  // Kapanış anında başlığın TEK primary'si "Sonucu aç" (tur 8 jüri 2): beklemeden geçmek isteyen
+  // memur için; zamanlayıcı yine kendiliğinden geçer.
+  return [kapanis, bitir];
 }
 
 /* SIRA = GRAFIN SIRASI: adımlar `katmanlar` haritasına göre dizilir, eşzamanlılar tek bloğa
@@ -161,7 +176,7 @@ function useDisplay(paced, katmanlar) {
     const ham = paced.filter((n) => n.id !== "denetim_izi").map((n) => ({
       id: n.id, label: n.label || n.id, gorev: n.gorev || 1, status: n.status || "pending",
       data: n.data || null,
-      out: summarize(n.id, n.id === "oku" && n.data?.engine ? { ...n.data, engine: motorEtiketi(n.data.engine) } : n.data), desc: n.desc || "", t0: n.t0, t1: n.t1,
+      out: sahneCiktisi(n.id, summarize(n.id, n.id === "oku" && n.data?.engine ? { ...n.data, engine: motorEtiketi(n.data.engine) } : n.data), n.data), desc: n.desc || "", t0: n.t0, t1: n.t1,
       // durationMs SUNUCU telemetrisidir (SSE node.duration_ms); taşınmazsa istemci tahminine düşülürdü.
       durationMs: n.durationMs ?? null,
       bant: n.data?.risk_metadata?.bant || null,
@@ -197,13 +212,14 @@ function durumOzeti({ display, busy, result, sunumTamam, pendingOnay }) {
   const statusText = hata ? "İşlem kesildi" : kosumda ? "İşleniyor" : onayBekliyor ? "Onay bekliyor" : (allDone ? "İşlem tamamlandı" : "Hazır");
   const chipRenk = hata ? BANT.kirmizi.c : onayBekliyor ? BANT.sari.c : allDone ? BANT.yesil.c : kosumda ? T : PAL.mut2;
   const chipDerin = hata ? DERIN.kirmizi : onayBekliyor ? DERIN.sari : allDone ? DERIN.yesil : kosumda ? DERIN.T : PAL.mut2;
-  const durdu = hataliAdim >= 0 && !busy ? { kesim: kesimSirasi(display) } : null;
+  // t: kesim anı (hatalı masanın bitiş damgası) — yarıda kalan kardeşin "N sn çalıştı" ölçüsü.
+  const durdu = hataliAdim >= 0 && !busy ? { kesim: kesimSirasi(display), t: display[hataliAdim].t1 } : null;
   return { total, kosanCount, atlananCount, pct: Math.round((kapananCount / total) * 100), allDone, hataliAdim, kosumda, hata, onayBekliyor, toplamSn, statusText, chipRenk, chipDerin, durdu };
 }
 
 function SrDurum({ display, o }) {
   let metin = "";
-  if (o.hata) metin = `İşlem hatası — ${display[o.hataliAdim].label} adımı başarısız oldu. Üst çubuktan yeniden deneyebilirsiniz.`;
+  if (o.hata) metin = `İşlem hatası — ${display[o.hataliAdim].label} adımı başarısız oldu. "Tekrar dene" düğmesiyle yeniden deneyebilirsiniz.`;
   else {
     const ai = display.findIndex((a) => a.status === "active");
     const esz = eszamanliMasalar(display, ai).map((a) => a.label);
@@ -223,6 +239,22 @@ function kunyeOlgulari(result, nodeById, havale) {
   return { tur: tur ? EVRAK_TR(tur) : null, tarih, sayi, birim: havale };
 }
 
+/* Yapışkan başlığın ölçülen yüksekliği — pusulanın odak bölgesi ve kaynak kâğıdı bunun hemen
+   altına yapışır (sabit 128 px, başlık meta satırı kırılınca kâğıdı başlığın altına sokuyordu). */
+function useBaslikPayi() {
+  const [h, setH] = useState(112);
+  const roRef = useRef(null);
+  const ref = useCallback((el) => {
+    roRef.current?.disconnect();
+    roRef.current = null;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => setH(Math.round(el.offsetHeight)));
+    ro.observe(el);
+    roRef.current = ro;
+  }, []);
+  return [h, ref];
+}
+
 function useAltIdx(runBase) {
   const [altIdx, setAltIdx] = useState(0);
   useEffect(() => { setAltIdx(0); }, [runBase]);
@@ -237,7 +269,7 @@ function useKararMuhru(runBase) {
   return [kararMuhru, kararVer];
 }
 
-function CanliSahne({ p, o, display, gruplar, segs, kapanis, fileLabel, metaLine, olgu, havale, dar, setDetayIdx, setBelgeModal }) {
+function CanliSahne({ p, o, display, gruplar, segs, kapanis, fileLabel, metaLine, olgu, havale, dar, setDetayIdx, setBelgeModal, ustPay }) {
   useHataBasta(o.hata);
   const sonucGoster = !!p.result && o.sunumTamam && !kapanis;
   const kapanisBilgi = kapanis ? { baslik: "Tamamlandı", alt: `${o.kosanCount} adım yürütüldü${o.atlananCount ? ` · ${o.atlananCount} adım bu koşumda çalışmadı` : ""}${o.toplamSn ? ` · ${o.toplamSn}` : ""}` } : null;
@@ -256,19 +288,21 @@ function CanliSahne({ p, o, display, gruplar, segs, kapanis, fileLabel, metaLine
   const pusula = (
     <CanliPusula display={display} gruplar={gruplar} sahneCanli={o.kosumda} allDone={o.allDone} toplamSn={o.toplamSn} runBase={p.runBase}
       durdu={o.durdu} kapanis={kapanis} kapanisBilgi={kapanisBilgi} gelis={{ ad: fileLabel, meta: metaLine }} olgu={olgu}
-      onDetay={setDetayIdx} dar={dar} hataMesaji={p.hataMesaji} onTekrarDene={p.onTekrarDene}
+      onDetay={setDetayIdx} dar={dar} hataMesaji={p.hataMesaji} onTekrarDene={p.onTekrarDene} ustPay={ustPay}
       kaynakSerit={dar ? <KaynakSerit segs={segs} busy={p.busy} glow={p.glow} havale={havale} onBuyut={segs ? kaynakAc : null} /> : null} />
   );
   return (
     <section style={{ minHeight: "calc(100vh - 132px)" }}>
       <HataSiniri baslik="Canlı işlem sahnesi gösterilemedi">
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: SP.l, padding: dar ? `${SP.l}px ${SP.m}px 40px` : "24px clamp(16px, 3vw, 40px) 40px", maxWidth: 1540, margin: "0 auto" }}>
-          <div style={{ flex: "2 1 640px", minWidth: 0, display: "flex" }}>{pusula}</div>
-          {/* Kâğıt pusulayla birlikte kaymaz (hata hâlinde yüzen hata fişinin üstünde biter —
-              fiş kaynak metnin son satırlarını örtüyordu): yapışkan — etkin masa aşağı inerken belge görüş
-              alanında kalır (iç kaydırma). Telefonda kâğıt pusulanın içinde şerittir. */}
+        <style>{DUZEN_CSS}</style>
+        <div className="ke-e-duzen" style={{ gap: dar ? SP.l : SP.xl, padding: dar ? `${SP.l}px ${SP.m}px 40px` : "24px clamp(16px, 3vw, 40px) 40px", maxWidth: 1600, margin: "0 auto" }}>
+          <div className="ke-e-pusula">{pusula}</div>
+          {/* Kâğıt pusulayla birlikte kaymaz: yapışkan — etkin masa aşağı inerken belge görüş
+              alanında kalır (iç kaydırma). Tepesi ölçülen başlık yüksekliğine bağlı (eskiden sabit
+              128 px). Hata hâlinde artık kısaltılmaz (tur 8): yüzen hata fişi İşleniyor'da hiç
+              gösterilmiyor; eski 152 px'lik pay kâğıdın altında ölü boşluk bırakıyordu. */}
           {!dar && (
-            <aside aria-label="Kaynak belge" style={{ flex: "1 1 340px", minWidth: 0, display: "flex", position: "sticky", top: 128, height: o.hata ? `calc(100vh - ${152 + HATA_FISI_PAYI}px)` : "calc(100vh - 152px)", minHeight: 420 }}>
+            <aside aria-label="Kaynak belge" className="ke-e-kagit" style={{ display: "flex", position: "sticky", top: ustPay + SP.xl, height: `calc(100vh - ${ustPay + SP.xl * 2}px)`, minHeight: 420 }}>
               <KaynakBelge fileUrl={p.fileUrl} segs={segs} busy={p.busy} glow={p.glow} canli havale={havale} onBuyut={kaynakAc} />
             </aside>
           )}
@@ -290,13 +324,14 @@ export default function CanliAjanAkisi(props) {
   const [altIdx, setAltIdx] = useAltIdx(runBase);
   const [kararMuhru, kararVer] = useKararMuhru(runBase);
   const [takili, sentinelRef] = useYapisik(started);
+  const [ustPay, baslikRef] = useBaslikPayi();
   const dar = useDarEkran();
   const nodeById = useMemo(() => Object.fromEntries(nodes.map((n) => [n.id, n])), [nodes]);
   // Kaynak metin koşum SIRASINDA da: kanit_baglama SSE verisi maskeli metni + spanları getirir.
   const km = result?.kanit_metadata || nodeById.kanit_baglama?.data?.kanit_metadata || null;
   const segs = useMemo(() => (km?.metin ? buildSegments(akanMetin(km.metin), Array.isArray(km.spanlar) ? km.spanlar : []) : null), [km]);
   const { paced, sunumTamam } = useSahneTempo(nodes, { pendingOnay, glow });
-  const kapanis = useKapanis({ busy, runBase, result, sunumTamam, pendingOnay });
+  const [kapanis, kapanisiBitir] = useKapanis({ busy, runBase, result, sunumTamam, pendingOnay });
   const { display, gruplar } = useDisplay(paced, katmanlar);
   const sonucGoster = !!result && sunumTamam && !kapanis;
   useSonucBasta(sonucGoster);
@@ -318,11 +353,11 @@ export default function CanliAjanAkisi(props) {
       <style>{SAHNE_CSS + KAPANIS_VT_CSS}</style>
       <SrDurum display={display} o={o} />
       <div ref={sentinelRef} aria-hidden="true" style={{ height: 1, marginBottom: -1 }} />
-      <CanliBaslik fileLabel={fileLabel} metaLine={metaLine} d={{ ...o, sonucGoster }} busy={busy} takili={takili} dar={dar}
-        display={display} durdu={o.durdu} pct={o.pct} onCancel={onCancel} onUpload={onUpload} onTelefon={onTelefon} />
+      <CanliBaslik baslikRef={baslikRef} fileLabel={fileLabel} metaLine={metaLine} d={{ ...o, sonucGoster }} busy={busy} takili={takili} dar={dar}
+        display={display} durdu={o.durdu} pct={o.pct} onCancel={onCancel} onUpload={onUpload} onTelefon={onTelefon} onSonucAc={kapanis ? kapanisiBitir : null} />
       <CanliSahne p={{ ...props, glow, busy, runBase, fileUrl, hataMesaji, onTekrarDene, taslak }} o={o} display={display} gruplar={gruplar} segs={segs} kapanis={kapanis}
         fileLabel={fileLabel} metaLine={metaLine} olgu={kunyeOlgulari(result, nodeById, havale)} havale={havale} dar={dar}
-        setDetayIdx={setDetayIdx} setBelgeModal={setBelgeModal} />
+        setDetayIdx={setDetayIdx} setBelgeModal={setBelgeModal} ustPay={dar ? 0 : ustPay} />
       <CanliModallar detayIdx={detayIdx} setDetayIdx={setDetayIdx} display={display} result={result} runBase={runBase} dar={dar}
         belgeModal={belgeModal} setBelgeModal={setBelgeModal} fileLabel={fileLabel} km={km} segs={segs} fileUrl={fileUrl}
         draftMd={draftMd} onDownload={onDownload} canDownload={canDownload} downloading={downloading} />

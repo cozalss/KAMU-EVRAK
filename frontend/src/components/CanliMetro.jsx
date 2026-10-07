@@ -14,9 +14,10 @@
    hepsini söndürür; statik hâl aynı bilgiyi taşır. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import NumberFlow from "@number-flow/react";
-import { MONO, DISPLAY, T, V, PAL, BANT, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, focusRing, Icon, Btn } from "./neonUi.jsx";
-import { nodeDurationMs, gorevFaz } from "../lib/pipelinePhases.js";
-import { grupSuresiMs, akisSuresiMs, adimDurumu, kostuMu, ortusenAdimlar } from "../lib/akisKatman.js";
+import { MONO, DISPLAY, T, V, PAL, BANT, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SR_ONLY, focusRing, Icon, Btn } from "./neonUi.jsx";
+import { gorevFaz } from "../lib/pipelinePhases.js";
+import { adimDurumu, kostuMu, ortusenAdimlar } from "../lib/akisKatman.js";
+import { duvarMs, fmtSn, grupDuvarMs, akisDuvarMs, hataSebebi, kosumSaati } from "../lib/canliBicim.js";
 import { parafUret } from "./agent-flow/topology.js";
 
 /* Sahneye özgü keyframe'ler (ke-e-*). Ortak NEON_KEYFRAMES başka sahibin dosyasında; burada
@@ -39,17 +40,16 @@ export const SAHNE_CSS = `
 @media (max-width: 720px){.ke-e-sahne{padding-bottom:calc(104px + env(safe-area-inset-bottom, 0px))}}
 `;
 
-const HAT = { x: 13, w: 2, merkez: 18 };
-/* Süre etiketi her biten masada TUTARLI: ölçülmüş ama 0,1 sn'nin altında kalan süre "<0,1 sn"
-   yazar (tur 6: hızlı masalarda etiket hiç çıkmıyor, satırlar arası tutarsız görünüyordu). */
-const fmtSn = (ms) => {
-  if (!Number.isFinite(ms) || ms < 0) return null;
-  return ms < 100 ? "<0,1 sn" : `${(ms / 1000).toFixed(1).replace(".", ",")} sn`;
-};
+/* OLUK — hat sütunu. Tur 8: 28 px'lik olukta üç paralel şerit 11 px aralıkla 1x DPR'de
+   birbirine yapışıyordu; oluk 36 px'e açıldı (şerit aralığı 12 px). Tüm satırlar aynı oluğu
+   kullanır → masa adları paralel blokta da aynı x'te başlar (cetvel hizası). */
+const OLUK = 36, OC = OLUK / 2;
+const HAT = { x: OC - 1, w: 2, merkez: 18 };
+/* Süre etiketleri TEK SAATTEN (lib/canliBicim.duvarMs): izleyicinin gördüğü t1−t0. */
 
 /* CANLI SÜRE SAYACI — çalışan masanın gerçek geçen süresi (backend "başladı" olayının t0'ı →
    şimdi). GitHub Actions iş grafiğindeki "in progress · 12s" dersi: süre, çalışan adımın
-   yanında akar; bitince aynı yerde donar ve sunucu süresine döner. Rakam DÖNMEZ (NumberFlow
+   yanında akar; bitince aynı yerde aynı saatle (t1−t0) donar. Rakam DÖNMEZ (NumberFlow
    yok): saniyede 10 kez değişen bir değeri canlandırmak gürültüdür (Emil sıklık yasası) —
    sabit genişlikli rakamla (tnum) yalnız metin değişir, satır titremez. */
 export function CanliSure({ runBase, t0, style = null }) {
@@ -75,11 +75,12 @@ const Ray = ({ top, height, bottom, filled, col, kesik = false, sure = 420 }) =>
 
 /* Hat üstündeki düğüm — durum kipine göre biçim (renk tek sinyal değil). */
 function HatDurak({ durum, col, x = null }) {
-  const orta = { position: "absolute", left: x == null ? 0 : x - 14, top: HAT.merkez - 6, width: 28, display: "flex", justifyContent: "center" };
-  const taban = { width: 12, height: 12, borderRadius: RAD.dot, boxSizing: "border-box" };
+  const boy = x == null ? 12 : 10;    // şeritteki düğüm küçük: üç şerit arasında nefes kalsın
+  const orta = { position: "absolute", left: x == null ? 0 : x - OC, top: HAT.merkez - boy / 2, width: OLUK, display: "flex", justifyContent: "center" };
+  const taban = { width: boy, height: boy, borderRadius: RAD.dot, boxSizing: "border-box" };
   if (durum === "calisti") return <span aria-hidden="true" style={orta}><span key="c" style={{ ...taban, background: col, boxShadow: `0 0 0 3px ${PAL.surf}`, animation: "nu-pop .35s var(--ke-ease-spring) both" }} /></span>;
   if (durum === "hata") return <span aria-hidden="true" style={orta}><span style={{ ...taban, background: BANT.kirmizi.c, boxShadow: `0 0 0 3px ${PAL.surf}` }} /></span>;
-  if (durum === "kesildi") return (
+  if (durum === "kesildi" || durum === "yarida") return (
     <span aria-hidden="true" style={orta}>
       <span style={{ ...taban, border: `2px solid ${BANT.kirmizi.c}`, background: PAL.surf, boxShadow: `0 0 0 3px ${PAL.surf}`, display: "flex", alignItems: "center", justifyContent: "center", color: DERIN_OF(BANT.kirmizi.c) }}>
         <span style={{ width: 6, height: 1.5, background: "currentColor", transform: "rotate(45deg)", position: "absolute" }} />
@@ -117,6 +118,7 @@ export function Paraf({ a, durum, col }) {
   // bitmedi); "islenmedi" = sonrakiler. İkisi de tamamlandı/atlandı DEĞİL — olgu: bu koşumda
   // bu masalara iş ulaşmadı (CLAUDE.md §9).
   if (durum === "kesildi") return <span aria-hidden="true" style={{ ...NOT, color: DERIN_OF(BANT.kirmizi.c), border: `1.5px dashed ${BANT.kirmizi.c}` }}>Kesildi</span>;
+  if (durum === "yarida") return <span aria-hidden="true" style={{ ...NOT, color: DERIN_OF(BANT.kirmizi.c), border: `1.5px dashed ${BANT.kirmizi.c}` }}>Yarıda</span>;
   if (durum === "islenmedi") return <span aria-hidden="true" style={{ ...NOT, color: PAL.mut3, border: `1px dotted ${PAL.lineHi}` }}>İşlenmedi</span>;
   if (durum === "isleniyor") return (
     <span aria-hidden="true" style={{ display: "inline-block", width: 32, height: 32, boxSizing: "border-box", borderRadius: RAD.dot, border: `1.5px dashed ${col}`, flexShrink: 0, animation: "nu-spin 6s linear infinite" }} />
@@ -136,7 +138,7 @@ function HatTerminal({ n, col, count, doneN, sure, girisAktif, tamam, ilerleme, 
       {/* Tek satır (390px'te sayaç başlığın altına kırılıyordu): çizgi esner/kaybolur, künye
           ve sayaç asla kırılmaz. */}
       <div style={{ display: "flex", alignItems: "center", flexWrap: "nowrap", columnGap: SP.m, minHeight: 28, minWidth: 0 }}>
-        <span style={{ width: 28, display: "flex", justifyContent: "center", flexShrink: 0 }}>
+        <span style={{ width: OLUK, display: "flex", justifyContent: "center", flexShrink: 0 }}>
           <span key={girisAktif ? "on" : "off"} aria-hidden="true" style={{ width: 26, height: 26, boxSizing: "border-box", borderRadius: RAD.dot, background: girisAktif ? col : PAL.surf, border: `2px solid ${col}`, color: girisAktif ? PAL.onAccent : DERIN_OF(col), fontFamily: DISPLAY, fontWeight: 800, fontStretch: "120%", fontSize: n === 2 ? 11 : 13, lineHeight: "22px", textAlign: "center", ...TNUM, transition: "background .25s ease", animation: girisAktif ? "nu-pop .4s var(--ke-ease-spring) both" : "none" }}>{gorevFaz(n).no}</span>
         </span>
         <span style={{ ...TYPE.antet, color: DERIN_OF(col), flexShrink: 0, textTransform: "uppercase" }}>{gorevFaz(n).ad}</span>
@@ -152,44 +154,78 @@ function HatTerminal({ n, col, count, doneN, sure, girisAktif, tamam, ilerleme, 
   );
 }
 
-/* Pusula satırı — oluk (hat + düğüm) · sıra no · masa adı + not · süre · paraf. Satır
-   TIKLANABİLİR (adım detay modalı). Aktif masa hafif mürekkep tintiyle vurgulanır. */
-/* Durdu koşumunda bekleyen masanın kipi — kesimin olduğu ilk masa "kesildi", sonrakiler
-   "islenmedi". Durdu değilse adimDurumu aynen (tek durum kaynağı, §10). */
+/* Durdu koşumunda bekleyen masanın kipi (tek durum kaynağı adimDurumu, §10; yalnız durdu
+   koşumda ayrıntılanır):
+   · yarida    — backend bu masanın BAŞLADIĞINI söyledi (t0 damgası var) ama koşum kesildi.
+                 Tur 8 bulgusu: 1,5 sn çalışmış paralel kardeş "akış bu masaya gelmeden durdu"
+                 diye yazılıyordu — olgu yanlıştı (§9). Damga = backend'in "başladı" olayı.
+   · kesildi   — akışın durduğu ilk BAŞLAMAMIŞ masa · islenmedi — sonrakiler. */
 export function sahneDurumu(a, durdu) {
   const d = adimDurumu(a);
   if (!durdu || d !== "bekliyor") return d;
+  if (Number.isFinite(a.t0)) return "yarida";
   return a.sira === durdu.kesim ? "kesildi" : "islenmedi";
 }
 
+const ALT_YAZI = {
+  kesildi: () => "akış bu masaya gelmeden durdu", islenmedi: (a) => a.desc || "—",
+  atlandi: () => "bu koşumda çalışmadı", gerekmedi: (a) => a.out || "gerekmedi",
+  calisti: (a) => a.out || "tamamlandı", isleniyor: (a) => a.desc || "çalışıyor…",
+  hata: () => "işini tamamlayamadı — akış bu masada durdu",
+};
+const SR_YAZI = {
+  kesildi: "işlem bu adıma gelmeden durdu", islenmedi: "işlem durduğu için işlenmedi", atlandi: "bu koşumda çalışmadı",
+  gerekmedi: "bu belgede gerekmedi", isleniyor: "şu an işleniyor", hata: "hata: adım başarısız, akış burada durdu",
+};
+function altYaziOf(a, durum, ms) {
+  if (durum === "yarida") return `yarıda kesildi${Number.isFinite(ms) ? ` · ${fmtSn(ms)} çalıştı` : ""}`;
+  return (ALT_YAZI[durum] || ((x) => x.desc || "—"))(a);
+}
+function altRenkOf(durum, col, bantC) {
+  if (durum === "hata" || durum === "kesildi" || durum === "yarida") return DERIN_OF(BANT.kirmizi.c);
+  if (durum === "calisti") return bantC ? DERIN_OF(bantC) : PAL.mut;
+  if (durum === "isleniyor") return DERIN_OF(col);
+  return durum === "islenmedi" ? PAL.mut3 : PAL.mut2;
+}
+
+/* KESİM ÇİZGİSİ (tur 8 imza) — durdu koşumunda kesimin yaşandığı masanın ÜSTÜNE resmî
+   tutanaktaki "buraya kadar işlendi" notası: mürekkep hattını kesen ince kesikli kırmızı çizgi
+   + mono "DURDU · ss:dd:sn" künyesi. Saat hatalı masanın gerçek bitiş damgasından (t1). */
+export function KesimCizgisi({ saat }) {
+  return (
+    <div aria-hidden="true" style={{ position: "relative", display: "flex", alignItems: "center", gap: SP.s, height: 20, ...TYPE.antet, fontSize: 10, color: DERIN_OF(BANT.kirmizi.c), textTransform: "uppercase", animation: "ke-e-masa .22s var(--ke-ease-out) both" }}>
+      <span style={{ width: OLUK - 4, borderTop: `1.5px dashed ${BANT.kirmizi.c}`, flexShrink: 0 }} />
+      <span style={{ whiteSpace: "nowrap", ...TNUM }}>Durdu{saat ? ` · ${saat}` : ""}</span>
+      <span style={{ flex: 1, borderTop: `1.5px dashed ${BANT.kirmizi.c}` }} />
+    </div>
+  );
+}
+
+/* Pusula satırı — oluk (hat + düğüm) · sıra no · masa adı + not · süre · paraf. Satır
+   TIKLANABİLİR (adım detay modalı). Zemin vurgusu OLGUNUN YERİNDE: çalışan masa mürekkep
+   tinti, HATALI masa ACELE kırmızısı tint + sol kırmızı kenar (tur 8: vurgu kesilen kardeşteydi,
+   göz hatanın yerini değil yan etkisini görüyordu). Pasif (işlenmedi) satır opaklıkla değil
+   ayrı metin tonuyla (mut3, AA) + noktalı düğümle anlatılır. */
 function HatIstasyon({ a, col, risk, hasTop, topFill, hasBot, onDetay, kesikTop = false, kesikBot = false, durdu = null, runBase = 0, serit = null, zaman = null }) {
   const durum = sahneDurumu(a, durdu);
-  const kesildi = durum === "kesildi", islenmedi = durum === "islenmedi";
   const done = a.status === "done", active = durum === "isleniyor", err = durum === "hata";
-  const bosGecti = durum === "gerekmedi", atlandi = durum === "atlandi";
+  const kirmiziAd = durum === "kesildi" || durum === "yarida" || err;
   const nodeBant = a.id === "risk_guard" && a.bant && BANT[a.bant] ? BANT[a.bant] : null;
   const durakCol = a.id === "risk_guard" && done ? (nodeBant || risk).c : col;
-  const ms = nodeDurationMs(a);
-  const sure = done && !bosGecti ? fmtSn(ms) : null;
+  const ms = duvarMs(a);
+  const sure = done && durum !== "gerekmedi" ? fmtSn(ms) : null;
   // Hat çizim süresi adımın gerçek süresiyle orantılı (kısa adım çabuk, uzun adım ağır çizilir).
   const cizim = Number.isFinite(ms) ? Math.round(Math.min(900, Math.max(260, ms / 6))) : 420;
-  const altYazi = kesildi ? "akış bu masaya gelmeden durdu"
-    : islenmedi ? "işlenmedi"
-    : atlandi ? "bu koşumda çalışmadı"
-    : bosGecti ? (a.out || "gerekmedi")
-    : done ? (a.out || "tamamlandı") : active ? (a.desc || "çalışıyor…") : err ? "işini tamamlayamadı" : (a.desc || "—");
-  const altRenk = err || kesildi ? DERIN_OF(BANT.kirmizi.c) : (bosGecti || atlandi || islenmedi) ? PAL.mut2
-    : done ? (a.id === "risk_guard" ? DERIN_OF((nodeBant || risk).c) : PAL.mut) : active ? DERIN_OF(col) : PAL.mut2;
-  const zemin = active ? ALFA(col) : kesildi ? ALFA(BANT.kirmizi.c) : "transparent";
+  const zemin = active ? ALFA(col) : err ? ALFA(BANT.kirmizi.c) : "transparent";
   return (
     <div role="button" tabIndex={0} onClick={onDetay} title={`${a.label} — adım detayını aç`}
       aria-current={active ? "step" : undefined}
       {...focusRing}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onDetay(); } }}
-      onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = PAL.hov; }}
+      onMouseEnter={(e) => { if (!active && !err) e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = zemin; }}
       data-satir={a.id}
-      style={{ cursor: "pointer", position: "relative", display: "grid", gridTemplateColumns: "28px minmax(0,1fr) auto", columnGap: SP.m, alignItems: "center", padding: "7px 6px 7px 0", borderBottom: `1px solid ${PAL.line}`, background: zemin, opacity: islenmedi ? 0.62 : 1, transition: "background .2s ease, opacity .3s ease" }}>
+      style={{ cursor: "pointer", position: "relative", display: "grid", gridTemplateColumns: `${OLUK}px minmax(0,1fr) auto`, columnGap: SP.m, alignItems: "center", padding: "7px 6px 7px 0", borderBottom: `1px solid ${PAL.line}`, background: zemin, boxShadow: err ? `inset 2px 0 0 ${BANT.kirmizi.c}` : "none", transition: "background .2s ease" }}>
       <div style={{ position: "relative", alignSelf: "stretch", minHeight: 40 }}>
         {serit == null && hasTop && <Ray top={-8} height={HAT.merkez + 8} filled={topFill} col={col} kesik={kesikTop} sure={cizim} />}
         {serit == null && hasBot && <Ray top={HAT.merkez} bottom={-8} filled={done} col={col} kesik={kesikBot} sure={cizim} />}
@@ -198,16 +234,18 @@ function HatIstasyon({ a, col, risk, hasTop, topFill, hasBot, onDetay, kesikTop 
       <div style={{ minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, minWidth: 0 }}>
           <span style={{ fontFamily: MONO, fontSize: 11, lineHeight: "16px", color: PAL.mut2, ...TNUM, flexShrink: 0 }}>{String(a.sira + 1).padStart(2, "0")}</span>
-          <span style={{ ...TYPE.ui, fontWeight: active || kesildi ? 650 : 500, color: active || done || kesildi ? PAL.ink : PAL.mut, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.label}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, marginTop: 1, paddingLeft: 23, minWidth: 0 }}>
-          <span style={{ ...TYPE.meta, color: altRenk, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflowWrap: "anywhere", minWidth: 0 }}>{altYazi}</span>
+          <span style={{ ...TYPE.ui, fontWeight: active || kirmiziAd ? 600 : 500, color: active || done || kirmiziAd ? PAL.ink : PAL.mut, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.label}</span>
+          {/* Süre masa adının hizasında (tur 8): alt satırda çıktı metniyle yarışıp onu iki
+              satıra kırıyordu; artık çıktı tüm genişliği kullanır. */}
           {sure && <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 11, lineHeight: "16px", color: PAL.mut2, flexShrink: 0, ...TNUM }}>{sure}</span>}
           {active && <CanliSure runBase={runBase} t0={a.t0} style={{ marginLeft: "auto", fontSize: 11, lineHeight: "16px", fontWeight: 600, color: DERIN_OF(col), flexShrink: 0 }} />}
         </div>
+        <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, marginTop: 1, paddingLeft: 23, minWidth: 0 }}>
+          <span style={{ ...TYPE.meta, color: altRenkOf(durum, col, nodeBant ? nodeBant.c : (a.id === "risk_guard" ? risk.c : null)), overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflowWrap: "anywhere", minWidth: 0 }}>{altYaziOf(a, durum, durum === "yarida" && Number.isFinite(durdu?.t) && Number.isFinite(a.t0) ? Math.max(0, durdu.t - a.t0) : ms)}</span>
+        </div>
         {zaman && <ZamanCubugu z={zaman} col={durakCol} canli={active} />}
-        <span style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap", border: 0 }}>
-          {kesildi ? "işlem bu adıma gelmeden durdu" : islenmedi ? "işlem durduğu için işlenmedi" : atlandi ? "bu koşumda çalışmadı" : bosGecti ? "bu belgede gerekmedi" : done ? `tamamlandı${sure ? ` · ${sure}` : ""}` : active ? "şu an işleniyor" : err ? "hata: adım başarısız" : "sırada"}
+        <span style={SR_ONLY}>
+          {durum === "yarida" ? "işlem bu adım çalışırken kesildi" : durum === "calisti" ? `tamamlandı${sure ? ` · ${sure}` : ""}` : SR_YAZI[durum] || "sırada"}
         </span>
       </div>
       <span style={{ display: "flex", justifyContent: "center", minWidth: 40 }}>
@@ -272,16 +310,16 @@ function ZamanCubugu({ z, col, canli }) {
 const SERIT_BOY = { ust: 12, alt: 14 };
 function SeritCizimi({ items, xs, ys, H, col, durdu }) {
   return (
-    <svg aria-hidden="true" width="28" height={H} style={{ position: "absolute", left: 0, top: 0, overflow: "visible", pointerEvents: "none" }}>
+    <svg aria-hidden="true" width={OLUK} height={H} style={{ position: "absolute", left: 0, top: 0, overflow: "visible", pointerEvents: "none" }}>
       {items.map((a, i) => {
         const x = xs[i], y = ys[i];
         if (!Number.isFinite(y)) return null;
-        const ust = `M14 0 C14 7 ${x} ${SERIT_BOY.ust - 6} ${x} ${SERIT_BOY.ust} L${x} ${y}`;
-        const alt = `M${x} ${y} L${x} ${H - SERIT_BOY.alt} C${x} ${H - 7} 14 ${H - 6} 14 ${H}`;
+        const ust = `M${OC} 0 C${OC} 7 ${x} ${SERIT_BOY.ust - 6} ${x} ${SERIT_BOY.ust} L${x} ${y}`;
+        const alt = `M${x} ${y} L${x} ${H - SERIT_BOY.alt} C${x} ${H - 7} ${OC} ${H - 6} ${OC} ${H}`;
         const d = sahneDurumu(a, durdu);
         const tire = d === "atlandi" ? "3 4" : d === "islenmedi" || d === "kesildi" ? "1 3" : undefined;
         const basladi = a.status !== "pending" && a.status !== "atlandi";
-        const ms = nodeDurationMs(a);
+        const ms = duvarMs(a);
         const sure = Number.isFinite(ms) ? Math.round(Math.min(900, Math.max(260, ms / 6))) : 420;
         const dolgu = (dolu, gec) => ({ stroke: col, strokeWidth: 2.5, fill: "none", strokeDasharray: "1 1", strokeDashoffset: dolu ? 0 : 1, transition: `stroke-dashoffset ${gec}ms var(--ke-ease-in-out)` });
         const zemin = { stroke: PAL.lineHi, strokeWidth: 2.5, fill: "none", strokeDasharray: tire };
@@ -309,15 +347,15 @@ function birlesimMetni(g) {
     return { canli: true, metin: suruyor >= 2 && suruyor === ort ? `${ort} masa şu an aynı anda çalışıyor` : `${ort} masa aynı anda başladı · ${suruyor} sürüyor` };
   }
   if (kosan < 2) return null;
-  const ms = grupSuresiMs(g.items);
-  const sure = Number.isFinite(ms) && ms >= 100 ? `${ms < 10000 ? (ms / 1000).toFixed(1).replace(".", ",") : Math.round(ms / 1000)} sn` : null;
+  const ms = grupDuvarMs(g.items);
+  const sure = Number.isFinite(ms) && ms >= 100 ? fmtSn(ms) : null;
   return { canli: false, metin: `${kosan} masa aynı anda çalıştı${sure ? ` · en uzun dal ${sure}` : ""}` };
 }
 
 function BirlesimNotu({ g, col }) {
   const n = birlesimMetni(g);
   return (
-    <div style={{ height: 24, display: "flex", alignItems: "center", paddingLeft: 40, borderBottom: `1px solid ${PAL.line}`, minWidth: 0 }}>
+    <div style={{ height: 24, display: "flex", alignItems: "center", paddingLeft: OLUK + SP.m, borderBottom: `1px solid ${PAL.line}`, minWidth: 0 }}>
       {n && (
         <span key={n.canli ? "c" : "b"} style={{ display: "inline-flex", alignItems: "center", gap: SP.s, ...TYPE.meta, color: n.canli ? DERIN_OF(col) : PAL.mut, fontWeight: n.canli ? 600 : 400, animation: "ke-e-masa .2s var(--ke-ease-out) both", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>
           <span aria-hidden="true" style={{ fontFamily: MONO, fontWeight: 600, color: DERIN_OF(col) }}>∥</span>{n.metin}
@@ -349,9 +387,9 @@ function ParalelBlok({ g, col, risk, durdu, runBase, onDetay }) {
   const ref = useRef(null);
   const olcu = useSatirOlcu(ref, g.items.length);
   const k = g.items.length;
-  // Şerit aralığı oluğun tamamını kullanır (tur 6: 8px'lik kaymalar gözle ayrışmıyordu).
-  const ara = Math.min(11, 22 / Math.max(1, k - 1));
-  const xs = g.items.map((_, i) => 14 + (i - (k - 1) / 2) * ara);
+  // Şerit aralığı ≥12 px (tur 8: 11 px'te 2,5 px yollar 1x DPR'de yapışıyordu); oluk 36 px.
+  const ara = Math.min(12, (OLUK - 10) / Math.max(1, k - 1));
+  const xs = g.items.map((_, i) => OC + (i - (k - 1) / 2) * ara);
   useTik(g.items.some((a) => a.status === "active") ? 100 : 0);
   const simdi = Number.isFinite(runBase) && runBase > 0 ? performance.now() - runBase : 0;
   const zaman = zamanPenceresi(g.items, simdi);
@@ -371,15 +409,19 @@ function HatFaz({ n, gruplar, risk = BANT.yesil, sonHat = true, devir = false, o
   const col = n === 2 ? V : T;
   const items = gruplar.flatMap((g) => g.items);
   // Geçen süre: gruplar arası TOPLAM, grup içi EN UZUN (paralel dallar iki kez sayılmaz).
-  const ms = akisSuresiMs(gruplar);
-  const sure = Number.isFinite(ms) && ms >= 100
-    ? `${ms < 10000 ? (ms / 1000).toFixed(1).replace(".", ",") : Math.round(ms / 1000)} sn` : null;
+  const ms = akisDuvarMs(gruplar);
+  const sure = Number.isFinite(ms) && ms >= 100 ? fmtSn(ms) : null;
   // "Kapandı" (koştu/atlandı/hata) ilerlemeyi sürer; BAŞARI sayımı (doneN) yalnız koşanlar.
   const kapandi = (a) => a.status === "done" || a.status === "atlandi" || a.status === "error";
   const doneN = items.filter(kostuMu).length;
   const fazDone = items.length > 0 && items.every(kapandi);
   const kapananN = items.filter(kapandi).length;
   let j = 0;
+  // Kesim çizgisi yalnız durdu koşumda, hatalı masanın bulunduğu bloğun hemen ardında.
+  const kesim = (g) => {
+    const h = durdu && g.items.find((a) => a.status === "error");
+    return h ? <KesimCizgisi saat={kosumSaati(runBase, h.t1, performance.now(), Date.now())} /> : null;
+  };
   return (
     <div style={{ minWidth: 0 }}>
       <HatTerminal n={n} col={col} count={items.length} doneN={doneN} sure={sure}
@@ -389,7 +431,7 @@ function HatFaz({ n, gruplar, risk = BANT.yesil, sonHat = true, devir = false, o
         const son = gi === gruplar.length - 1 && sonHat ? <HatSon col={col} done={fazDone} /> : null;
         if (g.paralel) {
           j += g.items.length;
-          return <div key={g.items[0].id}><ParalelBlok g={g} col={col} risk={risk} durdu={durdu} runBase={runBase} onDetay={onDetay} />{son}</div>;
+          return <div key={g.items[0].id}><ParalelBlok g={g} col={col} risk={risk} durdu={durdu} runBase={runBase} onDetay={onDetay} />{kesim(g)}{son}</div>;
         }
         return (
           <div key={g.items[0].id} style={{ position: "relative" }}>
@@ -401,6 +443,7 @@ function HatFaz({ n, gruplar, risk = BANT.yesil, sonHat = true, devir = false, o
                   durdu={durdu} runBase={runBase} onDetay={() => onDetay(a.sira)} />
               );
             })}
+            {kesim(g)}
             {son}
           </div>
         );
@@ -459,12 +502,12 @@ export function eszamanliMasalar(display, merkezIdx) {
 function EszYuvasi({ esz, col }) {
   const var_ = esz.length > 0;
   return (
-    <div aria-hidden={!var_} style={{ height: 18, display: "flex", alignItems: "center", gap: `0 ${SP.s}px`, ...TYPE.meta, color: PAL.mut2, minWidth: 0, overflow: "hidden", whiteSpace: "nowrap", opacity: var_ ? 1 : 0, transition: "opacity .18s ease-out" }}>
+    <div aria-hidden={!var_} style={{ height: 18, display: "flex", alignItems: "center", gap: `0 ${SP.s}px`, ...TYPE.meta, color: PAL.mut, minWidth: 0, overflow: "hidden", whiteSpace: "nowrap", opacity: var_ ? 1 : 0, transition: "opacity .18s ease-out" }}>
       {var_ && <>
         <span aria-hidden="true" style={{ fontFamily: MONO, color: DERIN_OF(col) }}>∥</span>
         <span>aynı anda:</span>
         {esz.map((x) => (
-          <span key={x.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, color: PAL.ink2, fontWeight: 600 }}>
+          <span key={x.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, color: PAL.ink, fontWeight: 600 }}>
             <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: x.gorev === 2 ? V : T, animation: "ke-e-nefes 1.2s ease-in-out infinite" }} />
             {x.label}
           </span>
@@ -496,30 +539,29 @@ function MerkezSure({ a, kapanis, kosumda, runBase }) {
       sonraki masa çalışıyor
     </span>
   );
-  const ms = a.status === "done" ? nodeDurationMs(a) : null;
-  const sn = ms != null && ms >= 100 ? ms / 1000 : null;
-  if (sn == null) return null;
-  return (
-    <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 13, lineHeight: "18px", color: PAL.ink2, flexShrink: 0, ...TNUM, display: "inline-flex", alignItems: "baseline", gap: 3 }}>
-      <NumberFlow value={sn} locales="tr-TR" format={{ minimumFractionDigits: 1, maximumFractionDigits: 1 }} spinTiming={{ duration: 220 }} /> sn
-    </span>
-  );
+  const sure = a.status === "done" ? fmtSn(duvarMs(a)) : null;
+  if (!sure) return null;
+  return <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 13, lineHeight: "18px", color: PAL.ink2, flexShrink: 0, ...TNUM }}>{sure}</span>;
 }
 
 /* HATA — sebep sahnenin KENDİSİNDE yazılır (tur 6: yalnız köşedeki bildirimde yazıyordu ve
    bildirim kaynak belgenin metnini örtüyordu). Sunucu mesajı çağırandan gelir; yoksa olgu. */
-function MerkezHata({ mesaj, onTekrarDene }) {
+function MerkezHata({ mesaj, etiket, onTekrarDene }) {
   return (
     <div role="alert" style={{ display: "flex", alignItems: "flex-start", gap: SP.m, flexWrap: "wrap", marginTop: SP.xs, padding: `${SP.s}px ${SP.m}px`, borderLeft: `2px solid ${BANT.kirmizi.c}`, background: ALFA(BANT.kirmizi.c), borderRadius: `0 ${RAD.ctl}px ${RAD.ctl}px 0` }}>
       <span style={{ ...TYPE.data, color: PAL.ink2, flex: "1 1 200px", minWidth: 0 }}>
-        {mesaj || "Bu masa işini tamamlayamadı; sonraki masalar işlenmedi. Evrakı yeniden yükleyerek tekrar deneyebilirsiniz."}
+        {hataSebebi(mesaj, etiket) || "Bu masa işini tamamlayamadı; sonraki masalar işlenmedi. Evrakı yeniden yükleyerek tekrar deneyebilirsiniz."}
+        {/* Kapsam cümlesi (tur 8 jüri 2): neyin korunduğu söylenmiyordu. Olgu: yeniden deneme
+            akışı BAŞTAN koşar; paraflı satırların çıktısı bu ekranda açılabilir kalır. */}
+        <span style={{ display: "block", marginTop: SP.xs, ...TYPE.meta, color: PAL.mut }}>Paraflı masaların çıktısı aşağıda incelenebilir; Tekrar dene akışı baştan koşar.</span>
       </span>
-      {onTekrarDene && <Btn onClick={onTekrarDene} style={{ flexShrink: 0 }}><Icon.undo width={14} height={14} /> Tekrar dene</Btn>}
+      {/* Durdu hâlinde görünümün TEK primary'si: kurtarma (tur 8 — göz nereye gideceğini bilmiyordu). */}
+      {onTekrarDene && <Btn primary onClick={onTekrarDene} style={{ flexShrink: 0 }}><Icon.undo width={14} height={14} /> Tekrar dene</Btn>}
     </div>
   );
 }
 
-export function MerkezKart({ a, total, runBase, kapanis = null, kosumda = false, esz = [], hataMesaji = "", onTekrarDene = null }) {
+export function MerkezKart({ a, total, runBase, kapanis = null, kosumda = false, esz = [], hataMesaji = "", onTekrarDene = null, damga = null, kisa = false }) {
   if (!a) return null;
   const active = a.status === "active", err = a.status === "error";
   const col = a.gorev === 2 ? V : T;
@@ -535,22 +577,31 @@ export function MerkezKart({ a, total, runBase, kapanis = null, kosumda = false,
         {merkezUstSatir(a, kapanis, esz)}
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, minWidth: 0 }}>
-        <span style={{ fontFamily: DISPLAY, fontWeight: 800, fontStretch: "112%", fontSize: "clamp(56px, 6vw, 96px)", lineHeight: 0.82, letterSpacing: "-.05em", color: PAL.ink, ...TNUM }}>
-          <NumberFlow value={no} format={{ minimumIntegerDigits: 2 }} spinTiming={{ duration: 420, easing: "cubic-bezier(.23,1,.32,1)" }} />
+        {/* KIRPILMIŞ RAKAM KABI (tur 8): .82 satır yüksekliğiyle dönen NumberFlow'un önceki/sonraki
+            rakam yayı üstteki künye satırına taşıyordu (hayalet glif): NumberFlow kendi kabında satır
+            yüksekliğini 1'e + maske payına zorlar, kap .82'yi aşıyordu. Rakam .82em'lik taşmasız bir
+            pencereye alınır; dönen komşu rakamlar yalnız bu pencerede görünür. */}
+        <span style={{ fontFamily: DISPLAY, fontWeight: 800, fontStretch: "112%", fontSize: kisa ? 68 : "clamp(56px, 6vw, 96px)", lineHeight: 0.82, letterSpacing: "-.05em", color: PAL.ink, ...TNUM }}>
+          <span style={{ display: "inline-block", height: "0.82em", overflow: "hidden", verticalAlign: "-0.16em" }}>
+            <NumberFlow value={no} format={{ minimumIntegerDigits: 2 }} spinTiming={{ duration: 280, easing: "cubic-bezier(.23,1,.32,1)" }}
+              style={{ display: "block", marginTop: "-0.22em", "--number-flow-mask-height": "0.12em" }} />
+          </span>
         </span>
-        <span style={{ fontFamily: DISPLAY, fontWeight: 700, fontStretch: "112%", fontSize: 22, lineHeight: "22px", color: PAL.mut2, paddingBottom: 2, ...TNUM }}>/ {String(total).padStart(2, "0")}</span>
+        <span style={{ fontFamily: DISPLAY, fontWeight: 700, fontStretch: "112%", fontSize: 22, lineHeight: "22px", color: PAL.mut2, paddingBottom: 2, whiteSpace: "nowrap", flexShrink: 0, ...TNUM }}>/ {String(total).padStart(2, "0")}</span>
+        {/* Kapanış damgası rakam bloğunun SAĞINDAKİ yuvaya oturur (tur 8: rakamın üstüne biniyordu). */}
+        {damga && <span style={{ marginLeft: "auto", alignSelf: "center", flexShrink: 0 }}>{damga}</span>}
       </div>
       {/* TEK SATIR (nowrap + ellipsis): masa adı değişince kart yüksekliği DEĞİŞMEZ (CLS).
           Silme (ke-e-yaz) yalnız FAZ değişiminde ve kapanışta oynar; masa değişiminde sakin
           160ms opaklık + 4px — her vuruşta tekrarlanan daktilo süse dönüşüyordu (tur 6). */}
-      <div key={kapanis ? "kapanis" : `faz-${a.gorev}`} style={{ marginTop: -SP.m, minWidth: 0, animation: "ke-e-yaz .5s var(--ke-ease-out) both" }}>
-        <div key={kapanis ? "k" : a.id} title={kapanis ? kapanis.baslik : a.label} style={{ ...TYPE.h1, fontSize: "clamp(26px, 2.6vw, 36px)", lineHeight: 1.08, color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", animation: "ke-e-masa .16s var(--ke-ease-out) both" }}>
+      <div key={kapanis ? "kapanis" : `faz-${a.gorev}`} style={{ marginTop: -SP.xs, minWidth: 0, animation: "ke-e-yaz .5s var(--ke-ease-out) both" }}>
+        <div key={kapanis ? "k" : a.id} title={kapanis ? kapanis.baslik : a.label} style={{ ...TYPE.h1, fontSize: kisa ? 28 : "clamp(26px, 2.6vw, 36px)", lineHeight: 1.08, color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", animation: "ke-e-masa .16s var(--ke-ease-out) both" }}>
           {kapanis ? kapanis.baslik : a.label}
         </div>
       </div>
       {/* Hata hâlinde durum satırı yok: sebep kutusu aynı bilgiyi tek yerde söyler (tur 6:
           "durdu" beş yerde tekrarlanıyordu). */}
-      {err && !kosumda ? <MerkezHata mesaj={hataMesaji} onTekrarDene={onTekrarDene} /> : (
+      {err && !kosumda ? <MerkezHata mesaj={hataMesaji} etiket={a.label} onTekrarDene={onTekrarDene} /> : (
         <>
           <div style={{ display: "flex", alignItems: "baseline", gap: SP.m, minWidth: 0 }}>
             <span style={{ ...TYPE.data, color: kapanis ? PAL.ink2 : active ? DERIN_OF(col) : (bantC ? DERIN_OF(bantC) : PAL.mut), minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{durum}</span>
@@ -629,7 +680,7 @@ export function SahneAkis({ display, gruplar = null, onDetay, durdu = null, runB
   }, [display.length]);
   if (!display.length) return null;
   return (
-    <div ref={gridRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", columnGap: SP.xxl, rowGap: SP.xl, alignItems: "start" }}>
+    <div ref={gridRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", columnGap: SP.xxl, rowGap: SP.xl, alignItems: "start" }}>
       {g1.length > 0 && <HatFaz n={1} gruplar={g1} onDetay={onDetay} durdu={durdu} runBase={runBase} />}
       {g2.length > 0 && <HatFaz n={2} gruplar={g2} devir={ikiKolon} onDetay={onDetay} durdu={durdu} runBase={runBase} />}
     </div>
@@ -655,6 +706,7 @@ export function IsaretCetveli({ display, durdu = null }) {
           atlandi: { background: `repeating-linear-gradient(135deg, ${PAL.lineHi} 0 2px, transparent 2px 5px)` },
           bekliyor: { background: PAL.press },
           kesildi: { background: PAL.line, opacity: 0.4 },
+          yarida: { boxShadow: `inset 0 0 0 1.5px ${BANT.kirmizi.c}` },
           islenmedi: { background: PAL.line, opacity: 0.4 },
         }[d];
         return (

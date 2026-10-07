@@ -12,7 +12,8 @@
    onOpenChange(false) geldiğinde kapatIstegi ya gerçekten kapatır (onKapat) ya da yalnız
    uyarı şeridini açar — acik prop'u değişmediği sürece Radix diyaloğu kapatmaz.
    Giriş/çıkış motion ile (AnimatePresence + Portal/Overlay/Content forceMount). PDF
-   kaynaklarda gerçek sayfa önizlemesi (react-pdf, tembel) — metin yolunda maskeli içerik. */
+   kaynaklarda gerçek sayfa önizlemesi (react-pdf, tembel). Metin yolunda maskelemeyi ÇAĞIRAN yapar
+   (Gelen: lib/defterMaske; işlenen nüsha: backend maskeli çıktısı). */
 import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "motion/react";
@@ -22,9 +23,23 @@ import RevizePaneli from "./RevizePaneli.jsx";
 import A4Belge from "./A4Belge.jsx";
 import { FOSFOR_STIL, KAGIT_YUZEY, kagitStilYukle } from "./kagitDoku.js";
 import { useDikte } from "./belgeModalDikte.js";
-import { telefonNushaMetni } from "../lib/nushaAkis.js";
+import { telefonNushaMetni, paragraflaraAk } from "../lib/nushaAkis.js";
 
 const PdfOnizleme = lazy(() => import("./PdfOnizleme.jsx"));
+
+/* PDF yükleniyor — A4 kâğıt silüeti (düz "PDF açılıyor…" metni yerine): kâğıt oranı, antet
+   çubuğu ve satır çubukları; sayfa gelince yerleşim kaymaz. */
+function PdfIskelet() {
+  const cubuk = (w, o = 1) => ({ display: "block", height: 8, width: w, borderRadius: 3, background: PAL.line, opacity: o });
+  return (
+    <div role="status" aria-label="PDF açılıyor" style={{ aspectRatio: "210 / 297", display: "flex", flexDirection: "column", gap: 14, padding: "12% 11%", animation: "bm-nefes 1.2s var(--ke-ease-in-out) infinite alternate" }}>
+      <span style={{ ...cubuk("34%"), alignSelf: "center" }} />
+      <span style={{ ...cubuk("46%", .7), alignSelf: "center", marginBottom: 24 }} />
+      {["92%", "88%", "95%", "61%", "90%", "84%", "40%"].map((w, i) => <span key={i} style={cubuk(w, .55)} />)}
+      <span style={{ ...TYPE.meta, color: PAL.mut2, marginTop: "auto", textAlign: "center" }}>PDF açılıyor…</span>
+    </div>
+  );
+}
 
 /* Perde (koyu karartı) üstü düğme dili — renkler on-ink token'ından color-mix ile türer;
    hover CSS'te. `birincil`: perdenin TEK dolu düğmesi (tükenmez mavisi + onAccent).
@@ -37,6 +52,22 @@ const PERDE_CSS = `
 [data-perde-dugme][data-birincil]:hover:not(:disabled){background:color-mix(in srgb, var(--ke-t) 86%, var(--ke-on-ink))}
 [data-perde-ipucu]{color:color-mix(in srgb, var(--ke-on-ink) 62%, transparent)}
 @media (max-width:640px){[data-perde-dugme]{justify-content:center}}
+/* ARŞİV NÜSHASI BÜTÜNLÜĞÜ (tur 8 jüri: künye fişi ile A4 kâğıt "iki ayrı malzeme" gibi üst
+   üste duruyordu): fiş kâğıda İLİŞTİRİLMİŞ kayıt fişidir — aralarında karartı boşluğu yok,
+   perforasyon (kesikli kenar) ayırır. Geniş masaüstünde (≥1280) fiş kâğıdın SOLUNA derkenar
+   sütunu olur; kâğıdın iki yanındaki ölü karartı kullanılır, kâğıt okuma sütununda kalır. */
+@keyframes bm-nefes{from{opacity:.55}to{opacity:.85}}
+[data-bm-govde]{display:flex;flex-direction:column}
+[data-bm-govde][data-fisli]>[data-bm-fis] [data-kunye-fis]{border-bottom:1.5px dashed var(--ke-line-hi);border-bottom-left-radius:0;border-bottom-right-radius:0}
+@media (min-width:1280px){
+  [data-bm-kap][data-fisli]{width:min(1040px, 100%)!important}
+  [data-bm-govde][data-fisli]{display:grid;grid-template-columns:256px minmax(0,1fr);align-items:start}
+  [data-bm-govde][data-fisli]>[data-bm-fis]{position:sticky;top:0;margin-top:0;z-index:1}
+  [data-bm-govde][data-fisli]>[data-bm-fis] [data-kunye-fis]{border-bottom:1px solid var(--ke-line-hi);border-right:1.5px dashed var(--ke-line-hi);border-radius:2px 0 0 2px;padding:16px 18px}
+  [data-bm-govde][data-fisli]>[data-bm-fis] [data-kunye-fis] dl{grid-template-columns:1fr!important}
+  [data-bm-govde][data-fisli]>[data-bm-fis] [data-kunye-fis] dl>div{flex-direction:column;align-items:flex-start!important;gap:2px!important}
+  [data-bm-govde][data-fisli]>[data-bm-fis] [data-kunye-fis] dd{text-align:left!important;max-width:100%}
+}
 `;
 const perdeDugmeStil = (disabled) => ({ cursor: disabled ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "6px 12px", minHeight: 32, borderRadius: RAD.ctl, opacity: disabled ? 0.55 : 1, ...TYPE.data, fontWeight: 500, transition: `background .12s ease-out, transform .14s ${EASE.out}` });
 
@@ -62,12 +93,16 @@ export function ScrimDugme({ onClick, onMouseDown, disabled, children, title, ar
    Hizalama boşlukları ve sabit genişlikte sarılmış dilekçe satırları lib/nushaAkis'te
    düzeltilir (yalnız biçim; sözcük değişmez).
    `kose`: kâğıdın sağ üst köşesine basılan öğe (posta damgası) — kâğıdın parçasıdır. */
-function NushaKagit({ metin, dar, kose }) {
+function NushaKagit({ metin, dar, kose, akit }) {
   const koseKatmani = kose ? <span data-evrak-kagit="" style={{ position: "absolute", top: dar ? 8 : 18, right: dar ? 8 : 22, zIndex: 2, pointerEvents: "none" }}>{kose}</span> : null;
+  /* `akit`: gelen dilekçe gibi sabit genişlikte SARILMIŞ kaynak metin masaüstü A4'te de tek
+     paragrafa akar (tur 8 jüri: "ve yapılan" tek satır kalıyordu). Yalnız biçim; hizalama
+     boşlukları korunur (A4 düzeni onları kullanır). */
+  const masaustuMetni = akit ? paragraflaraAk(metin) : metin;
   return (
     <div style={{ position: "relative" }}>
       {koseKatmani}
-      {dar ? <A4Belge metin={telefonNushaMetni(metin)} sigdir="genislik" /> : <A4Belge metin={metin} />}
+      {dar ? <A4Belge metin={telefonNushaMetni(metin)} sigdir="genislik" /> : <A4Belge metin={masaustuMetni} />}
     </div>
   );
 }
@@ -161,7 +196,7 @@ function CalismaKagidi({ fileUrl, duzenlenebilir, segmentler, metin, alanRef, me
   return (
     <div style={{ ...(fileUrl ? { background: PAL.surf } : KAGIT_YUZEY), borderRadius: 2, boxShadow: SH.modal, minHeight: "min(1040px, 137vw)", padding: fileUrl ? SP.l : "clamp(36px, 8vw, 76px) clamp(28px, 9vw, 88px)" }}>
       {fileUrl ? (
-        <Suspense fallback={<div style={{ padding: SP.l, ...TYPE.data, color: PAL.mut2 }}>PDF açılıyor…</div>}>
+        <Suspense fallback={<PdfIskelet />}>
           <PdfOnizleme fileUrl={fileUrl} tam />
         </Suspense>
       ) : duzenlenebilir ? (
@@ -212,7 +247,7 @@ function useDuzenleme({ metin, duzenlenebilir, alanRef, onKaydet, onGonder, onIn
    künye · ustIcerik: kâğıdın üstünde künye fişi · kagitKose: kâğıdın sağ üst köşesine basılan
    öğe (posta damgası) · altKunye: kâğıdın dibinde mono künye (denetim hash'i) · birincil:
    Kapat'ın SAĞINDA tek dolu eylem. */
-export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", segmentler = null, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onGonder = null, onIndir = null, onRevize = null, kayitNo = "", ustIcerik = null, kagitKose = null, altKunye = null, birincil = null }) {
+export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", segmentler = null, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onGonder = null, onIndir = null, onRevize = null, kayitNo = "", ustIcerik = null, kagitKose = null, altKunye = null, birincil = null, akit = false }) {
   const dar = useDarEkran();
   const kapatRef = useRef(null);
   const alanRef = useRef(null);
@@ -226,6 +261,8 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
   const kapatIstegi = () => { if (d.kirli) { d.setKapatUyari(true); return; } onKapat(); };
   const vurgulu = !!(segmentler && segmentler.length);
   const calisma = !!fileUrl || duzenlenebilir || vurgulu;
+  // Fişli nüsha: künye fişi kâğıda iliştirilir (yalnız salt-okunur arşiv nüshası ailesi).
+  const fisli = !!ustIcerik && !duzenlenebilir;
 
   return (
     <Dialog.Root open={acik} onOpenChange={(v) => { if (!v) kapatIstegi(); }}>
@@ -239,6 +276,7 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                   onOpenAutoFocus={(e) => { e.preventDefault(); (duzenlenebilir ? alanRef.current : kapatRef.current)?.focus(); }}>
                   <motion.div initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }}
                     transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
+                    data-bm-kap="" {...(fisli ? { "data-fisli": "" } : null)}
                     style={{ width: "min(760px, 100%)", margin: "0 auto", display: "flex", flexDirection: "column", gap: SP.m, outline: "none" }}>
                     <style>{PERDE_CSS}</style>
                     <Dialog.Description style={SR_ONLY}>{baslik} — A4 belge önizlemesi.</Dialog.Description>
@@ -250,15 +288,19 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                     {duzenlenebilir && onRevize && (
                       <RevizePaneli metin={d.metinD} onRevize={onRevize} onUygula={d.yaz} onOneriDegisti={setRevizeOneriAcik} />
                     )}
-                    {ustIcerik}
-                    {/* Düz metin + düzenlenemez + vurgusuz → GERÇEK A4 düzeni (A4Belge). Diğer üç kip
-                        (PDF, kâğıt üstünde düzenleme, çıkarım vurgulu kaynak) kendi düzenini korur. */}
-                    {!revizeOneriAcik && !calisma && <NushaKagit metin={metin || "İçerik henüz hazır değil."} dar={dar} kose={kagitKose} />}
-                    {!revizeOneriAcik && calisma && (
-                      <CalismaKagidi fileUrl={fileUrl} duzenlenebilir={duzenlenebilir} segmentler={vurgulu ? segmentler : []} metin={metin}
-                        alanRef={alanRef} metinD={d.metinD} onYaz={d.yaz} />
-                    )}
-                    {altKunye}
+                    <div data-bm-govde="" {...(fisli ? { "data-fisli": "" } : null)}>
+                      {ustIcerik && <div data-bm-fis="">{ustIcerik}</div>}
+                      <div style={{ display: "flex", flexDirection: "column", gap: SP.m, minWidth: 0 }}>
+                        {/* Düz metin + düzenlenemez + vurgusuz → GERÇEK A4 düzeni (A4Belge). Diğer üç kip
+                            (PDF, kâğıt üstünde düzenleme, çıkarım vurgulu kaynak) kendi düzenini korur. */}
+                        {!revizeOneriAcik && !calisma && <NushaKagit metin={metin || "İçerik henüz hazır değil."} dar={dar} kose={kagitKose} akit={akit} />}
+                        {!revizeOneriAcik && calisma && (
+                          <CalismaKagidi fileUrl={fileUrl} duzenlenebilir={duzenlenebilir} segmentler={vurgulu ? segmentler : []} metin={metin}
+                            alanRef={alanRef} metinD={d.metinD} onYaz={d.yaz} />
+                        )}
+                        {altKunye}
+                      </div>
+                    </div>
                     {!dar && (
                       <div data-perde-ipucu="" style={{ ...TYPE.meta, textAlign: "center" }}>
                         {duzenlenebilir ? "Esc vazgeçer; kaydedilmemiş değişiklikte önce sorar" : "Kapatmak için Esc'e basın ya da dışarı tıklayın"}

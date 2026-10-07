@@ -19,8 +19,14 @@ import { MONO, DISPLAY, PAL, T, DERIN, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIE
    Telefonda (≤720) null → panel ekran genişliğinde alttan açılır (dar rayın yanında 300px'lik
    bir tepsi okunmaz). Açılış anında BİR KEZ ölçülür; açıkken kenar çubuğu daralırsa panel
    yerinde kalır (bir sonraki açılışta yeni ölçü). */
+/* Geniş masaüstünde (≥1280) panel yüzen kutu değil, sağ kenara yaslı TAM YÜKSEKLİKTE bir
+   danışma sütunudur ve ana içeriği iter (örtmez; tur 8 jüri: 400×600 kutu Panel kartlarını
+   örtüyordu, 1920'nin %20'sini kullanıyordu). İtme CSS'te: html[data-asistan-sutun] #nu-main. */
+export const SUTUN_GENISLIK = 440;
+const SUTUN_MQ = "(min-width: 1280px)";
 function capaHesapla() {
   if (window.matchMedia?.("(max-width: 720px)").matches) return null;
+  if (window.matchMedia?.(SUTUN_MQ).matches) return { sutun: true };
   const tetik = document.querySelector("[data-asistan-tetik]");
   const ray = tetik?.closest("[data-ray]")?.getBoundingClientRect();
   const t = tetik?.getBoundingClientRect();
@@ -55,7 +61,15 @@ const SOHBET_CSS = `
 }
 .ke-sohbet-ikon:hover:not(:disabled){background:${PAL.hov}!important;color:${PAL.ink}!important}
 .ke-sohbet-oneri:hover{background:${PAL.hov}!important}
-.ke-sohbet-girdi:focus{border-color:${T}!important;box-shadow:0 0 0 3px color-mix(in srgb, ${T} 18%, transparent)}
+/* Tek odak dili (tur 8): kenarlık tükenmeze döner, halka yok — global :focus-visible çift
+   çizgisi girdide bastırılır (iki katman üst üste ağır bir kutu çiziyordu). */
+.ke-sohbet-girdi:focus,.ke-sohbet-girdi:focus-visible{border-color:${T}!important;box-shadow:inset 0 0 0 1px ${T}!important;outline:none!important}
+/* Danışma sütunu ana içeriği iter — yalnız geniş masaüstü; telefon/dar düzene dokunmaz. */
+@media ${SUTUN_MQ}{
+  #nu-main{transition:padding-right .28s ${EASE.out}}
+  html[data-asistan-sutun] #nu-main{padding-right:${SUTUN_GENISLIK}px}
+}
+@media (prefers-reduced-motion: reduce){#nu-main{transition:none!important}}
 `;
 
 // ekran: kullanıcının o an gördüğü ekranın özeti (lib/ekranBaglami). Her isteğe eklenir —
@@ -91,7 +105,6 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
   const [mesajlar, setMesajlar] = useState(() => hafizaYukle() ?? [KARSILAMA]);
   const [girdi, setGirdi] = useState("");
   const [bekliyor, setBekliyor] = useState(false);
-  const [kaynak, setKaynak] = useState(null);   // son yanıtın kaynağı (llm|fallback) — şeffaflık
   // SR duyurusu: akan yanıt token token mutasyona uğrarken liste aria-live "off"a alınır
   // (her delta SR kuyruğuna girmesin — result-cards daktilo idiomu); tamamlanan yanıt tek
   // seferde bu görünmez role=status bölgesinden duyurulur.
@@ -132,6 +145,14 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
     liste.scrollTop = liste.scrollHeight;
   }, [mesajlar, bekliyor, acik]);
   useEffect(() => { if (acik) inputRef.current?.focus(); }, [acik]);
+  const sutun = !!konum?.sutun;
+  useEffect(() => {
+    const kok = document.documentElement;
+    if ((acik || sesliAcik) && sutun) kok.setAttribute("data-asistan-sutun", "");
+    else kok.removeAttribute("data-asistan-sutun");
+    return () => kok.removeAttribute("data-asistan-sutun");
+  }, [acik, sesliAcik, sutun]);
+  const baglamAdi = String(ekran?.gorunum || "").replace(/\s*\(.*\)$/, "");
 
   // Konuşma bitince (akış sürerken değil) geçmişi localStorage'a yaz — reload'da kalıcı.
   useEffect(() => { if (!bekliyor) hafizaKaydet(mesajlar); }, [mesajlar, bekliyor]);
@@ -152,7 +173,7 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
     else if (komut?.tur === "evrak_ac") onEvrakAc?.(komut.baslik);
   }, [onNavigate, onEvrakAc]);
   const gecmisiTemizle = () => {
-    hafizaTemizle(); setMesajlar([KARSILAMA]); setKaynak(null); inputRef.current?.focus();
+    hafizaTemizle(); setMesajlar([KARSILAMA]); inputRef.current?.focus();
   };
 
   // Son (akan) asistan balonunu fonksiyonel güncelle — akış sırasında state yarışı olmaz.
@@ -180,10 +201,11 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
       } else if (ev.event === "delta" && ev.t) {
         sonuGuncelle((son) => ({ ...son, icerik: (son.icerik || "") + ev.t }));
       } else if (ev.event === "done") {
-        setKaynak(ev.kaynak);
+        // Kaynak (llm|fallback) artık mesajın KENDİ künyesinde ("Danışma notu · Yapay zekâ");
+        // başlıktaki anlamsız "YZ" rozeti kaldırıldı (tur 8 jüri).
         // Updater SAF kalır (StrictMode çift çağrı — BelgeModal notu); duyuru dışarıda set edilir.
         if (ev.yanit) setSrDuyuru(ev.yanit);
-        sonuGuncelle((son) => ({ ...son, icerik: ev.yanit || son.icerik, akiyor: false }));
+        sonuGuncelle((son) => ({ ...son, icerik: ev.yanit || son.icerik, akiyor: false, kaynak: ev.kaynak }));
       }
     };
     for (;;) {
@@ -242,8 +264,7 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
       }
       try {
         const y = await apiPost("/sohbet", govde);
-        setKaynak(y.kaynak);
-        const msg = { rol: "asistan", zaman: Date.now(), icerik: y.yanit, kayitlar: y.kayitlar, kayit_turu: y.kayit_turu, oneri_gorunum: y.oneri_gorunum, onay_bekleyen: y.onay_bekleyen, mevzuat_kaynaklari: y.mevzuat_kaynaklari };
+        const msg = { rol: "asistan", zaman: Date.now(), kaynak: y.kaynak, icerik: y.yanit, kayitlar: y.kayitlar, kayit_turu: y.kayit_turu, oneri_gorunum: y.oneri_gorunum, onay_bekleyen: y.onay_bekleyen, mevzuat_kaynaklari: y.mevzuat_kaynaklari };
         setMesajlar((ms) => {
           const s = ms.slice();
           const son = s[s.length - 1];
@@ -294,40 +315,25 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
       {acik && (
         <motion.section key="ke-asistan-kap" className="ke-sohbet-panel" role="dialog" aria-label="Evrak asistanı sohbeti"
           onKeyDown={(e) => { if (e.key === "Escape") kapat(); }}
-          initial={{ opacity: 0, scale: 0.96, y: 8 }} animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.97, y: 6, transition: { duration: 0.14, ease: EASE_BEZIER.out } }}
-          transition={{ type: "spring", stiffness: 520, damping: 40, mass: 0.8 }}
-          style={{
-            position: "fixed", zIndex: 160, transformOrigin: "bottom left",
-            ...(konum ? { left: konum.left, bottom: konum.bottom } : { left: SP.s, right: SP.s, bottom: SP.s }),
-            width: konum ? "min(400px, calc(100vw - 32px))" : "auto", height: konum ? `min(600px, calc(100vh - ${konum.bottom + 24}px))` : "min(640px, calc(100dvh - 16px))",
-            display: "flex", flexDirection: "column", overflow: "hidden",
-            background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop,
-            boxShadow: SH.modal,
-          }}>
+          initial={sutun ? { opacity: 0, x: 24 } : { opacity: 0, scale: 0.96, y: 8 }}
+          animate={sutun ? { opacity: 1, x: 0 } : { opacity: 1, scale: 1, y: 0 }}
+          exit={sutun ? { opacity: 0, x: 16, transition: { duration: 0.14, ease: EASE_BEZIER.out } } : { opacity: 0, scale: 0.97, y: 6, transition: { duration: 0.14, ease: EASE_BEZIER.out } }}
+          transition={sutun ? { duration: 0.28, ease: EASE_BEZIER.out } : { type: "spring", stiffness: 520, damping: 40, mass: 0.8 }}
+          style={{ position: "fixed", zIndex: 160, display: "flex", flexDirection: "column", overflow: "hidden", background: PAL.surfPop, ...panelYerlesim(konum) }}>
           <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
           {/* Başlık — antet dili: mono künye satırı + display başlık + çift antet çizgisi. */}
           <header style={{ padding: "14px 16px 0", background: PAL.surfPop }}>
+            {/* Künye kendi tam satırında (tur 8): düğmelerle aynı satırda "PANEL…" diye kırpılıyordu. */}
+            <div style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginBottom: SP.xs }}>
+              Kamu-Evrak · Danışma masası{baglamAdi && <> · <span style={{ color: PAL.mut2 }}>{baglamAdi} bağlamında</span></>}
+            </div>
             <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
               <div style={{ minWidth: 0, flex: 1 }}>
-                {/* Künye TEK satır (tur 6: cevap gelince iki-üç sütuna kırılıyordu); son cevabın
-                    kaynağı künyede değil başlığın yanında küçük mono rozet. "T.C." yok — bağımsız
-                    ürün devlet kimliğini kendi anteti gibi taşımaz (ViewWrap ile aynı karar). */}
-                <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>
-                  Kamu-Evrak · Danışma masası
-                </div>
-                <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, minWidth: 0, marginTop: 2, overflow: "hidden" }}>
+                {/* Son cevabın kaynağı (yapay zekâ / kural tabanlı) artık her danışma notunun kendi
+                    künyesinde (tur 8). "T.C." yok — bağımsız ürün devlet kimliğini kendi anteti gibi
+                    taşımaz (ViewWrap ile aynı karar). */}
+                <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, minWidth: 0, overflow: "hidden" }}>
                   <h2 style={{ margin: 0, minWidth: 0, fontFamily: DISPLAY, fontWeight: 800, fontStretch: "112%", fontSize: 18, lineHeight: "22px", letterSpacing: "-.01em", color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Evrak asistanı</h2>
-                  {kaynak && (
-                    <span title={kaynak === "llm" ? "Son cevap yapay zekâ modeliyle üretildi" : "Son cevap kural tabanlı yedek motordan geldi"}
-                      style={{ flexShrink: 0, fontFamily: MONO, fontSize: 10, lineHeight: "14px", letterSpacing: ".04em", whiteSpace: "nowrap", padding: "1px 6px", borderRadius: RAD.chip,
-                        color: kaynak === "llm" ? DERIN.T : PAL.mut2, border: `1px solid ${kaynak === "llm" ? `color-mix(in srgb, ${T} 35%, transparent)` : PAL.lineHi}`, ...TNUM }}>
-                      {/* Kısa mono kod her genişlikte (tur 7: "YZ yanıtı" 1440/1920'de Sesli düğmesine
-                          çarpıp ortadan kırpılıyordu); açıklama title + aria-label'da. */}
-                      <span aria-hidden="true">{kaynak === "llm" ? "YZ" : "KURAL"}</span>
-                      <span style={SR_ONLY}>{kaynak === "llm" ? "Son cevap: yapay zekâ yanıtı" : "Son cevap: kural tabanlı"}</span>
-                    </span>
-                  )}
                 </div>
               </div>
               {sttVar && (
@@ -408,6 +414,19 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
         onKapat={() => { setSesliAcik(false); acKapa(true); }} />
     </>
   );
+}
+
+/* Panel yerleşimi: geniş masaüstü = sağ sütun; orta = tetik yanında kutu; telefon = alt tepsi. */
+function panelYerlesim(konum) {
+  if (konum?.sutun) {
+    return { top: 0, right: 0, bottom: 0, width: SUTUN_GENISLIK, borderLeft: `1px solid ${PAL.lineHi}`, boxShadow: SH.pop };
+  }
+  return {
+    transformOrigin: "bottom left", border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal,
+    ...(konum ? { left: konum.left, bottom: konum.bottom } : { left: SP.s, right: SP.s, bottom: SP.s }),
+    width: konum ? "min(400px, calc(100vw - 32px))" : "auto",
+    height: konum ? `min(600px, calc(100vh - ${konum.bottom + 24}px))` : "min(640px, calc(100dvh - 16px))",
+  };
 }
 
 const IKON_DUGME = { cursor: "pointer", width: 32, height: 32, borderRadius: RAD.ctl, border: `1px solid ${PAL.line}`, background: "none", color: PAL.mut, display: "grid", placeItems: "center", padding: 0, flexShrink: 0, transition: `background .12s ease, color .12s ease, transform .14s ${EASE.out}` };

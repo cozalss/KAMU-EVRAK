@@ -8,13 +8,16 @@
      güvenli alan. Uygulamanın geri kalanında (TelefonYukle) kurulan dil burada da geçerli.
    a11y: role=dialog + aria-modal, Esc kapatır, ←/→ masalar arasında gezdirir, açılışta odak
    kapat düğmesine, kapanışta tetikleyiciye döner. Durum tek kaynaktan (adimDurumu, §10). */
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { motion } from "motion/react";
 import { Drawer } from "vaul";
 import { adimDurumu } from "../lib/akisKatman.js";
 import { Chip } from "./NeonDetayParts.jsx";
 import { Paraf, CanliSure } from "./CanliMetro.jsx";
-import { nodeDurationMs, gorevFaz } from "../lib/pipelinePhases.js";
+import { gorevFaz } from "../lib/pipelinePhases.js";
+import { duvarMs, fmtSn } from "../lib/canliBicim.js";
+import { akanMetin } from "../lib/metinAkis.js";
+import { FosforMetin, buildSegments } from "./CanliKaynakBelge.jsx";
 import { useMedyaSorgusu } from "../hooks/useMedya.js";
 import { ACIKLAMA, GOVDE, GenelDetay, Bolum, Not } from "./AjanAdimGovde.jsx";
 import {
@@ -70,6 +73,8 @@ function KonumSeridi({ display, idx, onGit, dar }) {
 /* Durum çipi — sahnedeki satırla AYNI kaynaktan (adimDurumu). */
 function DurumCip({ st, col, a = null, durdu = false }) {
   const durum = a ? adimDurumu(a) : null;
+  // Başlamış ama koşum kesilmiş masa (t0 = backend "başladı" damgası) — "işlenmedi" DEĞİL (§9).
+  if (durdu && durum === "bekliyor" && Number.isFinite(a?.t0)) return <Chip c={BANT.kirmizi.c} label="Adım çalışırken işlem kesildi">yarıda kesildi</Chip>;
   if (durdu && durum === "bekliyor") return <Chip c={PAL.mut2} label="İşlem önceki bir adımda durduğu için bu adım işlenmedi">işlenmedi</Chip>;
   if (durum === "atlandi") return <Chip c={PAL.mut2} label="Bu adım bu koşumda hiç çalışmadı (akış başka dala gitti)">çalışmadı</Chip>;
   if (durum === "gerekmedi") return <Chip c={PAL.mut2} label="Adım çalıştı ancak bu belgede yapacak işi yoktu">gerekmedi</Chip>;
@@ -130,8 +135,10 @@ function KapatDugme({ kapatRef, onKapat }) {
 }
 
 function DetayBaslik({ a, idx, toplam, col, bantC, durdu, runBase, kapatRef, onKapat, BaslikEtiketi }) {
-  const ms = nodeDurationMs(a);
-  const sure = a.status === "done" && Number.isFinite(ms) ? (ms >= 50 ? `${(ms / 1000).toFixed(1).replace(".", ",")} sn` : "anlık") : null;
+  // TEK SAAT: başlıkta sahnedeki satırla AYNI ölçü (görülen süre, t1−t0). Sunucunun kendi
+  // işlem telemetrisi ayrı ve adıyla yazılır — iki saat aynı etiketi paylaşmaz (tur 8).
+  const sure = a.status === "done" ? fmtSn(duvarMs(a)) : null;
+  const sunucu = a.status === "done" && Number.isFinite(Number(a.durationMs)) && a.durationMs != null ? fmtSn(Number(a.durationMs)) : null;
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase" }}>
@@ -149,7 +156,7 @@ function DetayBaslik({ a, idx, toplam, col, bantC, durdu, runBase, kapatRef, onK
           </div>
           <div style={{ marginTop: 4, ...TYPE.meta, color: PAL.mut2, ...TNUM }}>
             <span style={{ color: DERIN_OF(col), fontWeight: 500 }}>{gorevFaz(a.gorev).uzun}</span>
-            {" · "}masa {idx + 1}/{toplam}{sure ? ` · ${sure}` : ""}
+            {" · "}masa {idx + 1}/{toplam}{sure ? <>{" · "}<span title={sunucu ? `Duvar saati süresi; sunucu işlem süresi ${sunucu}` : "Duvar saati süresi"}>{sure}</span></> : ""}
             {a.status === "active" && <>{" · "}<CanliSure runBase={runBase} t0={a.t0} style={{ color: DERIN_OF(col), fontWeight: 600 }} /></>}
           </div>
         </div>
@@ -211,6 +218,32 @@ function DetayIcerik({ idx, display, result, onKapat, onGit, runBase, kapatRef, 
   );
 }
 
+/* KAYNAK KESİTİ (tur 8, geniş ekran ≥1200): masanın çıktısı solda, okunan belgenin maskeli
+   metni (kanıt alanları fosforlu) sağda — ayrıntıya inen memur çıktıyı kaynağıyla yan yana
+   denetler. Metin yalnız kanıt bağlama adımının SSE verisinden (maskeli); yoksa kesit yok,
+   diyalog eski tek sütun genişliğinde kalır. Kâğıt gece de kâğıttır (data-evrak-kagit). */
+const kaynakMetadata = (display, result) => result?.kanit_metadata || display.find((x) => x.id === "kanit_baglama")?.data?.kanit_metadata || null;
+
+/* Başlık olguya bağlı (tur 8 jüri): kesit metni yalnız TCKN/telefon gibi alanlarda maskeli
+   gelir; ad/e-posta/adres açık kalabilir. "Maskeli metin" demek iddiayı genişletirdi. */
+const kesitBasligi = (metin) => (/\*{3,}/.test(String(metin || "")) ? "Kaynak kesiti · kısmen maskeli" : "Kaynak kesiti · okunan metin");
+
+function KaynakKesiti({ km }) {
+  const segs = useMemo(() => buildSegments(akanMetin(km.metin), Array.isArray(km.spanlar) ? km.spanlar : []), [km]);
+  return (
+    <aside aria-label="Kaynak kesiti" style={{ minWidth: 0, display: "flex", flexDirection: "column", alignSelf: "start", position: "sticky", top: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.m, ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase", minHeight: 36 }}>
+        <span style={{ whiteSpace: "nowrap" }}>{kesitBasligi(km.metin)}</span>
+        <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line }} />
+      </div>
+      <div aria-hidden="true" style={{ marginTop: SP.s, height: 5, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.9 }} />
+      <div data-evrak-kagit="" style={{ marginTop: SP.l, background: PAL.surf, color: PAL.ink2, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, boxShadow: SH.kagit, padding: `${SP.xl}px ${SP.xl + 4}px`, maxHeight: "min(66vh, 680px)", overflowY: "auto" }}>
+        <FosforMetin segs={segs} canli={false} style={{ fontSize: 14, lineHeight: "22px", animation: "none" }} />
+      </div>
+    </aside>
+  );
+}
+
 function H2(props) { return <h2 {...props} />; }
 function CekmeceBaslik(props) { return <Drawer.Title asChild><h2 {...props} /></Drawer.Title>; }
 
@@ -239,7 +272,10 @@ export default function AjanAdimDetay(p) {
   const { idx, display, onKapat, onGit, dar = false } = p;
   const kapatRef = useRef(null);
   useDetayKlavye({ idx, onKapat, onGit, son: display.length - 1, kapatRef, kilit: !dar });
+  const genis = useMedyaSorgusu("(min-width: 1200px)");
   const a = display[idx];
+  const km = kaynakMetadata(display, p.result);
+  const kesit = !dar && genis && km?.metin ? km : null;
   if (!a) return null;
   if (dar) return <DetayCekmece p={p} kapatRef={kapatRef} />;
   return (
@@ -250,8 +286,9 @@ export default function AjanAdimDetay(p) {
       <motion.div onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }}
         transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
-        style={{ width: "min(720px, 96vw)", margin: "0 auto", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, padding: SP.xl }}>
-        <DetayIcerik {...p} kapatRef={kapatRef} dar={false} BaslikEtiketi={H2} />
+        style={{ width: kesit ? "min(1180px, 96vw)" : "min(720px, 96vw)", margin: "0 auto", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, padding: SP.xl, ...(kesit ? { display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 440px)", columnGap: SP.xxl } : null) }}>
+        <div style={{ minWidth: 0 }}><DetayIcerik {...p} kapatRef={kapatRef} dar={false} BaslikEtiketi={H2} /></div>
+        {kesit && <KaynakKesiti km={kesit} />}
       </motion.div>
     </motion.div>
   );

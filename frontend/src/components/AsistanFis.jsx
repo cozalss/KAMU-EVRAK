@@ -6,7 +6,7 @@
    Mevzuat kaynakları fişin altında DİPNOT olarak numaralanır (¹ 4982 · m.7) — hukuki danışma
    notunun kendi dili; her dipnot okuma modalını ilgili maddede açar. */
 import React from "react";
-import { mdSatirTipi } from "../lib/mdSatir.js";
+import { mdSatirAyristir } from "../lib/mdSatir.js";
 import { satirIciParcala, kayitAdi, notSaati } from "../lib/sohbetMetin.js";
 import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, Damga, focusRing } from "./neonUi.jsx";
 
@@ -17,19 +17,29 @@ export const GORUNUM_ETIKET = {
 const KAYIT_TUR_ETIKET = { gelen: "Gelen", giden: "Giden", islem: "İşlem", taslak: "Taslak", mevzuat: "Mevzuat", panel: "Panel" };
 const UST = ["¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"];
 
-/* Hafif markdown: **kalın** + *eğik* + satır sonu + "• " madde + "---" ayraç (kütüphanesiz). */
+/* Hafif markdown: **kalın** + *eğik* + "• / - / *" madde + "1." numaralı madde (mono rakam,
+   asılı girinti) + boş satır = paragraf arası + "---" ayraç (kütüphanesiz). */
+const satirIci = (metin) => satirIciParcala(metin).map((p, j) =>
+  p.tip === "kalin" ? <strong key={j} style={{ fontWeight: 600, color: "inherit" }}>{p.metin}</strong>
+    : p.tip === "egik" ? <em key={j} style={{ fontStyle: "italic" }}>{p.metin}</em>
+      : <React.Fragment key={j}>{p.metin}</React.Fragment>);
+
 export function Md({ text }) {
   return (text || "").split("\n").map((satir, i) => {
-    const tip = mdSatirTipi(satir);
-    if (tip === "hr") return <hr key={i} aria-hidden="true" style={{ border: "none", borderTop: `1px solid ${PAL.line}`, margin: "8px 0" }} />;
-    const madde = tip === "madde";
-    const icerik = satirIciParcala(madde ? satir.slice(2) : satir).map((p, j) =>
-      p.tip === "kalin" ? <strong key={j} style={{ fontWeight: 650, color: "inherit" }}>{p.metin}</strong>
-        : p.tip === "egik" ? <em key={j} style={{ fontStyle: "italic" }}>{p.metin}</em>
-          : <React.Fragment key={j}>{p.metin}</React.Fragment>);
-    return madde
-      ? <span key={i} style={{ display: "flex", gap: SP.s }}><span aria-hidden="true" style={{ color: DERIN.T }}>•</span><span style={{ minWidth: 0 }}>{icerik}</span></span>
-      : <span key={i} style={{ display: "block" }}>{icerik}</span>;
+    const { tip, govde, no } = mdSatirAyristir(satir);
+    if (tip === "hr") return <hr key={i} aria-hidden="true" style={{ border: "none", borderTop: `1px solid ${PAL.line}`, margin: `${SP.s}px 0` }} />;
+    if (tip === "bos") return <span key={i} aria-hidden="true" style={{ display: "block", height: SP.s }} />;
+    if (tip === "madde" || tip === "numara") {
+      return (
+        <span key={i} style={{ display: "grid", gridTemplateColumns: "18px minmax(0,1fr)", columnGap: SP.xs, marginTop: 2 }}>
+          <span aria-hidden="true" style={tip === "numara"
+            ? { fontFamily: MONO, fontSize: 12, color: DERIN.V, textAlign: "right", paddingRight: 2, ...TNUM }
+            : { color: DERIN.V, textAlign: "center" }}>{tip === "numara" ? `${no}.` : "–"}</span>
+          <span>{satirIci(govde)}</span>
+        </span>
+      );
+    }
+    return <span key={i} style={{ display: "block" }}>{satirIci(govde)}</span>;
   });
 }
 
@@ -113,7 +123,7 @@ const KalemIskeleti = () => (
 export function DanismaFisi({ kunye, saat, hata = false, children, alt = null, role, ariaLabel }) {
   return (
     <div role={role} aria-label={ariaLabel} style={{ position: "relative", width: "92%", background: PAL.surf, border: `1px solid ${PAL.line}`, borderLeft: `3px solid ${hata ? BANT.kirmizi.c : V}`, borderRadius: RAD.ctl, boxShadow: SH.card, color: PAL.ink2, overflowWrap: "anywhere" }}>
-      <div aria-hidden="true" style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "7px 12px 6px", borderBottom: `1px dashed ${PAL.lineHi}`, ...TYPE.antet, fontSize: 10, lineHeight: "14px", textTransform: "uppercase", color: hata ? DERIN.kirmizi : PAL.mut3 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "7px 12px 6px", borderBottom: `1px dashed ${PAL.lineHi}`, ...TYPE.antet, fontSize: 10, lineHeight: "14px", textTransform: "uppercase", color: hata ? DERIN.kirmizi : PAL.mut3 }}>
         {hata && <Icon.alert width={12} height={12} />}
         <span>{kunye}</span>
         <span style={{ flex: 1 }} />
@@ -198,13 +208,19 @@ function MesajEylemleri({ m, bekliyor, onTeyit, onNavigate, onClose }) {
 /* Mesaj — kullanıcı sağda (tükenmez mavisi kısa not), asistan solda danışma notu fişi. */
 export function Balon({ m, onNavigate, onClose, onTeyit, onMevzuatAc, bekliyor, damgali, fisRef }) {
   const kullanici = m.rol === "kullanici";
-  const kunye = m.karsilama ? "Karşılama" : m.hata ? "İşlem durdu" : m.akiyor ? "Danışma notu · yazılıyor" : "Danışma notu";
+  const kaynakEk = m.kaynak === "llm" ? " · Yapay zekâ" : m.kaynak ? " · Kural tabanlı" : "";
+  const kunye = m.karsilama ? "Karşılama" : m.hata ? "İşlem durdu" : m.akiyor ? "Danışma notu · yazılıyor" : `Danışma notu${kaynakEk}`;
   const kaynaklar = m.mevzuat_kaynaklari?.length ? m.mevzuat_kaynaklari : null;
   return (
     <div ref={fisRef} data-mesaj-rol={m.rol} style={{ display: "flex", flexDirection: "column", alignItems: kullanici ? "flex-end" : "flex-start", gap: SP.s, scrollMarginTop: SP.s, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
       {kullanici ? (
-        <div style={{ maxWidth: "88%", padding: "9px 13px", ...TYPE.ui, overflowWrap: "anywhere", background: DERIN.T, color: PAL.onAccent, borderRadius: RAD.ctl }}>
-          <Md text={m.icerik} />
+        /* Soru fişi — balon değil: kâğıt zemin + sağda tükenmez cilt çizgisi + mono künye.
+           Dolgun primary mavi görünümün tek primary'siyle yarışıyordu (tur 8 jüri). */
+        <div style={{ maxWidth: "86%", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRight: `3px solid ${T}`, borderRadius: RAD.ctl, color: PAL.ink, overflowWrap: "anywhere" }}>
+          <div aria-hidden="true" style={{ display: "flex", gap: SP.s, justifyContent: "flex-end", padding: "6px 12px 0", ...TYPE.antet, fontSize: 10, lineHeight: "14px", textTransform: "uppercase", color: PAL.mut3 }}>
+            <span>Soru</span>{m.zaman && <span style={TNUM}>{notSaati(m.zaman)}</span>}
+          </div>
+          <div style={{ padding: "2px 12px 9px", ...TYPE.ui }}><Md text={m.icerik} /></div>
         </div>
       ) : (
         <DanismaFisi kunye={kunye} saat={notSaati(m.zaman)} hata={m.hata}

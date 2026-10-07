@@ -50,7 +50,7 @@ function kunyeSatirlari(item, aktifTur) {
   const sla = SLA_TR[r.sla_metadata?.durum];
   const riskKod = BANT[item.bant]?.l;
   return [
-    { k: "Kaynak dosya", v: item.name, mono: true },
+    { k: "Kaynak dosya", v: item.name ? <span title={item.name}>{ortaElips(item.name, 18, 10)}</span> : "", mono: true },
     { k: "Evrak türü", v: EVRAK_TR(item.evrak_turu) },
     { k: "Üretilen yazı türü", v: aktifTur ? YAZI_TR(aktifTur) : "" },
     { k: "Hedef birim", v: BIRIM_GOSTER(item.hedef_birim, item.evrak_turu), c: DERIN.V },

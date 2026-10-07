@@ -128,6 +128,11 @@ export function katalogEslesir(m, q) {
 export function notTemizle(p) {
   return String(p || "")
     .replace(/\s*NOT:\s*İstekteki[^.]*\.?/giu, "")
+    // İç geliştirici atfı (korpus satırı 8: "(CLAUDE.md §1)") okura sızmaz; parantezsiz kalırsa
+    // cümlesiyle birlikte düşer. Kalıcı çözüm korpus temizliği (backend/data — ayrı iş).
+    .replace(/\s*\((?:[^()]*?)CLAUDE\.md[^()]*\)/giu, "")
+    .replace(/[^.;\n]*CLAUDE\.md[^.\n]*\.?/giu, "")
+    .replace(/\s{2,}/gu, " ")
     .replace(/\bmirror['’]?[ıiuü](?!\p{L})/giu, "yansısı")
     .replace(/\bmirror\b/giu, "yansı")
     .replace(/https?:\/\/(?:www\.)?([^\s/)]+)[^\s)]*/giu, "$1")

@@ -8,8 +8,9 @@
    tercih localStorage "ke-tema", yoksa OS prefers-color-scheme). Hex YALNIZ burada yazılır;
    PAL/T/V/R/BANT/DERIN hep var() üzerinden okur — görünüm dosyaları hiç değişmeden iki modda
    da çalışır. */
-export const THEME_CSS = `
-:root{
+/* Açık tema token gövdesi — :root ile YAZDIRMADA koyu temanın üstüne (aşağıdaki @media print) iki
+   kez kullanılır; tek kaynak kalsın diye ayrı sabit. */
+const ACIK_TOKENLER = `
   color-scheme:light;
   --ke-t:#2b4fd6; --ke-v:#6b3ea6; --ke-r:#d93a2b;
   --ke-bg:#eceee9; --ke-bg2:#e2e5de; --ke-surf:#ffffff; --ke-surf2:#f7f8f4; --ke-surf-hi:rgba(17,22,40,.05);
@@ -68,7 +69,11 @@ export const THEME_CSS = `
      temada ayrışır — derin-t koyuda açık lavantadır (metin için doğru), dolgu olarak koyu metinle
      "devre dışı" gibi okunuyordu (tur 7 jüri). on-dolgu: bu dolgunun üstündeki metin. */
   --ke-dolgu-t:#1f3fb4; --ke-dolgu-th:#18329a; --ke-on-dolgu:#ffffff;
-}
+`;
+
+export const THEME_CSS = `
+:root{
+${ACIK_TOKENLER}}
 :root[data-theme="dark"]{
   color-scheme:dark;
   /* 2026-08 revizyonu #3 "Mürekkep Gecesi": #2 hâlâ vasat okundu (kullanıcı). Teşhis, siyahlık
@@ -82,7 +87,7 @@ export const THEME_CSS = `
      3) Yükseklik gölgeyle değil IŞIKLA: sh-* iç üst-kenar parlaması + gerçek karartı taşır.
      64 kontrast çifti ölçüldü (scratchpad/kontrast.mjs): tüm metin ≥4.5, grafik ≥3.0. */
   --ke-t:#7491ff; --ke-v:#b98de6; --ke-r:#ff6a5a;
-  --ke-bg:#0c0e14; --ke-bg2:#08090e; --ke-surf:#161924; --ke-surf2:#11131b; --ke-surf-hi:rgba(255,255,255,.07);
+  --ke-bg:#0c0e14; --ke-bg2:#08090e; --ke-surf:#1a1d2a; --ke-surf2:#11131b; --ke-surf-hi:rgba(255,255,255,.07);
   --ke-line:rgba(255,255,255,.10); --ke-line-hi:rgba(255,255,255,.22);
   --ke-ink:#eef0f7; --ke-ink2:#cfd3df; --ke-mut:#9aa0b2; --ke-mut2:#b8bdcb; --ke-mut3:#8c92a5;
   --ke-hov:rgba(255,255,255,.05); --ke-press:rgba(255,255,255,.09);
@@ -108,9 +113,12 @@ export const THEME_CSS = `
   --ke-sh-pop:inset 0 1px 0 rgba(255,255,255,.06), 0 8px 24px -6px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.35);
   --ke-sh-modal:inset 0 1px 0 rgba(255,255,255,.07), 0 24px 60px -16px rgba(0,0,0,.65), 0 4px 12px rgba(0,0,0,.4);
   --ke-sh-kagit:inset 0 1px 0 rgba(255,255,255,.07), 0 12px 28px -8px rgba(0,0,0,.6), 0 1px 2px rgba(0,0,0,.35);
-  --ke-bant-yesil:#45c08a; --ke-bant-sari:#e2a940; --ke-bant-kirmizi:#ff6a5a;
-  --ke-derin-t:#a3b5ff; --ke-derin-th:#b8c6ff; --ke-derin-v:#d3b4f2; --ke-derin-r:#ff9d8f;
-  --ke-derin-yesil:#7ad9ae; --ke-derin-sari:#f0c168; --ke-derin-kirmizi:#ff9d8f;
+  /* Tur 8 (brif #16, "gece mesaisi yorgun göze neon değil"): bant/derin aksanları koyuda ~%85
+     doygunluğa kısıldı (açıklık korunur → kontrast 5,5–10,6:1, temaKontrast.test). Kart (surf)
+     zeminden ≥ 1,15 parlaklık oranıyla ayrışır (#161924 1,10 idi — kartlar zemine eriyordu). */
+  --ke-bant-yesil:#52b388; --ke-bant-sari:#d6a54e; --ke-bant-kirmizi:#ef6b5e;
+  --ke-derin-t:#a3b5ff; --ke-derin-th:#b8c6ff; --ke-derin-v:#d3b4f2; --ke-derin-r:#f0a197;
+  --ke-derin-yesil:#86cfae; --ke-derin-sari:#e6c27e; --ke-derin-kirmizi:#f0a197;
   /* Koyu temada primary: derin mürekkep mavisi + beyaz metin (5,7:1 · hover 4,8:1). */
   --ke-dolgu-t:#3b5bdb; --ke-dolgu-th:#4a68e0; --ke-on-dolgu:#ffffff;
 }
@@ -119,7 +127,11 @@ export const THEME_CSS = `
    menüsü tetikleyicisi, yükle düğmesi, rozetler) kodu değişmeden koyu yüzeye uyar.
    --ke-sayfa*: :root'ta HESAPLANIP miras alınır (var() tanım yerinde çözülür) → ray içinden
    sayfanın kendi zemini/mürekkebi okunabilir: aktif sekme sayfaya "bağlanan" dosya sırtıdır. */
-:root{ --ke-sayfa:var(--ke-bg); --ke-sayfa-ink:var(--ke-ink); --ke-sayfa-t:var(--ke-derin-t); --ke-sayfa-mut:var(--ke-mut2); }
+/* Antet çift çizgisi (tur 8): açıkta mürekkep, koyuda bir basamak kısık — saf açık çizgi gece
+   zemininde "sertçe parlıyordu" (jüri). */
+:root{ --ke-antet-cizgi:var(--ke-ink); }
+:root[data-theme="dark"]{ --ke-antet-cizgi:var(--ke-ink2); }
+:root{ --ke-sayfa:var(--ke-bg); --ke-sayfa-ink:var(--ke-ink); --ke-sayfa-t:var(--ke-derin-t); --ke-sayfa-mut:var(--ke-mut2); --ke-sayfa-kirmizi:var(--ke-derin-kirmizi); }
 [data-ray]{
   color-scheme:dark;
   --ke-bg:#141a31; --ke-bg2:#141a31; --ke-surf:#1c2340; --ke-surf2:#182039; --ke-surf-hi:rgba(255,255,255,.07);
@@ -146,6 +158,9 @@ export const THEME_CSS = `
 :root[data-theme="dark"] [data-ray]{ --ke-bg:#121b3d; --ke-bg2:#121b3d; --ke-surf:#1b2652; --ke-surf2:#162047; --ke-surf-hi:rgba(255,255,255,.08); --ke-line:rgba(255,255,255,.12); --ke-ray-kenar:rgba(255,255,255,.10); --ke-kulak-kenar:rgba(255,255,255,.18); }
 /* Cilt bezi: çok ince atkı/çözgü örgüsü — rayın "lacivert bez kapak" malzemesi. Statik,
    tek katman, metnin altında (ray zemininin background-image'ı). */
+/* Kör baskı (tur 8): cilde mürekkepsiz basılmış yazı — zemin tonu + alttan ışık + üstten gölge. */
+[data-ray]{ --ke-kor-zemin:#18203b; --ke-kor-isik:rgba(255,255,255,.07); --ke-kor-golge:rgba(0,0,0,.45); }
+:root[data-theme="dark"] [data-ray]{ --ke-kor-zemin:#16204a; --ke-kor-isik:rgba(255,255,255,.06); --ke-kor-golge:rgba(0,0,0,.55); }
 [data-ray]{ --ke-ray-doku:repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, rgba(255,255,255,.016) 0 1px, transparent 1px 3px); }
 /* KÂĞIT KAPSAMI (tur 4) — [data-evrak-kagit] taşıyan alt ağaç koyu temada AÇIK kâğıt
    token'larına döner (ray kapsamının tersi): kâğıdın üstündeki her atom (Damga, havale fişi,
@@ -175,5 +190,21 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;op
 ::selection{background:color-mix(in srgb, var(--ke-t) 22%, transparent)}
 /* İnce kaydırma çubuğu — mürekkep tonunda, zemin şeffaf. */
 *{scrollbar-width:thin;scrollbar-color:color-mix(in srgb, var(--ke-ink) 22%, transparent) transparent}
+/* ——— BASKI (tur 8, brif #18 "Brifi yazdır") ————————————————————————————————————
+   Kamu ofisinde brif basılır. Kâğıtta: kenar rayı/alt şerit/bildirim/hata çubukları yok, zemin
+   beyaz, doku yok, koyu tema seçili olsa bile AÇIK token'lar (seçici :root kalıbını taşımaz →
+   temaKontrast ayrıştırıcısı koyu kapsamı karıştırmaz; özgüllük :root[data-theme]'i yener),
+   kartlar yalnız ince çizgi, damga siyah-beyaz, geç gelen/animasyonlu öğe son karede. */
+@media print{
+  html[data-theme="dark"][data-theme]{
+${ACIK_TOKENLER}  }
+  html,body{background:white!important}
+  body::before{display:none!important}
+  [data-ray],[data-sonner-toaster],.ke-hata,.ke-deneme,.ke-alt-serit,[data-baski-gizle]{display:none!important}
+  *,*::before,*::after{animation:none!important;transition:none!important;box-shadow:none!important}
+  [data-damga]{filter:grayscale(1)}
+  section{min-height:0!important}
+  a[href]{text-decoration:none}
+}
 
 `;

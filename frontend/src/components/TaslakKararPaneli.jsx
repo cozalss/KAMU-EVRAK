@@ -15,7 +15,7 @@
    Sözleşmeler (geri döndürme): Gönder tek primary; gönderim iki adımlı (fiş); sil/gönder
    onayı eylem yığınının yerine geçer; sendBusy tüm eylemleri kilitler. */
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { BuyutIkon, PAL, DERIN, TYPE, RAD, SP, SH, focusRing } from "./neonUi.jsx";
+import { BuyutIkon, MONO, PAL, DERIN, TYPE, RAD, SP, SH, focusRing } from "./neonUi.jsx";
 import A4Belge from "./A4Belge.jsx";
 import KararFisi from "./TaslakKararFisi.jsx";
 import { KararEylemleri, MetinEylem, COP } from "./TaslakEylem.jsx";
@@ -47,7 +47,7 @@ function useMobilZoom(genis, kap) {
 /* MASA — çökük arşiv zemini; üstte künye satırı (görünüm anahtarı), altında kâğıt. Kâğıt ya
    tam A4 sayfası (aspect-ratio, yüksekliğe sığar) ya da okuma kesitidir. Tık/Enter → A4
    düzenleme (BelgeModal). */
-function Masa({ ad, metin, genis, sutunH, kagitGen, onDuzenle }) {
+function Masa({ h, ad, metin, genis, sutunH, kagitGen, onDuzenle }) {
   const [kap, setKap] = useState(null);
   const zoom = useMobilZoom(genis, kap);
   // Okunabilirlik kararı kâğıdın EKRANDAKİ genişliğinden: geniş düzende sütun bütçesi,
@@ -60,7 +60,7 @@ function Masa({ ad, metin, genis, sutunH, kagitGen, onDuzenle }) {
       boxShadow: `inset 0 1px 3px color-mix(in srgb, ${PAL.ink} 7%, transparent)`, animation: "nu-rise .32s var(--ke-ease-out) .08s both" }}>
       <div style={{ minHeight: MASA_BASLIK_H, flexShrink: 0, display: "flex", alignItems: "center", gap: SP.s, minWidth: 0 }}>
         <span aria-hidden="true" style={{ ...TYPE.antet, textTransform: "uppercase", color: PAL.mut3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>
-          {okuma ? "Okuma kesiti · biçim A4'te" : "A4 · 210×297 mm"}
+          {okuma ? "Gerçek punto" : "210×297 mm"}
         </span>
         <span style={{ marginLeft: "auto", flexShrink: 0 }}><GorunumAnahtari deger={gorunum} onDegis={setGorunum} /></span>
       </div>
@@ -77,7 +77,9 @@ function Masa({ ad, metin, genis, sutunH, kagitGen, onDuzenle }) {
               <BuyutIkon />
             </span>
           </div>
-          {okuma ? <TaslakOkumaKesiti metin={metin} />
+          {/* key: seçim değişince kâğıt yeniden "masaya konur" (nu-rise, reduced-motion'da anında) —
+              satırdan satıra geçişte tek, anlamlı hareket (jüri tur 8). */}
+          {okuma ? <TaslakOkumaKesiti key={h.id} metin={metin} />
             : genis ? <A4Belge metin={metin} baslikIpucu="Düzenle (A4 görünüm)" />
             : (
               <div style={{ width: MOBIL_SAHNE, zoom }}>
@@ -111,6 +113,28 @@ export function BosMasa({ sutunH, toplam }) {
   );
 }
 
+/* Kaydırma kabının dibinde içerik kaldı mı? Jüri tur 8: 1440'ta fiş künyesinin ilk satırı
+   kaydırma kenarında YARIM görünüyordu (kesik metin hata gibi okunur). Altında içerik varken
+   dibe 28px solma maskesi iner — "devamı var" der; en dipte maske kalkar, hiçbir satır örtülmez. */
+const SOLMA_PX = 28;
+function useDipteIcerik(genis, anahtar) {
+  const [kap, setKap] = useState(null);
+  const [devam, setDevam] = useState(false);
+  useLayoutEffect(() => {
+    if (!genis || !kap) { setDevam(false); return undefined; }
+    const olc = () => setDevam(kap.scrollHeight - kap.scrollTop - kap.clientHeight > 2);
+    olc();
+    kap.addEventListener("scroll", olc, { passive: true });
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(olc) : null;
+    ro?.observe(kap);
+    if (kap.firstElementChild) ro?.observe(kap.firstElementChild);
+    return () => { kap.removeEventListener("scroll", olc); ro?.disconnect(); };
+  }, [genis, kap, anahtar]);
+  const maske = devam ? `linear-gradient(to bottom, black calc(100% - ${SOLMA_PX}px), transparent)` : undefined;
+  const sonaKaydir = () => kap?.scrollTo({ top: kap.scrollHeight, behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  return { ref: setKap, devam, sonaKaydir, stil: maske ? { maskImage: maske, WebkitMaskImage: maske } : null };
+}
+
 /* Eylem durum makinesi — "bos" | "sil"; gönderimin ikinci adımı onay fişidir. */
 function useKararDurumu(h, komut, sendBusy) {
   const [durum, setDurumHam] = useState("bos");
@@ -130,6 +154,7 @@ function useKararDurumu(h, komut, sendBusy) {
 export default function TaslakKararPaneli({ h, konu, govde, tamMetin, genis, sutunH, kagitGen, sira = 1, toplam = 1, sendBusy, komut, onDuzenle, onKurul, onGonder, onSil }) {
   const denetim = useMemo(() => gonderimDenetimi(tamMetin), [tamMetin]);
   const k = useKararDurumu(h, komut, sendBusy);
+  const dip = useDipteIcerik(genis, h.id);
   const tarih = Number.isFinite(h.ts) ? new Date(h.ts).toLocaleDateString("tr-TR") : "";
   const r = h.result || {};
   const ad = konu || h.name;
@@ -147,7 +172,7 @@ export default function TaslakKararPaneli({ h, konu, govde, tamMetin, genis, sut
   );
   return (
     <>
-      <Masa ad={ad} metin={metin} genis={genis} sutunH={sutunH} kagitGen={kagitGen} onDuzenle={onDuzenle} />
+      <Masa h={h} ad={ad} metin={metin} genis={genis} sutunH={sutunH} kagitGen={kagitGen} onDuzenle={onDuzenle} />
       <aside aria-label="Karar paneli"
         style={{ display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden",
           height: genis ? (sutunH ?? undefined) : undefined,
@@ -155,10 +180,20 @@ export default function TaslakKararPaneli({ h, konu, govde, tamMetin, genis, sut
           animation: "nu-rise .32s var(--ke-ease-out) .14s both" }}>
         {/* Kaydırma kabı esnek sütun: fiş en az kabın boyunu doldurur, künye dibe oturur —
             künye ile eylem bloğu arasında ölü boşluk kalmaz (tur 6 doğrulaması, 1440'ta ~140px). */}
-        <div style={{ flex: genis ? "1 1 auto" : "none", minHeight: 0, overflowY: genis ? "auto" : "visible", display: "flex", flexDirection: "column" }}>
+        <div ref={dip.ref} style={{ flex: genis ? "1 1 auto" : "none", minHeight: 0, overflowY: genis ? "auto" : "visible", display: "flex", flexDirection: "column", ...dip.stil }}>
           <KararFisi h={h} r={r} ad={ad} govde={govde} tarih={tarih} sira={sira} toplam={toplam}
-            govdeUyari={denetim.hazir ? null : denetim.engel[0]?.metin} onDuzenle={onDuzenle} />
+            govdeUyari={denetim.hazir ? null : denetim.engel[0]?.metin} onDuzenle={onDuzenle} kunye={denetim.kunye} />
         </div>
+        {genis && dip.devam && (
+          /* "Devamı" künyesi: solma maskesi tek başına kaydırılabilirliği sezdirmiyordu (2. jüri). */
+          <div style={{ position: "relative", height: 0, zIndex: 2 }}>
+            <button type="button" onClick={dip.sonaKaydir} tabIndex={-1} aria-hidden="true" data-press=""
+              style={{ position: "absolute", right: 14, bottom: 8, padding: "2px 8px", border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, background: PAL.surf,
+                cursor: "pointer", fontFamily: MONO, fontSize: 10, letterSpacing: ".1em", textTransform: "uppercase", color: PAL.mut2, animation: "nu-rise .22s var(--ke-ease-out) both" }}>
+              Devamı ↓
+            </button>
+          </div>
+        )}
         {genis ? <div style={{ flexShrink: 0 }}>{eylemler}</div> : (
           /* Telefonda eylemler sayfa dibine yapışık karar çubuğunda; fişte yalnız sessiz Sil. */
           <div style={{ padding: "4px 12px 12px", borderTop: `1px solid ${PAL.line}` }}>

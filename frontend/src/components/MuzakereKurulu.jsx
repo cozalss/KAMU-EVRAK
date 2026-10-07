@@ -14,9 +14,9 @@
    prefers-reduced-motion → son (karar) kare statik; turlar aria-live ile duyurulur. */
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { DISPLAY, T, PAL, DERIN_OF, BANT, TYPE, TNUM, RAD, SP, SH, Icon, Btn, odakDongusu } from "./neonUi.jsx";
+import { DISPLAY, T, PAL, DERIN_OF, BANT, TYPE, TNUM, RAD, SP, SH, Icon, Btn, odakDongusu, focusRing } from "./neonUi.jsx";
 import { UYE, uyeGor, turEtiketi, RISK, aksanRenk, KurulMasasi, duruslariCikar, TurSeridi, TutanakMaddesi, Yaziyor, TaslakKarti, KurulYukleniyor } from "./KurulMasasi.jsx";
-import { KurulTutanagi, kurulHukmu } from "./KurulKarar.jsx";
+import { KurulTutanagi, KurulHukumBasligi, kurulHukmu } from "./KurulKarar.jsx";
 import { muzakereKurgusu, editUygula, nihaiTaslak, sunucuKurgusu, kurguUzlasiMetni, metniSatirlara, kurulRiskOzeti } from "../lib/muzakere.js";
 import { apiStream } from "../lib/authApi.js";
 
@@ -30,7 +30,8 @@ const THINK = 900, READ = 1700;
 const KURUL_BASLIK_CSS = `.ke-kurul-kapat-ikon{display:none}
 @media (max-width:720px){.ke-kurul-kapat-ikon{display:grid}.ke-kurul-kapat-metin{display:none}}
 @media (max-width:480px){.ke-kurul-onek{display:none}}
-@media (max-width:720px){.ke-kurul-kap{padding-bottom:calc(72px + env(safe-area-inset-bottom))!important}}`;
+@media (max-width:720px){.ke-kurul-kap{padding-bottom:calc(72px + env(safe-area-inset-bottom))!important}}
+@media (min-width:1600px){.ke-kurul-govde{--ke-kurul-w:1280px}}`;
 // Tutanak antetindeki toplantı tarihi (gg.aa.yyyy — resmî biçim).
 const bugun = () => new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
 // Tutanak tur başlıklarının sıra numarası (resmî tutanak dili: I., II., III.).
@@ -187,6 +188,9 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, o
         </>
       } />
 
+      {/* Hüküm masanın hemen altında — toplantı kapanınca ilk görünen olgu (tur 8). */}
+      {done && <KurulHukumBasligi kurgu={kurgu} aksan={aksan} az={az} />}
+
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: SP.xl, marginTop: SP.xl, alignItems: "start" }}>
         {/* Sol — toplantı tutanağı (canlı akış). */}
         <section aria-label="Müzakere tutanağı" style={{ minWidth: 0 }}>
@@ -201,7 +205,9 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, o
           {/* Besleme kendi içinde kayar (masaüstü); tur şeritleri YAPIŞKAN — otomatik kaydırmada
               bölüm başlığı çift çizginin altında yarım kesilmez, üst kenar 12px'te solar.
               Telefonda iç kaydırma YOK (başparmak tuzağı): tutanak modal akışında büyür. */}
-          <div ref={feedRef} className="ke-kurul-besleme" style={{ display: "flex", flexDirection: "column", paddingRight: SP.xs, borderTop: `2px solid ${PAL.ink}` }}>
+          {/* Kaydırma kabı klavyeyle odaklanır (tabIndex 0): tek odak dili (global çift çizgi) +
+              sol iç boşluk — tarayıcının kare siyah çerçevesi metnin kenarına biniyordu (tur 8). */}
+          <div ref={feedRef} className="ke-kurul-besleme" tabIndex={0} aria-label="Toplantı tutanağı" {...focusRing} style={{ display: "flex", flexDirection: "column", padding: `0 ${SP.xs}px 0 ${SP.s}px`, borderTop: `2px solid ${PAL.ink}`, borderRadius: 2 }}>
             {/* Turlar kaynağında SIRALI-GRUPLU gelir (motor [*acilis,*capraz,moderatör]; sunucu da
                 aynı sırada) — şerit bu bitişik-tur değişimine göre çizilir; ara-sıralama gerekmez. */}
             {(() => {
@@ -243,7 +249,7 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, o
         </section>
 
         {/* Sağ — masadaki evrak: müzakere sürerken orijinal, bitince kurulun REVİZE taslağı */}
-        <TaslakKarti draft={gosterilenDraft} revize={revizeGoster} />
+        <TaslakKarti draft={gosterilenDraft} revize={revizeGoster} kunye={done ? hukum.kunye : null} />
       </div>
 
       {/* Tartışmanın sonucu — tutanak yalnız müzakere bitince açılır (canlı gerilim korunur) */}
@@ -449,7 +455,7 @@ export function KurulModal({ taslakAdi = "", result, onKapat = () => {}, onUygul
       style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0, zIndex: 80, background: PAL.scrimKoyu, display: "flex", padding: "clamp(12px, 4vh, 32px) clamp(8px, 2vw, 32px)", boxSizing: "border-box", animation: "nu-sol .16s var(--ke-ease-out) both" }}>
       {/* ref+tabIndex: açılışta odak diyalog kabına girer (WCAG dialog deseni; bug avı: kapatRef
           hiçbir öğeye bağlı değildi → focus no-op, odak arka planda kalıyordu). */}
-      <div ref={kapatRef} tabIndex={-1} onClick={(e) => e.stopPropagation()} style={{ width: "min(1060px, 100%)", maxHeight: "100%", margin: "0 auto", outline: "none", display: "flex", flexDirection: "column", minHeight: 0, animation: "nu-kagit .22s var(--ke-ease-out) both" }}>
+      <div ref={kapatRef} tabIndex={-1} onClick={(e) => e.stopPropagation()} className="ke-kurul-govde" style={{ width: "min(var(--ke-kurul-w, 1060px), 100%)", maxHeight: "100%", margin: "0 auto", outline: "none", display: "flex", flexDirection: "column", minHeight: 0, animation: "nu-kagit .22s var(--ke-ease-out) both" }}>
 
         {/* Toplantı tutanağı kâğıdı — antet başlığı (künye satırı · başlık · çift çizgi) kâğıdın
             KENDİSİNDE; eskiden karartının üstünde yüzen bir şeritti ve arka sayfayla karışıyordu. */}

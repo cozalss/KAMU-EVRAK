@@ -94,7 +94,9 @@ function useOlculenAdim(listeRef, etkin) {
   return adim;
 }
 
-export function DefterYuzey({ sablon, basliklar, children, etiket, style, listeRef, gezinme, ipucu, rol, dolgu = 0, secimli = false }) {
+/* `folyo`: defter sayfasının dip künyesi ("SAYFA 1 · 1 KAYIT · SON KAYIT …") — gerçek sicil
+   defterlerinin sayfa altı; ipucu şeridinin sağ ucuna oturur (telefonda şerit gizli). */
+export function DefterYuzey({ sablon, basliklar, children, etiket, style, listeRef, gezinme, ipucu, folyo, rol, dolgu = 0, dolguNotu = "", uzar = false, secimli = false }) {
   const icRef = useRef(null);
   const baglaListe = useCallback((el) => {
     icRef.current = el;
@@ -107,20 +109,22 @@ export function DefterYuzey({ sablon, basliklar, children, etiket, style, listeR
   return (
     <>
       <Yuzey data-sd-yuzey="" aria-label={etiket} role={semantik || undefined} ref={gezinme?.kokRef} onFocus={gezinme?.odakla}
-        {...(semantik === "grid" && secimli ? { "aria-multiselectable": "true" } : null)}
+        {...(semantik === "grid" && secimli ? { "aria-multiselectable": "true" } : null)} {...(uzar ? { "data-sd-uzar": "" } : null)}
         style={{ ...sablonDegisken(sablon), ...(olculen ? { "--sd-adim": `${olculen}px` } : null), ...style }}>
         {basliklar && (semantik
           ? <div role="rowgroup"><div data-sd-baslik="" role="row">{basliklar}</div></div>
           : <div data-sd-baslik="" aria-hidden="true">{basliklar}</div>)}
         <div ref={baglaListe} data-sd-liste="" role={semantik ? "rowgroup" : undefined} style={{ display: "flex", flexDirection: "column" }}>
           {children}
-          {dolgu > 0 && <div data-sd-dolgu="" aria-hidden="true" style={{ height: `calc(var(--sd-adim) * ${dolgu})` }} />}
+          {/* dolguNotu: ilk boş cetvel satırına sessiz mono künye ("sıradaki gönderi bu satıra işlenir"). */}
+          {dolgu > 0 && <div data-sd-dolgu="" aria-hidden="true" style={{ height: `calc(var(--sd-adim) * ${dolgu})` }}>{dolguNotu && <span data-sd-dolgu-not="">{dolguNotu}</span>}</div>}
         </div>
-        {ipucu && (
+        {(ipucu || folyo) && (
           <div data-sd-ipucu="" aria-hidden="true">
-            <span><kbd>j</kbd> <kbd>k</kbd> satırlar arası</span>
-            <span><kbd>Enter</kbd> {ipucu}</span>
-            {secimli && <span><kbd>x</kbd> seç</span>}
+            {ipucu && <span><kbd>j</kbd> <kbd>k</kbd> satırlar arası</span>}
+            {ipucu && <span><kbd>Enter</kbd> {ipucu}</span>}
+            {ipucu && secimli && <span><kbd>x</kbd> seç</span>}
+            {folyo && <span data-sd-folyo="">{folyo}</span>}
           </div>
         )}
       </Yuzey>
@@ -134,13 +138,14 @@ export const HUCRE = { grid: { role: "gridcell" }, table: { role: "cell" } };
 
 /* Grup başlığı (zaman kovası / gün) — defter içinde yapışkan bant: kayıtlar altından akarken
    tarih okunur kalır (zimmet defterinin gün ayracı). Hücre içinde gerçek başlık (h2 düzeyi). */
-export function GrupBasligi({ etiket, ek, sayi, birim = "kayıt", rol = "grid" }) {
+export function GrupBasligi({ etiket, ek, sayi, birim = "kayıt", rol = "grid", kolon = 5, children }) {
   return (
     <div data-sd-grup="" role="row">
-      <span role={rol === "grid" ? "gridcell" : "cell"} aria-colspan={5} style={{ display: "flex", alignItems: "center", gap: SP.s, minWidth: 0 }}>
+      <span role={rol === "grid" ? "gridcell" : "cell"} aria-colspan={kolon} style={{ display: "flex", alignItems: "center", gap: SP.s, minWidth: 0, width: "100%" }}>
         <span role="heading" aria-level={2} style={{ ...TYPE.antet, fontSize: 10, color: PAL.ink2, textTransform: "uppercase", whiteSpace: "nowrap" }}>{etiket}</span>
         {ek && <span style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut2, whiteSpace: "nowrap", ...TNUM }}>{ek}</span>}
         <span style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, whiteSpace: "nowrap", ...TNUM }}>· {sayi} {birim}</span>
+        {children}
       </span>
     </div>
   );
@@ -173,8 +178,8 @@ export function Vurgulu({ metin, jetonlar }) {
     : <React.Fragment key={i}>{p.t}</React.Fragment>));
 }
 
-/* Şablonun alan adları — '"no ana sure"' → ["no","ana","sure"] (tekrarsız, sırayla). */
-const alanlarOf = (alan) => [...new Set(String(alan || "").replace(/"/g, " ").split(/\s+/).filter((x) => x && x !== "."))];
+/* Şablonun alan adları (ızgara sütun sayısı = aria-colspan kaynağı) — '"no ana sure"' → ["no","ana","sure"] (tekrarsız, sırayla). */
+export const alanlarOf = (alan) => [...new Set(String(alan || "").replace(/"/g, " ").split(/\s+/).filter((x) => x && x !== "."))];
 const CUBUK_EN = [52, 64, 44, 58, 48, 60];
 
 function HayaletHucre({ a, i, no, numarasiz, bos }) {

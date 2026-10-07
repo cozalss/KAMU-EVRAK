@@ -201,13 +201,44 @@ const saatOf = (runBase) => {
 
 function egimOf(id) { let x = 0; for (const ch of id) x = (x * 31 + ch.charCodeAt(0)) % 997; return (x % 11) - 6; }
 
+/* Pusula satırıyla BAĞ (tur 8): satır üzerine gelince / odaklanınca ilgili yuvaya ince halka
+   çizilir; yuva tıklanınca aynı adım detayı açılır (klavye yolu pusula satırlarındadır — defter
+   aria-hidden kalır). Yalnız transform/opacity. */
+function YuvaBag({ y, durum, vurgulu, onYuva }) {
+  const { a, x, r } = y;
+  const col = a.gorev === 2 ? V : T;
+  return (
+    <>
+      <span style={{ position: "absolute", left: x - r - 4, top: y.y - r - 4, width: r * 2 + 8, height: r * 2 + 8, boxSizing: "border-box", borderRadius: RAD.dot, border: `1.5px solid ${col}`, opacity: vurgulu ? 1 : 0, transform: vurgulu ? "scale(1)" : "scale(.9)", transition: "opacity .14s var(--ke-ease-out), transform .14s var(--ke-ease-out)", pointerEvents: "none" }} />
+      {onYuva && <span onClick={() => onYuva(a.sira)} style={{ position: "absolute", left: x - r, top: y.y - r, width: r * 2, height: r * 2, borderRadius: RAD.dot, cursor: "pointer", zIndex: 2 }} />}
+      <Yuva y={y} durum={durum} />
+    </>
+  );
+}
+
+/* EŞZAMANLI AYRAÇ (tur 8) — paraf defterinde aynı katmanda (start.katmanlar, §8) eşzamanlı
+   koşan yuvaların altına ince köşeli ayraç: pusuladaki çatalla AYNI olguyu söyler. Harita
+   yoksa (boş hâl önizlemesi) `esZamanli` hiç işaretlenmez → ayraç çizilmez. */
+function esZamanliAyraclar(yuvalar) {
+  const out = [];
+  let i = 0;
+  while (i < yuvalar.length) {
+    const a = yuvalar[i];
+    let j = i;
+    while (j + 1 < yuvalar.length && a.a.esZamanli && yuvalar[j + 1].a.katman === a.a.katman && yuvalar[j + 1].y === a.y && yuvalar[j + 1].a.gorev === a.a.gorev) j += 1;
+    if (j > i) out.push({ id: a.a.id, x0: a.x - a.r, x1: yuvalar[j].x + a.r, y: a.y + a.r + 3, col: a.a.gorev === 2 ? V : T });
+    i = j + 1;
+  }
+  return out;
+}
+
 /* Yuvanın HTML katmanı — numara / baş harf / halka biçimi (renk tek sinyal değil). Mürekkebin
    kendisi WebGL'dedir; burada yalnız keskin tipografi ve mürekkepsiz kipler çizilir. */
 function Yuva({ y, durum }) {
   const { a, x, r } = y;
   const col = a.gorev === 2 ? V : T;
   const derin = DERIN_OF(durum === "hata" ? BANT.kirmizi.c : a.id === "risk_guard" && a.bant && BANT[a.bant] ? BANT[a.bant].c : col);
-  const no = String(a.sira + 1).padStart(2, "0");
+  const no = a.numarasiz ? "" : String(a.sira + 1).padStart(2, "0");
   const kutu = { position: "absolute", left: x - r, top: y.y - r, width: r * 2, height: r * 2, boxSizing: "border-box", borderRadius: RAD.dot, display: "flex", alignItems: "center", justifyContent: "center" };
   const rakam = { fontFamily: MONO, fontSize: Math.max(10, r * 0.52), lineHeight: 1, ...TNUM };
   if (durum === "calisti" || durum === "hata") {
@@ -226,10 +257,11 @@ function Yuva({ y, durum }) {
   );
   const kenar = {
     gerekmedi: `1.5px solid ${PAL.lineHi}`, atlandi: `1.5px dashed ${PAL.lineHi}`,
-    kesildi: `1.5px dashed ${BANT.kirmizi.c}`, islenmedi: `1px dotted ${PAL.lineHi}`,
+    kesildi: `1.5px dashed ${BANT.kirmizi.c}`, yarida: `1.5px dashed ${BANT.kirmizi.c}`, islenmedi: `1px dotted ${PAL.lineHi}`,
   }[durum] || `1px dotted ${PAL.lineHi}`;
+  const kirmizi = durum === "kesildi" || durum === "yarida";
   return (
-    <span style={{ ...kutu, border: kenar, color: durum === "kesildi" ? DERIN_OF(BANT.kirmizi.c) : PAL.mut3, opacity: durum === "islenmedi" ? 0.55 : 1 }}>
+    <span style={{ ...kutu, border: kenar, color: kirmizi ? DERIN_OF(BANT.kirmizi.c) : PAL.mut3 }}>
       {durum === "gerekmedi" ? <span style={{ width: r * 0.6, height: 1.5, background: PAL.lineHi }} /> : <span style={rakam}>{no}</span>}
     </span>
   );
@@ -324,7 +356,7 @@ function useMurekkep(kapRef, cvRef, cv2Ref, probRef, durumRef) {
   }, [kapRef, cvRef, cv2Ref, probRef, durumRef]);
 }
 
-export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196, gelis = null, runBase = 0, durdu = null, children = null }) {
+export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196, gelis = null, runBase = 0, durdu = null, vurgu = null, onYuva = null, children = null }) {
   const kapRef = useRef(null);
   const cvRef = useRef(null);
   const cv2Ref = useRef(null);
@@ -379,7 +411,10 @@ export default function AjanOrb({ display = [], kosumda = false, yukseklik = 196
           {i > 0 && <span style={{ position: "absolute", left: 6, top: -PAD.bant / 2 - 0.5, width: w - 12, height: 0, borderTop: `1px dashed ${PAL.lineHi}` }} />}
         </span>
       ))}
-      {yuvalar.map((y, i) => <Yuva key={y.a.id} y={y} durum={durumlar[i]} />)}
+      {esZamanliAyraclar(yuvalar).map((b) => (
+        <span key={`ayrac-${b.id}`} style={{ position: "absolute", left: b.x0, top: b.y, width: b.x1 - b.x0, height: 4, boxSizing: "border-box", borderLeft: `1px solid ${b.col}`, borderRight: `1px solid ${b.col}`, borderBottom: `1px solid ${b.col}`, opacity: 0.55 }} />
+      ))}
+      {yuvalar.map((y, i) => <YuvaBag key={y.a.id} y={y} durum={durumlar[i]} vurgulu={vurgu === y.a.id} onYuva={onYuva} />)}
       <AnimatePresence>
         {fisGoster && <GelisFisi ad={gelis.ad} meta={gelis.meta} saat={saat} />}
       </AnimatePresence>

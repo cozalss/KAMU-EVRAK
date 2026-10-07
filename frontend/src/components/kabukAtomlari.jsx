@@ -9,6 +9,7 @@
      · DenemeKunye — react-query yeniden denerken iskeletin üstündeki mono "2. deneme…" satırı.
      · fisToast   — bildirimler zımbalı "havale pusulası": ton (işlendi/bilgi/uyarı/hata) sol
                     kenar çizgisi + mono künye + kesikli ayraç. Ton çağırandan ya da metinden. */
+import { useEffect, useRef } from "react";
 import { toast as sonnerToast } from "sonner";
 import { PAL, T, DERIN, BANT, ALFA, MONO, DISPLAY, TYPE, TNUM, RAD, SP, SH, Icon, Btn, focusRing } from "./neonUi.jsx";
 import { toastTonu, TON_META } from "../lib/toastTon.js";
@@ -16,11 +17,42 @@ import { toastTonu, TON_META } from "../lib/toastTon.js";
 export const LOGOTYPE = "KAMU-EVRAK";
 
 /* Logotype — Archivo geniş kesim, büyük harf (marka istisnası) + ACELE kırmızısı imza noktası.
-   Noktayı akış içinde tutar; boyut tek prop. */
-export function Logotype({ boy = 14, nokta = true }) {
+   TEK atom (tur 8): giriş ekranı da bunu kullanır — ölçüler (14 px · %112 · .02em) her yerde aynı.
+   dalga: imlece yakın harfler genişlik ekseninde daralır, uzaklaşınca açılır (yalnız pointer:fine
+   + hareket azaltılmamışsa; harf merkezleri dinlenmede ölçülüp önbelleğe alınır, rAF ile kare
+   başına tek yazım). Kabukta kapalı — günlük iş aracında marka oynamaz. */
+const LOGO_GENISLIK = 112;
+function useLogoDalga(ref, acik) {
+  useEffect(() => {
+    const kok = ref.current;
+    if (!acik || !kok || !window.matchMedia?.("(pointer: fine)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    const harfler = [...kok.querySelectorAll("[data-harf]")];
+    let merkez = [], raf = 0, px = -1e4, py = -1e4;
+    const olc = () => { merkez = harfler.map((h) => { const r = h.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }); };
+    const ciz = () => {
+      raf = 0;
+      harfler.forEach((h, n) => {
+        const k = Math.max(0, 1 - Math.hypot(px - merkez[n][0], py - merkez[n][1]) / 90);
+        h.style.fontStretch = `${LOGO_GENISLIK - 40 * k * k * (3 - 2 * k)}%`;
+      });
+    };
+    const hareket = (e) => { px = e.clientX; py = e.clientY; if (!raf) raf = requestAnimationFrame(ciz); };
+    const zaman = setTimeout(olc, 900);   // giriş koreografisi oturduktan sonra ölç
+    document.fonts?.ready.then(olc);
+    window.addEventListener("pointermove", hareket, { passive: true });
+    window.addEventListener("resize", olc);
+    return () => { clearTimeout(zaman); cancelAnimationFrame(raf); window.removeEventListener("pointermove", hareket); window.removeEventListener("resize", olc); };
+  }, [ref, acik]);
+}
+export function Logotype({ boy = 14, nokta = true, dalga = false }) {
+  const ref = useRef(null);
+  useLogoDalga(ref, dalga);
+  const yazi = { fontFamily: DISPLAY, fontSize: boy, lineHeight: "24px", fontWeight: 800, fontStretch: `${LOGO_GENISLIK}%`, letterSpacing: ".02em", color: PAL.ink, whiteSpace: "nowrap" };
   return (
-    <span style={{ display: "inline-flex", alignItems: "baseline", gap: SP.xs, minWidth: 0 }}>
-      <span style={{ fontFamily: DISPLAY, fontSize: boy, lineHeight: "24px", fontWeight: 800, fontStretch: "112%", letterSpacing: ".02em", color: PAL.ink, whiteSpace: "nowrap" }}>{LOGOTYPE}</span>
+    <span ref={ref} {...(dalga ? { role: "img", "aria-label": LOGOTYPE } : null)} style={{ display: "inline-flex", alignItems: "baseline", gap: SP.xs, minWidth: 0 }}>
+      {dalga
+        ? <span aria-hidden="true" style={yazi}>{[...LOGOTYPE].map((h, n) => <span key={n} data-harf="" style={{ fontStretch: `${LOGO_GENISLIK}%`, transition: "font-stretch .35s var(--ke-ease-out)" }}>{h}</span>)}</span>
+        : <span style={yazi}>{LOGOTYPE}</span>}
       {nokta && <span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: RAD.dot, background: "var(--ke-r)", flexShrink: 0 }} />}
     </span>
   );
@@ -32,20 +64,29 @@ const saatYaz = () => new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", 
    (Panel'deki "9 GECİKMİŞ" damgasıyla aynı olgu kabuğun her yerinden okunur; hareket yok).
    bayat: kaynağın son denemesi hata verdi → soluk + kesikli çerçeve. n null + bayat: sayı HİÇ
    bilinmiyor → "—" (00 yazmak yanlış olgu olurdu). */
-export function SayiRozet({ n, acil = 0, bayat = false, etkin = false, kucuk = false }) {
+export function SayiRozet({ n, acil = 0, bayat = false, bekliyor = false, etkin = false, kucuk = false }) {
   const bilinmiyor = n == null && bayat;
-  if (!(n > 0) && !bilinmiyor) return null;
+  const yukleniyor = n == null && bekliyor && !bayat;
+  if (!(n > 0) && !bilinmiyor && !yukleniyor) return null;
   const temel = { position: "relative", zIndex: 1, display: "inline-flex", alignItems: "center", gap: 3, flexShrink: 0, ...TYPE.meta, ...TNUM, fontWeight: 600, borderRadius: 999, whiteSpace: "nowrap" };
   const boyut = kucuk ? { fontSize: 10, lineHeight: "14px", minWidth: 16, height: 16, padding: "0 4px", justifyContent: "center" } : { minWidth: 22, padding: "1px 7px", justifyContent: "center" };
+  /* Bekliyor (tur 8): sayı gelmeden önce rozet YERİNİ tutar — sayı gelince satır zıplamaz. Sakin
+     opaklık nabzı; "—" (yanıt yok) ile karışmaz. */
+  if (yukleniyor) {
+    return <span aria-label="sayı yükleniyor" style={{ ...temel, ...boyut, color: PAL.mut3, background: kucuk ? PAL.bg : etkin ? "transparent" : PAL.surfHi }}><span aria-hidden="true" style={{ animation: "nu-think 1.2s ease-in-out infinite" }}>··</span></span>;
+  }
   if (bayat) {
     const etiket = bilinmiyor ? "sayı bilinmiyor (sunucu yanıtsız)" : `${n} öğe (son bilinen)`;
     return <span aria-label={etiket} title={bilinmiyor ? "Sunucuya ulaşılamadı — sayı bilinmiyor" : "Son bilinen değer — sunucuya ulaşılamadı"} style={{ ...temel, ...boyut, color: PAL.mut3, background: kucuk ? PAL.bg : "transparent", border: `1px dashed ${PAL.lineHi}` }}>{bilinmiyor ? "—" : n}</span>;
   }
   const etiket = `${n} öğe${acil > 0 ? `, ${acil} gecikmiş` : ""}`;
+  /* Etkin sırt sayfa zemininde durur → kırmızı da SAYFANIN kırmızısıdır (ray mercanı açık kâğıtta
+     1,7:1 kalıyordu; temaKontrast.test "sırt üstü kırmızı"). */
+  const kirmizi = etkin ? "var(--ke-sayfa-kirmizi)" : "var(--ke-derin-kirmizi)";
   if (acil > 0 && !kucuk) {
     return (
       <span aria-label={etiket} style={{ ...temel, ...boyut, padding: "0 2px 0 0", gap: 0, color: etkin ? "var(--ke-sayfa-ink)" : PAL.ink2, background: etkin ? "transparent" : PAL.surfHi }}>
-        <span style={{ padding: "0 6px", borderRadius: 999, border: "1px solid var(--ke-derin-kirmizi)", color: "var(--ke-derin-kirmizi)" }}>{acil}</span>
+        <span style={{ padding: "0 6px", borderRadius: 999, border: `1px solid ${kirmizi}`, color: kirmizi }}>{acil}</span>
         <span style={{ padding: "0 5px 0 3px" }}>/ {n}</span>
       </span>
     );
@@ -55,7 +96,7 @@ export function SayiRozet({ n, acil = 0, bayat = false, etkin = false, kucuk = f
      toplam ipucunda ve aria-label'da. Gecikmiş yoksa toplam, nötr. */
   const acilVar = acil > 0;
   return (
-    <span aria-label={etiket} style={{ ...temel, ...boyut, color: acilVar ? "var(--ke-derin-kirmizi)" : etkin ? "var(--ke-sayfa-ink)" : PAL.ink2, background: kucuk ? PAL.bg : etkin ? "transparent" : PAL.surfHi, border: acilVar ? "1px solid var(--ke-derin-kirmizi)" : kucuk ? `1px solid ${PAL.lineHi}` : "none" }}>{acilVar && kucuk ? acil : n}</span>
+    <span aria-label={etiket} style={{ ...temel, ...boyut, color: acilVar ? kirmizi : etkin ? "var(--ke-sayfa-ink)" : PAL.ink2, background: kucuk ? (etkin ? "var(--ke-sayfa)" : PAL.bg) : etkin ? "transparent" : PAL.surfHi, border: acilVar ? `1px solid ${kirmizi}` : kucuk ? `1px solid ${PAL.lineHi}` : "none" }}>{acilVar && kucuk ? acil : n}</span>
   );
 }
 
@@ -124,14 +165,17 @@ export function DenemeKunye({ deneme = 0, toplam = 3 }) {
 }
 
 /* Bildirim fişi — zımbalı havale pusulası. Kâğıt yüzey (surfPop), sol kenar ton çizgisi, sol üstte
-   zımba izi, mono künye (saat · TON), kesikli ayraç, gövde. Eğik değil (ciddiyet kuralı). */
+   zımba teli, mono künye (saat · TON), kesikli ayraç, gövde. Eğik değil (ciddiyet kuralı). */
 const TON_RENK = { basari: BANT.yesil.c, bilgi: T, uyari: BANT.sari.c, hata: BANT.kirmizi.c };
 const TON_DERIN = { basari: DERIN.yesil, bilgi: DERIN.T, uyari: DERIN.sari, hata: DERIN.kirmizi };
 function ToastFisi({ metin, ton, saat, onKapat }) {
   const meta = TON_META[ton] || TON_META.bilgi;
   return (
     <div data-ke-toast={ton} style={{ position: "relative", width: "min(380px, calc(100vw - 32px))", boxSizing: "border-box", background: PAL.surfPop, color: PAL.ink, border: `1px solid ${PAL.lineHi}`, borderLeft: `3px solid ${TON_RENK[ton]}`, borderRadius: RAD.ctl, boxShadow: SH.modal, padding: "10px 12px 12px 14px", fontFamily: "inherit" }}>
-      <span aria-hidden="true" style={{ position: "absolute", left: 12, top: -4, width: 14, height: 7, borderRadius: 2, border: `1.5px solid ${PAL.mut3}`, borderBottom: "none", background: "transparent" }} />
+      {/* Zımba teli (tur 8): köşeli parantez 1x'te piksel artığı gibi okunuyordu. Gerçek zımba: kâğıdın
+          üst kenarını delip geçen İKİ kısa paralel tel — kenarın 2 px dışına taşar, metal ton (mut3). */}
+      <span aria-hidden="true" style={{ position: "absolute", left: 14, top: -2, width: 2, height: 9, borderRadius: 1, background: PAL.mut3 }} />
+      <span aria-hidden="true" style={{ position: "absolute", left: 20, top: -2, width: 2, height: 9, borderRadius: 1, background: PAL.mut3 }} />
       <div style={{ ...TYPE.antet, fontSize: 10, textTransform: "uppercase", color: TON_DERIN[ton], display: "flex", alignItems: "center", gap: SP.s }}>
         <span aria-hidden="true" style={{ display: "contents" }}><span style={TNUM}>{saat}</span><span>·</span><span>{meta.kunye}</span></span>
         <span aria-hidden="true" style={{ flex: 1 }} />

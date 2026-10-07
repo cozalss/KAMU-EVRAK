@@ -4,9 +4,10 @@
      konu → hüküm (risk bandı damgası) → yazının özü → muhatap / tür → mevzuat önerisi → künye.
    Risk YALNIZ bant etiketiyle söylenir (YEŞİL/SARI/KIRMIZI) — skor/yüzde YOK (CLAUDE.md §7).
    Mevzuat satırı "öneri"dir (RAG), doğrulanmış dayanak iddiası taşımaz. */
-import { Fragment } from "react";
-import { Damga, Icon, MONO, DISPLAY, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, focusRing } from "./neonUi.jsx";
+import { Fragment, useEffect, useState } from "react";
+import { Damga, Icon, MONO, DISPLAY, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, SR_ONLY, focusRing } from "./neonUi.jsx";
 import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR } from "../lib/evrakEtiket.js";
+import { tarihHukmu, bugunTarihi } from "../lib/gonderimTarihi.js";
 
 const dolu = (v) => v != null && String(v).trim() && v !== "—";
 
@@ -47,7 +48,61 @@ function GovdeUyarisi({ metin, onDuzenle }) {
   );
 }
 
-export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, govdeUyari = null, onDuzenle = null }) {
+/* GÖNDERİM KONTROLÜ (tur 8, ödül brifi hamle 7 — "havale fişi: kontrol et → paraf → gönder"):
+   yazının künyesi METNİN KENDİSİNDEN okunur (lib/gonderimHazirlik.taslakKunyesi — onay fişiyle
+   AYNI kaynak, aynı alanlar); bulunamayan alan boş halka + "metinde yok" der, uydurulmaz.
+   Bu bir adım-durumu türetmesi DEĞİLDİR (akisKatman'ın alanı değil): yazı metninin denetimi.
+   Fişin ortasındaki ölü boşluğu (jüri: 1920'de ~250px) karar verisiyle doldurur. */
+function KontrolSatiri({ etiket, deger, mono = false, hukum = null }) {
+  const var_ = dolu(deger);
+  // hukum: "tamam" | "eksik" | "farkli" — verilmezse doluluktan. Tarih satırı onay fişiyle AYNI
+  // yüklemi okur (lib/gonderimTarihi): bugünden farklı tarih ✓ SAYILMAZ (jüri tur 8, yüksek).
+  const durum = hukum || (var_ ? "tamam" : "eksik");
+  const tamam = durum === "tamam";
+  const not = durum === "farkli" ? `bugünden farklı · bugün ${bugunTarihi()}` : null;
+  return (
+    <li style={{ display: "grid", gridTemplateColumns: "16px 74px minmax(0, 1fr)", alignItems: "start", gap: SP.s, padding: "6px 0", borderTop: `1px dashed ${PAL.line}` }}>
+      <span aria-hidden="true" style={{ display: "grid", placeItems: "center", width: 14, height: 14, marginTop: 1, borderRadius: RAD.dot,
+        border: `1px solid ${tamam ? "transparent" : durum === "farkli" ? DERIN.sari : PAL.lineHi}`, background: tamam ? ALFA(BANT.yesil.c) : "transparent", color: DERIN.yesil }}>
+        {tamam && <Icon.check width={10} height={10} />}
+      </span>
+      <span style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", paddingTop: 1 }}>{etiket}</span>
+      {/* Değer 2 satıra kadar sarar (jüri: "BASIN, YAYIN VE H…" tek satırda kırpılıyordu); tamamı title'da. */}
+      <span title={var_ ? deger : "Metinde bulunamadı"} style={{ minWidth: 0, overflowWrap: "anywhere",
+        display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2, overflow: "hidden",
+        ...(mono && var_ ? { fontFamily: MONO, fontSize: 12, lineHeight: "16px", ...TNUM } : TYPE.meta), color: var_ ? PAL.ink2 : PAL.mut2, fontWeight: var_ && !mono ? 500 : 400 }}>
+        {var_ ? deger : "metinde yok"}
+        <span style={SR_ONLY}>{tamam ? " — var" : durum === "farkli" ? " — bugünden farklı" : ""}</span>
+      </span>
+      {not && <span style={{ gridColumn: "3", marginTop: -2, ...TYPE.meta, color: DERIN.sari }}>{not}</span>}
+    </li>
+  );
+}
+
+function GonderimKontrolu({ kunye }) {
+  if (!kunye) return null;
+  const satirlar = [
+    { k: "Muhatap", v: kunye.muhatap }, { k: "Konu", v: kunye.konu }, { k: "Sayı", v: kunye.sayi, mono: true },
+    { k: "Tarih", v: kunye.tarih, mono: true, hukum: tarihHukmu(kunye.tarih) },
+    { k: "Kapanış", v: [kunye.kapanis, kunye.imza].filter(Boolean).join(" — ") },
+  ];
+  const tamam = satirlar.filter((s) => (s.hukum ? s.hukum === "tamam" : dolu(s.v))).length;
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "baseline", marginBottom: 2 }}>
+        <BaslikEtiket>Gönderim kontrolü</BaslikEtiket>
+        <span style={{ marginLeft: "auto", ...TYPE.antet, ...TNUM, color: tamam === satirlar.length ? DERIN.yesil : PAL.mut2 }}>
+          {String(tamam).padStart(2, "0")} / {String(satirlar.length).padStart(2, "0")}
+        </span>
+      </div>
+      <ul aria-label="Gönderim kontrolü — yazının künyesi" style={{ margin: 0, padding: 0, listStyle: "none" }}>
+        {satirlar.map((s) => <KontrolSatiri key={s.k} etiket={s.k} deger={s.v} mono={s.mono} hukum={s.hukum} />)}
+      </ul>
+    </div>
+  );
+}
+
+export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, govdeUyari = null, onDuzenle = null, kunye: yaziKunyesi = null }) {
   const bant = BANT[r.risk_metadata?.bant] || null;
   const oz = ozCikar(govde);
   const mevzuat = (Array.isArray(r.mevzuat_onerileri) ? r.mevzuat_onerileri : [])
@@ -72,8 +127,7 @@ export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, 
           <BaslikEtiket>Konu</BaslikEtiket>
           {/* Konu başlığı ÖLÇÜLÜ (18px) ve 3 satırla kelepçeli — konu satırları paragraf
               uzunluğunda gelebiliyor; dev başlık paneli yutuyordu. Tam metin title'da. */}
-          <h2 title={ad} style={{ margin: 0, fontFamily: DISPLAY, fontSize: 18, lineHeight: "24px", fontWeight: 700, fontStretch: "104%", letterSpacing: "-.01em", color: PAL.ink,
-            display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 3, overflow: "hidden", overflowWrap: "anywhere" }}>{ad}</h2>
+          <KonuBasligi ad={ad} />
         </div>
 
         {govdeUyari && <GovdeUyarisi metin={govdeUyari} onDuzenle={onDuzenle} />}
@@ -88,11 +142,13 @@ export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, 
         {oz && (
           <div>
             <BaslikEtiket>Yazının özü</BaslikEtiket>
-            {/* 7 satır: künye sütun dibine oturduğundan özün altındaki boşluk okunur metne gider
-                (tur 6: 4 satırda fişin ortasında ~140px ölü alan kalıyordu). */}
-            <p title={oz} style={{ margin: 0, ...TYPE.data, color: PAL.ink2, display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 7, overflow: "hidden" }}>{oz}</p>
+            {/* 6 satır; altında gönderim kontrolü + künye gelir (tur 8: künye artık dibe
+                itilmez — özün altında ~250px ölü alan kalıyordu, 1920). */}
+            <p title={oz} style={{ margin: 0, ...TYPE.data, color: PAL.ink2, display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 6, overflow: "hidden" }}>{oz}</p>
           </div>
         )}
+
+        <GonderimKontrolu kunye={yaziKunyesi} />
 
         {mevzuat.length > 0 && (
           <div>
@@ -105,7 +161,7 @@ export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, 
           </div>
         )}
 
-        <dl style={{ margin: 0, marginTop: "auto", display: "grid", gridTemplateColumns: "auto minmax(0, 1fr)", columnGap: SP.m }}>
+        <dl style={{ margin: 0, display: "grid", gridTemplateColumns: "auto minmax(0, 1fr)", columnGap: SP.m }}>
           {kunye.map(([k, v, mono]) => (
             <Fragment key={k}>
               <dt style={{ ...TYPE.meta, color: PAL.mut3, padding: "6px 0", borderTop: `1px solid ${PAL.line}` }}>{k}</dt>
@@ -116,5 +172,26 @@ export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, 
         </dl>
       </div>
     </div>
+  );
+}
+
+/* Konu başlığı — 3 satır kelepçe; uzun konu "tümü" ile yerinde açılır (2. jüri: '…' ile kesik
+   konu tooltip'e saklanıyordu). Seçim değişince yeniden kapanır. */
+const KONU_ACILIR = 110;
+function KonuBasligi({ ad }) {
+  const [acik, setAcik] = useState(false);
+  useEffect(() => { setAcik(false); }, [ad]);
+  const uzun = String(ad || "").length > KONU_ACILIR;
+  return (
+    <>
+      <h2 id="kd-fis-konu" title={uzun && !acik ? ad : undefined} style={{ margin: 0, fontFamily: DISPLAY, fontSize: 18, lineHeight: "24px", fontWeight: 700, fontStretch: "104%", letterSpacing: "-.01em", color: PAL.ink,
+        overflowWrap: "anywhere", ...(acik ? null : { display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 3, overflow: "hidden" }) }}>{ad}</h2>
+      {uzun && (
+        <button type="button" onClick={() => setAcik((v) => !v)} aria-expanded={acik} aria-controls="kd-fis-konu" {...focusRing} data-press=""
+          style={{ marginTop: 4, padding: "2px 0", border: 0, background: "none", cursor: "pointer", fontFamily: MONO, fontSize: 11, letterSpacing: ".08em", textTransform: "uppercase", color: PAL.mut2, textDecoration: "underline dotted", textUnderlineOffset: 3 }}>
+          {acik ? "Kısalt" : "Konunun tümü"}
+        </button>
+      )}
+    </>
   );
 }

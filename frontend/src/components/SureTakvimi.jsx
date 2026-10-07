@@ -52,11 +52,20 @@ function AyOk({ yon, onClick, etiket }) {
   );
 }
 
-/* Mühür — sabit 34 px daire, hücrenin ortasında. Seçiliyken DOLAR. */
-function Muhur({ renk, kalin, gecikme, gun, dolu }) {
+/* Mühür halkası BİÇİMİ durumu da taşır (tur 8 jüri: "yalnız renk sinyali"): süresi doldu =
+   ÇİFT halka, yaklaşan = KESİKLİ halka, normal = tek ince halka. Lejant aynı biçimleri basar. */
+const HALKA = {
+  1: (c) => ({ border: `1.5px solid ${c}`, outline: "none" }),
+  2: (c) => ({ border: `2px dashed ${c}`, outline: "none" }),
+  3: (c) => ({ border: `2px solid ${c}`, outline: `1px solid ${c}`, outlineOffset: 1.5 }),
+};
+
+/* Mühür — sabit 34 px daire, hücrenin ortasında. Seçiliyken (ya da köprüden vurguluyken) DOLAR. */
+function Muhur({ renk, agirlik, gecikme, gun, dolu }) {
+  const cizgi = dolu ? DERIN_OF(renk) : renk;
   return (
     <span aria-hidden="true" style={{ position: "absolute", inset: 0, margin: "auto", width: MUHUR, height: MUHUR, borderRadius: RAD.dot, pointerEvents: "none",
-      border: `${kalin ? 2 : 1.5}px solid ${dolu ? DERIN_OF(renk) : renk}`, outline: `1px solid ${dolu ? DERIN_OF(renk) : renk}`, outlineOffset: 1.5,
+      ...(HALKA[agirlik] || HALKA[1])(cizgi),
       background: dolu ? DERIN_OF(renk) : ALFA(renk), "--pv-egim": `${egim(gun)}deg`, transform: `rotate(${egim(gun)}deg)`,
       WebkitMaskImage: MUREKKEP, maskImage: MUREKKEP, WebkitMaskSize: "80px 80px", maskSize: "80px 80px",
       transition: "background .16s ease", animation: `pv-bas .5s ${EASE.out} ${gecikme}ms both` }} />
@@ -64,7 +73,7 @@ function Muhur({ renk, kalin, gecikme, gun, dolu }) {
 }
 
 /* Gün hücresi. İşaretsiz gün <div>'dir (30 boş sekme durağı klavyeyi boğardı). */
-function GunHucre({ tarih, bugunMu, kayit, seciliMi, onSec, sira, yukseklik }) {
+function GunHucre({ tarih, bugunMu, kayit, seciliMi, onSec, sira, yukseklik, odak, onOdak }) {
   const gunNo = tarih.getDate();
   const kutu = { position: "relative", width: "100%", height: yukseklik, display: "flex", alignItems: "center", justifyContent: "center",
     borderRadius: RAD.ctl, ...TNUM };
@@ -78,21 +87,25 @@ function GunHucre({ tarih, bugunMu, kayit, seciliMi, onSec, sira, yukseklik }) {
   }
   const renk = AGIRLIK_RENK[kayit.agirlik];
   const n = kayit.ogeler.length;
+  /* Mürekkep köprüsü: defter satırı/cetvel iğnesi bu günün evrakını gösteriyorsa mühür dolar. */
+  const dolu = seciliMi || (!!odak && kayit.ogeler.some((x) => x.id === odak));
+  const kopruId = gunEnAcil(kayit.ogeler).enAcil?.id ?? null;
   return (
     <button type="button" onClick={(e) => { e.currentTarget.style.background = "transparent"; onSec(seciliMi ? null : gunAnahtar(tarih)); }} {...focusRing} data-press=""
       aria-pressed={seciliMi} title={`${gunNo} ${AY_ADI[tarih.getMonth()]}: ${n} evrakın son günü`}
       aria-label={`${gunNo} ${AY_ADI[tarih.getMonth()]} ${tarih.getFullYear()}, ${GUN_TAM[haftaGunu(tarih)]} — ${n} evrakın son günü. Listeyi ${seciliMi ? "kapat" : "göster"}.`}
-      onMouseEnter={(e) => { if (!seciliMi) e.currentTarget.style.background = PAL.hov; }}
-      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+      onFocus={() => onOdak?.(kopruId)} onBlur={() => onOdak?.(null)}
+      onMouseEnter={(e) => { if (!seciliMi) e.currentTarget.style.background = PAL.hov; onOdak?.(kopruId); }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; onOdak?.(null); }}
       style={{ ...kutu, cursor: "pointer", padding: 0, border: "none", background: "transparent",
-        color: seciliMi ? PAL.onAccent : bugunMu ? DERIN.T : DERIN_OF(renk), transition: GECIS }}>
-      <Muhur renk={renk} kalin={kayit.agirlik >= 3} gecikme={420 + sira * 80} gun={gunNo} dolu={seciliMi} />
+        color: dolu ? PAL.onAccent : bugunMu ? DERIN.T : DERIN_OF(renk), transition: GECIS }}>
+      <Muhur renk={renk} agirlik={kayit.agirlik} gecikme={420 + sira * 80} gun={gunNo} dolu={dolu} />
       {/* Archivo rakam; genişliği günün en sıkışık süresini kodlar (bol süre geniş, gecikmiş dar). */}
       <span style={{ position: "relative", fontFamily: DISPLAY, fontSize: 16, lineHeight: "18px", fontWeight: 800, letterSpacing: "-.01em",
         fontStretch: `${gunGenislik(kayit)}%`, textDecoration: bugunMu ? "underline" : "none", textUnderlineOffset: 3 }}>{gunNo}</span>
       {/* Nokta adedi = evrak sayısı (en çok 3) — sayının renkten bağımsız ikinci taşıyıcısı. */}
       <span aria-hidden="true" style={{ position: "absolute", bottom: `calc(50% - ${MUHUR / 2}px + 5px)`, display: "flex", gap: 2 }}>
-        {kayit.ogeler.slice(0, 3).map((x) => <span key={x.id} style={{ width: 3, height: 3, borderRadius: RAD.dot, background: seciliMi ? PAL.onAccent : ogeRenk(x) }} />)}
+        {kayit.ogeler.slice(0, 3).map((x) => <span key={x.id} style={{ width: 3, height: 3, borderRadius: RAD.dot, background: dolu ? PAL.onAccent : ogeRenk(x) }} />)}
       </span>
     </button>
   );
@@ -107,7 +120,8 @@ function Satir({ renk, sol, alt, ad, ek, kunye, onClick, etiket }) {
         {alt && <span style={{ fontSize: 10, lineHeight: "12px", color: PAL.mut3 }}>{alt}</span>}
       </span>
       <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, flexShrink: 0, background: renk }} />
-      <span style={{ ...TYPE.data, color: PAL.ink2, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+      {/* Tur 8 jüri: tek satır kesik ("Yaralı sokak köpeğinin tedavisi ve …") → en çok 2 satır. */}
+      <span title={ad} style={{ ...TYPE.data, color: PAL.ink2, flex: 1, minWidth: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", textWrap: "pretty" }}>
         {ad}{ek > 0 && <span style={{ color: PAL.mut3, ...TNUM }}> +{ek}</span>}
       </span>
       <span style={{ ...TYPE.meta, fontWeight: 600, flexShrink: 0, ...TNUM, color: DERIN_OF(renk) }}>{kunye}</span>
@@ -197,13 +211,17 @@ function TakvimBaslik({ ay, buAy, bugun, fark, ayIsaretN, gunN, ozet, onGit, onD
         <span style={{ whiteSpace: "nowrap" }}>SÜRE TAKVİMİ</span>
         <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line, minWidth: 8 }} />
         <span style={{ display: "inline-flex", alignItems: "center", gap: SP.s, marginLeft: "auto" }}>
+          {/* Tur 8: bu aydayken belirgin pasif (opaklık .45, not-allowed); kesikli çerçeve "boş
+              yer" anlamında kullanıldığından kaldırıldı. Yerini tutar → başlık zıplamaz. */}
           <button type="button" onClick={() => onGit(buAy)} disabled={buAyda} {...focusRing} data-press="" data-dokunma=""
             aria-label={buAyda ? "Bu ay görüntüleniyor" : `Bu aya dön — ${AY_ADI[buAy.getMonth()]} ${buAy.getFullYear()}`}
             onMouseEnter={(e) => { if (!buAyda) e.currentTarget.style.background = PAL.hov; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = buAyda ? "transparent" : PAL.surf; }}
-            style={{ cursor: buAyda ? "default" : "pointer", height: 30, padding: "0 10px", background: buAyda ? "transparent" : PAL.surf,
-              border: buAyda ? `1px dashed ${PAL.lineHi}` : `1px solid ${PAL.line}`,
-              borderRadius: RAD.ctl, ...TYPE.meta, fontWeight: 600, color: buAyda ? PAL.mut3 : DERIN.T, whiteSpace: "nowrap", transition: GECIS }}>
+            aria-hidden={buAyda || undefined} tabIndex={buAyda ? -1 : undefined}
+            /* Tur 8 jüri: pasif hâl gri hayalet gibiydi → bu aydayken GİZLİ ama yer tutar (başlık zıplamaz). */
+            style={{ visibility: buAyda ? "hidden" : "visible", cursor: "pointer", height: 30, padding: "0 10px", background: PAL.surf,
+              border: `1px solid ${PAL.line}`,
+              borderRadius: RAD.ctl, ...TYPE.meta, fontWeight: 600, color: buAyda ? PAL.mut2 : DERIN.T, whiteSpace: "nowrap", transition: GECIS }}>
             Bugün
           </button>
           <AyOk yon="sol" onClick={() => onDegis(-1)} etiket="Önceki ay" />
@@ -233,17 +251,22 @@ function TakvimBaslik({ ay, buAy, bugun, fark, ayIsaretN, gunN, ozet, onGit, onD
 }
 
 function Lejant({ bugunGorunur, dar }) {
+  /* Tur 8 jüri: dört kalem tek satıra sığmıyordu → "Bugün" lejanttan çıktı (dolgulu gün
+     hücresi + başlıktaki "BUGÜN gg.aa.yyyy" çapası onu zaten söyler). Telefonda 2×2 korunur. */
   const kalemler = [
-    ...(bugunGorunur ? [["Bugün", null]] : []),
-    ["Normal", BANT.yesil.c], ["Yaklaşan", BANT.sari.c], ["Süresi doldu", BANT.kirmizi.c],
+    ...(bugunGorunur && dar ? [["Bugün", null]] : []),
+    ["Normal", BANT.yesil.c, 1], ["Yaklaşan", BANT.sari.c, 2], ["Süresi doldu", BANT.kirmizi.c, 3],
   ];
   return (
     <div style={{ display: dar && kalemler.length > 3 ? "grid" : "flex", gridTemplateColumns: "repeat(2, max-content)", flexWrap: "wrap", gap: `${SP.xs}px ${SP.m}px`,
       justifyContent: "center", marginTop: SP.m }}>
-      {kalemler.map(([l, c]) => (
+      {kalemler.map(([l, c, a]) => (
         <span key={l} style={{ display: "inline-flex", alignItems: "center", gap: 5, ...TYPE.meta, color: PAL.mut2 }}>
           {c
-            ? <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: RAD.dot, border: `1.5px solid ${c}`, outline: `1px solid ${c}`, outlineOffset: 1, background: ALFA(c) }} />
+            /* Tur 8 jüri: takvimdeki mühür lejanttakinden ağır görünüyordu → lejant AYNI mühür
+               biçimini (HALKA + ALFA dolgu) takvimdekinin yarı ölçeğinde basar. */
+            ? <span aria-hidden="true" style={dar ? { width: 11, height: 11, borderRadius: RAD.dot, background: ALFA(c), ...HALKA[a](c), outlineOffset: 1 }
+              : { width: MUHUR / 2, height: MUHUR / 2, boxSizing: "border-box", borderRadius: RAD.dot, background: ALFA(c), ...HALKA[a](c) }} />
             : <span aria-hidden="true" style={{ width: 9, height: 9, borderRadius: 2, background: DERIN.T }} />}
           {l}
         </span>
@@ -252,25 +275,58 @@ function Lejant({ bugunGorunur, dar }) {
   );
 }
 
+/* Devreden gecikmiş — görünen aydan ÖNCEKİ aylarda son günü geçmiş evrak (tur 8 jüri: en
+   acil bilgi açık ay görünümünde hiç görünmüyordu). Izgaranın başında tek satır taşma işareti;
+   tıklayınca o aya gider. Veri `kuyrukSla.sla.durum`'dan, yerel türetme yok. */
+function devredenGecikmis(isaret, ay) {
+  let n = 0, ilk = null;
+  for (const k of isaret.values()) {
+    if (k.tarih >= ay) continue;
+    const g = k.ogeler.filter((x) => x.sla?.durum === "GECIKMIS").length;
+    if (g > 0) { n += g; if (!ilk || k.tarih < ilk) ilk = k.tarih; }
+  }
+  return n ? { n, ilk } : null;
+}
+
+function DevredenIsaret({ d, onGit }) {
+  if (!d) return null;
+  const ay = AY_ADI[d.ilk.getMonth()];
+  return (
+    <button type="button" onClick={() => onGit(d.ilk)} {...focusRing} data-press=""
+      aria-label={`Önceki aylardan devreden ${d.n} gecikmiş evrak — ${ay} ayına git`}
+      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+      style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer", margin: `0 0 ${SP.xs}px -6px`, padding: "3px 6px",
+        background: "transparent", border: "none", borderRadius: RAD.ctl, ...TYPE.antet, fontSize: 10, color: DERIN.kirmizi, ...TNUM, transition: GECIS }}>
+      <span aria-hidden="true">←</span>
+      <Icon.alert width={12} height={12} aria-hidden="true" />
+      {ay.toLocaleUpperCase("tr")}: {d.n} GECİKMİŞ DEVREDİYOR
+    </button>
+  );
+}
+
 /* Ay ızgarası — hafta sonu sütunları tek hafif şerit (hücre başına kutu değil). */
-function AyIzgarasi({ hucreler, isaret, bugunKey, secili, onSec, siraHarita, dar }) {
+function AyIzgarasi({ hucreler, isaret, bugunKey, secili, onSec, siraHarita, dar, odak, onOdak, etiketId }) {
   const yukseklik = 44;                       // telefonda da 44 px dokunma hedefi
   const aralik = dar ? 2 : IZGARA_ARALIK;      // 390'da 4 px aralık hücreyi 43 px'e düşürüyordu
   return (
     <div style={{ position: "relative" }}>
-      <span aria-hidden="true" style={{ position: "absolute", top: 0, bottom: 0, borderRadius: RAD.ctl, background: PAL.surf2,
-        left: `calc((100% - ${6 * aralik}px) * 5 / 7 + ${5 * aralik - 2}px)`, right: -2 }} />
+      {/* Tur 8 jüri: hafta sonu şeridi ayrı kutu gibiydi → masaüstünde kartın sağ kenarına
+          kadar uzanır (kenar boşluğunu da kapsar), yalnız sol köşeler yuvarlak. */}
+      <span aria-hidden="true" style={{ position: "absolute", top: 0, bottom: 0, background: PAL.surf2,
+        borderRadius: dar ? RAD.ctl : `${RAD.ctl}px 0 0 ${RAD.ctl}px`,
+        left: `calc((100% - ${6 * aralik}px) * 5 / 7 + ${5 * aralik - 2}px)`, right: dar ? -2 : -SP.l }} />
       <div aria-hidden="true" style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", columnGap: aralik }}>
         {GUN_KISA.map((g, i) => (
           <span key={g} style={{ textAlign: "center", ...TYPE.antet, fontSize: 10, color: i >= 5 ? PAL.mut3 : PAL.mut2, padding: "6px 0 4px" }}>{g}</span>
         ))}
       </div>
-      <div style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: aralik }}>
+      <div id="sure-takvim-panel" role="tabpanel" aria-labelledby={etiketId} style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: aralik }}>
         {hucreler.map((d, i) => (
           d ? (
             <GunHucre key={gunAnahtar(d)} tarih={d} bugunMu={gunAnahtar(d) === bugunKey} yukseklik={yukseklik}
               kayit={isaret.get(gunAnahtar(d))} seciliMi={secili === gunAnahtar(d)} onSec={onSec}
-              sira={siraHarita.get(gunAnahtar(d)) ?? 0} />
+              sira={siraHarita.get(gunAnahtar(d)) ?? 0} odak={odak} onOdak={onOdak} />
           ) : <span key={`bos-${i}`} aria-hidden="true" style={{ height: yukseklik }} />
         ))}
       </div>
@@ -278,7 +334,7 @@ function AyIzgarasi({ hucreler, isaret, bugunKey, secili, onSec, siraHarita, dar
   );
 }
 
-export default function SureTakvimi({ kuyrukSla = [] }) {
+export default function SureTakvimi({ kuyrukSla = [], odak = null, onOdak = null }) {
   const dar = useDarEkran();
   const bugun = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }, []);
   const buAy = useMemo(() => new Date(bugun.getFullYear(), bugun.getMonth(), 1), [bugun]);
@@ -293,6 +349,7 @@ export default function SureTakvimi({ kuyrukSla = [] }) {
   const ayIsaretN = useMemo(() => isaretliGunler.reduce((t, g) => t + g.ogeler.length, 0), [isaretliGunler]);
   const siraHarita = useMemo(() => new Map(isaretliGunler.map((g, i) => [g.anahtar, i])), [isaretliGunler]);
   const fark = ayFark(ay, buAy);
+  const devreden = useMemo(() => devredenGecikmis(isaret, ay), [isaret, ay]);
 
   const seciliKayit = secili ? isaret.get(secili) : null;
   const ayaGit = (d) => { setSecimAy(new Date(d.getFullYear(), d.getMonth(), 1)); setSecili(null); };
@@ -304,12 +361,20 @@ export default function SureTakvimi({ kuyrukSla = [] }) {
       <TakvimBaslik ay={ay} buAy={buAy} bugun={bugun} fark={fark} ayIsaretN={ayIsaretN} gunN={isaretliGunler.length}
         ozet={ozet} onGit={ayaGit} onDegis={ayDegis} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: `${SP.m}px ${SP.l}px ${SP.l}px` }}>
-        <AyIzgarasi hucreler={hucreler} isaret={isaret} bugunKey={gunAnahtar(bugun)} secili={secili} onSec={setSecili} siraHarita={siraHarita} dar={dar} />
+        <DevredenIsaret d={devreden} onGit={ayaGit} />
+        <AyIzgarasi hucreler={hucreler} isaret={isaret} bugunKey={gunAnahtar(bugun)} secili={secili} onSec={setSecili} siraHarita={siraHarita} dar={dar}
+          odak={odak} onOdak={onOdak} etiketId={`sure-sekme-${ay.getFullYear()}-${ay.getMonth()}`} />
         <Lejant bugunGorunur={fark === 0} dar={dar} />
-        <div style={{ marginTop: SP.m }}>
+        <div style={{ marginTop: SP.m, flex: 1, display: "flex", flexDirection: "column" }}>
           {isaretliGunler.length || seciliKayit
             ? <GunPaneli isaretliGunler={isaretliGunler} seciliKayit={seciliKayit} onSec={setSecili} ayAdi={AY_ADI[ay.getMonth()]} />
             : <BosAy ay={ay} ozet={ozet} isaret={isaret} onGit={ayaGit} />}
+          {/* Kart kahramana esnerken kalan boşluk ölü kalmaz: tabanda kuyruğun takvim künyesi. */}
+          <p aria-hidden="true" style={{ margin: `auto 0 0`, paddingTop: SP.m, borderTop: `1px dashed ${PAL.lineHi}`, display: "flex", justifyContent: "space-between", gap: SP.s,
+            ...TYPE.antet, fontSize: 10, color: PAL.mut3, ...TNUM }}>
+            <span>TAKVİMDE {[...isaret.values()].reduce((t, k) => t + k.ogeler.length, 0)} EVRAK</span>
+            <span>{ozet.size} AY</span>
+          </p>
         </div>
       </div>
     </section>

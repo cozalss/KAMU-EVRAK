@@ -5,13 +5,13 @@
    çizgisi → sahne → form kâğıdı. MotionConfig reducedMotion="user" hepsini söndürür.
    Backend auth API'sine useAuth ile bağlanır (mantık değişmedi).
    a11y: <form> + <label> + autoComplete + :focus-visible halkası + aria-live hata + aria-pressed tab. */
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MotionConfig, AnimatePresence, motion } from "motion/react";
 import { PAL, T, MONO, SANS, DISPLAY, TYPE, TNUM, RAD, SP, SH, DERIN, ALFA, BANT, EASE_BEZIER, Btn, Icon, focusRing, NEON_KEYFRAMES, MarkaKaro } from "./neonUi.jsx";
 import { birimleriGetir } from "../lib/authApi.js";
 import { useAuth } from "../lib/useAuth.jsx";
 import AuthMasa, { GRAIN } from "./AuthMasa.jsx";
-import { LOGOTYPE } from "./kabukAtomlari.jsx";
+import { Logotype as MarkaYazi } from "./kabukAtomlari.jsx";
 import { ScrollText } from "lucide-react";
 
 const bugun = () => new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
@@ -26,42 +26,14 @@ const KAGIT = { gizli: { opacity: 0, x: 28, rotate: 0.6 }, acik: { opacity: 1, x
 
 const VAAT = ["Evrak gelir.", "Ajan okur.", "Memur imzalar."];
 
-/* Logotype — Exat dersi: imlece yakın harfler Archivo'nun GENİŞLİK ekseninde daralır, uzaklaşınca
-   geri açılır (dalga). Yalnız pointer:fine + hareket azaltılmamışsa; dokunmatikte statik.
-   Harf merkezleri dinlenme hâlinde ölçülüp önbelleğe alınır (her karede ölçmek, genişlik
-   değiştikçe kendi kendini besleyen titreşim yapardı). rAF ile kare başına tek yazım. */
-const LOGO = LOGOTYPE;   // tek yazım (kabukAtomlari) — rayda "KAMU·EVRAK", burada "KAMU-EVRAK" idi
+/* Logotype — tek atom (kabukAtomlari.Logotype, tur 8): girişten panele geçince marka yazısı
+   genişlik/aralık değiştiriyordu (15 px · %125 · .06em ↔ 14 px · %112 · .02em). Girişte yalnız
+   imleç dalgası (dalga) açıktır; ölçüler kabukla bit-aynı. */
 function Logotype() {
-  const ref = useRef(null);
-  useEffect(() => {
-    const kok = ref.current;
-    if (!kok || !window.matchMedia?.("(pointer: fine)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
-    const harfler = [...kok.querySelectorAll("[data-harf]")];
-    let merkez = [], raf = 0, px = -1e4, py = -1e4;
-    const olc = () => { merkez = harfler.map((h) => { const r = h.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }); };
-    const ciz = () => {
-      raf = 0;
-      harfler.forEach((h, n) => {
-        const k = Math.max(0, 1 - Math.hypot(px - merkez[n][0], py - merkez[n][1]) / 90);
-        h.style.fontStretch = `${125 - 50 * k * k * (3 - 2 * k)}%`;
-      });
-    };
-    const hareket = (e) => { px = e.clientX; py = e.clientY; if (!raf) raf = requestAnimationFrame(ciz); };
-    const zaman = setTimeout(olc, 900);   // giriş koreografisi oturduktan sonra ölç
-    document.fonts?.ready.then(olc);
-    window.addEventListener("pointermove", hareket, { passive: true });
-    window.addEventListener("resize", olc);
-    return () => { clearTimeout(zaman); cancelAnimationFrame(raf); window.removeEventListener("pointermove", hareket); window.removeEventListener("resize", olc); };
-  }, []);
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: SP.m, flexShrink: 0 }}>
-      <MarkaKaro size={34} nokta={false} />
-      <span ref={ref} aria-label={LOGO} role="img" style={{ display: "inline-flex", alignItems: "baseline", gap: 5, whiteSpace: "nowrap", flexShrink: 0 }}>
-        <span aria-hidden="true" style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 15, lineHeight: "18px", letterSpacing: ".06em", color: PAL.ink }}>
-          {[...LOGO].map((h, n) => <span key={n} data-harf="" style={{ fontStretch: "125%", transition: "font-stretch .35s var(--ke-ease-out)" }}>{h}</span>)}
-        </span>
-        <span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: RAD.dot, background: "var(--ke-r)", flexShrink: 0 }} />
-      </span>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: SP.s, flexShrink: 0 }}>
+      <MarkaKaro size={36} nokta={false} />
+      <MarkaYazi dalga />
     </span>
   );
 }
@@ -135,7 +107,7 @@ function Vaat() {
    adını ve büyük-harf uyarısını girdinin erişilebilir adına katıyordu ("Parola Parolayı göster"). */
 function Field({ label, no, id, children, ek }) {
   return (
-    <motion.div variants={YUKSEL} style={{ marginBottom: SP.l }}>
+    <motion.div variants={YUKSEL} data-alan="" style={{ marginBottom: SP.l }}>
       <label htmlFor={id} style={{ display: "flex", alignItems: "baseline", gap: SP.s, ...TYPE.data, fontWeight: 600, color: PAL.ink2, marginBottom: 6 }}>
         {no && <span aria-hidden="true" style={{ fontFamily: MONO, fontSize: 11, fontWeight: 500, letterSpacing: ".04em", color: PAL.mut3, ...TNUM }}>{no}</span>}
         <span>{label}</span>
@@ -215,7 +187,7 @@ function ModeTabs({ mode, onChange }) {
   );
 }
 
-const ALAN_ID = { ad: "ke-f-ad", eposta: "ke-f-eposta", parola: "ke-f-parola", ikisi: "ke-f-eposta" };
+const ALAN_ID = { ad: "ke-f-ad", eposta: "ke-f-eposta", parola: "ke-f-parola", birim: "ke-f-birim" };
 const sureYaz = (sn) => `${Math.floor(sn / 60)}:${String(sn % 60).padStart(2, "0")}`;
 
 /* Hata notu — iki ton: kimlik/doğrulama hatası (kırmızı: ne oldu, ne yapmalı) ve hız sınırı
@@ -263,10 +235,10 @@ export default function AuthPage({ tema, onTemaDegistir }) {
   const [birimler, setBirimler] = useState([]);
   const [hata, setHata] = useState("");
   // Alan düzeyinde kesinlik (tur 6, jüri): boş alan ön denetimi YALNIZ o alanı işaretler; 401/422
-  // sunucu yanıtı kimliği birlikte reddeder → ikisi. null = işaretli alan yok.
-  const [hataliAlan, setHataliAlan] = useState(null);   // "ad" | "eposta" | "parola" | "ikisi" | null
+  // sunucu kimlik reddi yalnız parolayı işaretler (tur 8). null = işaretli alan yok.
+  const [hataliAlan, setHataliAlan] = useState(null);   // "ad" | "eposta" | "birim" | "parola" | null
   // Hata notunun YERİ (tur 6 düzeltme): alana bağlı hata o alanın hemen altında durur ("Parolamı
-  // unuttum"un altında, alandan kopuk duruyordu). Kimlik reddi (ikisi) parola altında; hız
+  // unuttum"un altında, alandan kopuk duruyordu). Kimlik reddi parola altında; hız
   // sınırı / ağ hatası formun genel yerinde. Alan düzeltilince işaret kalkar, not yerinde kalır.
   const [hataYer, setHataYer] = useState("genel");
   const [kilitSn, setKilitSn] = useState(0);            // hız sınırı geri sayımı (sn)
@@ -278,13 +250,18 @@ export default function AuthPage({ tema, onTemaDegistir }) {
   const set = (k) => (v) => { setForm((f) => ({ ...f, [k]: v })); if (hataliAlan) setHataliAlan(null); };
   const changeMode = (id) => { setMode(id); setHata(""); setHataliAlan(null); setSifreNot(false); };
   const kilitli = kilitSn > 0;
-  const hatali = (alan) => hataliAlan === alan || (hataliAlan === "ikisi" && (alan === "eposta" || alan === "parola"));
+  const hatali = (alan) => hataliAlan === alan;
   const hataSlot = (yer) => (
     <AnimatePresence initial={false}>
       {hata && (kilitli ? yer === "genel" : hataYer === yer) && <HataNotu key={kilitli ? "kilit" : "hata"} metin={hata} kilit={kilitli} alanAlti={yer !== "genel"} />}
     </AnimatePresence>
   );
-  const odakla = (alan) => requestAnimationFrame(() => document.getElementById(ALAN_ID[alan])?.focus());
+  // Parola odaklanınca içeriği SEÇİLİR: kimlik reddinde memur yalnız parolayı yeniden yazar (tur 8).
+  const odakla = (alan) => requestAnimationFrame(() => {
+    const el = document.getElementById(ALAN_ID[alan]);
+    el?.focus();
+    if (alan === "parola") el?.select?.();
+  });
 
   // 429 geri sayımı — saniyede bir; sıfırlanınca hata notu da kalkar (artık geçerli değil).
   useEffect(() => {
@@ -305,7 +282,6 @@ export default function AuthPage({ tema, onTemaDegistir }) {
   useEffect(() => {
     birimleriGetir().then((b) => {
       setBirimler(b);
-      setForm((f) => (f.birim_kod ? f : { ...f, birim_kod: b[0]?.kod || "" }));
     }).catch(() => setBirimler([]));
   }, []);
 
@@ -314,8 +290,12 @@ export default function AuthPage({ tema, onTemaDegistir }) {
     if (kilitli) return;
     setHata(""); setHataliAlan(null);
     // İstemci ön denetimi: boş alan için sunucuya gidilip giriş hakkı (5/dk) yakılmaz.
-    const eksik = kayit && !form.ad_soyad.trim() ? ["ad", "Ad soyad"] : !form.eposta.trim() ? ["eposta", "E-posta"] : !form.parola ? ["parola", "Parola"] : null;
-    if (eksik) { setHata(`${eksik[1]} alanı boş bırakılamaz.`); setHataliAlan(eksik[0]); setHataYer(eksik[0]); salla(); odakla(eksik[0]); return; }
+    // Birim kayıtta SEÇİLMEDEN geçmez (tur 8: ilk birim ön-seçili geliyordu → yanlış birime hesap).
+    const eksik = kayit && !form.ad_soyad.trim() ? ["ad", "Ad soyad alanı boş bırakılamaz."]
+      : !form.eposta.trim() ? ["eposta", "E-posta alanı boş bırakılamaz."]
+        : kayit && !form.birim_kod ? ["birim", "Çalıştığınız birimi seçin."]
+          : !form.parola ? ["parola", "Parola alanı boş bırakılamaz."] : null;
+    if (eksik) { setHata(eksik[1]); setHataliAlan(eksik[0]); setHataYer(eksik[0]); salla(); odakla(eksik[0]); return; }
     setBusy(true);
     try {
       if (kayit) {
@@ -331,7 +311,9 @@ export default function AuthPage({ tema, onTemaDegistir }) {
       setHata(err.message || "Bir hata oluştu.");
       const kimlik = err.status === 401 || err.status === 422;
       setHataYer(kimlik ? "parola" : "genel");
-      if (kimlik) { setHataliAlan("ikisi"); odakla("ikisi"); }
+      // Kimlik reddi (tur 8): dikkat TEK yerde — not parolanın altında, yalnız parola işaretli, odak
+      // parolada ve içeriği seçili. E-posta kırmızısı memuru iki alanı birden düzeltmeye itiyordu.
+      if (kimlik) { setHataliAlan("parola"); odakla("parola"); }
       if (err.status === 429) setKilitSn(err.tekrarSaniye || 60);
       salla();
       setBusy(false);
@@ -367,13 +349,13 @@ export default function AuthPage({ tema, onTemaDegistir }) {
           </div>
 
           <motion.div variants={YUKSEL} className="ke-auth-sahne">
-            <AuthMasa />
+            <AuthMasa dondur={!!hata} />
           </motion.div>
         </section>
 
         {/* Sağ — form kâğıdı. */}
         <main className="ke-auth-sag">
-          <motion.div variants={KAGIT} className="ke-form-kagit">
+          <motion.div variants={KAGIT} className="ke-form-kagit" data-kayit={kayit ? "" : undefined}>
             <motion.div variants={AKIS} ref={kagitRef}>
               <div aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, display: "flex", justifyContent: "space-between", gap: SP.m, textTransform: "uppercase" }}>
                 <span>Form KE-01 · {kayit ? "Hesap kaydı" : "Oturum açma"}</span>
@@ -407,10 +389,12 @@ export default function AuthPage({ tema, onTemaDegistir }) {
                 </Field>
                 {kayit && (
                   <>
-                    <Field label="Birim" no="03" id="ke-f-birim">
+                    <Field label="Birim" no="03" id="ke-f-birim" ek={hataSlot("birim")}>
                       <span style={{ position: "relative", display: "block" }}>
-                        <select id="ke-f-birim" className="ke-girdi" value={form.birim_kod} onChange={(e) => set("birim_kod")(e.target.value)} required style={{ appearance: "none", WebkitAppearance: "none", paddingRight: 40, cursor: "pointer" }}>
-                          {birimler.length === 0 && <option value="">Yükleniyor…</option>}
+                        <select id="ke-f-birim" className="ke-girdi" value={form.birim_kod} onChange={(e) => set("birim_kod")(e.target.value)} required
+                          aria-invalid={hatali("birim") || undefined} aria-describedby={hatali("birim") ? "ke-auth-hata" : undefined}
+                          data-bos={form.birim_kod ? undefined : ""} style={{ appearance: "none", WebkitAppearance: "none", paddingRight: 40, cursor: "pointer" }}>
+                          <option value="" disabled>{birimler.length === 0 ? "Birimler yükleniyor…" : "Birim seçin"}</option>
                           {birimler.map((b) => <option key={b.kod} value={b.kod} style={{ background: PAL.surf }}>{b.ad}</option>)}
                         </select>
                         <span aria-hidden="true" style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%) rotate(90deg)", display: "flex", color: PAL.mut2, pointerEvents: "none" }}><Icon.okSag /></span>
@@ -421,7 +405,7 @@ export default function AuthPage({ tema, onTemaDegistir }) {
                     </Field>
                   </>
                 )}
-                <ParolaField label="Parola" no={kayit ? "05" : "02"} hatali={hatali("parola")} describedBy={hatali("parola") ? "ke-auth-hata" : undefined} hataEk={hataSlot("parola")} value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} placeholder={kayit ? "En az 8 karakter" : "••••••••"} />
+                <ParolaField label="Parola" no={kayit ? "05" : "02"} hatali={hatali("parola")} describedBy={hatali("parola") ? "ke-auth-hata" : undefined} hataEk={hataSlot("parola")} value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} placeholder={kayit ? "En az 8 karakter" : "Parolanız"} />
 
                 {!kayit && (
                   <div style={{ marginTop: -SP.l, marginBottom: SP.m, textAlign: "right" }}>
@@ -492,6 +476,8 @@ const AUTH_CSS = `
   background:${PAL.surf}; border:1px solid ${PAL.inputLine}; color:${PAL.ink}; font:400 16px/24px ${SANS}; outline:none;
   transition:border-color .15s ease, box-shadow .2s ease, background .15s ease; }
 .ke-girdi::placeholder{ color:${PAL.mut3}; opacity:1; }
+.ke-girdi[data-bos]{ color:${PAL.mut3}; }
+.ke-girdi option{ color:${PAL.ink}; }
 .ke-girdi:hover{ border-color:color-mix(in srgb, ${PAL.ink} 45%, transparent); }
 .ke-girdi[aria-invalid="true"]{ border-color:${BANT.kirmizi.c}; }
 /* Odak: yumuşak 4 px parıltı (üçüncü bir odak dili) kaldırıldı — girdi odağı küresel tek kaynaktan
@@ -515,35 +501,57 @@ const AUTH_CSS = `
   .ke-vaat{ font-size:56px; font-stretch:108%; }
   .ke-form-kagit{ padding:32px 32px 24px; }
 }
+/* Masaüstü (tur 8, jüri gerilemesi + 1920 kompozisyonu): TEK 12 sütunlu ızgara. .ke-auth-sol
+   display:contents → logo satırı, vaat bloğu ve sahne kökün ızgara öğeleri olur:
+     satır 1 · antet: logo — tam genişlik çizgi — künye — tema düğmesi (TEK satır)
+     satır 2 · vaat (1–8: başlık + yanında paragraf, paragrafın sağı kâğıdın sağına hizalı)
+     satır 3 · sahne (1–8: evrak fişi + A4 kâğıt)
+     form kâğıdı 9–12, satır 2'den başlar → ÜSTÜ vaat başlığının üstüyle aynı hizada SABİT.
+   Form artık dikey ORTALANMAZ: hata notu / kilit / Kayıt sekmesi kartı yukarı zıplatmıyor, aşağı
+   büyüyor. Sahne kâğıdı tam A4 (maske yok) — yalnız çok kısa pencerede alttan solar. */
 @media(min-width:1100px){
-  .ke-auth-root{ height:calc(100vh / var(--z)); min-height:640px; grid-template-columns:minmax(0,1fr) 500px;
-    grid-template-rows:auto minmax(0,1fr); grid-template-areas:"sol ust" "sol sag"; padding:0; row-gap:0; overflow:hidden; }
-  .ke-auth-sol{ padding:32px 0 0 48px; gap:clamp(20px, 3.4vh, 36px); overflow:hidden; }
-  .ke-auth-ust{ position:relative; top:auto; right:auto; padding:28px 48px 0 40px; }
-  .ke-auth-logo-satir{ padding-right:0; }
-  .ke-auth-sag{ align-items:center; padding:0 48px 40px 40px; }
-  .ke-auth-sahne{ display:block; flex:1; min-height:0; position:relative; padding-right:48px;
-    -webkit-mask-image:linear-gradient(to bottom, black 78%, transparent); mask-image:linear-gradient(to bottom, black 78%, transparent); }
+  .ke-auth-root{ height:calc(100vh / var(--z)); min-height:640px; grid-template-columns:repeat(12,minmax(0,1fr));
+    grid-template-rows:auto auto minmax(0,1fr); grid-template-areas:none; column-gap:32px; row-gap:0;
+    padding:28px 48px 0; overflow:hidden; }
+  .ke-auth-sol{ display:contents; }
+  .ke-auth-logo-satir{ grid-column:1 / -1; grid-row:1; padding-right:168px; min-height:36px; }
+  .ke-auth-ust{ grid-column:9 / -1; grid-row:1; position:relative; top:auto; right:auto; padding:0; justify-self:end; align-self:center; }
+  .ke-auth-vaat-blok{ grid-column:1 / 9; grid-row:2; margin-top:clamp(20px, 3.4vh, 36px); flex-direction:row; align-items:flex-end;
+    justify-content:space-between; gap:32px; flex-wrap:nowrap; min-width:0; }
+  .ke-vaat{ font-size:clamp(52px, 4.4vw, 84px); font-stretch:112%; line-height:.94; flex-shrink:0; }
+  .ke-auth-alt{ flex:0 1 280px; min-width:200px; max-width:280px!important; padding-bottom:6px; margin-right:0!important; }
+  .ke-auth-sahne{ display:block; grid-column:1 / 9; grid-row:3; min-height:0; position:relative; margin-top:clamp(20px, 3.4vh, 36px); }
+  .ke-auth-sag{ grid-column:9 / -1; grid-row:2 / 4; align-items:flex-start; justify-content:flex-end; min-height:0;
+    margin-top:clamp(20px, 3.4vh, 36px); padding:0 0 32px; overflow-y:auto; overflow-x:visible; scrollbar-width:none; }
   .ke-antet-tarih{ display:inline; }
-  .ke-auth-vaat-blok{ flex-direction:row; align-items:flex-end; justify-content:space-between; gap:32px; flex-wrap:wrap; }
-  .ke-vaat{ font-size:clamp(54px, 5vw, 92px); font-stretch:112%; line-height:.94; }
-  /* Paragrafın SAĞ kenarı kâğıdın sağ kenarına hizalanır (sahnenin 48 px sağ dolgusu kadar içeri) —
-     1440'ta başlıkla kâğıt arasında havada asılı duruyordu (jüri). */
-  .ke-auth-alt{ max-width:280px!important; padding-bottom:6px; margin-right:48px!important; }
   .ke-form-kagit{ padding:36px 36px 28px; }
 }
+/* Sahne içi: defter + kâğıt. Defter sütunu kâğıtla AYNI yükseklikte biter (sayılar kâğıdın alt
+   kenarına oturur) — 1920'de sayıların altında kalan ~380 px ölü köşe kapanır. */
+@media(min-width:1380px){
+  .ke-masa{ grid-template-columns:minmax(0,1fr) 380px!important; column-gap:32px!important; justify-content:stretch!important; }
+  .ke-masa-defter{ min-height:560px; justify-content:space-between; }
+}
 @media(min-width:1100px) and (max-width:1379px){ .ke-masa{ grid-template-columns:minmax(0,1fr)!important; } .ke-masa-defter{ display:none!important; } }
-/* Geniş ekran (tur 4, jüri A#27/C#23): kompozisyon 1680 px'te durur ve ortalanır — 1920'de
-   fiş, sayılar ve açıklama birbirinden ~400 px uzaklaşıp "dağılıyordu". Bu genişlikte vaat
-   başlığı da sabitlenir; açıklama paragrafının SAĞ kenarı kâğıdın sağ kenarına hizalanır
-   (sahnenin 48 px sağ dolgusu kadar içeri) — paragraf havada değil, kâğıda bağlı okunur. */
+/* Kısa pencere: A4 sığmıyorsa kâğıt alttan zemine solar (keskin kesik yerine). */
+@media(min-width:1100px) and (max-height:879px){
+  .ke-auth-sahne{ -webkit-mask-image:linear-gradient(to bottom, black 82%, transparent); mask-image:linear-gradient(to bottom, black 82%, transparent); }
+}
+/* Kayıt formu kısa masaüstü penceresinde (≤ 940 px) sıkılaşır: beş alan + not katlanmadan sığar. */
+@media(min-width:1100px) and (max-height:940px){
+  .ke-form-kagit[data-kayit]{ padding:28px 36px 20px; }
+  .ke-form-kagit[data-kayit] .ke-girdi{ height:42px; }
+  .ke-form-kagit[data-kayit] [data-alan]{ margin-bottom:12px!important; }
+}
+/* Geniş ekran: kompozisyon 1680 px'te durur ve ortalanır; 12 sütun aynı kalır (form 9–12, sahne
+   1–8 → fiş ve kâğıt 5:3). Zemin + lif html/body'den gelir (kök kendi zeminini boyarsa ortalanmış
+   kutunun iki yanında ayrı tonda şerit kalıyordu). */
 @media(min-width:1700px){
-  /* Zemin + lif html/body'den gelir (THEME_CSS): kök kendi zeminini boyarsa ortalanmış kutunun
-     iki yanında ayrı tonda şerit kalıyordu. */
   .ke-auth-root{ max-width:1680px; margin:0 auto; background:transparent; }
   .ke-auth-lif{ display:none; }
   .ke-vaat{ font-size:84px; }
-  .ke-auth-alt{ max-width:320px!important; margin-right:48px!important; }
+  .ke-auth-alt{ flex-basis:320px; max-width:320px!important; }
+  .ke-masa{ grid-template-columns:minmax(0,5fr) minmax(0,3fr)!important; }
 }
 @media(min-width:1100px) and (max-height:760px){ .ke-auth-alt{ display:none; } }
 @media(min-width:2100px){ .ke-auth-root{ --z:1.15; zoom:1.15 } }

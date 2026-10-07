@@ -8,7 +8,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SAMPLE_DOCS } from "./lib/sampleDocs.js";
-import { kabukSayaclari, kaynakDurumu } from "./lib/kabukSicil.js";
+import { kabukSayaclari, kaynakDurumu, slaKaynakDurumu } from "./lib/kabukSicil.js";
 
 async function slaGetir() {
   const r = await fetch("/sla/onizleme", {
@@ -24,7 +24,7 @@ async function slaGetir() {
 export function useSlaOnizleme(sentSampleIds) {
   const slaQ = useQuery({ queryKey: ["sla-onizleme"], queryFn: slaGetir });
   const slaMap = useMemo(
-    () => (slaQ.data ? Object.fromEntries((slaQ.data.sonuclar || []).map((x) => [x.id, x.sla_metadata])) : null),
+    () => (Array.isArray(slaQ.data?.sonuclar) ? Object.fromEntries(slaQ.data.sonuclar.map((x) => [x.id, x.sla_metadata])) : null),
     [slaQ.data]);
   const kuyrukSla = useMemo(() => (slaMap
     ? SAMPLE_DOCS.filter((s) => !sentSampleIds.has(s.id))
@@ -36,9 +36,12 @@ export function useSlaOnizleme(sentSampleIds) {
 
 /** Rozet + sicil sayaçları; kaynak sorguları (islemlerQ/gidenQ/slaQ) durumlarıyla birlikte. */
 export function useKabukSayac({ inboxCount, draftCount, gidenCount, kuyrukSla, history, outbox, islemlerQ, gidenQ, slaQ }) {
-  const ki = kaynakDurumu(islemlerQ), kg = kaynakDurumu(gidenQ), ks = kaynakDurumu(slaQ);
-  return useMemo(() => kabukSayaclari({
-    gelen: inboxCount, taslak: draftCount, giden: gidenCount, kuyrukSla, history, outbox,
+  const ki = kaynakDurumu(islemlerQ), kg = kaynakDurumu(gidenQ), ks = slaKaynakDurumu(slaQ);
+  return useMemo(() => ({
+    ...kabukSayaclari({
+      gelen: inboxCount, taslak: draftCount, giden: gidenCount, kuyrukSla, history, outbox,
+      kaynak: { islemler: ki, giden: kg, sla: ks },
+    }),
     kaynak: { islemler: ki, giden: kg, sla: ks },
   }), [inboxCount, draftCount, gidenCount, kuyrukSla, history, outbox, ki, kg, ks]);
 }

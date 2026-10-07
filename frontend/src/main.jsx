@@ -74,8 +74,8 @@ function useTema() {
 }
 
 /* Tema geçişi "masa lambası" (tur 6, jüri: tek karede sert kesme, tasarlanmamış geçiş). Yeni tema,
-   onu açan anahtarın konumundan yayılan bir daire olarak gelir (View Transition clip-path,
-   420 ms EASE.out; CSS styles/kamu-evrak.css "ke-lamba"). koken: anahtar öğesi ya da {x,y};
+   onu açan anahtarın konumundan yayılan yumuşak kenarlı bir ışık halesi olarak gelir (tur 8: View
+   Transition radial mask, 520 ms in-out; CSS styles/kamu-evrak.css "ke-lamba"). koken: anahtar öğesi ya da {x,y};
    yoksa ekran ortası. Destek yoksa / hareket azaltılmışsa anında. */
 function kokenNoktasi(koken) {
   if (koken && Number.isFinite(koken.x) && Number.isFinite(koken.y)) return koken;

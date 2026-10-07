@@ -1192,7 +1192,10 @@ h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); }
 /* Dosya sırtı (etkin ray/alt şerit öğesi) — kutu halkası sırtı birleşme noktasında kesiyordu (jüri).
    Etkin öğede halka ÇİZİLMEZ; odak iki sinyalle verilir: sırt çizgisi kalınlaşır (3 → 5 px) ve
    etiketin altı tükenmez mavisiyle çizilir (antet altı çizgisi). Sırt sayfaya açık kalır. */
-[data-ray] [aria-current="page"]:focus-visible { box-shadow: none !important; text-decoration: underline 2px var(--ke-sayfa-t); text-underline-offset: 5px; }
+[data-ray] [aria-current="page"]:focus-visible { box-shadow: none !important; }
+/* Tur 8: alt çizgi YALNIZ etiket metninde — düğmeye verilince rozetin altına da uzanıyor, kırmızı
+   gecikmiş dairesi çizgiye biniyordu. */
+[data-ray] [aria-current="page"]:focus-visible [data-ray-etiket] { text-decoration: underline 2px var(--ke-sayfa-t); text-underline-offset: 5px; }
 [data-sirt-cizgi] { transition: width .14s var(--ke-ease-out); }
 [aria-current="page"]:focus-visible [data-sirt-cizgi] { width: 5px !important; }
 
@@ -2057,5 +2060,16 @@ a.rc-mev-baslik:hover { color: var(--accent); text-decoration: underline; }
    kökle birlikte TEK katman olarak kalır — yoksa başlık ayrı bir çapraz-erimeyle titrerdi. */
 html[data-tema-gecis] * { view-transition-name: none !important; }
 html[data-tema-gecis]::view-transition-old(root) { animation: none; }
-html[data-tema-gecis]::view-transition-new(root) { animation: ke-lamba .42s var(--ke-ease-out) both; }
-@keyframes ke-lamba { from { clip-path: circle(0 at var(--ke-lamba-x, 50%) var(--ke-lamba-y, 50%)); } to { clip-path: circle(var(--ke-lamba-r, 150vmax) at var(--ke-lamba-x, 50%) var(--ke-lamba-y, 50%)); } }
+/* Tur 8 (jüri: sert kenarlı clip-path dairesi 170. ms'de ekranın %95'ini çeviriyordu — lamba değil
+   flaş): yumuşak kenarlı IŞIK HALESİ. Maske radial-gradient; dolu yarıçap (--ke-lamba-yc, @property
+   ile animasyonlanır) arkasında 96 px'lik yumuşak kenar taşır. Eğri in-out, 520 ms: ışık anahtardan
+   yavaş kalkar, masaya yayılır, yavaşça oturur. Maske yalnız alfa okur → renk değeri önemsiz
+   (currentColor = opak). @property desteklenmeyen tarayıcıda yarıçap animasyonlanmaz → sonuç anında
+   yeni tema (bozulmaz). */
+@property --ke-lamba-yc { syntax: "<length>"; inherits: false; initial-value: 0px; }
+html[data-tema-gecis]::view-transition-new(root) {
+  -webkit-mask-image: radial-gradient(circle at var(--ke-lamba-x, 50%) var(--ke-lamba-y, 50%), currentColor var(--ke-lamba-yc), transparent calc(var(--ke-lamba-yc) + 96px));
+  mask-image: radial-gradient(circle at var(--ke-lamba-x, 50%) var(--ke-lamba-y, 50%), currentColor var(--ke-lamba-yc), transparent calc(var(--ke-lamba-yc) + 96px));
+  animation: ke-lamba .52s var(--ke-ease-in-out) both;
+}
+@keyframes ke-lamba { from { --ke-lamba-yc: -96px; } to { --ke-lamba-yc: var(--ke-lamba-r, 150vmax); } }

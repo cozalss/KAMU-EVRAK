@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { riskAdi, baslikCase, ortaElips, islenenSicilNolari, yinelemeDerkenari, defterZamani } from "./defterSozluk.js";
 import { katla, jetonlar, eslesir, defterAra, vurguParcalari } from "./defterArama.js";
-import { trTarih, vadeOlcusu, gunOlcegi, agirCeyrekEsigi, haftaCentikleri } from "./defterVade.js";
+import { trTarih, vadeOlcusu, gunOlcegi, agirCeyrekEsigi, haftaCentikleri, goreliVade, zamanEkseni, eksenX } from "./defterVade.js";
 
 test("risk tek sözlükten — satırda insan dili, kod değil", () => {
   assert.equal(riskAdi("sari"), "Orta");
@@ -105,4 +105,20 @@ test("ağır çeyrek eşiği — tint yalnız en ağır %25'e", () => {
   assert.equal(agirCeyrekEsigi([5]), 5);
   assert.equal(agirCeyrekEsigi([]), Infinity);
   assert.deepEqual(haftaCentikleri(15), [7, 14]);
+});
+
+test("goreliVade: son = kalan_gun, bas = son − süre", () => {
+  assert.deepEqual(goreliVade({ baslangic: "01.07.2026", son_tarih: "16.07.2026", kalan_gun: -10 }), { bas: -25, son: -10 });
+  assert.equal(goreliVade(null), null);
+});
+
+test("zamanEkseni: bugün (0) her zaman eksende; tek ölçek", () => {
+  const e = zamanEkseni([{ bas: -25, son: -10 }, { bas: 5, son: 35 }, null], 300);
+  assert.equal(e.lo, -25);
+  assert.equal(e.hi, 35);
+  assert.equal(e.k, 5);
+  assert.equal(e.bugunX, 125);
+  assert.equal(eksenX(e, 35), 300);
+  assert.equal(zamanEkseni([null], 300), null);
+  assert.equal(zamanEkseni([{ bas: 3, son: 9 }], 90).lo, 0);
 });

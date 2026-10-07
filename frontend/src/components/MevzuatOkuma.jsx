@@ -11,6 +11,7 @@ import { createPortal } from "react-dom";
 import { Icon, Btn, Damga, MONO, DISPLAY, T, V, R, PAL, DERIN, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, SR_ONLY, focusRing, odakDongusu } from "./neonUi.jsx";
 import { kunyeCoz, kaynakNotuCoz, NITELIK, notTemizle } from "../lib/mevzuatKunye.js";
 import { dogrulaParcala, vurguParcala } from "../lib/mevzuatVurgu.js";
+import MevzuatMarj from "./MevzuatMarj.jsx";
 
 /* Ham mevzuat metni → bloklar: künye-sonrası giriş notu + "Madde N — ..." blokları.
    Backend chunker (_MADDE_HEADER_RE) ile aynı önek dili — "Ek Madde 1" / "Geçici Madde 2"
@@ -164,19 +165,21 @@ function KunyeSatiri({ kunye, metin, yer }) {
   );
 }
 
-/* Künye-sonrası kaynak notu. Telefonda KATLI gelir: 390px'te 20+ satırlık not ilk maddeyi
-   ikinci ekrana itiyordu; özü (nitelik + yürürlük) zaten başlıktaki şerit/çipte. Masaüstünde
-   açık, özet satırı gizli (native <details>: klavye + ekran okuyucu hazır). */
-const telefonMu = () => typeof window !== "undefined" && window.matchMedia?.("(max-width: 820px)").matches;
+/* Künye-sonrası kaynak notu — her genişlikte KATLI gelir (native <details>: klavye + ekran
+   okuyucu hazır); özü (nitelik + yürürlük + kaynak) zaten başlıktaki künye şeridinde. */
 function KaynakNotu({ govde }) {
-  const [acik] = useState(() => !telefonMu());
+  // Etiket durumu yansıtır (tur 8: not açıkken "göster" yazıyordu). details/summary yerel
+  // aria-expanded taşır; onToggle yalnız etiketi senkronlar.
+  // Tur 8 jüri: masaüstünde de varsayılan KATLI — açık not ilk ekranın ~1/3'ünü kaplayıp
+  // madde metnini katın altına itiyordu. Özet satırı nitelik + kaynağı tek satırda söyler.
+  const [acik, setAcik] = useState(false);
   const ps = paragraflar(govde);
   return (
     <aside className="mo-satir" aria-label="Kaynak notu" style={{ marginBottom: SP.xxl }}>
       <div className="mo-kenar" aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, paddingTop: 3 }}>KAYNAK<br className="mo-kenar-br" /> NOTU</div>
-      <details open={acik} className="mo-not" style={{ borderLeft: `1px solid ${PAL.line}`, paddingLeft: SP.l, maxWidth: OLCU }}>
-        <summary className="mo-not-ozet" {...focusRing} style={{ cursor: "pointer", ...TYPE.data, color: DERIN.T, fontWeight: 600, borderRadius: RAD.chip, padding: "6px 0", minHeight: 44, display: "flex", alignItems: "center" }}>
-          Kaynak notunu göster · {ps.length} paragraf
+      <details open={acik} onToggle={(e) => setAcik(e.currentTarget.open)} className="mo-not" style={{ borderLeft: `1px solid ${PAL.line}`, paddingLeft: SP.l, maxWidth: OLCU }}>
+        <summary className="mo-not-ozet" {...focusRing} style={{ cursor: "pointer", ...TYPE.data, color: DERIN.T, fontWeight: 600, borderRadius: RAD.chip, padding: "6px 0", minHeight: 36, display: "flex", alignItems: "center", gap: SP.xs }}>
+          {acik ? "Kaynak notunu gizle" : `Kaynak notunu göster · ${ps.length} paragraf`}
         </summary>
         {ps.map((p, i) => <p key={i} style={{ margin: `0 0 ${SP.s}px`, ...TYPE.data, color: PAL.mut2, overflowWrap: "anywhere", textWrap: "pretty" }}>{notTemizle(p)}</p>)}
       </details>
@@ -246,7 +249,7 @@ function MaddeDizini({ maddeler, aktif, onGit, vurguKimlik }) {
                 <span style={{ fontFamily: MONO, fontSize: 12, minWidth: 30, color: k === vurguKimlik ? DERIN.V : secili ? DERIN.T : PAL.mut3, ...TNUM, flexShrink: 0 }}>
                   {b.tur === "ek" ? "E" : b.tur === "gecici" ? "G" : "m"}.{b.no}
                 </span>
-                <span className="mo-dizin-ad" style={{ ...TYPE.meta, fontWeight: secili ? 600 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{kenarBasligi(b) || "—"}</span>
+                <span className="mo-dizin-ad" title={kenarBasligi(b) || undefined} style={{ ...TYPE.meta, fontWeight: secili ? 600 : 500, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", textWrap: "pretty" }}>{kenarBasligi(b) || "—"}</span>
               </button>
             </li>
           );
@@ -280,6 +283,13 @@ const OKUMA_CSS = `
 .mo-kagit{width:min(960px,100%);height:min(92vh,1000px);border-radius:${RAD.pop}px}
 .mo-kunye-tel{display:none!important}
 .mo-govde{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:0;flex:1}
+.mo-marj{display:none}
+/* ≥1600 (tur 8): kâğıt 1240'a açılır, sağ marjda okunan maddenin atıf fişi (MevzuatMarj). */
+@media (min-width:1600px){
+  .mo-kagit{width:min(1240px,100%)}
+  .mo-govde{grid-template-columns:240px minmax(0,1fr) 264px}
+  .mo-marj{display:block;border-left:1px solid var(--ke-line);padding:${SP.xl}px ${SP.l}px;overflow-y:auto;overscroll-behavior:contain}
+}
 .mo-dizin{border-right:1px solid var(--ke-line);padding:${SP.xl}px ${SP.s}px;overflow-y:auto;overscroll-behavior:contain}
 .mo-satir{display:grid;grid-template-columns:76px minmax(0,1fr);column-gap:${SP.xl}px}
 .mo-metin{padding:${SP.xxl}px clamp(16px,4vw,56px) ${SP.xxxl}px clamp(8px,2vw,24px)}
@@ -299,13 +309,11 @@ const OKUMA_CSS = `
   .mo-ilerleme{animation:mo-ilerle linear both;animation-timeline:--mo-oku}
 }}
 @keyframes mo-ilerle{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-.mo-not-ozet{display:none}
 .mo-not>summary{list-style:none}
 .mo-not>summary::-webkit-details-marker{display:none}
 @media (max-width:820px){
   .mo-dizin-ipucu{display:none!important}
-  .mo-not-ozet{display:block}
-  .mo-not[open] .mo-not-ozet{display:none}
+  .mo-not-ozet{min-height:44px!important}
   .mo-kenar-br{display:none}
   .mo-serit-govde{display:none}
   .mo-kok{padding:0}
@@ -451,6 +459,9 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", sorgu = "", onC
   const maddeler = useMemo(() => bloklar.filter((b) => b.no !== null), [bloklar]);
   const aktif = useOkumaIzleyici(kapRef, cizgiRef, maddeEl, bloklar);
   const vurguKimlik = maddeNo != null ? `${maddeTur}-${maddeNo}` : null;
+  const aktifSira = Math.max(0, maddeler.findIndex((b) => blokKimlik(b) === aktif));
+  const aktifBlok = maddeler[aktifSira] || null;
+  const mevcutKimlik = useMemo(() => new Set(maddeler.map(blokKimlik)), [maddeler]);
 
   // Hedef maddeye kaydır. rAF: içerik cache'liyken bloklar ilk render'da hazır olur ama modal
   // scroll konteyneri henüz layout almadan scrollIntoView boşa gider → bir tick ertele.
@@ -535,6 +546,7 @@ export function OkumaModal({ dosya, maddeNo, maddeTur = "madde", sorgu = "", onC
               </div>
             )}
           </div>
+          {hazir && <MevzuatMarj icerik={icerik} blok={aktifBlok} sira={aktifSira + 1} toplam={maddeler.length} mevcut={mevcutKimlik} onGit={git} />}
         </div>
       </div>
     </div>,

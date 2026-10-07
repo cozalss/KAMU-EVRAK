@@ -39,7 +39,12 @@ export function useIslemDurumu() {
   const getiriliyor = useIsFetching({ queryKey: ["islemler"] });
   const durumlar = qc.getQueryCache().findAll({ queryKey: ["islemler"] }).map((q) => q.state);
   const veriVar = durumlar.some((d) => d.data !== undefined);
+  // Yeniden deneme sayısı (react-query fetchFailureCount): kuyruk başlığı "yükleniyor" yerine
+  // insan dilinde "bağlantı yeniden deneniyor (2/4)" der — jüri tur 8: 500 hatasında 6 sn
+  // boyunca dilsiz iskelet duruyordu.
+  const deneme = durumlar.reduce((m, d) => Math.max(m, d.fetchFailureCount || 0), 0);
   return {
+    deneme,
     yukleniyor: !veriVar && getiriliyor > 0,
     hata: !veriVar && getiriliyor === 0 && durumlar.some((d) => d.status === "error"),
     yeniden: () => qc.refetchQueries({ queryKey: ["islemler"] }),

@@ -127,3 +127,11 @@ test("notTemizle: İngilizce jargon, iç not ve ham URL ekrana düşmez", () => 
   assert.ok(!/mirror|İstekteki|\?Mevzuat/u.test(t), t);
   assert.ok(t.includes("yansısı") && t.includes("mevzuat.gov.tr"));
 });
+
+test("notTemizle: iç geliştirici atfı (CLAUDE.md) kaynak notuna sızmaz", () => {
+  const a = notTemizle("Metin mevzuat.gov.tr resmî kaynağından çapraz doğrulanmıştır (CLAUDE.md §1). Bu metin yakın-lafzîdir.");
+  assert.ok(!/CLAUDE/u.test(a), a);
+  assert.ok(a.includes("doğrulanmıştır.") && a.includes("Bu metin yakın-lafzîdir."), a);
+  const b = notTemizle("> CLAUDE.md §1: madde no'ları çıktıda doğrulanır. Kalan cümle.");
+  assert.ok(!/CLAUDE/u.test(b) && b.includes("Kalan cümle."), b);
+});

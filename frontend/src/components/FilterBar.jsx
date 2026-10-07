@@ -25,6 +25,9 @@ const FLT_CSS = `
 [data-flt-ara]::-webkit-search-cancel-button,[data-flt-ara]::-webkit-search-decoration{-webkit-appearance:none;appearance:none}
 [data-flt-tarih]{position:relative}
 [data-flt-tarih] input::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:auto;height:auto;opacity:0;cursor:pointer}
+[data-flt-tarih] input::-webkit-datetime-edit-fields-wrapper{padding:0}
+[data-flt-tarih] input[data-bos]::-webkit-datetime-edit{color:var(--ke-mut3)}
+[data-flt-tarih] input::-webkit-datetime-edit-text{color:var(--ke-mut3);padding:0 1px}
 [data-flt-cip]:hover:not([aria-pressed="true"]),[data-flt-dugme]:hover:not([aria-expanded="true"]){background:var(--ke-hov)!important}
 `;
 
@@ -115,7 +118,7 @@ function TarihKutusu({ id, etiket, value, onChange }) {
   return (
     <span data-flt-tarih="" style={{ flex: "1 1 0", minWidth: 128, maxWidth: 170, display: "flex" }}>
       <label htmlFor={id} style={SR_ONLY}>{etiket}</label>
-      <input id={id} type="date" value={value} onChange={onChange} {...focusRing}
+      <input id={id} type="date" value={value} onChange={onChange} data-bos={value ? undefined : ""} {...focusRing}
         style={{ ...inputBase, ...TYPE.data, width: "100%", padding: "0 34px 0 10px", fontFamily: MONO, fontSize: 12, ...TNUM }} />
       <span aria-hidden="true" style={{ position: "absolute", right: 10, top: 0, bottom: 0, display: "flex", alignItems: "center", color: PAL.mut2, pointerEvents: "none" }}><CalendarDays size={15} strokeWidth={1.75} /></span>
     </span>
@@ -155,13 +158,27 @@ function FilterDatePresets({ filter }) {
   );
 }
 
-function ActiveState({ config, filter }) {
-  if (!filter.hasActiveFilters) return null;
+/* Etkin filtre şeridi — YALNIZ ekranda görünmeyen ölçütler (tur 8 jüri: arama yazınca şerit
+   beliriyor, defteri 41 px itiyordu; aramanın kendisi kutuda zaten görünür). Masaüstünde
+   görünür kontrollerin (arama, satır içi çipler, açık panel, `gizli` ama başka yerde çizilen
+   kontrol) şeridi yoktur; hepsi görünürse şerit HİÇ basılmaz, "Temizle" sayaç yanında kalır.
+   Telefonda kontroller panelde katlı → şerit eskisi gibi tam. Sonuç 0 iken şeritteki "Tüm
+   filtreleri temizle" basılmaz: boş defter kendi tek temizle eylemini taşır (yinelenen eylem). */
+function etkinPiller(config, filter, gorunen) {
   const pills = [];
-  if (filter.filters.search.trim()) pills.push({ key: "search", label: `“${filter.filters.search.trim()}”`, clear: () => filter.setSearch("") });
-  for (const [cid, set] of Object.entries(filter.filters.chips)) for (const v of set) pills.push({ key: `${cid}:${v}`, label: optionLabel(config, cid, v), clear: () => filter.toggleChip(cid, v) });
-  for (const [sid, v] of Object.entries(filter.filters.select)) if (v) pills.push({ key: `${sid}:${v}`, label: optionLabel(config, sid, v), clear: () => filter.setSelect(sid, "") });
-  if (filter.filters.dateFrom != null || filter.filters.dateTo != null) pills.push({ key: "date", label: `${trTarihi(filter.filters.dateFrom)} – ${trTarihi(filter.filters.dateTo)}`, clear: () => filter.setDateRange(null, null) });
+  const gor = (id) => gorunen.has(id);
+  if (filter.filters.search.trim() && !gor("search")) pills.push({ key: "search", label: `“${filter.filters.search.trim()}”`, clear: () => filter.setSearch("") });
+  for (const [cid, set] of Object.entries(filter.filters.chips)) if (!gor(cid)) for (const v of set) pills.push({ key: `${cid}:${v}`, label: optionLabel(config, cid, v), clear: () => filter.toggleChip(cid, v) });
+  for (const [sid, v] of Object.entries(filter.filters.select)) if (v && !gor(sid)) pills.push({ key: `${sid}:${v}`, label: optionLabel(config, sid, v), clear: () => filter.setSelect(sid, "") });
+  if ((filter.filters.dateFrom != null || filter.filters.dateTo != null) && !gor("date")) pills.push({ key: "date", label: `${trTarihi(filter.filters.dateFrom)} – ${trTarihi(filter.filters.dateTo)}`, clear: () => filter.setDateRange(null, null) });
+  return pills;
+}
+
+function ActiveState({ config, filter, gorunen = new Set() }) {
+  if (!filter.hasActiveFilters) return null;
+  const pills = etkinPiller(config, filter, gorunen);
+  if (!pills.length) return null;
+  const sonucYok = filter.counts?.filtered === 0;
   return (
     <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", paddingTop: SP.s, borderTop: `1px dashed ${PAL.line}` }}>
       <span aria-hidden="true" style={kunyeEtiket}>Etkin</span>
@@ -172,11 +189,15 @@ function ActiveState({ config, filter }) {
             style={{ background: "none", border: "none", color: DERIN.T, cursor: "pointer", padding: 6, margin: "-6px -2px", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: RAD.chip }}><Icon.x width={12} height={12} /></button>
         </span>
       ))}
-      <button type="button" onClick={filter.clearAll} {...focusRing}
-        style={{ ...TYPE.data, color: PAL.mut2, background: "none", border: "none", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3, padding: "4px 6px", margin: "-4px -6px" }}>Tüm filtreleri temizle</button>
+      {!sonucYok && <TemizleBag filter={filter}>Tüm filtreleri temizle</TemizleBag>}
     </div>
   );
 }
+
+const TemizleBag = ({ filter, children }) => (
+  <button type="button" onClick={filter.clearAll} {...focusRing}
+    style={{ ...TYPE.data, color: PAL.mut2, background: "none", border: "none", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3, padding: "4px 6px", margin: "-4px -6px", whiteSpace: "nowrap" }}>{children}</button>
+);
 
 /* "Filtreler" açılır düğmesi — disclosure (aria-expanded), onay işareti DEĞİL chevron + etkin
    ölçüt sayısı rozeti (geçiş çipi sözcüğü disclosure'a yanlış anlam veriyordu). */
@@ -196,10 +217,15 @@ function FiltreDugmesi({ acik, onClick, sayi, panelId }) {
   );
 }
 
-const Sayac = ({ filter }) => (
-  <span role="status" aria-live="polite" aria-atomic="true" style={{ marginLeft: "auto", display: "inline-flex", alignItems: "baseline", gap: 6, fontFamily: MONO, fontSize: 12, color: PAL.mut2, whiteSpace: "nowrap", flexShrink: 0, ...TNUM }}>
-    <strong style={{ color: PAL.ink, fontWeight: 600, fontSize: 13 }}>{filter.counts.filtered}</strong>
-    <span>/ {filter.counts.total} kayıt</span>
+/* Sayaç + (masaüstü) satır içi "Temizle": görünür ölçütler şeritsiz kaldığında tek temizleme
+   yolu burada — satır yüksekliği değişmez. Sonuç 0 iken boş defterin eylemi yeterli. */
+const Sayac = ({ filter, temizle = false }) => (
+  <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "baseline", gap: SP.m, flexShrink: 0 }}>
+    {temizle && filter.hasActiveFilters && filter.counts.filtered > 0 && <TemizleBag filter={filter}>Temizle</TemizleBag>}
+    <span role="status" aria-live="polite" aria-atomic="true" style={{ display: "inline-flex", alignItems: "baseline", gap: 6, fontFamily: MONO, fontSize: 12, color: PAL.mut2, whiteSpace: "nowrap", ...TNUM }}>
+      <strong style={{ color: PAL.ink, fontWeight: 600, fontSize: 13 }}>{filter.counts.filtered}</strong>
+      <span>/ {filter.counts.total} kayıt</span>
+    </span>
   </span>
 );
 
@@ -269,6 +295,12 @@ export default function FilterBar({ config, filter, compact = false, showResultC
   const panelChips = katli ? chips.filter((g) => !inlineChips.includes(g)) : [];
   const panelIcerik = katli ? [...(dar ? [sirala] : []), ...secimler, ...panelChips.map(cip), ...tarih].filter(Boolean) : [];
   const panelId = "flt-panel";
+  // Ekranda görünen kontroller — bunların ölçütü etkin şeritte tekrar basılmaz (yalnız masaüstü).
+  const gorunen = dar ? new Set() : new Set([
+    ...(config.search?.enabled ? ["search"] : []), ...gizli,
+    ...(katli ? inlineChips.map((g) => g.id) : chips.map((g) => g.id)),
+    ...(!katli || acik ? [...(config.select || []).map((x) => x.id), ...(katli ? panelChips.map((g) => g.id) : []), ...(tarih.length ? ["date"] : [])] : []),
+  ]);
   return (
     <section role="region" aria-labelledby="flt-h" style={{ marginBottom: compact ? SP.m : SP.l, display: "flex", flexDirection: "column", gap: SP.m }}>
       <style>{FLT_CSS}</style>
@@ -282,17 +314,17 @@ export default function FilterBar({ config, filter, compact = false, showResultC
           <FiltreDugmesi acik={acik} onClick={() => setAcik((a) => !a)} panelId={panelId}
             sayi={etkinOlcutSayisi(filter, [...inlineChips.map((g) => g.id), ...gizli])} />
         )}
-        {katli && showResultCount && <Sayac filter={filter} />}
+        {katli && showResultCount && <Sayac filter={filter} temizle={!dar} />}
       </div>
       {katli && acik && panelIcerik.length > 0 && <Panel id={panelId}>{panelIcerik}</Panel>}
       {!katli && (chips.length > 0 || tarih.length > 0 || showResultCount) && (
         <div style={{ display: "flex", alignItems: "center", gap: `${SP.s}px ${SP.xl}px`, flexWrap: "wrap" }}>
           {chips.map(cip)}
           {tarih}
-          {showResultCount && <Sayac filter={filter} />}
+          {showResultCount && <Sayac filter={filter} temizle={!dar} />}
         </div>
       )}
-      <ActiveState config={config} filter={filter} />
+      <ActiveState config={config} filter={filter} gorunen={gorunen} />
     </section>
   );
 }

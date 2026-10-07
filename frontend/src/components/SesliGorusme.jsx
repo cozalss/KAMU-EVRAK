@@ -25,6 +25,7 @@ import {
 import { PAL, SP, EASE_BEZIER, TYPE, SR_ONLY } from "./neonUi.jsx";
 import {
   DURUM_ETIKET, MASA_GENISLIK, MASA_ORB, MASA_SAHNE, TELEFON_ORB, TELEFON_DOK, TELEFON_SAHNE,
+  SUTUN_DOK, SUTUN_ORB, SUTUN_SAHNE,
   DurumKunyesi, SesliOrbDugme, SesliKontroller,
 } from "./SesliSahne.jsx";
 
@@ -140,7 +141,8 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     });
     if (orbRef.current) {
       orbRef.current.style.transform = `scale(${kare.scale.toFixed(4)})`;
-      orbRef.current.style.clipPath = kare.clipPath;
+      // clipPath (dalgalı blob kenarı) bilinçli olarak YAZILMAZ: mühür diski düz daire kalır,
+      // ses mührün basıncı (scale) + halkalarla görünür (tur 8, SesliOrb başlığı).
     }
     if (haloRef.current) haloRef.current.style.opacity = kare.haloOpacity.toFixed(3);
     if (parlaRef.current) parlaRef.current.style.opacity = kare.parlaklik.toFixed(3);
@@ -682,6 +684,7 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
   }, [dinle]);
 
   const konusuyor = durum === DURUM.KONUSUYOR;
+  const sutun = !!konum?.sutun;   // ≥1280: danışma sütununun yerine geçer (ChatbotWidget)
   const dusunuyor = durum === DURUM.DUSUNUYOR;
 
   return (
@@ -702,15 +705,15 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
             // Masaüstünde SAĞ-alt köşe (tur 7): sol çapada disk, Gelen/İşlenen satırlarının ilk
             // sütununu (kayıt no) örtüyordu. Sağ kenar boşluğu satır sonundaki eylem alanına denk
             // gelir; konum yalnız "masaüstü mü" + alt hiza için okunur.
-            ...(konum ? { right: SP.xl, bottom: Math.max(SP.l, konum.bottom), width: MASA_GENISLIK } : TELEFON_DOK),
+            ...(sutun ? SUTUN_DOK : konum ? { right: SP.xl, bottom: Math.max(SP.l, konum.bottom), width: MASA_GENISLIK } : TELEFON_DOK),
             transformOrigin: konum ? "bottom right" : "bottom center" }}>
           <div ref={dialogRef} tabIndex={-1} role="dialog" aria-label="Sesli görüşme" onKeyDown={(e) => { if (e.key === "Escape") kapat(); }}
-            style={konum ? MASA_SAHNE : TELEFON_SAHNE}>
+            style={sutun ? SUTUN_SAHNE : konum ? MASA_SAHNE : TELEFON_SAHNE}>
             <div aria-live="polite" style={SR_ONLY}>{DURUM_ETIKET[durum]}</div>
             {!konum && <SesliOrbDugme boyut={TELEFON_ORB} konusuyor={konusuyor} kes={kes} dusunuyor={dusunuyor} azHareket={azHareket} orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />}
             <div style={konum ? { display: "contents" } : { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: SP.m, minWidth: 0, flex: 1 }}>
               <DurumKunyesi durum={durum} ortala={!!konum} />
-              {konum && <SesliOrbDugme boyut={MASA_ORB} konusuyor={konusuyor} kes={kes} dusunuyor={dusunuyor} azHareket={azHareket} orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />}
+              {konum && <SesliOrbDugme boyut={sutun ? SUTUN_ORB : MASA_ORB} konusuyor={konusuyor} kes={kes} dusunuyor={dusunuyor} azHareket={azHareket} orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />}
               {/* Konuşulan metin GÖRÜNMEZ (kullanıcı kararı: altyazı yok); ekran okuyucuya açık. */}
               <div style={SR_ONLY}>{sonUser}{sonYanit ? ` — ${sonYanit}` : ""}</div>
               <SesliKontroller susturuldu={susturuldu} susturDegistir={susturDegistir} kapat={kapat} />

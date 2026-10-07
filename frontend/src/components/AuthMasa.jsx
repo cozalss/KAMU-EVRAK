@@ -61,7 +61,8 @@ const EVRAKLAR = [
 ];
 
 // Zaman çizelgesi (ms). adım: 0 giriş · 1..6 okuma satırları · 7 havale · 8 mühür · 9 çıkış.
-const SURE = [820, 400, 400, 400, 400, 400, 400, 1150, 2100, 650];
+// Çıkış kısa (tur 8: 650 → 420 ms) — kâğıt uzun süre yarı saydam kalınca sahne "sönüyor" okunuyordu.
+const SURE = [820, 400, 400, 400, 400, 400, 400, 1150, 2100, 420];
 const SON_ADIM = SURE.length - 1;
 const OKUMA_ILK = 1, HAVALE = 7, MUHUR = 8, CIKIS = 9;
 const SATIR = 17;
@@ -74,16 +75,23 @@ const DEFTER = [
   { k: "Kayıt", adim: MUHUR, v: (e) => `${e.no} · ${e.sure}`, mono: true },
 ];
 
-function useSahne() {
+/* dondur (tur 8): formda hata ya da kilit varken döngü DURUR — sahne mühürlü son karede bekler
+   (çıkış fazında gelen bir uyarı, sahne sönerken "her şey kapanıyor" gibi okunuyordu). Döngü çıkış
+   ya da giriş fazındaysa önce mühür karesine oturur. */
+function useSahne(dondur) {
   const azalt = useReducedMotion();
   const [d, setD] = useState({ i: 0, adim: azalt ? MUHUR : 0 });
   useEffect(() => {
     if (azalt) return undefined;
+    if (dondur) {
+      if (d.adim !== MUHUR) setD((s) => ({ ...s, adim: MUHUR }));
+      return undefined;
+    }
     const t = setTimeout(() => {
       setD((s) => (s.adim >= SON_ADIM ? { i: (s.i + 1) % EVRAKLAR.length, adim: 0 } : { ...s, adim: s.adim + 1 }));
     }, SURE[d.adim]);
     return () => clearTimeout(t);
-  }, [d, azalt]);
+  }, [d, azalt, dondur]);
   return { evrak: EVRAKLAR[d.i], i: d.i, adim: azalt ? MUHUR : d.adim };
 }
 
@@ -180,7 +188,9 @@ function HavaleFisi({ evrak }) {
     <motion.div
       initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }}
       transition={{ duration: 0.42, ease: EASE_BEZIER.out }}
-      style={{ position: "absolute", right: -34, top: 196, zIndex: 3, width: 190, padding: "10px 12px 11px", background: PAL.surf2, border: `1px solid ${PAL.lineHi}`, borderRadius: 3, boxShadow: SH.pop }}>
+      /* Tur 8 (jüri): fiş y=196'da imza karalamasını örtüyordu — "Memur imzalar." vaadinin görsel
+         karşılığı kayboluyordu. İmza bloğunun (≈253–297 px) ALTINA iliştirilir; damga solda. */
+      style={{ position: "absolute", right: -40, top: 312, zIndex: 3, width: 176, padding: "10px 12px 11px", background: PAL.surf2, border: `1px solid ${PAL.lineHi}`, borderRadius: 3, boxShadow: SH.pop }}>
       <span aria-hidden="true" style={{ position: "absolute", left: 18, top: -9, width: 10, height: 26, borderRadius: 6, border: `1.5px solid ${PAL.mut3}` }} />
       <div style={{ ...TYPE.antet, fontSize: 10, color: DERIN.V, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
         <Icon.route width={12} height={12} /> Havale
@@ -206,15 +216,15 @@ function Sayilar() {
   );
 }
 
-export default function AuthMasa() {
-  const { evrak, i, adim } = useSahne();
+export default function AuthMasa({ dondur = false }) {
+  const { evrak, i, adim } = useSahne(dondur);
   const cikiyor = adim === CIKIS;
   return (
     /* Izgara (tur 4, jüri A#27/C#23): defter sütunu 520 px'te durur, kâğıt sağa yaslanır —
        1920'de defter 880 px'e yayılıp sayılar ekranın dibine düşüyordu. Sayılar defterin hemen
        altında: masa dağınık değil, tek bir fiş + kâğıt. */
     <div aria-hidden="true" className="ke-masa" style={{ position: "relative", display: "grid", gridTemplateColumns: "minmax(0, 520px) minmax(0, 400px)", justifyContent: "space-between", columnGap: SP.xxxl, alignItems: "start", minHeight: 0, height: "100%" }}>
-      <div className="ke-masa-defter" style={{ display: "flex", flexDirection: "column", gap: SP.xxl + SP.s, paddingTop: SP.s, minWidth: 0 }}>
+      <div className="ke-masa-defter" style={{ display: "flex", flexDirection: "column", gap: SP.xxl + SP.s, paddingTop: SP.s, minWidth: 0, boxSizing: "border-box" }}>
         <div>
         <div style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", display: "flex", justifyContent: "space-between", marginBottom: SP.s }}>
           <span>Evrak fişi</span><span style={TNUM}>{String(i + 1).padStart(2, "0")} / {String(EVRAKLAR.length).padStart(2, "0")}</span>
@@ -232,7 +242,7 @@ export default function AuthMasa() {
                opaklık — kayıt masasına oturur, işlenince yukarı kalkıp çekilir. Eğim yalnız damgada. */
             initial={{ opacity: 0, y: 24 }}
             animate={cikiyor ? { opacity: 0, y: -16 } : { opacity: 1, y: 0 }}
-            transition={cikiyor ? { duration: 0.5, ease: EASE_BEZIER.inOut } : { duration: 0.7, ease: EASE_BEZIER.out }}
+            transition={cikiyor ? { duration: 0.36, ease: EASE_BEZIER.inOut } : { duration: 0.7, ease: EASE_BEZIER.out }}
             style={{ position: "absolute", left: 0, right: 0, top: 0, height: 560, transformOrigin: "50% 80%" }}>
             <motion.div style={{ width: "100%", height: "100%" }}
               animate={adim === MUHUR ? { scale: [1, 0.988, 1] } : { scale: 1 }}
@@ -241,7 +251,7 @@ export default function AuthMasa() {
             </motion.div>
             <AnimatePresence>{adim >= HAVALE && <HavaleFisi key="fis" evrak={evrak} />}</AnimatePresence>
             {adim >= MUHUR && (
-              <div className="ke-murekkep" style={{ position: "absolute", left: 30, top: 292, zIndex: 4 }}>
+              <div className="ke-murekkep" style={{ position: "absolute", left: 20, top: 292, zIndex: 4 }}>
                 <Damga ton={V} egim={-8} butce={false} style={{ fontSize: 17, lineHeight: "20px", padding: "8px 14px", background: "transparent" }}>
                   <span style={{ display: "grid", justifyItems: "center", gap: 3 }}>
                     <span>Kayda alındı</span>

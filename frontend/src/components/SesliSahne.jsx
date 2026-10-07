@@ -25,6 +25,13 @@ export const MASA_GENISLIK = "min(264px, calc(100vw - 32px))";
 export const MASA_ORB = "min(168px, calc(100vh - 300px))";
 export const MASA_SAHNE = { ...RIHTIM, display: "flex", flexDirection: "column", alignItems: "center", gap: SP.l, padding: `${SP.l}px ${SP.l}px ${SP.xl}px` };
 
+/* Geniş masaüstü (≥1280, tur 8): sahne danışma sütununun YERİNE geçer — sağa yaslı tam
+   yükseklik, ana içeriği iter (ChatbotWidget html[data-asistan-sutun]). Sağ-alt rıhtım Panel'in
+   "Birim Bazlı Gecikme" rozetlerini örtüyordu; memur tam da sorduğu veriyi göremiyordu. */
+export const SUTUN_DOK = { top: 0, right: 0, bottom: 0, width: 440 };
+export const SUTUN_ORB = "min(232px, calc(100vh - 320px))";
+export const SUTUN_SAHNE = { ...RIHTIM, height: "100%", boxSizing: "border-box", borderRadius: 0, border: "none", borderLeft: `1px solid ${PAL.lineHi}`, boxShadow: SH.pop, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: SP.xxl, padding: `${SP.xxxl}px ${SP.xl}px` };
+
 /* Telefon: alt sekme şeridinin hemen üstünde YATAY rıhtım — orb solda, durum ve kontroller
    sağda (tur 6: dikey sütun 390 px'te kartın başlığını ve "İşle"yi örtüyordu). */
 export const TELEFON_ORB = "88px";
@@ -47,11 +54,12 @@ export function DurumKunyesi({ durum, ortala = false }) {
 
 /* ORB — dokununca konuşmayı keser (barge-in). data-press yalnız gerçekten tıklanabilirken. */
 export function SesliOrbDugme({ boyut, konusuyor, kes, dusunuyor, azHareket, orbRef, haloRef, parlaRef }) {
+  // Odak halkası: düğme dairesel; global çift çizgi kare kutuya değil daireye oturur.
   return (
     <button type="button" onClick={kes} {...(konusuyor ? { "data-press": "" } : {})}
       aria-label={konusuyor ? "Yanıtı durdur" : "Sesli görüşme küresi"} {...focusRing}
       style={{ position: "relative", pointerEvents: "auto", width: boyut, aspectRatio: "1 / 1", flexShrink: 0, borderRadius: RAD.dot, border: "none", background: "none", padding: 0, cursor: konusuyor ? "pointer" : "default" }}>
-      <SesliOrb dusunuyor={dusunuyor} azHareket={azHareket} orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />
+      <SesliOrb dusunuyor={dusunuyor} konusuyor={konusuyor} azHareket={azHareket} orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />
     </button>
   );
 }
@@ -64,9 +72,11 @@ export function SesliKontroller({ susturuldu, susturDegistir, kapat }) {
         style={{ cursor: "pointer", width: 44, height: 44, borderRadius: RAD.dot, border: `1px solid ${susturuldu ? DERIN.R : PAL.lineHi}`, background: susturuldu ? DERIN.R : PAL.surf, color: susturuldu ? PAL.onAccent : PAL.ink2, display: "grid", placeItems: "center", transition: `background .14s ${EASE.out}, color .14s ${EASE.out}` }}>
         {susturuldu ? <Icon.micOff /> : <Icon.mic width={17} height={17} />}
       </button>
+      {/* Bitir İKİNCİL (tur 8): dolgun ACELE kırmızısı ekranın en baskın öğesiydi; kırmızı bu
+          üründe "acele/kusur" demek, "görüşmeyi bitir" için harcanmaz. Çerçeveli + metinli. */}
       <button type="button" data-press onClick={kapat} aria-label="Sesli görüşmeyi bitir" {...focusRing}
-        style={{ cursor: "pointer", width: 48, height: 48, borderRadius: RAD.dot, border: "none", background: DERIN.R, color: PAL.onAccent, display: "grid", placeItems: "center", boxShadow: SH.card }}>
-        <Icon.x width={19} height={19} />
+        style={{ cursor: "pointer", height: 44, display: "inline-flex", alignItems: "center", gap: SP.s, padding: `0 ${SP.l}px`, borderRadius: RAD.ctl, border: `1px solid ${PAL.inputLine}`, background: PAL.surf, color: PAL.ink, ...TYPE.data, fontWeight: 600, transition: `background .14s ${EASE.out}` }}>
+        <Icon.x width={15} height={15} /> Bitir
       </button>
     </div>
   );

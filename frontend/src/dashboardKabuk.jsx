@@ -1,8 +1,11 @@
 /* dashboardKabuk — DashboardApp kabuğunun saf, durumsuz parçaları (dosya < 800 satır kuralı):
-   görünüm geçişi (View Transitions + yön), tembel görünüm iskeleti, ağ hata çubuğu. */
+   görünüm geçişi (View Transitions + yön), tembel görünüm iskeleti, ağ hata çubuğu, atlama
+   bağlantısı + bildirim katmanı, kabuk düzeyi "bağlantı kaydı" fişi. */
 import { flushSync } from "react-dom";
-import { PAL, TYPE, RAD, SP, SH, SR_ONLY, ICERIK_AZAMI } from "./components/neonUi.jsx";
+import { Toaster } from "sonner";
+import { PAL, DERIN, BANT, TYPE, TNUM, RAD, SP, SH, SR_ONLY, ICERIK_AZAMI, Btn, Icon } from "./components/neonUi.jsx";
 import { HataFisi, DenemeKunye } from "./components/kabukAtomlari.jsx";
+import { tumKaynaklarYok } from "./lib/kabukSicil.js";
 
 // Görünüm geçişini View Transitions API ile sar: destekleyen tarayıcıda yumuşak
 // çapraz-erime; destek yoksa ya da kullanıcı hareket azaltmışsa DÜZ geçiş (birebir eski
@@ -89,6 +92,54 @@ export function DenemeSeridi({ sorgular }) {
       <style>{DENEME_CSS}</style>
       <div style={{ background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.ctl, boxShadow: SH.card, padding: `${SP.m}px ${SP.m}px 0` }}>
         <DenemeKunye deneme={deneme} toplam={3} />
+      </div>
+    </div>
+  );
+}
+
+/* Atlama bağlantısı — klavyeyle ilk Tab'da görünür, odağı ana içeriğe taşır (hash'e dokunmaz). */
+export function AtlamaBaglantisi() {
+  return (
+    <a href="#nu-main" style={{ position: "absolute", left: -9999, top: 0, zIndex: 100, background: DERIN.T, color: PAL.onAccent, padding: "8px 14px", borderRadius: `0 0 ${RAD.card}px 0`, ...TYPE.ui, fontWeight: 600 }}
+      onClick={(e) => { e.preventDefault(); document.getElementById("nu-main")?.focus(); }}
+      onFocus={(e) => (e.currentTarget.style.left = "0")} onBlur={(e) => (e.currentTarget.style.left = "-9999px")}>Ana içeriğe geç</a>
+  );
+}
+
+/* Bildirim katmanı — "zımbalı havale pusulası" (kabukAtomlari.fisToast). Tur 8 (jüri): bottom-center
+   viewport'u ortalıyor, 236 px rayı yok sayıp içerik sütununa göre ~106 px sola kayıyordu. Masaüstünde
+   (≥ 721 px) İÇERİK SÜTUNUNUN ortasına oturur: ray genişliği --ke-ray-w ile yayınlanır (NeonSidebar).
+   expand: iki fiş istiflenince alttaki görünmüyordu — fişler üst üste değil, alt alta durur.
+   Telefonda sonner'ın kendi mobil yerleşimi + alt kulakçık şeridi payı aynen kalır. */
+const TOAST_CSS = "@media (min-width:721px){html [data-sonner-toaster][data-x-position=center]{left:calc(50% + var(--ke-ray-w, 0px) / 2)}}";
+export function BildirimKatmani({ toast }) {
+  return (
+    <>
+      <style>{TOAST_CSS}</style>
+      <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>{toast}</div>
+      <Toaster containerAriaLabel="Bildirimler" position="bottom-center" gap={8} visibleToasts={3} expand
+        mobileOffset={{ bottom: "calc(76px + env(safe-area-inset-bottom))" }} toastOptions={{ unstyled: true }} />
+    </>
+  );
+}
+
+/* Bağlantı kaydı (tur 8, jüri: tüm GET'ler 500 iken kabuğun tek işareti küçük sarı "YANIT YOK" idi;
+   Gelen ve Panel sağlıklı görünüyordu). Kabuğun kaynaklarının HEPSİ son denemede hata verdiyse
+   içerik sütununun üstünde TEK, sakin bir uyarı fişi: ekrandakiler son bilinen kayıtlardır.
+   Biri bile sağlamsa ya da ilk yükleme sürüyorsa çizilmez. Kapatılabilir; kaynak toparlanınca
+   kendiliğinden kalkar. Yerleşim akışın içinde (sabit değil) → içerik örtülmez. */
+export function BaglantiKaydi({ kaynak, onYenidenDene }) {
+  if (!tumKaynaklarYok(kaynak)) return null;
+  const saat = new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+  return (
+    <div style={{ padding: "12px clamp(16px, 4vw, 40px) 0" }}>
+      <div role="status" style={{ maxWidth: ICERIK_AZAMI, marginInline: "auto", display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap", padding: `${SP.s}px ${SP.s}px ${SP.s}px ${SP.m}px`, background: PAL.surfPop, border: `1px solid ${PAL.line}`, borderLeft: `3px solid ${BANT.sari.c}`, borderRadius: RAD.ctl, boxShadow: SH.card, animation: "nu-sol .2s ease-out both" }}>
+        <span aria-hidden="true" style={{ display: "flex", color: DERIN.sari }}><Icon.alert width={14} height={14} /></span>
+        <span style={{ ...TYPE.antet, textTransform: "uppercase", color: DERIN.sari, whiteSpace: "nowrap", ...TNUM }}>Bağlantı kaydı · {saat}</span>
+        <span style={{ ...TYPE.data, color: PAL.ink2, flex: "1 1 320px", minWidth: 0 }}>
+          <strong style={{ fontWeight: 600, color: PAL.ink }}>Sunucuya ulaşılamıyor.</strong> Ekrandaki sayılar ve listeler son bilinen kayıtlardır; karar ve gönderim bağlantı gelince yazılır.
+        </span>
+        <Btn onClick={onYenidenDene} style={{ minHeight: 32, padding: "4px 12px" }}><Icon.undo />Yeniden dene</Btn>
       </div>
     </div>
   );

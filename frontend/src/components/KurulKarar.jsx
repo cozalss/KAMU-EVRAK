@@ -29,7 +29,7 @@ const cekinceli = (kurgu) => kurgu.risk === "sari" || kurgu.risk === "kirmizi";
 export function kurulHukmu(kurgu) {
   const oneriler = Array.isArray(kurgu?.oneriler) ? kurgu.oneriler : [];
   if (kurgu?.uzlasi_uygulanabilir) {
-    return { tur: "revize", baslik: "Kurul revize taslağı önerdi", damga: "Revize önerildi", ton: V, satir: "Kurul revize taslağını hazırladı; memur onayına sunuluyor.", durum: "Revize önerisi hazır" };
+    return { tur: "revize", baslik: "Kurul revize taslağı önerdi", damga: "Revize önerildi", ton: V, satir: "Kurul revize taslağını hazırladı; memur onayına sunuluyor.", durum: "Revize önerisi hazır", kunye: "revize önerildi" };
   }
   if (oneriler.length) {
     const tipler = [...new Set(oneriler.map((o) => o.tip))];
@@ -38,14 +38,23 @@ export function kurulHukmu(kurgu) {
     return {
       tur: "oneri", baslik: `Kurul ${ad} önerdi`, damga: tek ? `${tek.charAt(0).toLocaleUpperCase("tr")}${tek.slice(1)} önerildi` : "Öneri sunuldu", ton: T,
       satir: `Kurul ${ad} önerdi; öneriler taslağa henüz işlenmedi.`, durum: `${ad.charAt(0).toLocaleUpperCase("tr")}${ad.slice(1)} önerildi`,
+      kunye: "öneri bekliyor",
     };
   }
-  // olumlu: yalnız çekince YOKSA yeşil ✓. Çekince varken "değişiklik önermedi" bir onay değil,
-  // metin yönünden boşluktur — aynı bölümde Birim Amiri "gönderime çıkmamalı" diyor (yanlış sinyal).
+  // olumlu: yalnız çekince YOKSA yeşil ✓. Tur 8: çekince varken TEK hüküm cümlesi — metin
+  // yönünden uygun, gönderim yönünden çekinceli. Masa, kâğıt künyesi, tutanak son satırı ve
+  // karar başlığı aynı cümleyi kurar (eskiden masa "Değişiklik önerilmedi", kâğıt "MÜZAKEREDE",
+  // amir "gönderime çıkmamalı" — üç ayrı sinyal).
   const cekince = cekinceli(kurgu);
+  if (cekince) {
+    return {
+      tur: "yok", baslik: "Metin uygun · gönderim çekinceli", damga: "Çekinceli", ton: null, durum: "Metin uygun · gönderim çekinceli", olumlu: false, kunye: "çekinceli",
+      satir: "Kurul metinde değişiklik önermedi; Birim Amiri ölçülen risk bandı nedeniyle gönderime çekince koydu.",
+    };
+  }
   return {
-    tur: "yok", baslik: "Kurul değişiklik önermedi", damga: "Değişiklik yok", ton: null, durum: "Değişiklik önerilmedi", olumlu: !cekince,
-    satir: cekince ? "Kurul metinde değişiklik önermedi; gönderim çekincesi aşağıda, Birim Amiri'nin sözünde." : "Kurul taslakta değişiklik önermedi — taslak bu hâliyle uygun görüldü.",
+    tur: "yok", baslik: "Metin uygun · değişiklik yok", damga: "Uygun", ton: null, durum: "Metin uygun · değişiklik yok", olumlu: true, kunye: "uygun bulundu",
+    satir: "Kurul taslakta değişiklik önermedi — taslak bu hâliyle uygun görüldü.",
   };
 }
 
@@ -59,6 +68,7 @@ function imzaDurumu(id, durus, turlar, cekince) {
   if (durus === "karar") return cekince ? { etiket: "Şerhli onay", aciklama: "Çekince giderilmeden gönderim önerilmez.", serh: true, damga: true } : { etiket: "Onaylıyorum", aciklama: "" };
   if (durus === "gelistir") return { etiket: "Katkıyla katılıyorum", aciklama: "" };
   if (durus === "katil") return { etiket: "Katılıyorum", aciklama: "" };
+  if (durus === "gorus") return { etiket: "Görüş bildirdi", aciklama: "Tutum bildirmedi." };
   return soz.length ? { etiket: "Söz aldı", aciklama: "Duruş bildirmedi." } : { etiket: "Söz almadı", aciklama: "" };
 }
 
@@ -250,31 +260,44 @@ const RevizeFarki = ({ diff }) => (
   </div>
 );
 
-/* Kurul Tutanağı — KARAR bölümü: hüküm · öneriler · fark · imza bloğu · gönderim kapanışı. */
+/* Kurulun hükmü — numarasız künye + tek cümle + damga. Toplantı kapanınca MASANIN HEMEN
+   ALTINDA durur (tur 8: 1080 yükseklikte bile modalın altında, ekran dışındaydı; "III. KARAR"
+   tutanağın kendi III. turuyla çift numaralanıyordu). Ekranın birinci damgası buradadır. */
+export function KurulHukumBasligi({ kurgu, aksan, az }) {
+  const h = kurulHukmu(kurgu);
+  const oneriler = Array.isArray(kurgu.oneriler) ? kurgu.oneriler : [];
+  const uygulanan = oneriler.filter((o) => o.uygulanabilir).length;
+  return (
+    <section aria-label="Kurulun hükmü" style={{ display: "flex", alignItems: "center", gap: SP.xl, flexWrap: "wrap", marginTop: SP.xl, padding: `${SP.l}px clamp(16px, 2.4vw, 24px)`, background: PAL.surf, border: `1px solid ${PAL.line}`, borderLeft: `3px solid ${h.ton || aksan}`, borderRadius: RAD.card, boxShadow: SH.card, animation: az ? "none" : "nu-rise .28s var(--ke-ease-out) both" }}>
+      <div style={{ minWidth: 0, flex: "1 1 320px" }}>
+        <div style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", marginBottom: SP.xs }}>Kurulun hükmü</div>
+        <h3 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{h.baslik}</h3>
+        <p style={{ margin: `${SP.xs}px 0 0`, maxWidth: "72ch", ...TYPE.data, color: PAL.mut2 }}>{h.satir}</p>
+      </div>
+      {uygulanan > 0 && <span style={{ ...TYPE.meta, fontWeight: 600, color: DERIN.yesil, ...TNUM }}>{uygulanan} / {oneriler.length} işlendi</span>}
+      {/* oncelik 3: modal arkadaki Taslaklar ekranının damgalarını (oncelik 1) örter. */}
+      <Damga ton={h.ton || aksan} egim={-5} oncelik={3} animasyon={!az}>{h.damga}</Damga>
+    </section>
+  );
+}
+
+/* Kurul Tutanağı — KARAR ekleri: öneriler · fark · imza bloğu · gönderim kapanışı (hüküm üstte). */
 export function KurulTutanagi({ kurgu, aksan, az, onUygula, onOneriIsle = null, onTumunuIsle = null, isleyen = null, onGonder = null, r = null }) {
   const oneriler = Array.isArray(kurgu.oneriler) ? kurgu.oneriler : [];
   const sirali = TIP_SIRA.flatMap((t) => oneriler.filter((o) => o.tip === t));
   const uygulanabilir = !!onUygula && !!kurgu.uzlasi_uygulanabilir;
   const diff = kurgu.uzlasi_uygulanabilir ? { eski: (kurgu.taslak || []).map((l) => l.metin).join("\n"), yeni: kurgu.uzlasi_metni || "" } : null;
-  const uygulanan = oneriler.filter((o) => o.uygulanabilir).length;
   const h = kurulHukmu(kurgu);
   return (
-    <section aria-label="Kurul kararı" style={{ marginTop: SP.xxl, background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: "20px clamp(16px, 2.4vw, 24px) 22px", animation: az ? "none" : "nu-rise .25s var(--ke-ease-out) both" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: SP.l, flexWrap: "wrap", paddingBottom: SP.m, marginBottom: SP.m, borderBottom: `1px solid ${PAL.lineHi}` }}>
-        <div style={{ minWidth: 0 }}>
-          <div style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", marginBottom: 4 }}>III. Karar · kurulun hükmü</div>
-          <h3 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{h.baslik}</h3>
-        </div>
-        {/* oncelik 3: modal arkadaki Taslaklar ekranının damgalarını (oncelik 1) örter — hüküm
-            kurul ekranının en önemli olgusudur, bütçede çipe inmemeli. */}
-        <Damga ton={h.ton || aksan} egim={-5} oncelik={3} animasyon={!az}>{h.damga}</Damga>
-        {uygulanan > 0 && <span style={{ marginLeft: "auto", ...TYPE.meta, fontWeight: 600, color: DERIN.yesil, ...TNUM }}>{uygulanan} / {oneriler.length} işlendi</span>}
+    <section aria-label="Kurul kararı ekleri" style={{ marginTop: SP.xxl, background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: "20px clamp(16px, 2.4vw, 24px) 22px", animation: az ? "none" : "nu-rise .25s var(--ke-ease-out) both" }}>
+      <div style={{ paddingBottom: SP.m, marginBottom: SP.m, borderBottom: `1px solid ${PAL.lineHi}` }}>
+        <div style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>Karar ekleri · öneriler, beyan ve gönderim</div>
       </div>
       {kurgu.yakinsama && <Yakinsama y={kurgu.yakinsama} />}
       {sirali.length === 0 ? (
         <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s, ...TYPE.data, color: h.olumlu ? DERIN.yesil : PAL.ink2 }}>
           <span aria-hidden="true" style={{ display: "flex", marginTop: 3, color: h.olumlu ? DERIN.yesil : PAL.mut3 }}>{h.olumlu ? <Icon.check width={15} height={15} /> : <Icon.info width={15} height={15} />}</span>
-          <span style={{ minWidth: 0 }}>{h.satir}</span>
+          <span style={{ minWidth: 0 }}>{h.olumlu ? "Öneri kaydı yok — kurul taslağı bu hâliyle uygun gördü." : "Öneri kaydı yok — kurul metinde değişiklik istemedi; çekince gönderim yönünde."}</span>
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column" }}>

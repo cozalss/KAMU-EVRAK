@@ -3,7 +3,7 @@ import { EVRAK_TR, BIRIM_GOSTER, YAZI_TR } from "../lib/evrakEtiket.js";
 import { kurumGorunur, katalogAdHaritasi, mevzuatGorunenAd, ondalikTr } from "../lib/sonucEtiket.js";
 import { Chip, slaInfo, subSlaRenk, MevzuatRow, SlaPanel, DuzeltmeDiff, Vrow, Lint2646Karti } from "./NeonDetayParts.jsx";
 import { mevzuatDipnot, birimDipnot, lintGiris, decomposeGiris, riskGerekceYorum, riskSkorYorum, canliKaynakYorum } from "../lib/detayYorum.js";
-import { MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, RAD, SP, NeonCard, Icon, TYPE, TNUM } from "./neonUi.jsx";
+import { MONO, T, V, PAL, BANT, DERIN, ALFA, RAD, SP, NeonCard, Icon, TYPE, TNUM, focusRing } from "./neonUi.jsx";
 import { arr, clean } from "./sonucOrtak.js";
 import { KaynakLinki } from "./HukumKarti.jsx";
 import { gosterimBirimi } from "../lib/gosterimBirimi.js";
@@ -101,6 +101,28 @@ function MevzuatBulunamadi() {
   );
 }
 
+/* Teknik sıralama notu (BM25…) memura yüzeyde gösterilmez (2. jüri: jargon); sade cümle
+   kalır, ayrıntı "Nasıl sıralandı?" açılırında. Kalan dipnot cümleleri aynen basılır. */
+const TEKNIK_SIRALAMA_RE = /^Sıralama BM25[^.]*\.\s*/;
+function MevzuatDipnotu({ r }) {
+  const dip = mevzuatDipnot(r);
+  if (!dip) return null;
+  const teknik = dip.match(TEKNIK_SIRALAMA_RE)?.[0]?.trim();
+  const kalan = teknik ? dip.replace(TEKNIK_SIRALAMA_RE, "") : dip;
+  return (
+    <div className="kd-kart-dip" style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
+      {teknik && "Sözcük eşleşmesine göre sıralandı; madde metnini doğrulayın. "}
+      {kalan}
+      {teknik && (
+        <details style={{ marginTop: 4 }}>
+          <summary {...focusRing} style={{ cursor: "pointer", width: "fit-content", color: PAL.mut2, textDecoration: "underline dotted", textUnderlineOffset: 3 }}>Nasıl sıralandı?</summary>
+          <p style={{ margin: "4px 0 0", color: PAL.mut3 }}>{teknik}</p>
+        </details>
+      )}
+    </div>
+  );
+}
+
 export function MevzuatCard({ r, mev, nliMap, onMevzuatAc, onMevzuatSec, seciliSet }) {
   const { gruplu, bolumler } = mevzuatBolumleri(mev, r);
   const adlar = useKatalogAdlari(mev.length > 0);
@@ -171,7 +193,7 @@ export function MevzuatCard({ r, mev, nliMap, onMevzuatAc, onMevzuatSec, seciliS
             : "Bu öneriler bilgi amaçlıdır; atıf yapılacaksa madde açılıp doğrulanmalıdır."}
         </span>
       </div>
-      <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3 }}>{mevzuatDipnot(r)}</div>
+      <MevzuatDipnotu r={r} />
     </NeonCard>
   );
 }
@@ -181,17 +203,21 @@ export function ArchiveSlaCard({ r, arsiv, sdpAdaylar, sla, sInfo }) {
   return (
     <NeonCard title="Dosyalama ve yasal süre" tag={hasArchive ? "SDP" : "süre takibi"} accent={T} icon={<Icon.grid />}>
       {hasArchive ? (
-        <div className="sc-archive-grid">
-          <span>
-            <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3 }}>Dosya planı · SDP (2005/7)</span>
-            <span style={{ ...TYPE.data, fontWeight: 700, color: DERIN.V, ...TNUM }}>{clean(arsiv.sdp_kodu || "Atanmadı")}</span>
-            {arsiv.sdp_adi && <span style={{ display: "block", ...TYPE.meta, color: PAL.mut2, marginTop: 2 }}>{clean(arsiv.sdp_adi)}</span>}
-          </span>
-          <span>
-            <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3 }}>Saklama süresi</span>
-            <span style={{ ...TYPE.data, fontWeight: 700, color: PAL.ink2, ...TNUM }}>{clean(arsiv.saklama_suresi || arsiv.saklama || "Belirtilmedi")}</span>
-          </span>
-        </div>
+        /* Künye = dl, üç eşit hücre (tur 8): kod · plan başlığı · saklama. Etiketler mono antet. */
+        <dl className="sc-archive-grid" style={{ margin: 0 }}>
+          <div style={{ minWidth: 0 }}>
+            <dt style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>Dosya planı · SDP</dt>
+            <dd style={{ margin: "4px 0 0", fontFamily: MONO, fontSize: 15, lineHeight: "20px", fontWeight: 600, color: DERIN.V, ...TNUM }}>{clean(arsiv.sdp_kodu || "Atanmadı")}</dd>
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <dt style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>Plan başlığı</dt>
+            <dd style={{ margin: "4px 0 0", ...TYPE.data, color: arsiv.sdp_adi ? PAL.ink2 : PAL.mut2 }}>{arsiv.sdp_adi ? clean(arsiv.sdp_adi) : "Belirtilmedi"}</dd>
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <dt style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>Saklama süresi</dt>
+            <dd style={{ margin: "4px 0 0", ...TYPE.data, fontWeight: 600, color: PAL.ink2, ...TNUM }}>{clean(arsiv.saklama_suresi || arsiv.saklama || "Belirtilmedi")}</dd>
+          </div>
+        </dl>
       ) : (
         <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2 }}>Bu sonuçta arşiv sınıflandırması üretilmedi.</p>
       )}
@@ -202,11 +228,16 @@ export function ArchiveSlaCard({ r, arsiv, sdpAdaylar, sla, sInfo }) {
         </div>
       )}
 
+      {/* Aday dizisi ETİKETLİ (jüri tur 8: "622.03 · 2,5 100 · 1,0" çözümsüz mono diziydi):
+          künye "Diğer adaylar", her aday "kod — ad" ve eşleşme puanı ayrı, adlandırılmış. */}
       {sdpAdaylar.length > 1 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: SP.s, margin: "8px 0 0" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: `4px ${SP.m}px`, margin: "8px 0 0" }}>
+          <span style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>SDP adayları</span>
           {sdpAdaylar.map((a, i) => (
-            <span key={a.kod || i} title={a.ad} style={{ fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: i === 0 ? DERIN.T : PAL.mut2, ...TNUM }}>
-              {a.kod} · {ondalikTr(a.skor, 1)}
+            <span key={a.kod || i} title={a.ad ? `${a.kod} — ${a.ad}` : a.kod} style={{ ...TYPE.meta, color: i === 0 ? DERIN.T : PAL.mut2 }}>
+              <span style={{ fontFamily: MONO, ...TNUM }}>{a.kod}</span>
+              {a.ad && <span> {clean(a.ad)}</span>}
+              {Number.isFinite(Number(a.skor)) && <span style={{ color: PAL.mut3 }}> · eşleşme puanı <span style={{ fontFamily: MONO, ...TNUM }}>{ondalikTr(a.skor, 1)}</span></span>}
             </span>
           ))}
         </div>
@@ -218,12 +249,23 @@ export function ArchiveSlaCard({ r, arsiv, sdpAdaylar, sla, sInfo }) {
   );
 }
 
+const OLASILIK_KAYNAK = {
+  olculdu: "ölçülen isabet oranlarından.",
+  kismi: "kısmen ölçülmüş isabet oranlarından; kalanı öngörü.",
+  onsel: "öngörü değeri; isabet oranları henüz ölçülmedi.",
+  temiz: "ölçülen isabet oranlarından.",
+};
+
 export function RiskCard({ r, band, bantC }) {
   const riskGerekce = arr(r.risk_metadata?.gerekceler).slice(0, 5);
   if (!r.risk_metadata?.aciklama && !riskGerekce.length && !r.risk_metadata?.skor) return null;
   const yorumlar = riskGerekce.map((g) => riskGerekceYorum(String(g))).filter(Boolean);
   const skor = riskSkorYorum(Number(r.risk_metadata?.skor), r.risk_metadata?.katkilar, band,
     r.risk_metadata?.kalibrasyon, r.risk_metadata?.kusur_olasiligi);
+  // Ölçüm beyanı TEK bayraktan (risk_metadata.kalibrasyon): olasılık satırı ile kalibrasyon
+  // notu aynı kartta çelişmesin (2. jüri: "ölçülen isabet" + "henüz ölçülmedi" yan yanaydı).
+  const kalib = r.risk_metadata?.kalibrasyon;
+  const notGoster = skor && (skor.not || (skor.olasilikYuzde == null ? skor.kalibrasyonNot : null));
   const seviyeGoster = skor?.seviye ? skor.seviye[0].toUpperCase() + skor.seviye.slice(1) : null;
 
   return (
@@ -244,7 +286,7 @@ export function RiskCard({ r, band, bantC }) {
             </span>
             {skor.olasilikYuzde != null && (
               <div style={{ marginTop: 4, ...TYPE.meta, color: PAL.mut2 }}>
-                Kusur olasılığı %{skor.olasilikYuzde} — ölçülen isabet oranlarından.
+                Kusur olasılığı %{skor.olasilikYuzde} — {OLASILIK_KAYNAK[kalib] || OLASILIK_KAYNAK.onsel}
               </div>
             )}
           </div>
@@ -279,13 +321,36 @@ export function RiskCard({ r, band, bantC }) {
           })}
         </div>
       )}
-      {skor && (skor.not || skor.kalibrasyonNot) && (
-        <div className="sc-positive-callout" style={{ marginTop: SP.m, background: PAL.surf2, color: PAL.mut2 }}>
+      {notGoster && (
+        <div className="sc-positive-callout kd-kart-dip" style={{ marginTop: SP.m, background: PAL.surf2, color: PAL.mut2 }}>
           <Icon.info width={13} height={13} style={{ flex: "none", marginTop: 1 }} />
-          <span>{skor.not} {skor.kalibrasyonNot}</span>
+          <span>{skor.not} {skor.olasilikYuzde == null ? skor.kalibrasyonNot : null}</span>
         </div>
       )}
     </NeonCard>
+  );
+}
+
+/* Ham sinyal etiketi ("(mevzuat kanıtı) Doğrulanmış…") cümlenin başına yapışık gelmesin
+   (2. jüri): etiket ayrı mono künye olur, cümle büyük harfle başlar. */
+const ETIKET_RE = /^\s*\(([^)]{2,40})\)\s*/;
+function UyariSatiri({ metin }) {
+  const ham = clean(metin);
+  const m = ham.match(ETIKET_RE);
+  const govde = m ? ham.slice(m[0].length) : ham;
+  const cumle = govde ? govde.charAt(0).toLocaleUpperCase("tr-TR") + govde.slice(1) : govde;
+  return (
+    <div className="sc-warning-row" style={{ color: DERIN.sari }}>
+      <Icon.alert style={{ flex: "none", marginTop: 2 }} />
+      <span style={{ minWidth: 0 }}>
+        {m && (
+          <span style={{ display: "inline-block", marginRight: SP.s, padding: "0 6px", border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, ...TYPE.antet, color: PAL.mut2, verticalAlign: 1 }}>
+            {m[1].toLocaleUpperCase("tr-TR")}
+          </span>
+        )}
+        {cumle}
+      </span>
+    </div>
   );
 }
 
@@ -308,16 +373,8 @@ export function ValidationCard({ r, uyari, tutar }) {
       <Vrow ok={formatTemiz} label="Format (Yön. 2646)" val={formatTemiz ? "uyumlu" : lintUyari ? `${lintUyari} kural uyarısı` : "kontrol"} />
       <Vrow ok={!tutar.length} label="Veri tutarlılığı" val={tutar.length ? `${tutar.length} uyarı` : "temiz"} />
       {r.verify_notes && !toplam && <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut2 }}>{clean(r.verify_notes)}</div>}
-      {uyari.slice(0, 5).map((u, i) => (
-        <div key={i} className="sc-warning-row" style={{ color: DERIN.sari }}>
-          <Icon.alert style={{ flex: "none", marginTop: 2 }} /> {clean(u)}
-        </div>
-      ))}
-      {tutar.slice(0, 4).map((u, i) => (
-        <div key={`t${i}`} className="sc-warning-row" style={{ color: DERIN.sari }}>
-          <Icon.alert style={{ flex: "none", marginTop: 2 }} /> {clean(u)}
-        </div>
-      ))}
+      {uyari.slice(0, 5).map((u, i) => <UyariSatiri key={i} metin={u} />)}
+      {tutar.slice(0, 4).map((u, i) => <UyariSatiri key={`t${i}`} metin={u} />)}
       {lintFix && (
         <div style={{ marginTop: SP.m }}>
           <div style={{ ...TYPE.meta, color: PAL.mut2, marginBottom: SP.xs }}>Önerilen düzeltme (Yön. 2646) · mevcut taslakla fark</div>
@@ -328,6 +385,10 @@ export function ValidationCard({ r, uyari, tutar }) {
     </NeonCard>
   );
 }
+
+/* Model/satıcı künyesi ("[DeepSeek+kaynak]") memura sızmaz — gerekçe kullanıcı dilinde (jüri tur 8). */
+const SATICI_RE = /\s*\[(?:deepseek|openai|llm|gpt)[^\]]*\]\s*/gi;
+const saticiEtiketiniSuz = (s) => String(s || "").replace(SATICI_RE, " ").replace(/\s{2,}/g, " ").trim();
 
 export function RoutingCard({ r, birimAday }) {
   // hedef_birim yalnız kaynak-doğrulanmış GERÇEK birimde dolu (route_ajan.dogrulandi);
@@ -393,15 +454,18 @@ export function RoutingCard({ r, birimAday }) {
           <span style={{ ...TYPE.data, color: PAL.mut2 }}>{BIRIM_GOSTER(b, r.evrak_turu)}</span>
         </div>
       ))}
-      {r.servis_birimi?.ad && (
-        <div style={{ display: "flex", alignItems: "flex-start", gap: SP.s, padding: "8px 0 2px", marginTop: SP.xs, borderTop: `1px dashed ${PAL.line}` }}>
-          <Icon.route width={13} height={13} style={{ color: DERIN_OF(V), flex: "none", marginTop: 2 }} />
-          <span style={{ ...TYPE.data, color: PAL.ink2 }}>
-            <span style={{ color: PAL.mut2 }}>İçerik sinyalinden havale önerisi (kayıt birimi üzerinden): </span>
-            <strong style={{ fontWeight: 700 }}>{r.servis_birimi.ad}</strong>
+      {/* SERVİS BİRİMİ İPUCU (jüri tur 8, yüksek): tek havale kararının altında ikinci, RAKİP bir
+          havale önerisi basılıyordu (bakanlık evrakına belediye müdürlüğü) — "yönlendirme tek
+          kaynak" sözleşmesini görsel olarak bozuyordu. Artık YALNIZ karar birimi yokken, katlı
+          "ek bilgi" olarak görünür; havale önerisi değil, kayıt biriminin içerik ipucudur. */}
+      {r.servis_birimi?.ad && !birim && (
+        <details style={{ marginTop: SP.xs, padding: "6px 0 2px", borderTop: `1px dashed ${PAL.line}`, ...TYPE.meta, color: PAL.mut2 }}>
+          <summary {...focusRing} style={{ cursor: "pointer", color: PAL.mut2 }}>Ek bilgi · kayıt biriminin içerik ipucu</summary>
+          <span style={{ display: "block", marginTop: 4, ...TYPE.data, color: PAL.ink2 }}>
+            {r.servis_birimi.ad}
             {arr(r.servis_birimi.sinyal).length > 0 && <span style={{ ...TYPE.meta, color: PAL.mut3 }}> · içerik: {arr(r.servis_birimi.sinyal).join(", ")}</span>}
           </span>
-        </div>
+        </details>
       )}
       {canli && (
         /* CANLI KAYNAK PANELİ — provenance'ı gözle ayırt edilebilir kılar.
@@ -451,7 +515,7 @@ export function RoutingCard({ r, birimAday }) {
           </p>
         </div>
       )}
-      <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3 }}>{clean(birimDipnot(r))}</div>
+      <div style={{ marginTop: SP.s, ...TYPE.meta, color: PAL.mut3 }}>{saticiEtiketiniSuz(clean(birimDipnot(r)))}</div>
     </NeonCard>
   );
 }

@@ -55,3 +55,18 @@ test("primary buton dolgusu iki temada + rayda AA (tur 7: koyu temada 'devre dı
   // Koyu temada dolgu açık lavanta DEĞİL: beyaz metin taşıyan koyu bir mavi.
   assert.ok(kontrastOrani(rgb(K.koyu["dolgu-t"]), rgb(K.koyu.bg)) >= 2.5, "koyu dolgu zeminden ayrışmıyor");
 });
+
+test("sırt üstü kırmızı: etkin sekme rozeti sayfa zemininde AA (tur 8: ray kırmızısı 1,7:1 kalıyordu)", () => {
+  // --ke-sayfa-kirmizi :root'ta çözülür ve ray kapsamına MİRAS kalır → rayın açık mercanı değil,
+  // sayfanın kendi derin kırmızısı. Sırtın zemini --ke-sayfa (= bg) olduğu için ikisi birlikte ölçülür.
+  for (const [adi, k] of [["açık", K.acik], ["koyu", K.koyu]]) {
+    const r = tokenOrani(k, "sayfa-kirmizi", "sayfa");
+    assert.ok(r != null && r >= 4.5, `${adi}: sayfa-kirmizi/sayfa = ${r}`);
+  }
+});
+
+test("koyu tema yükseklik merdiveni (tur 8): kart zeminden ≥ 1,15, havada duran katman karttan açık", () => {
+  const bg = rgb(K.koyu.bg), surf = rgb(K.koyu.surf), pop = rgb(K.koyu["surf-pop"]);
+  assert.ok(kontrastOrani(surf, bg) >= 1.15, `surf/bg ${kontrastOrani(surf, bg).toFixed(3)}`);
+  assert.ok(kontrastOrani(pop, bg) > kontrastOrani(surf, bg), "surf-pop surf'ten açık değil");
+});

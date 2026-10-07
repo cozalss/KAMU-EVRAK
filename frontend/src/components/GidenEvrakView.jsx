@@ -10,7 +10,10 @@
    · Başlıkta birincil "yükle" yok — bu ekranın işi aramak/bulmak. */
 import React, { useMemo, useState } from "react";
 import { ViewWrap, Btn, Icon, MONO, PAL, BANT, TYPE, TNUM, SP, DERIN, DERIN_OF, SR_ONLY } from "./neonUi.jsx";
-import { SicilStil, SicilNo, BaslikHucre, SessizCip, DefterYuzey, BosDefter, DefterIskelet, DefterHata, useDefterGezinme, Imlec, HUCRE, Derkenar, Vurgulu, DEFTER_NO, DEFTER_MARJ, ADIM } from "./SicilDefter.jsx";
+import { SicilStil, SicilNo, BaslikHucre, SessizCip, DefterYuzey, BosDefter, DefterIskelet, DefterHata, useDefterGezinme, Imlec, HUCRE, Derkenar, Vurgulu, alanlarOf, DEFTER_NO, DEFTER_MARJ, ADIM } from "./SicilDefter.jsx";
+import DefterAntetKunye from "./DefterAntetKunye.jsx";
+import DefterKagitOnizleme, { ONIZLEME_SUTUN } from "./DefterKagitOnizleme.jsx";
+import { useMedyaSorgusu } from "../hooks/useMedya.js";
 import { bosDurumMetni, gunleGrupla, kayitNoAramaMetni } from "../lib/sicilDefter.js";
 import FilterBar, { FiltreIskelet } from "./FilterBar.jsx";
 import BelgeModal from "./BelgeModal.jsx";
@@ -67,9 +70,11 @@ const BASE_CONFIG = {
 const metinOf = (o) => [o.konu, o.kaynak_evrak_adi, BIRIM_LBL(o.alici_birim), kategoriMeta(o._kategori).label, o._noAra].join(" ");
 const noOf = (o) => (numaraBekliyor(o) ? "" : o.id);
 
-/* Defter şablonu — gönderi no (+saat, derkenar) · konu bloğu · durum/risk · eylem. */
+/* Defter şablonu — gönderi no (+saat, derkenar) · konu bloğu · risk · eylem.
+   Tur 8: "Durum" sütunu kalktı — "Gönderildi" günün pulunda zaten söyleniyor; istisna
+   (düzeltildi / iade) kayıt no altında DERKENAR. Satır yatayda tek ritim taşır. */
 const SABLON = {
-  kolon: `${DEFTER_NO} minmax(0,1fr) 188px 120px`,
+  kolon: `${DEFTER_NO} minmax(0,1fr) 140px 120px`,
   marj: DEFTER_MARJ,
   satir: ADIM.rahat,
   alan: '"no ana durum eylem"',
@@ -78,8 +83,8 @@ const SABLON = {
 };
 const BASLIKLAR = [
   <BaslikHucre key="n" alan="no">Gönderi no</BaslikHucre>,
-  <BaslikHucre key="a" alan="ana">Konu · kaynak · alıcı birim</BaslikHucre>,
-  <BaslikHucre key="d" alan="durum">Durum · risk</BaslikHucre>,
+  <BaslikHucre key="a" alan="ana">Konu · tür · alıcı birim</BaslikHucre>,
+  <BaslikHucre key="d" alan="durum">Risk</BaslikHucre>,
   <BaslikHucre key="e" alan="eylem" sag>Eylem</BaslikHucre>,
 ];
 
@@ -116,8 +121,8 @@ function GidenSatir({ item, sira, gez, gunlu, onAc, jetonlar }) {
         <span data-sd-konu="" title={konuOf(item)} style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}><Vurgulu metin={konuOf(item)} jetonlar={jetonlar} /></span>
         <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: 3, display: "flex", columnGap: SP.s, rowGap: 2, alignItems: "center", minWidth: 0, whiteSpace: "nowrap", flexWrap: "wrap" }}>
           <span style={{ color: PAL.mut2, fontWeight: 500 }}>{kat.label}</span>
-          {ayrac}
-          <span title={item.kaynak_evrak_adi} style={{ fontFamily: MONO, fontSize: 11, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}><Vurgulu metin={item.kaynak_evrak_adi || ""} jetonlar={jetonlar} /></span>
+          {item.evrak_turu && <>{ayrac}<span>{EVRAK_TR(item.evrak_turu)}</span></>}
+          {item.tur && <>{ayrac}<span>{YAZI_TR(item.tur)}</span></>}
           {!gunlu && <>{ayrac}<span>{gecenSure(item.gonderim_tarihi)}</span></>}
           {guven && <>{ayrac}<span style={TNUM}>güven {guven}</span></>}
           {item.sla_durum === "GECIKMIS" && <span style={{ color: DERIN.kirmizi, fontWeight: 500 }}>· süresi geçmiş</span>}
@@ -127,8 +132,8 @@ function GidenSatir({ item, sira, gez, gunlu, onAc, jetonlar }) {
           <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}><span style={SR_ONLY}>alıcı birim: </span>{BIRIM_LBL(item.alici_birim)}</span>
         </div>
       </div>
-      <span {...HUCRE.grid} style={{ gridArea: "durum", display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start", minWidth: 0 }}>
-        <SessizCip renk={DURUM_RENK[item.durum] || PAL.mut2} vurgulu={item.durum === "reddedildi"} metin={DURUM_TR[item.durum] || item.durum} />
+      <span {...HUCRE.grid} style={{ gridArea: "durum", minWidth: 0 }}>
+        <span style={SR_ONLY}>{DURUM_TR[item.durum] || item.durum}, </span>
         <SessizCip renk={riskC || PAL.mut3} metin={<><span style={SR_ONLY}>risk: </span>{riskAdi(item.risk) ? `${riskAdi(item.risk)} risk` : "Risk —"}</>} />
       </span>
       <span {...HUCRE.grid} style={{ gridArea: "eylem", justifySelf: "end" }}>
@@ -144,7 +149,7 @@ function GidenSatir({ item, sira, gez, gunlu, onAc, jetonlar }) {
 function GidenNusha({ item, onClose }) {
   const durumC = DERIN_OF(DURUM_RENK[item?.durum]);
   const satirlar = item ? [
-    { k: "Kaynak evrak", v: item.kaynak_evrak_adi, mono: true },
+    { k: "Kaynak evrak", v: item.kaynak_evrak_adi ? <span title={item.kaynak_evrak_adi}>{ortaElips(item.kaynak_evrak_adi, 18, 10)}</span> : "", mono: true },
     { k: "Kategori · evrak türü", v: `${kategoriMeta(item._kategori).label} · ${EVRAK_TR(item.evrak_turu)}` },
     { k: "Yazı türü", v: item.tur ? YAZI_TR(item.tur) : "—" },
     { k: "Alıcı birim", v: BIRIM_LBL(item.alici_birim), c: DERIN.V },
@@ -169,6 +174,55 @@ function GidenNusha({ item, onClose }) {
         { k: "Denetim izi", v: item.son_hash ? ortaElips(item.son_hash, 10, 6) : "", tam: item.son_hash },
         { k: "Gönderim", v: defterZamani(item.gonderim_tarihi).tam },
       ]} /> : null} />
+  );
+}
+
+/* Kısa defter SAYFANIN DEVAMI olarak çizilir (tur 8 gerilemesi: 1 kayıttan sonra kart
+   kapanıyor, 1920'de ekranın üçte ikisi boş masa kalıyordu). Sayfa 6 satırlık: dolgu cetveli
+   kayıt adımıyla sürer, dipte folyo künyesi ("SAYFA 1 · 1 KAYIT · SON KAYIT …"). */
+/* Tur 8 jüri 2: 6 satırlık sayfa 1440'ta ekranın yarısını bilgisiz çizgiyle dolduruyordu →
+   dolgu en çok 3 satır; ilki "sıradaki gönderi" künyesini taşır. */
+const DEFTER_SAYFA = 4;
+const DOLGU_AZAMI = 3;
+const KOLON = alanlarOf(SABLON.alan).length;
+
+/* Antet sağ künyesi + defter folyosu — yalnız gerçek kayıtlardan (uydurma sıradaki no yok). */
+function useGidenKunye(outbox) {
+  return useMemo(() => {
+    const sirali = [...outbox].sort((a, b) => Number(new Date(b.gonderim_tarihi)) - Number(new Date(a.gonderim_tarihi)));
+    const son = sirali[0];
+    const sonNo = sirali.find((o) => !numaraBekliyor(o))?.id || "";
+    const sonZaman = son ? defterZamani(son.gonderim_tarihi).tam : "";
+    const iade = outbox.filter((o) => o.durum === "reddedildi").length;
+    return {
+      satirlar: [
+        { k: "Defter", v: `${outbox.length} gönderi` },
+        { k: "Son no", v: sonNo },
+        iade ? { k: "İade", v: `${iade} yazı`, ton: "kirmizi" } : { k: "Son gönderi", v: sonZaman },
+      ],
+      folyo: (rows) => {
+        const s = rows.reduce((a, x) => (!a || Number(x.gonderim_tarihi) > Number(a.gonderim_tarihi) ? x : a), null);
+        return `Sayfa 1 · ${rows.length} kayıt${s ? ` · son kayıt ${defterZamani(s.gonderim_tarihi).tam}` : ""}`;
+      },
+    };
+  }, [outbox]);
+}
+
+/* Geniş ekran sağ sütunu — defter imlecindeki gönderinin A4 nüshası (master-detail). */
+function GidenOnizleme({ item, onAc }) {
+  return (
+    <DefterKagitOnizleme kayitNo={numaraBekliyor(item) ? "numara bekleniyor" : item.id} baslik={konuOf(item)}
+      metin={item.taslak ? cleanDemoText(item.taslak) : ""} onAc={() => onAc(item)}
+      ek={`${BIRIM_LBL(item.alici_birim)} · ${defterZamani(item.gonderim_tarihi).tam}`}
+      kunye={[
+        { k: "Alıcı birim", v: BIRIM_LBL(item.alici_birim), c: DERIN.V },
+        { k: "Yazı türü", v: item.tur ? YAZI_TR(item.tur) : "" },
+        { k: "Gönderim", v: defterZamani(item.gonderim_tarihi).tam, mono: true },
+        { k: "Durum", v: DURUM_TR[item.durum] || item.durum, c: DERIN_OF(DURUM_RENK[item.durum]) },
+        { k: "Sayı", v: numaraBekliyor(item) ? "DETSİS numarası bekleniyor" : item.id, mono: true },
+        { k: "Denetim izi", v: item.son_hash ? ortaElips(item.son_hash, 10, 6) : "", mono: true },
+      ]}
+      kose={gitti(item) ? <PostaDamgasi ts={item.gonderim_tarihi} tohum={item.id} gecikme={0} /> : null} />
   );
 }
 
@@ -209,6 +263,8 @@ export default function GidenEvrakView({ outbox = [], onGoInbox, yukleniyor = fa
   const gez = useDefterGezinme();
   const { config, filter } = useGidenFiltre(outbox);
   const gonderildi = outbox.filter((o) => o.durum === "gonderildi").length;
+  const kunye = useGidenKunye(outbox);
+  const genis = useMedyaSorgusu("(min-width: 1600px)");
   // Zimmet çizelgesi: tarih sıralamasında GÜNÜN PULU ayraçları; risk/birim sırasında düz liste.
   const gunlu = filter.filters.sortBy === "ts_desc" || filter.filters.sortBy === "ts_asc";
   const gruplar = useMemo(() => (gunlu ? gunleGrupla(filter.results, (r) => r.gonderim_tarihi) : [{ anahtar: "duz", rows: filter.results }]), [filter.results, gunlu]);
@@ -224,26 +280,31 @@ export default function GidenEvrakView({ outbox = [], onGoInbox, yukleniyor = fa
   const bos = bosDurumMetni({ ara: filter.filters.search, filtreVar: filter.hasActiveFilters, nesne: "gönderi", kalici: "gönderilen yazılar silinmez" });
   let sira = 0;
   return (
-    <ViewWrap id="giden-h" title="Giden evrak" kunye="Giden evrak defteri" sub={`${outbox.length} evrak · ${gonderildi} gönderildi · satıra dokununca arşiv nüshası açılır`}>
+    <ViewWrap id="giden-h" title="Giden evrak" kunye="Giden evrak defteri" sub={`${outbox.length} evrak · ${gonderildi} gönderildi · satıra dokununca arşiv nüshası açılır`}
+      actions={[<DefterAntetKunye key="k" etiket="Giden evrak defteri özeti" satirlar={kunye.satirlar} />]}>
       <SicilStil />
       <div>
         <FilterBar config={config} filter={filter} kip="kompakt" satirIci={outbox.length >= 10 ? ["durum"] : []} />
+        <div style={genis && filter.results.length ? { display: "grid", gridTemplateColumns: `minmax(0,1fr) ${ONIZLEME_SUTUN}px`, gap: SP.xl, alignItems: "stretch" } : undefined}>
         {filter.results.length === 0 ? (
           <BosDefter sablon={SABLON} basliklar={BASLIKLAR} damga={null}
             kunye={`${filter.filters.search.trim() ? "Arama" : "Filtre"} · 0 / ${outbox.length} kayıt`}
             baslik={bos.baslik} sub={bos.sub} actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
         ) : (
-          <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Giden evrak kayıtları" gezinme={gez} ipucu={filter.results.length >= 3 ? "arşiv nüshasını aç" : undefined}
-            rol="grid">
+          <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Giden evrak kayıtları" gezinme={gez} ipucu="arşiv nüshasını aç"
+            rol="grid" dolgu={Math.min(DOLGU_AZAMI, Math.max(0, DEFTER_SAYFA - filter.results.length))} folyo={kunye.folyo(filter.results)}
+            dolguNotu="Sıradaki gönderi bu satıra işlenir" uzar={genis}>
             {gruplar.map((g) => (
               <React.Fragment key={g.anahtar}>
-                {gunlu && <GunPuluBasligi etiket={g.etiket} tarih={g.tarih} sayi={g.rows.length}
+                {gunlu && <GunPuluBasligi etiket={g.etiket} tarih={g.tarih} sayi={g.rows.length} kolon={KOLON}
                   ts={g.rows.find(gitti)?.gonderim_tarihi ?? null} tohum={g.anahtar} />}
                 {g.rows.map((item) => <GidenSatir key={item.id} item={item} sira={sira++} gez={gez} gunlu={gunlu} onAc={setDetay} jetonlar={filter.jetonlar} />)}
               </React.Fragment>
             ))}
           </DefterYuzey>
         )}
+        {genis && filter.results.length > 0 && <GidenOnizleme item={filter.results.find((x) => x.id === gez.aktif) || filter.results[0]} onAc={setDetay} />}
+        </div>
       </div>
       <GidenNusha item={detay} onClose={() => setDetay(null)} />
     </ViewWrap>

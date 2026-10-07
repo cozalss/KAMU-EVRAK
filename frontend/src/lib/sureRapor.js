@@ -127,3 +127,15 @@ export function eksenKademe(maxMs) {
   const tavanSn = Math.ceil(sn / adim) * adim;
   return { tavanSn, kademeler: [tavanSn, tavanSn / 2, 0] };
 }
+
+/* Tür kırılımı (tur 8, rapor modalı) — evrak türü başına adet, ortalama süre ve eşik üstü
+   adet; en yavaş tür önce. Yeni veri yok: aynı ölçüm satırlarının `evrakTuru` alanı. */
+export function turKirilimi(list, esik) {
+  const kova = new Map();
+  for (const x of list || []) {
+    const k = x.evrakTuru || "";
+    const e = kova.get(k) || { tur: k, n: 0, toplam: 0, esikUstu: 0 };
+    kova.set(k, { ...e, n: e.n + 1, toplam: e.toplam + x.ms, esikUstu: e.esikUstu + (Number.isFinite(esik) && x.ms > esik ? 1 : 0) });
+  }
+  return [...kova.values()].map(({ toplam, ...e }) => ({ ...e, ortMs: toplam / e.n })).sort((a, b) => b.ortMs - a.ortMs);
+}

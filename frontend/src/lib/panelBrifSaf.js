@@ -78,3 +78,42 @@ export function parafHarf(adSoyad) {
   if (!parcalar.length) return "—";
   return parcalar.slice(0, 3).map((p) => p.charAt(0).toLocaleUpperCase("tr")).join("");
 }
+
+/* Kaynak durumu sözlüğü — panelKaynak ile AYNI ("bekliyor" · "ok" · "bayat" · "yok"). */
+const KAYNAK_AD = { sla: "yasal süreler", islemler: "işlem geçmişi", giden: "giden sayısı" };
+const hazirMi = (d) => d === "ok" || d === "bayat";
+const birlestir = (adlar) => (adlar.length < 2 ? adlar.join("") : `${adlar.slice(0, -1).join(", ")} ve ${adlar[adlar.length - 1]}`);
+
+/** Hata fişi cümleleri GERÇEK kaynak durumundan (tur 8 jüri: sabit "etkilenmedi" metinleri
+ *  aynı ekranda birbirini yalanlıyordu). `saglam` yalnız veri GELMİŞ kaynaklar; yükleniyor olan
+ *  "etkilenmedi" sayılmaz. Sağlam kaynak yoksa `saglamCumle` null → cümle hiç basılmaz. */
+export function kaynakOzeti(kaynak = {}, kuyrukN = 0) {
+  const anahtarlar = Object.keys(KAYNAK_AD).filter((k) => k in kaynak);
+  const dusen = anahtarlar.filter((k) => kaynak[k] === "yok");
+  const saglam = anahtarlar.filter((k) => hazirMi(kaynak[k]));
+  /* Kuyruk yerel veridir (gelen kutusu) — sayısı biliniyorsa "etkilenmedi" listesinin başında. */
+  const kuyruk = kuyrukN > 0 ? [`kuyruktaki ${kuyrukN} evrak`] : [];
+  const adlar = (l) => l.map((k) => KAYNAK_AD[k]);
+  const saglamAd = [...kuyruk, ...adlar(saglam)];
+  return {
+    dusen, saglam, hazirN: saglam.length, toplam: anahtarlar.length,
+    dusenCumle: dusen.length ? `${birlestir(adlar(dusen))} alınamadı` : null,
+    saglamCumle: saglamAd.length ? `${birlestir(saglamAd)} etkilenmedi` : null,
+  };
+}
+
+/** Taslak paraf oranı — backend'in onay_durumu alanından (yerel türetme yok).
+    "Bekliyor" süzgeci kabuğun taslak sayacıyla (kabukVeri.draftsFromHistory) BİREBİR aynı:
+    onay_durumu BOŞ olan taslak bekler; dolu olan her değer (onaylandı/onaylandi/duzenlendi/
+    reddedildi) karar verilmiştir. Tur 8 jüri: "onaylandi" ve "duzenlendi" bekliyor sayılınca
+    nabız 33, kenar çubuğu 32 diyordu. */
+export function parafOrani(taslaklar = []) {
+  const say = { onaylandi: 0, reddedildi: 0, bekliyor: 0 };
+  for (const h of taslaklar) {
+    const d = h?.result?.onay_durumu;
+    if (!d) say.bekliyor++;
+    else if (d === "reddedildi") say.reddedildi++;
+    else say.onaylandi++;
+  }
+  return { ...say, toplam: taslaklar.length };
+}

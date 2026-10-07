@@ -85,7 +85,9 @@ Logotype tek yazım: `LOGOTYPE = "KAMU-EVRAK"` (`kabukAtomlari.jsx`, tire; orta 
 ## Koyu tema "Gece mesaisi"
 
 `:root[data-theme="dark"]` — mavi-siyah zemin (#0c0e14), yüzey merdiveni surf2 < surf < pop,
-yükseklik ışıkla (iç üst-kenar parlaması).
+yükseklik ışıkla (iç üst-kenar parlaması). Tur 8: kart (surf) zeminden ≥ 1,15 parlaklık oranı
+(test), bant/derin aksanlar ~%85 doygunluğa kısık ("neon" okunmasın), antet çift çizgisi
+`--ke-antet-cizgi` = ink2 (saf açık çizgi gece zemininde sertçe parlıyordu).
 
 - **Ray = gece laciverdi cilt** (#121b3d, tur 4). Eski #080a15 ray ile sayfa arasında oran
   1,02'ydi: dosya sırtı koyu temada YOKTU. Ayrışma açıklıkla değil RENKLE yapılır (siyah
@@ -128,6 +130,11 @@ preflight kapalı, `@tailwind base` satırı SİLİNMEZ). AGPL bağımlılık yo
   Sesli görüşme diski panelin çapasında doğar (tam ekran değil, zeminsiz orb).
 - **Asistan mesajı = havale notu fişi.** Araç sonucu kayıtlar nota zımbalı ek olarak durur;
   yalnız EN SON araç sonucu mini damga taşır ("3 kayıt · Gelen") — panel başına tek damga.
+- **Antet sağ künyesi** (≥ 1200 px, tur 8): resmî yazının üst-sağ bloğu gibi 3 satır mono
+  `ETİKET  DEĞER` (sol çizgili, tab-stop hizalı). Görünüm kendi bloğunu `actions` ile verirse
+  (defterler: `DefterAntetKunye`, Panel) o çizilir; vermezse `ViewWrap` kabuktan
+  (`AntetKunyeBaglam` → `lib/kabukAntetKunye`) yalnız bilinen sayaçları basar. Bilinmeyen sayı
+  `··` (bekliyor) / `—` (yanıt yok), asla `00`. Telefonda yok.
 - **Hata sınırı = "hata kaydı" fişi** (`HataSiniri`): antet künyesi + saat, ne oldu / ne
   yapılmalı, "Yeniden dene" (bölümü sıfırlar) + "Sayfayı yenile", teknik ayrıntı mono ve
   `<details>` içinde gizli. `tam` prop'u görünüm düzeyi sarmalama içindir.
@@ -165,10 +172,29 @@ zoom) · AA kontrast iki temada (ray kapsamı artık `derin-kirmizi`/`derin-sari
   kilit. Kalkan hiçbir gezinme anlamında kullanılmaz. Gezinme ikonları 18 px kutuda.
 - **Günlük sicil** (`KabukSicil`): rayın orta boşluğunda mono sicil satırları — bugün işlenen ·
   bugün giden · karar bekleyen · gecikmiş (yalnız kabuğun bildiği olgulardan, `lib/kabukSicil`).
-  Bilinmeyen satır "—"; kaynak hata verdiyse başlıkta sarı "YANIT YOK". Yükseklik ≥ 960'ta altına
-  "Son kayıtlar" (saat + konu; ≥ 1040'ta beş satır). Yükseklik < 820'de gizli. Tıklanmaz.
-- **Tema geçişi "masa lambası"**: anahtarın konumundan açılan View Transition dairesi (420 ms,
-  `ke-lamba`); menü açık kalır; reduced-motion'da anında.
+  ÜÇ hâl ayrı çizilir (tur 8): sayı · BEKLİYOR (ilk yükleme, sakin `··` nabzı `nu-think`) · YOK
+  ("—", sunucu yanıtsız; başlıkta sarı "YANIT YOK"). Rozetler de bekliyorken yer tutar (`··`) →
+  sayı gelince satır zıplamaz. Yükseklik ≥ 960'ta "Son kayıtlar": İKİ satır (konu + mono sicil no
+  `İ-yyyy/nnnn` · saat, İşlenen defteriyle aynı numara), tıklanınca İşlenen'e götürür; boşsa
+  "Henüz kayıt yok". Satırlar yalnız İLK çizimde düşer (veri tazelenince yeniden doğup opaklık
+  0'da kalıyordu). Yükseklik < 820'de gizli.
+- **Cilt kör baskısı** (`CiltKorBaski`, tur 8): sicil ile Asistan arasındaki lacivert bez,
+  mürekkepsiz "KAMU-EVRAK / SİCİL DEFTERİ · yıl" baskısıyla biter (`--ke-kor-*`: zemin tonu +
+  ışık + gölge; bilgi taşımaz). flex:1 + min-height 0 → yer yoksa çöker; < 900 px yükseklikte gizli.
+- **Etkin sırt üstü renk** sayfanın token'larıdır (`--ke-sayfa*`, `--ke-sayfa-kirmizi` dahil): ray
+  mercanı açık kâğıtta 1,7:1 kalıyordu. Sırt odak alt çizgisi yalnız `[data-ray-etiket]`te.
+- **Dar ray rozeti** ikonun dışında, sağ üst köşeye asılı; ray/sırt renginde 2 px ayırma halkası.
+  Ray genişliği kökte `--ke-ray-w` olarak yayınlanır (bildirim katmanı içerik sütununa ortalanır).
+- **Tema geçişi "masa lambası"** (tur 8): sert clip-path dairesi yerine yumuşak kenarlı ışık halesi
+  — radial mask, dolu yarıçap `@property --ke-lamba-yc` ile büyür, 96 px yumuşak kenar, 520 ms
+  `--ke-ease-in-out`. Menü açık kalır; reduced-motion'da anında.
+- **Görünüm geçişi ardışıktır** (tur 8, çift pozlama bitti): eski başlık/içerik 80 ms'de söner, yeni
+  60 ms gecikmeyle girer (`ke-antet-baslik` grubu konum morfunu sürdürür). Görünümün İLK açılışında
+  antet çift çizgisi soldan sağa çekilir (`ke-cizgi`, 280 ms) ve başlık 40 ms sonra yükselir; aynı
+  oturumda ikinci ziyarette yalnız 120 ms çapraz geçiş.
+- **Bağlantı kaydı** (`BaglantiKaydi`, tur 8): kabuk kaynaklarının HEPSİ son denemede hata verdiyse
+  içerik sütununun üstünde tek satırlık sarı künye bandı ("BAĞLANTI KAYDI · saat · son bilinen
+  kayıtlar" + Yeniden dene). Akış içinde durur, içerik örtülmez.
 - **Durum ailesi**: hata = `HataFisi` (künye HATA/UYARI KAYDI · saat · başlık · ne yapılmalı ·
   birincil "Yeniden dene" · `<details>` teknik). HataSiniri ve ErrorBar (kompakt) bundan türer;
   görünüm bantları da bunu kullanmalı. Kabuk sorguları yeniden denenirken üstte ortalı
@@ -182,11 +208,29 @@ zoom) · AA kontrast iki temada (ray kapsamı artık `derin-kirmizi`/`derin-sari
 - **Dokunma hedefi ≥ 44 px**: parola göster, "Parolamı unuttum", toast kapat (görsel ikon küçük,
   vuruş alanı 44).
 - **Bildirim = zımbalı havale pusulası** (`fisToast`): kâğıt yüzey, sol kenar ton çizgisi, zımba
-  izi, mono künye `saat · İŞLENDİ/BİLGİ/UYARI/HATA`, kesikli ayraç. Ton çağırandan
+  TELİ (kâğıdın üst kenarını delen iki kısa paralel tel; köşeli parantez 1x'te artık gibiydi),
+  masaüstünde içerik sütununun ortasında, istif açık (`expand`), mono künye `saat · İŞLENDİ/BİLGİ/UYARI/HATA`, kesikli ayraç. Ton çağırandan
   (`showToast(m, { ton })`) ya da metinden (`lib/toastTon` — veri kaybı uyarısı başarıdan
   ayrılır). Uyarı/hata ≥ 7 sn.
 - **Giriş sahnesi**: kâğıt ve havale fişi EĞİMSİZ (yalnız dikey kayma + opaklık); eğim yalnız
-  damgada. Form hataları alan düzeyinde (`hataliAlan`), ilk hatalı alana odak.
+  damgada. Fiş imzanın ALTINA iliştirilir (vaadin görsel karşılığı açık kalır); formda hata/kilit
+  varken döngü mühürlü son karede DURUR. Form hataları alan düzeyinde (`hataliAlan`), ilk hatalı
+  alana odak; kimlik reddinde YALNIZ parola işaretlenir, odak parolada ve içeriği seçili. Kayıtta
+  birim boş başlar ("Birim seçin"), seçilmeden gönderilmez.
+- **Giriş düzeni ≥ 1100 px** (tur 8): tek 12 sütunlu ızgara — satır 1 antet (logo · tam genişlik
+  çizgi · künye · tema), vaat + sahne 1–8, form kâğıdı 9–12. Form kâğıdının ÜSTÜ vaat başlığının
+  üstüne SABİT: dikey ortalama yok (hata notu / Kayıt sekmesi kartı zıplatmıyordu → aşağı büyür).
+  Sahnedeki kâğıt tam A4 (maske yalnız < 880 px yükseklikte); defter sütunu kâğıtla aynı tabanda biter.
+- **Logotype TEK atom** (`kabukAtomlari.Logotype`: 14 px · %112 · .02em); girişte yalnız `dalga`
+  (imleç genişlik dalgası) açık — girişten panele geçince marka yazısı ölçü değiştirmez.
+- **Profil = personel sicil fişi**: künye "Personel kartı · Oturum açık" menüden kipe sürer; kısa
+  sicil no (`P-xxxxxxxx`), noktalı kılavuzlu sicil satırları, e-imza yoksa kör baskı `YOK`; UUID
+  yalnız "Teknik kimlik" `<details>` içinde. Hesap menüsü 288 px, e-posta kırpılmaz.
+- **Menü öğesinde hover = klavye odağı** (bilinçli karar): Radix roving-focus ile ok tuşlarıyla
+  gezilen menüde odaklı öğe fareyle üstüne gelinen öğeyle AYNI zemini alır (yerel menülerin dili);
+  ayrı halka çizilmez — menü içinde aynı anda tek "etkin" satır vardır.
+- **Baskı** (`@media print`, temaCss): ray/şerit/bildirim gizli, zemin beyaz, koyu tema seçili olsa
+  da açık token'lar, kartlar gölgesiz, damga siyah-beyaz, animasyonlar son karede.
 - `components/ui/*` (shadcn, ikinci token dünyası, hiç import edilmiyordu) SİLİNDİ; kullanılacak
   atom neonUi/kabukAtomlari'dır.
 

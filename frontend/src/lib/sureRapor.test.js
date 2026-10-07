@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import {
   olcumler, ortalama, esikMs, trend, pencere, donemKiyas, genelTrend, sirala, eksenKademe,
   fmtSn, hizKademe, gunlukOrtSure, ESIK_KAT,
+  turKirilimi,
 } from "./sureRapor.js";
 import { GUN_MS } from "./gunlukSeri.js";
 
@@ -175,4 +176,18 @@ test("olcumler konu alanını taşır (rapor adı feed ile aynı kaynaktan)", ()
   const o = olcumler([{ name: "evrak.txt", ts: 1, result: { sure_ms: 900, bilgi_unsurlari: { konu: "park aydınlatma talebi" } } }, { name: "x.txt", ts: 2, result: { sure_ms: 500 } }]);
   assert.equal(o[0].konu, "park aydınlatma talebi");
   assert.equal(o[1].konu, "");
+});
+
+/* Tur 8: rapor kartın sunamadığını sunar — evrak türüne göre ortalama süre + eşik üstü adet. */
+test("turKirilimi: tür başına adet, ortalama, eşik üstü; en yavaş tür önce", () => {
+  const list = [
+    { evrakTuru: "dilekce", ms: 10000 }, { evrakTuru: "dilekce", ms: 6000 },
+    { evrakTuru: "ihbar", ms: 20000 }, { evrakTuru: "", ms: 4000 },
+  ];
+  const r = turKirilimi(list, 12000);
+  assert.deepEqual(r.map((x) => x.tur), ["ihbar", "dilekce", ""]);
+  assert.equal(r[0].esikUstu, 1);
+  assert.equal(r[1].n, 2);
+  assert.equal(r[1].ortMs, 8000);
+  assert.deepEqual(turKirilimi([], 1000), []);
 });

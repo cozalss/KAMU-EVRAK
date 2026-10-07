@@ -34,7 +34,7 @@ function useInceIsaretci() {
   return ince;
 }
 
-function AramaKutusu({ filter, dar }) {
+function AramaKutusu({ filter, dar, kisa = false }) {
   const f = filter.filters;
   const aramaRef = useRef(null);
   const [odakta, setOdakta] = useState(false);
@@ -55,7 +55,7 @@ function AramaKutusu({ filter, dar }) {
     <div style={{ position: "relative", minWidth: 0 }}>
       <span aria-hidden="true" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", display: "flex", color: PAL.mut3, pointerEvents: "none" }}><Icon.search /></span>
       <input ref={aramaRef} type="search" value={f.search} onChange={(e) => filter.setSearch(e.target.value)}
-        placeholder={dar ? "Konu, dosya…" : "Konu, dosya adı…"} aria-label="Taslaklarda ara (konu ya da dosya adı)"
+        placeholder={dar ? "Konu, dosya…" : kisa ? "Ara" : "Konu, dosya adı…"} aria-label="Taslaklarda ara (konu ya da dosya adı)"
         onFocus={(e) => { focusRing.onFocus(e); setOdakta(true); }}
         onBlur={(e) => { focusRing.onBlur(e); setOdakta(false); }} data-dokunma=""
         style={{ width: "100%", height: dar ? 44 : 36, boxSizing: "border-box", padding: `0 ${ince && !dar ? 32 : 12}px 0 34px`, borderRadius: RAD.ctl,
@@ -69,13 +69,13 @@ function AramaKutusu({ filter, dar }) {
 
 /* Kompakt iki satırlık araç çubuğu: arama + sıralama · tür + birim. Yüksekliği filtre
    durumundan BAĞIMSIZ (temizle bağlantısı defter başlığında). */
-export function AracCubugu({ filter, turSecenek, birimSecenek, siraSecenek, dar = false }) {
+export function AracCubugu({ filter, turSecenek, birimSecenek, siraSecenek, dar = false, kisa = false }) {
   const f = filter.filters;
   return (
     <div className="ke-tas-arac" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 118px)", gap: SP.s, minWidth: 0, maxWidth: "100%", padding: SP.m, borderBottom: `1px solid ${PAL.line}` }}>
       {/* Seçici atomu (FilterBar) bu kümenin değil — telefonda 44px hedef kap kuralıyla verilir. */}
       <style>{"@media (max-width:640px){.ke-tas-arac select{min-height:44px;font-size:16px}}"}</style>
-      <AramaKutusu filter={filter} dar={dar} />
+      <AramaKutusu filter={filter} dar={dar} kisa={kisa} />
       <SecimKutusu id="tas-sira" label="Sıralama" value={f.sortBy} onChange={(e) => filter.setSortBy(e.target.value)}
         options={siraSecenek} minW={58} />
       <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: SP.s, minWidth: 0 }}>
@@ -91,13 +91,17 @@ export function AracCubugu({ filter, turSecenek, birimSecenek, siraSecenek, dar 
 /* Defter başlığı — sütun etiketleri antet dilinde. Sağ uçtaki SAYAÇ YUVASI filtre etkinken
    "2 / 6 kayıt" + temizle bağlantısını taşır; yükseklik değişmez (sıçrama yok). Sütun
    etiketleri aria-hidden; sayaç ve düğme ekran okuyucuya açık. */
-export function DefterBasligi({ adet, toplam, dar = false, filtreli = false, onTemizle }) {
+/* Yeniden deneme sayısı react-query `retry` ayarından (main.jsx: ilk istek + 3 tekrar). */
+const DENEME_AZAMI = 4;
+export function DefterBasligi({ adet, toplam, dar = false, filtreli = false, onTemizle, deneme = 0 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", height: 34, flexShrink: 0, borderBottom: `1px solid ${PAL.lineHi}`, ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", whiteSpace: "nowrap" }}>
       <span aria-hidden="true" style={{ width: KENAR_X, textAlign: "center", flexShrink: 0 }}>No</span>
-      <span aria-hidden="true" style={{ flex: 1, minWidth: 0, paddingLeft: 12, overflow: "hidden", textOverflow: "ellipsis" }}>{dar ? "Konu" : "Konu · yazı türü · muhatap"}</span>
-      <span role="status" aria-live="polite" style={{ display: "inline-flex", alignItems: "center", gap: SP.s, paddingRight: filtreli ? 6 : 14, ...TNUM }}>
-        {adet == null ? "yükleniyor" : filtreli ? <><span style={{ color: PAL.ink2 }}>{adet}</span>/ {toplam} kayıt</> : `${adet} kayıt`}
+      {/* Deneme/yükleme sırasında DAR etiket: jüri tur 8 — 1920'de uzun etiket sayaçla boşluksuz
+          çakışıyordu ("MUHATAPYENİDEN DENENİYOR · 4/4"). Sayaç yuvası ayrıca paddingLeft taşır. */}
+      <span aria-hidden="true" style={{ flex: 1, minWidth: 0, paddingLeft: 12, overflow: "hidden", textOverflow: "ellipsis" }}>{dar || adet == null ? "Konu" : "Konu · yazı türü · muhatap"}</span>
+      <span role="status" aria-live="polite" style={{ display: "inline-flex", alignItems: "center", gap: SP.s, paddingLeft: SP.m, paddingRight: filtreli ? 6 : 14, flexShrink: 0, ...TNUM }}>
+        {adet == null ? (deneme > 0 ? `yeniden deneniyor · ${Math.min(deneme + 1, DENEME_AZAMI)}/${DENEME_AZAMI}` : "yükleniyor") : filtreli ? <><span style={{ color: PAL.ink2 }}>{adet}</span>/ {toplam} kayıt</> : `${adet} kayıt`}
         {filtreli && onTemizle && adet > 0 && (
           <button type="button" onClick={onTemizle} {...focusRing} data-press=""
             style={{ cursor: "pointer", height: 26, padding: "0 8px", border: "none", borderRadius: RAD.chip, background: ALFA(T), ...TYPE.antet, textTransform: "uppercase", color: DERIN.T, transition: `transform .14s ${EASE.out}` }}>
@@ -109,16 +113,23 @@ export function DefterBasligi({ adet, toplam, dar = false, filtreli = false, onT
   );
 }
 
-/* İç odak halkası — liste, köşeleri kırpan defter kartının içinde; dış halka kırpılırdı. */
-export const icOdak = {
-  onFocus: (e) => { if (e.currentTarget.matches(":focus-visible")) e.currentTarget.style.boxShadow = `inset 0 0 0 2px ${T}`; },
-  onBlur: (e) => { e.currentTarget.style.boxShadow = "none"; },
-};
+/* Liste odağı — jüri tur 8: genel :focus-visible halkası DIŞA dönük box-shadow'dur; liste
+   köşeleri kırpan defter kartının içinde olduğundan halkanın yalnız üst ve alt çizgisi
+   görünüyordu (kart çerçevesiyle karışıyordu), eski iç gölge ise satır zeminlerinin altında
+   kalıyordu. 2. jüri: kab boyu outline tüm listeyi kalın çerçeveye alıp son satırı kesiyordu
+   → odak SATIR düzeyinde (aria-activedescendant zaten var): seçili satır 2px iç mürekkep
+   halkası alır, kapta yalnız üstte ince mürekkep çizgisi kalır. */
+export const KUYRUK_ODAK_CSS = `
+[data-kuyruk-liste]:focus-visible{box-shadow:inset 0 1px 0 color-mix(in srgb,var(--ke-t) 45%,transparent)!important;outline:none!important}
+[data-kuyruk-liste]:focus-visible [aria-selected="true"]{box-shadow:inset 3px 0 0 var(--ke-t),inset 0 0 0 2px var(--ke-t)!important}
+`;
+export const icOdak = { "data-kuyruk-liste": "" };
 
 /* Kuyruk satırı — kart DEĞİL: iki satırlık seçilebilir öğe (konu + meta), eylemsiz. Seçili:
    3px mürekkep şeridi + tint + 600 başlık + mavi sıra no (renk tek sinyal değil). */
-export function KuyrukSatiri({ h, konu, muhatap, sira, secili, onSec, onAc, optId, ikiz = false }) {
-  const tarih = ikizTarihi(h.ts, ikiz);
+export function KuyrukSatiri({ h, konu, muhatap, sira, secili, onSec, onAc, optId, kisa = false }) {
+  const tarih = satirTarihi(h.ts, kisa);
+  const tamTarih = satirTarihi(h.ts, false);
   const baslik = konu || h.name;
   const birim = BIRIM_GOSTER(h.result?.hedef_birim || h.hedef_birim, h.result?.evrak_turu || h.evrak_turu);
   const meta = metaSatiri(YAZI_TR(h.result?.yazi_turu) || "Taslak", birim && birim !== "—" ? birim : muhatap);
@@ -138,7 +149,7 @@ export function KuyrukSatiri({ h, konu, muhatap, sira, secili, onSec, onAc, optI
           <span title={baslik} style={{ ...TYPE.ui, fontWeight: secili ? 600 : 500, color: PAL.ink, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {baslik}
           </span>
-          {tarih && <span style={{ fontFamily: MONO, fontSize: 11, letterSpacing: ".02em", color: PAL.mut3, ...TNUM, flexShrink: 0 }}>{tarih}</span>}
+          {tarih && <span title={tamTarih} style={{ fontFamily: MONO, fontSize: 11, letterSpacing: ".02em", color: PAL.mut3, ...TNUM, flexShrink: 0 }}>{tarih}</span>}
         </div>
         <div title={meta} style={{ ...TYPE.meta, color: PAL.mut, marginTop: 3, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {meta}
@@ -148,26 +159,22 @@ export function KuyrukSatiri({ h, konu, muhatap, sira, secili, onSec, onAc, optI
   );
 }
 
-/* İkiz satır (aynı konu + aynı meta): tarih saatle birlikte yazılır — "01 ile 02 birebir
-   aynı" görünmesin (tur 6 doğrulaması). Ayırıcı veriden gelir; uydurma ek yok. */
+/* Satır tarihi daima saatle yazılır — ikiz satırlar (aynı konu + aynı meta) da böylece ayrışır
+   (tur 6 doğrulaması); ayırıcı veriden gelir, uydurma ek yok. */
 const SAAT = { hour: "2-digit", minute: "2-digit" };
-function ikizTarihi(ts, ikiz) {
+const iki = (n) => String(n).padStart(2, "0");
+function satirTarihi(ts, kisa = false) {
   if (!Number.isFinite(ts)) return "";
   const d = new Date(ts);
   const gun = d.toLocaleDateString("tr-TR");
   const saat = d.toLocaleTimeString("tr-TR", SAAT);
-  // Bugünün TÜM satırları "bugün 21:14" (çapraz jüri: aynı listede yalnız ikizler "bugün …",
-  // ötekiler "06.10.2026" yazıyordu — aynı gün iki biçimde okunuyordu). Eski gün: tarih; ikizse +saat.
-  if (gun === new Date().toLocaleDateString("tr-TR")) return `bugün ${saat}`;
-  return ikiz ? `${gun} ${saat}` : gun;
-}
-
-/** Satır anahtarı (konu · yazı türü · birim/muhatap) birden çok satırda geçenlerin id kümesi. */
-export function ikizKumesi(satirlar) {
-  const say = new Map();
-  const anahtar = (h) => `${h.konu || h.name}|${h.result?.yazi_turu || ""}|${h.result?.hedef_birim || h.hedef_birim || h.muhatap || ""}`;
-  satirlar.forEach((h) => say.set(anahtar(h), (say.get(anahtar(h)) || 0) + 1));
-  return new Set(satirlar.filter((h) => say.get(anahtar(h)) > 1).map((h) => h.id));
+  const bugun = gun === new Date().toLocaleDateString("tr-TR");
+  // TEK BİÇİM, SABİT GENİŞLİK (jüri tur 8: aynı listede "06.10 21:14" ile yalnız "06.10" yan
+  // yana duruyordu). KISA (dar kuyruk): bugün → "bugün 21:14", eski gün → "06.10 21:14" — ikisi
+  // de 11 mono karakter, sütun hizalı. GENİŞ: eski gün tam tarih + saat. Tam tarih title'da.
+  const ga = `${iki(d.getDate())}.${iki(d.getMonth() + 1)}`;   // gg.aa (yerel ayar "/" basıyordu)
+  if (bugun) return `bugün ${saat}`;
+  return kisa ? `${ga} ${saat}` : `${gun} ${saat}`;
 }
 
 /* Boş filtre — defter SATIRLARINA oturur: başlık+açıklama tek 52px satır (kuyruk satırıyla

@@ -32,11 +32,13 @@ function sekmeAylari(ozet, buAy) {
   });
 }
 
-function Sekme({ x, secili, bugunAyi, max, onGit, sik }) {
+function Sekme({ x, secili, bugunAyi, max, onGit, sik, onTus }) {
   const renk = AGIRLIK_RENK[x.agirlik] || PAL.lineHi;
   const ad = `${AY_ADI[x.tarih.getMonth()]} ${x.tarih.getFullYear()}`;
   return (
     <button type="button" role="tab" aria-selected={secili} onClick={() => onGit(x.tarih)} {...focusRing} data-press=""
+      id={`sure-sekme-${x.tarih.getFullYear()}-${x.tarih.getMonth()}`} aria-controls="sure-takvim-panel"
+      tabIndex={secili ? 0 : -1} onKeyDown={onTus}
       aria-label={`${ad} — ${x.n ? `${x.n} evrakın son günü` : "son gün yok"}${bugunAyi ? " (bu ay)" : ""}`}
       onMouseEnter={(e) => { if (!secili) e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { if (!secili) e.currentTarget.style.background = "transparent"; }}
@@ -60,14 +62,29 @@ function Sekme({ x, secili, bugunAyi, max, onGit, sik }) {
   );
 }
 
+/* ARIA sekme deseni (tur 8): roving tabindex — tek Tab durağı (seçili sekme); ←/→ komşu
+   aya, Home/End uçlara. Seçim odakla birlikte değişir (otomatik etkinleştirme), odak yeni
+   seçili sekmeye taşınır. Izgara role=tabpanel + aria-labelledby ile bağlı (SureTakvimi). */
+function sekmeTusu(e, aylar, ay, onGit) {
+  const i = aylar.findIndex((x) => ayFark(x.tarih, ay) === 0);
+  const hedef = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: aylar.length - 1 }[e.key];
+  if (hedef == null || hedef < 0 || hedef >= aylar.length) return;
+  e.preventDefault();
+  const t = aylar[hedef].tarih;
+  const liste = e.currentTarget.parentElement;
+  onGit(t);
+  requestAnimationFrame(() => liste?.querySelector(`#sure-sekme-${t.getFullYear()}-${t.getMonth()}`)?.focus());
+}
+
 export function AySekmeleri({ ozet, ay, buAy, onGit }) {
   const aylar = useMemo(() => sekmeAylari(ozet, buAy), [ozet, buAy]);
   if (aylar.length < 2) return null;
   const max = Math.max(1, ...aylar.map((x) => x.n));
+  const onTus = (e) => sekmeTusu(e, aylar, ay, onGit);
   return (
     <div role="tablist" aria-label="Son günlerin aylara dağılımı" style={{ display: "flex", gap: 2, alignItems: "flex-end" }}>
       {aylar.map((x) => (
-        <Sekme key={`${x.tarih.getFullYear()}-${x.tarih.getMonth()}`} x={x} max={max} onGit={onGit} sik={aylar.length > 6}
+        <Sekme key={`${x.tarih.getFullYear()}-${x.tarih.getMonth()}`} x={x} max={max} onGit={onGit} sik={aylar.length > 6} onTus={onTus}
           secili={ayFark(x.tarih, ay) === 0} bugunAyi={ayFark(x.tarih, buAy) === 0} />
       ))}
     </div>
@@ -75,9 +92,10 @@ export function AySekmeleri({ ozet, ay, buAy, onGit }) {
 }
 
 /* Mini mühür — boş ay kartındaki önizleme (gün numarası halkada). */
-function MiniMuhur({ gun, renk }) {
+function MiniMuhur({ gun, renk, agirlik }) {
+  const bicim = agirlik === 3 ? `3px double ${renk}` : `1.5px ${agirlik === 2 ? "dashed" : "solid"} ${renk}`;
   return (
-    <span style={{ display: "inline-grid", placeItems: "center", width: 22, height: 22, borderRadius: RAD.dot, border: `1.5px solid ${renk}`,
+    <span style={{ display: "inline-grid", placeItems: "center", width: 22, height: 22, borderRadius: RAD.dot, border: bicim,
       background: ALFA(renk), fontFamily: DISPLAY, fontSize: 10, fontWeight: 800, color: DERIN_OF(renk), ...TNUM }}>{gun}</span>
   );
 }
@@ -99,7 +117,7 @@ function AtlaKart({ h, yon, gunler, onGit }) {
         <span style={{ ...TYPE.meta }}>evrak</span>
       </span>
       <span aria-hidden="true" style={{ display: "flex", flexWrap: "wrap", gap: 4, justifyContent: yon === "sol" ? "flex-start" : "flex-end" }}>
-        {gunler.slice(0, 6).map((g) => <MiniMuhur key={g.anahtar} gun={g.tarih.getDate()} renk={AGIRLIK_RENK[g.agirlik]} />)}
+        {gunler.slice(0, 6).map((g) => <MiniMuhur key={g.anahtar} gun={g.tarih.getDate()} renk={AGIRLIK_RENK[g.agirlik]} agirlik={g.agirlik} />)}
       </span>
     </button>
   );

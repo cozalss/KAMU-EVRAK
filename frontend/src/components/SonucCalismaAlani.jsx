@@ -13,6 +13,8 @@ import { useDayanakIpligi, DayanakSeridi, DayanakKatmani } from "./DayanakIpligi
 import { AltTaleplerCard, MevzuatCard, ArchiveSlaCard, RiskCard, ValidationCard, RoutingCard, LintCard } from "./SonucDestekKartlari.jsx";
 import { gosterimBirimi } from "../lib/gosterimBirimi.js";
 import YazismaPaketiKarti from "./YazismaPaketiKarti.jsx";
+import { gonderimDenetimi } from "../lib/gonderimHazirlik.js";
+import { segmentleriMaskele } from "../lib/sonucMaske.js";
 
 const TRUNCATED_TEXT_RE = /(?:\.{3}|…)\s*$/;
 
@@ -495,6 +497,7 @@ export default function SonucCalismaAlani({
   if (!r) return null;
 
   const eksik = arr(r.eksik_alanlar);
+  const gonderimKilit = !!r.yazi_taslak_md && !gonderimDenetimi(r.yazi_taslak_md).hazir;
   const uyari = arr(r.verify_uyari);
   const tutar = arr(r.tutarlilik_uyari);
   const lint = r.lint_2646 || {};
@@ -516,13 +519,18 @@ export default function SonucCalismaAlani({
   const okunanPanel = sourceView === "ozet"
     ? <SummarySwapPanel r={r} onBelge={() => setSourceView("belge")} />
     : isValidElement(solPanel)
-      ? cloneElement(solPanel, { ekAksiyon: ozetButonu })
+      /* Görüntü maskesi (jüri tur 8): kâğıtta telefon maskeliyken e-posta açıktı. Segmentler
+         aynı kuralla (baş 2 karakter + yıldız) maskelenir; kaynak veri değişmez. */
+      ? cloneElement(solPanel, { ekAksiyon: ozetButonu, ...(solPanel.props?.segs ? { segs: segmentleriMaskele(solPanel.props.segs) } : null) })
       : (solPanel || <EmptySource />);
 
   return (
     <>
       <style>{SONUC_CSS}</style>
-      <div className="sc-workspace kd-sonuc" aria-label="Belge inceleme sonucu">
+      {/* data-gonderim-kilit: taslakta gönderimi engelleyen kusur var (onay fişiyle AYNI denetim,
+          lib/gonderimHazirlik). Şerit "Gönderime hazır değil" der; taslak kartındaki birincil
+          düğme ikincil tona iner (sonucStil) — "kilitli" deyip dolu primary göstermek çelişkiydi. */}
+      <div className="sc-workspace kd-sonuc" aria-label="Belge inceleme sonucu" data-gonderim-kilit={gonderimKilit ? "" : undefined}>
         <DecisionCard r={r} eksik={eksik} uyari={uyari} tutar={tutar} />
         <DayanakSeridi ip={ip} />
 
@@ -565,13 +573,18 @@ export default function SonucCalismaAlani({
                 Kapı HAM `r.canli_kaynak.url` yerine DOĞRULANMIŞ künyeyi sorar: adres
                 güvenlik sınavından geçmezse RoutingCard onu zaten basmaz ve burada ham
                 alana bakmak boş bir kart hücresi bırakırdı. */}
-            {(gosterimBirimi(r) || canliKaynakYorum(r)) && (
+            {/* Yönlendirme | doğrulama ÇİFTİ tek geniş hücrede kendi ızgarasıyla (tur 8): eşit
+                1:1 bölünmede kısa doğrulama kartının alt yarısı boş kalıyordu. Masaüstünde 7/5,
+                içerik ağırlığına göre; tek kart varsa tam genişlik. */}
+            <div className="sc-support-wide kd-destek-cift" data-tek={(gosterimBirimi(r) || canliKaynakYorum(r)) ? undefined : ""}>
+              {(gosterimBirimi(r) || canliKaynakYorum(r)) && (
+                <div className="sc-support-half">
+                  <RoutingCard r={r} birimAday={birimAday} />
+                </div>
+              )}
               <div className="sc-support-half">
-                <RoutingCard r={r} birimAday={birimAday} />
+                <ValidationCard r={r} uyari={uyari} tutar={tutar} />
               </div>
-            )}
-            <div className="sc-support-half">
-              <ValidationCard r={r} uyari={uyari} tutar={tutar} />
             </div>
             {lintKurallar.length > 0 && (
               <div className="sc-support-wide">

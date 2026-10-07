@@ -14,7 +14,10 @@
    Kurgu ayrımı: İşlenen = arşiv/izleme, Taslaklar = çalışma kuyruğu, Giden = gönderilmiş. */
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ViewWrap, Btn, Icon, MONO, PAL, BANT, TYPE, TNUM, RAD, SP, ALFA, DERIN_OF, SR_ONLY } from "./neonUi.jsx";
-import { SicilStil, BaslikHucre, DefterYuzey, BosDefter, DefterIskelet, DefterHata, GrupBasligi, useDefterGezinme, Imlec, HUCRE, KayitNoHucre, Vurgulu, DEFTER_NO, DEFTER_MARJ, ADIM } from "./SicilDefter.jsx";
+import { SicilStil, BaslikHucre, DefterYuzey, BosDefter, DefterIskelet, DefterHata, GrupBasligi, useDefterGezinme, Imlec, HUCRE, KayitNoHucre, Derkenar, Vurgulu, alanlarOf, DEFTER_NO, DEFTER_MARJ, ADIM } from "./SicilDefter.jsx";
+import DefterAntetKunye from "./DefterAntetKunye.jsx";
+import { kovaKutlesi, AYNEN } from "../lib/defterKutle.js";
+import { useDarEkran } from "../hooks/useMedya.js";
 import { SecimKutu, SecimCubugu } from "./IslenenSecim.jsx";
 import IslenenNusha, { DURUM_TR, DURUM_RENK, fmtGuven, fmtSure } from "./IslenenNusha.jsx";
 import IslenenOzet, { OzetIskelet } from "./IslenenOzet.jsx";
@@ -104,7 +107,26 @@ const DOKUM_SUTUN = [
 
 /* Karar durumu — kütle durumu (bekliyor/işlendi) SESSİZ metin; yalnız karar verilmiş
    istisnalar tint çip. Hover'da da yerinde kalır (bilgi bakıldığı anda gizlenmez). */
-function DurumCip({ durum }) {
+/* AYNEN İŞARETİ (〃) — kova başlığı kütle durumunu söylediğinde (ör. "25/26 karar bekliyor")
+   aynı durumu taşıyan satır deftercilerin "aynen" işaretini basar; satırda yalnız SAPAN
+   (onaylandı, reddedildi…) yazılı kalır (tur 8 jüri: 32/33 satırda aynı "Karar bekliyor ·
+   Orta" istisnayı gömüyordu). Ekran okuyucu tam metni okur. */
+const Aynen = ({ metin }) => (
+  <span title={metin} style={{ display: "inline-flex", alignItems: "center", gap: 6, ...TYPE.meta, color: PAL.mut3, whiteSpace: "nowrap" }}>
+    <span aria-hidden="true" style={{ fontSize: 15, lineHeight: "16px", paddingLeft: 10 }}>{AYNEN}</span><span style={SR_ONLY}>{metin}</span>
+  </span>
+);
+
+/* Defterci geleneği: kovanın İLK satırı değeri mürekkeple tam yazar; 〃 yalnız bir üstteki
+   satır AYNI değeri taşıdığında basılır (tur 8 jüri 2: ilk satır da 〃 olunca sütun boş
+   okunuyordu). Önceki satır yoksa (kova başı) aynen yok. */
+const aynenKutlesi = (kutle, onceki) => (onceki ? {
+  durum: kutle.durum && onceki._durum === kutle.durum ? kutle.durum : null,
+  risk: kutle.risk && onceki.bant === kutle.risk ? kutle.risk : null,
+} : null);
+
+function DurumCip({ durum, aynen }) {
+  if (aynen) return <Aynen metin={DURUM_KISA[durum]} />;
   const renk = DURUM_RENK[durum];
   const sessiz = durum === "bekliyor" || durum === "islendi";
   return (
@@ -141,23 +163,48 @@ function EylemHucre({ item, onDuzenle }) {
   );
 }
 
-/* Süre işareti — konu satırının sonunda; ayraç noktası ayrı (telefonda konu iki satıra
-   sarınca işaret alt satıra "· süresi geçmiş" diye noktayla başlıyordu → orada ayraç gizlenir,
-   işaret konu metninin hizasından başlar: data-sd-sure-isaret, SicilDefterStil). */
+/* Süre işareti — DERKENAR olarak kayıt no altında (tur 8 jüri: konu satırının sonunda konuyu
+   "ih…" diye kesiyordu; en önemli bilgi en dar yerde kalıyordu). Konu tam genişliği alır. */
+/* Telefon SİCİL FİŞİ düzeni değişmez: orada işaret konu satırının altında kalır (koçan dikey). */
 const SureIsareti = ({ renk, children }) => (
   <span data-sd-sure-isaret="" style={{ ...TYPE.meta, fontWeight: 600, color: DERIN_OF(renk), whiteSpace: "nowrap" }}>
     <span data-sd-ayrac="" aria-hidden="true">· </span>{children}
   </span>
 );
+const sureDerkenari = (sla) => (sla === "GECIKMIS" ? <Derkenar ton="kirmizi" title="Yasal süresi geçmiş">Süre geçti</Derkenar>
+  : sla === "KRITIK" ? <Derkenar ton="sari" title="Yasal süresi kritik">Süre kritik</Derkenar> : null);
+
+const dosyaEslesir = (ad, jetonlar) => {
+  if (!jetonlar?.length) return false;
+  const k = String(ad).toLocaleLowerCase("tr-TR");
+  return jetonlar.some((j) => j && k.includes(String(j).toLocaleLowerCase("tr-TR")));
+};
+
+/* İkincil satır — tür · birim · güven · süre · işleniş · DOSYA (en sonda, mono, soluk, ortadan
+   kısaltılmış; tur 8 jüri: satır makine dosya adıyla başlıyordu). */
+function MetaSatiri({ item, jetonlar }) {
+  const r = item.result || {};
+  const guven = fmtGuven(r.tur_confidence), sure = fmtSure(r.sure_ms), yin = item._yineleme;
+  const ayrac = <span aria-hidden="true" style={{ color: PAL.mut3 }}> · </span>;
+  return (
+    <span style={{ display: "block", ...TYPE.meta, color: PAL.mut, marginTop: 3, paddingLeft: 22, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+      {EVRAK_TR(item.evrak_turu)}{ayrac}<span style={{ color: PAL.mut2 }}>{BIRIM_GOSTER(item.hedef_birim, item.evrak_turu)}</span>
+      {guven && <>{ayrac}güven {guven}</>}{sure && <>{ayrac}{sure}</>}
+      {item.varyantlar?.length > 1 && <>{ayrac}{item.varyantlar.length} yazı türü</>}
+      {yin && <span title={`Aynı kaynaktan ${yin.toplam} işlem — bu ${yin.sira}. işleniş`}>{ayrac}{yin.sira}./{yin.toplam} işleniş</span>}
+      {/* Dosya adı makine verisidir: satırda YALNIZ arama dosya adında eşleştiğinde basılır
+          (tur 8 jüri 2); tam ad nüsha künyesinde ve CSV dökümünde durur. */}
+      {item.name && dosyaEslesir(item.name, jetonlar) && <>{ayrac}<span title={item.name} style={{ fontFamily: MONO, fontSize: 11, color: PAL.mut3 }}><Vurgulu metin={item.name} jetonlar={jetonlar} /></span></>}
+    </span>
+  );
+}
 
 /* Defter kaydı — satır = grid row (odaklanır; Enter detay, Space seçer — APG ızgara deseni). */
-function DefterSatiri({ item, sira, onAc, onDuzenle, gez, secili, onSec, jetonlar }) {
+function DefterSatiri({ item, sira, onAc, onDuzenle, gez, secili, onSec, jetonlar, kutle, dar }) {
   const riskC = BANT[item.bant]?.c;
-  const r = item.result || {};
-  const guven = fmtGuven(r.tur_confidence), sure = fmtSure(r.sure_ms), sla = r.sla_metadata?.durum;
+  const sla = item.result?.sla_metadata?.durum;
   const kat = kategoriMeta(evrakKategori({ evrak_turu: item.evrak_turu, konu: item.konu }));
   const KIcon = Icon[kat.icon] || Icon.doc;
-  const yin = item._yineleme;
   return (
     <div role="row" tabIndex={0} aria-selected={secili} data-sicil-satir="" data-sd-fis="" data-sd-anahtar={item.id} onClick={(e) => onAc(item, e.currentTarget)}
       onKeyDown={(e) => {
@@ -167,7 +214,7 @@ function DefterSatiri({ item, sira, onAc, onDuzenle, gez, secili, onSec, jetonla
       aria-label={`${item._no} — ${item._konuGoster} — ${DURUM_TR[item._durum]}${secili ? " — seçili" : ""}`}
       onPointerDown={() => gez.sec(item.id)} style={{ "--sd-i": Math.min(sira, 14) }}>
       {gez.aktif === item.id && <Imlec gezinme={gez} kimlik="islenen" />}
-      <KayitNoHucre no={item._no} onEk={<SecimKutu secili={secili} onDegis={() => onSec(item.id)} etiket={`Seç: ${item._konuGoster}`} />} />
+      <KayitNoHucre no={item._no} derkenar={dar ? null : sureDerkenari(sla)} onEk={<SecimKutu secili={secili} onDegis={() => onSec(item.id)} etiket={`Seç: ${item._konuGoster}`} />} />
       <ZamanHucre ts={item.ts} />
       <span {...HUCRE.grid} style={{ gridArea: "ana", minWidth: 0 }}>
         <span data-sd-konu-satir="" style={{ display: "flex", alignItems: "center", gap: SP.s, minWidth: 0 }}>
@@ -175,22 +222,18 @@ function DefterSatiri({ item, sira, onAc, onDuzenle, gez, secili, onSec, jetonla
           <span data-sd-konu="" title={item._konuGoster} style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             <Vurgulu metin={item._konuGoster} jetonlar={jetonlar} />
           </span>
-          {sla === "GECIKMIS" && <SureIsareti renk={BANT.kirmizi.c}>süresi geçmiş</SureIsareti>}
-          {sla === "KRITIK" && <SureIsareti renk={BANT.sari.c}>süre kritik</SureIsareti>}
+          {dar && sla === "GECIKMIS" && <SureIsareti renk={BANT.kirmizi.c}>süresi geçmiş</SureIsareti>}
+          {dar && sla === "KRITIK" && <SureIsareti renk={BANT.sari.c}>süre kritik</SureIsareti>}
         </span>
-        <span style={{ display: "block", ...TYPE.meta, color: PAL.mut, marginTop: 3, paddingLeft: 22, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          <span style={{ fontFamily: MONO, fontSize: 11 }}><Vurgulu metin={item.name} jetonlar={jetonlar} /></span>
-          {" · "}{EVRAK_TR(item.evrak_turu)}{" · "}<span style={{ color: PAL.mut2 }}>{BIRIM_GOSTER(item.hedef_birim, item.evrak_turu)}</span>
-          {guven && ` · güven ${guven}`}{sure && ` · ${sure}`}
-          {item.varyantlar?.length > 1 && ` · ${item.varyantlar.length} yazı türü`}
-          {yin && <span title={`Aynı kaynaktan ${yin.toplam} işlem — bu ${yin.sira}. işleniş`}>{` · ${yin.sira}./${yin.toplam} işleniş`}</span>}
+        <MetaSatiri item={item} jetonlar={jetonlar} />
+      </span>
+      <span {...HUCRE.grid} style={{ gridArea: "durum", minWidth: 0 }}><DurumCip durum={item._durum} aynen={kutle?.durum === item._durum} /></span>
+      {kutle?.risk === item.bant ? <span {...HUCRE.grid} data-sd-sag-dar="" style={{ gridArea: "risk" }}><Aynen metin={`risk: ${riskAdi(item.bant)}`} /></span> : (
+        <span {...HUCRE.grid} data-sd-sag-dar="" style={{ gridArea: "risk", display: "inline-flex", alignItems: "center", gap: 6, ...TYPE.meta, fontWeight: 500, color: riskC ? DERIN_OF(riskC) : PAL.mut3, whiteSpace: "nowrap" }}>
+          <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: riskC || PAL.mut3, opacity: riskC ? 1 : 0.5 }} />
+          <span style={SR_ONLY}>risk: </span>{riskAdi(item.bant) || "—"}
         </span>
-      </span>
-      <span {...HUCRE.grid} style={{ gridArea: "durum", minWidth: 0 }}><DurumCip durum={item._durum} /></span>
-      <span {...HUCRE.grid} data-sd-sag-dar="" style={{ gridArea: "risk", display: "inline-flex", alignItems: "center", gap: 6, ...TYPE.meta, fontWeight: 500, color: riskC ? DERIN_OF(riskC) : PAL.mut3, whiteSpace: "nowrap" }}>
-        <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: riskC || PAL.mut3, opacity: riskC ? 1 : 0.5 }} />
-        <span style={SR_ONLY}>risk: </span>{riskAdi(item.bant) || "—"}
-      </span>
+      )}
       <EylemHucre item={item} onDuzenle={onDuzenle} />
     </div>
   );
@@ -214,12 +257,16 @@ function useTopluSecim(gorunur) {
   return { etkin, degistir, birak, hepsi, tumunu, kayitlar: gorunur.filter((x) => etkin.has(x.id)) };
 }
 
+/* Gösterim normalizasyonu — konu sonundaki yazışma kısaltması "hk." / "hk" → "hakkında"
+   (yalnız görüntü; kaynak veri ve arama aynı kalır). */
+const konuNormal = (s) => String(s || "").replace(/\s+hk\.?\s*$/iu, " hakkında");
+
 /* Belge başına TEK sicil satırı (sicilGrupla) + sicil no + yineleme derkenarı + konu. */
 function useSicilKayitlari(history) {
   return useMemo(() => {
     const taban = sicilGrupla(history).map((h) => {
       const konu = h.result?.bilgi_unsurlari?.konu || h.result?.alt_talepler?.[0]?.ozet || "";
-      return { ...h, hedef_birim: h.hedef_birim || h.hedef_birim_adi || "", _durum: durumOf(h.result), konu, _konuGoster: baslikCase(cleanDemoText(konu)) || h.name };
+      return { ...h, hedef_birim: h.hedef_birim || h.hedef_birim_adi || "", _durum: durumOf(h.result), konu, _konuGoster: konuNormal(baslikCase(cleanDemoText(konu))) || h.name };
     });
     const nolar = islenenSicilNolari(taban);
     const yin = yinelemeDerkenari(taban, (x) => `${x.name}|${x._konuGoster}`);
@@ -260,7 +307,18 @@ function IslenenBos({ yukleniyor, hata, onYenidenDene, onGoInbox }) {
 }
 
 /* Sicil defteri yüzeyi — seçim çubuğu + "tümünü seç" başlığı + kovalara bölünmüş kayıtlar. */
-function IslenenDefter({ filter, gez, secim, onAc, onDuzenle }) {
+const KOLON = alanlarOf(SABLON.alan).length;
+
+/* Kova başlığında kütle durumu — "karar bekliyor 25/26 · orta risk 24/26". */
+function KutleEki({ kutle, n }) {
+  const parca = [kutle.durum && `${DURUM_KISA[kutle.durum].toLocaleLowerCase("tr-TR")} ${kutle.durumSay}/${n}`,
+    kutle.risk && `${riskAdi(kutle.risk).toLocaleLowerCase("tr-TR")} risk ${kutle.riskSay}/${n}`].filter(Boolean);
+  if (!parca.length) return null;
+  return <span style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut2, whiteSpace: "nowrap", ...TNUM, marginLeft: "auto" }}>{AYNEN} = {parca.join(" · ")}</span>;
+}
+
+function IslenenDefter({ filter, gez, secim, onAc, onDuzenle, folyo }) {
+  const dar = useDarEkran();
   const tarihSirali = filter.filters.sortBy === "ts_desc" || filter.filters.sortBy === "ts_asc";
   const gruplar = useMemo(() => kovalar(filter.results, tarihSirali), [filter.results, tarihSirali]);
   const basliklar = [
@@ -274,21 +332,42 @@ function IslenenDefter({ filter, gez, secim, onAc, onDuzenle }) {
   let sira = 0;
   return (
     <>
-      <SecimCubugu seciliKayitlar={secim.kayitlar} sutunlar={DOKUM_SUTUN} onBirak={secim.birak} />
-      <DefterYuzey sablon={SABLON} basliklar={basliklar} etiket="İşlenen evrak kayıtları" gezinme={gez} ipucu={filter.results.length >= 3 ? "arşiv nüshasını aç" : undefined}
-        rol="grid" secimli>
-        {gruplar.map((g, gi) => (
-          <React.Fragment key={g.etiket || `düz-${gi}`}>
-            {g.etiket && <GrupBasligi etiket={g.etiket} sayi={g.rows.length} />}
-            {g.rows.map((item) => (
-              <DefterSatiri key={item.id} item={item} sira={sira++} gez={gez} secili={secim.etkin.has(item.id)} onSec={secim.degistir}
-                onAc={onAc} onDuzenle={onDuzenle} jetonlar={filter.jetonlar} />
-            ))}
-          </React.Fragment>
-        ))}
+      <DefterYuzey sablon={SABLON} basliklar={basliklar} etiket="İşlenen evrak kayıtları" gezinme={gez} ipucu="arşiv nüshasını aç" folyo={folyo}
+        rol="grid" secimli dolgu={Math.max(0, 6 - filter.results.length)}>
+        {gruplar.map((g, gi) => {
+          // Aynen işareti yalnız masaüstü defterinde (telefon fişi her değeri yerinde yazar).
+          const kutle = g.etiket && !dar ? kovaKutlesi(g.rows) : null;
+          return (
+            <React.Fragment key={g.etiket || `düz-${gi}`}>
+              {g.etiket && <GrupBasligi etiket={g.etiket} sayi={g.rows.length} kolon={KOLON}>{kutle && <KutleEki kutle={kutle} n={g.rows.length} />}</GrupBasligi>}
+              {g.rows.map((item, i) => (
+                <DefterSatiri key={item.id} item={item} sira={sira++} gez={gez} secili={secim.etkin.has(item.id)} onSec={secim.degistir}
+                  onAc={onAc} onDuzenle={onDuzenle} jetonlar={filter.jetonlar} kutle={kutle ? aynenKutlesi(kutle, g.rows[i - 1]) : null} dar={dar} />
+              ))}
+            </React.Fragment>
+          );
+        })}
       </DefterYuzey>
+      <SecimCubugu seciliKayitlar={secim.kayitlar} sutunlar={DOKUM_SUTUN} onBirak={secim.birak} />
     </>
   );
+}
+
+/* Antet sağ künyesi + folyo — yalnız sicilin kendi kayıtlarından. */
+function islenenKunye(items) {
+  const son = items.reduce((a, x) => (!a || Number(x.ts) > Number(a.ts) ? x : a), null);
+  const sonZaman = son ? defterZamani(son.ts).tam : "";
+  return {
+    satirlar: [
+      { k: "Sicil", v: `${items.length} kayıt` },
+      { k: "Son kayıt", v: son?._no || "" },
+      { k: "Son işlem", v: sonZaman },
+    ],
+    folyo: (rows) => {
+      const s = rows.reduce((a, x) => (!a || Number(x.ts) > Number(a.ts) ? x : a), null);
+      return `Sayfa 1 · ${rows.length} kayıt${s ? ` · son kayıt ${defterZamani(s.ts).tam}` : ""}`;
+    },
+  };
 }
 
 /* yukleniyor / hata: DB işlem geçmişi sorgusunun durumu (DashboardApp islemlerQ). */
@@ -311,11 +390,13 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onDuzenle = 
   }
   // Görünümün hükmü: memur kararı bekleyen kayıt sayısı (tek damga).
   const bekleyen = items.filter((x) => x._durum === "bekliyor").length;
+  const kunye = islenenKunye(items);
   const bos = bosDurumMetni({ ara: filter.filters.search, filtreVar: filter.hasActiveFilters, nesne: "kayıt", kalici: "sicil kayıtları silinmez" });
   // Başlıkta eylem YOK: "Yeni evrak yükle" kenar çubuğunda kalıcı duruyor.
   return (
     <ViewWrap id="islenen-h" title="İşlenen evrak" kunye="Evrak sicil defteri" sub="İşlenen her kayıt, karar durumu ve risk bandıyla"
-      damga={bekleyen ? { metin: `${bekleyen} karar bekliyor`, ton: BANT.sari.c, egim: -4 } : undefined}>
+      damga={bekleyen ? { metin: `${bekleyen} karar bekliyor`, ton: BANT.sari.c, egim: -4 } : undefined}
+      actions={[<DefterAntetKunye key="k" etiket="Sicil defteri özeti" satirlar={kunye.satirlar} />]}>
       <SicilStil />
       <div>
         <IslenenOzet items={items} filter={filter} ortSn={ortSn} />
@@ -325,7 +406,7 @@ export default function IslenenEvrakView({ history = [], onGoInbox, onDuzenle = 
             kunye={`${filter.filters.search.trim() ? "Arama" : "Filtre"} · 0 / ${items.length} kayıt`}
             baslik={bos.baslik} sub={bos.sub} actions={[<Btn key="c" onClick={filter.clearAll}>Filtreleri temizle</Btn>]} />
         ) : (
-          <IslenenDefter filter={filter} gez={gez} secim={secim} onAc={setDetay} onDuzenle={onDuzenle} />
+          <IslenenDefter filter={filter} gez={gez} secim={secim} onAc={setDetay} onDuzenle={onDuzenle} folyo={kunye.folyo(filter.results)} />
         )}
       </div>
       <IslenenNusha item={detay} onClose={() => setDetay(null)} onDuzenle={onDuzenle} onMevzuatAc={onMevzuatAc} />

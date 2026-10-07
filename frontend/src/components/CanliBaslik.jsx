@@ -6,7 +6,7 @@
    meta · 3. satır = cetvel. Masaüstü düzeni korunur; sağ yuva yalnız orada sabit genişliktedir
    (koşum biterken İptal → iki düğme geçişinde sol kenar kaymasın — tur 4 CLS). */
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { PAL, BANT, DERIN, ALFA, CAM, TYPE, TNUM, RAD, SP, SH, MONO, focusRing, Btn, Icon } from "./neonUi.jsx";
+import { PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, MONO, focusRing, Btn, Icon } from "./neonUi.jsx";
 import { Chip } from "./NeonDetayParts.jsx";
 import { IsaretCetveli } from "./CanliMetro.jsx";
 
@@ -46,13 +46,20 @@ function YeniEvrakMenu({ onUpload }) {
   );
 }
 
-function SagYuva({ busy, dar, onCancel, onUpload, onTelefon }) {
+/* Durdu hâlinde sağ yuva tek ikincil düğmeye iner (tur 8): görünümün tek primary'si sahnedeki
+   "Tekrar dene"dir; yanında iki eşit yükleme düğmesi gözü dağıtıyordu. */
+function SagYuva({ busy, dar, durdu, onCancel, onUpload, onTelefon, onSonucAc }) {
+  if (onSonucAc) return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", minWidth: dar ? 0 : 320, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
+      <Btn primary onClick={onSonucAc} style={dar ? { minHeight: 44 } : null}>Sonucu aç <Icon.arrow width={14} height={14} /></Btn>
+    </div>
+  );
   if (dar) return busy ? <IptalDugme onCancel={onCancel} dar /> : <YeniEvrakMenu onUpload={onUpload} />;
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: SP.s, minWidth: 320 }}>
       {busy ? <IptalDugme onCancel={onCancel} /> : (
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, animation: "nu-rise .16s var(--ke-ease-out) both" }}>
-          <Btn onClick={onTelefon}><Icon.phone width={14} height={14} /> Telefonla yükle</Btn>
+          {!durdu && <Btn onClick={onTelefon}><Icon.phone width={14} height={14} /> Telefonla yükle</Btn>}
           <Btn onClick={onUpload}><Icon.upload width={14} height={14} /> Yeni evrak yükle</Btn>
         </div>
       )}
@@ -96,19 +103,18 @@ function MetaSatiri({ metaLine, d, dar }) {
   );
 }
 
-export default function CanliBaslik({ fileLabel, metaLine, d, busy, takili, dar, display, durdu, pct, onCancel, onUpload, onTelefon }) {
+export default function CanliBaslik({ baslikRef = null, fileLabel, metaLine, d, busy, takili, dar, display, durdu, pct, onCancel, onUpload, onTelefon, onSonucAc = null }) {
   return (
-    <header style={{
+    <header ref={baslikRef} style={{
       padding: dar ? `${SP.s}px ${SP.l}px ${SP.m}px` : `${SP.l}px clamp(${SP.l}px, 2.4vw, ${SP.xxl}px)`,
       position: "sticky", top: 0, zIndex: 20,
-      background: CAM.bg, backdropFilter: CAM.blur, WebkitBackdropFilter: CAM.blur,
-      borderBottom: `1px solid ${takili ? PAL.lineHi : CAM.line}`,
+      /* OPAK (tur 8): buzlu camın arkasından 96 px rakam ve masa adı gri leke olarak sızıyordu.
+         Yükselme yalnız alt hairline + SH.card ile anlatılır. */
+      background: PAL.bg,
+      borderBottom: `1px solid ${takili ? PAL.lineHi : PAL.line}`,
       boxShadow: takili ? SH.card : "none",
       transition: "box-shadow .16s ease, border-color .16s ease",
     }}>
-      {/* Çift perde — koyu temada altından AÇIK kâğıt geçerken meta kontrastı AA'nın altına
-          düşüyordu (yargıç ölçümü); CAM.bg ikinci kez bindirilir, efektif örtü ~%80. */}
-      <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: CAM.bg, pointerEvents: "none" }} />
       <div style={{ maxWidth: 1540, margin: "0 auto", position: "relative" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: dar ? SP.s : SP.l, minHeight: dar ? 44 : 36 }}>
           <div style={{ display: "flex", alignItems: "center", gap: SP.m, minWidth: 0, flex: "1 1 0" }}>
@@ -117,13 +123,15 @@ export default function CanliBaslik({ fileLabel, metaLine, d, busy, takili, dar,
               <h2 style={{ margin: 0, ...TYPE.h2, fontSize: dar ? 17 : 20, lineHeight: dar ? "22px" : "26px", color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: dar ? "100%" : "min(52vw, 680px)" }}>{fileLabel}</h2>
               <MetaSatiri metaLine={metaLine} d={d} dar={dar} />
             </span>
-            {!dar && !d.sonucGoster && (
+            {/* Koşum sırasında çip yok (tur 8): canlılık pusula künyesinde ("CANLI · N SN") ve
+                cetvelde söyleniyor; beş yerde aynı söz hiyerarşiyi dağıtıyordu. */}
+            {!dar && !d.sonucGoster && !d.kosumda && (
               <span style={{ marginLeft: SP.s, flexShrink: 0 }}>
                 <Chip c={d.chipRenk} label={`Durum: ${d.statusText}`}><DurumIkon d={d} />{d.statusText}</Chip>
               </span>
             )}
           </div>
-          <SagYuva busy={busy} dar={dar} onCancel={onCancel} onUpload={onUpload} onTelefon={onTelefon} />
+          <SagYuva busy={busy} dar={dar} durdu={!!durdu} onCancel={onCancel} onUpload={onUpload} onTelefon={onTelefon} onSonucAc={onSonucAc} />
         </div>
         {/* İŞARET CETVELİ — adım başına bir çentik (graf sırası); sonuçta da durur (kalkınca
             başlık kısalıp sayfa zıplıyordu — tur 4 CLS). Yüzde nötr: kırmızı yalnız hatalı

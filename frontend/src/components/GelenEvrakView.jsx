@@ -8,15 +8,18 @@
    eşleşen parça fosforla vurgulanır (lib/defterArama). Satırın kendisi odak alır (j/k). */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { ViewWrap, Btn, Icon, R, PAL, BANT, TYPE, SP, DERIN, SR_ONLY } from "./neonUi.jsx";
+import { ViewWrap, Btn, Icon, R, PAL, BANT, TYPE, SP, DERIN, SR_ONLY, MONO } from "./neonUi.jsx";
+import { onizlemeMaskele } from "../lib/defterMaske.js";
 import { SicilStil, BaslikHucre, DefterYuzey, BosDefter, DefterIskelet, DefterNotu, useDefterGezinme, Imlec, HUCRE, KayitNoHucre, Derkenar, Vurgulu, DEFTER_NO, DEFTER_MARJ, ADIM } from "./SicilDefter.jsx";
+import DefterAntetKunye from "./DefterAntetKunye.jsx";
+import { useMedyaSorgusu } from "../hooks/useMedya.js";
 import { bosDurumMetni } from "../lib/sicilDefter.js";
 import FilterBar from "./FilterBar.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
-import VadeHucre, { VadeStil } from "./DefterVadeCetveli.jsx";
+import VadeHucre, { VadeStil, VadeBaslik, bugunHucre } from "./DefterVadeCetveli.jsx";
 import { useFilter } from "../hooks/useFilter.js";
 import { useDefterArama } from "../lib/useDefterArama.js";
-import { vadeOlcusu, gunOlcegi, agirCeyrekEsigi } from "../lib/defterVade.js";
+import { vadeOlcusu, goreliVade, zamanEkseni, agirCeyrekEsigi } from "../lib/defterVade.js";
 import { evrakKategori, etkinTur, kategoriMeta, KATEGORILER, KATEGORI_BIRIM } from "../lib/kategori.js";
 import { BIRIM_LBL } from "./result-cards.jsx";
 import { SAMPLE_DOCS } from "../lib/sampleDocs.js";
@@ -53,23 +56,29 @@ const GELEN_FILTER_CONFIG_BASE = {
 };
 const metinOf = (s) => [s.konu, s.label, s.aciklama, s.grup, kategoriMeta(s._kategori).label, noOf(s)].join(" ");
 
-/* Defter şablonu — kayıt no (+derkenar) · konu bloğu · vade cetveli · eylem. Telefonda
-   SİCİL FİŞİ: solda dikey kayıt no koçanı, gövdede konu, altta süre + eylem. */
-const SABLON = {
-  kolon: `${DEFTER_NO} minmax(0,1fr) 172px 112px`,
+/* Defter şablonu — kayıt no (+derkenar) · konu bloğu · vade çizelgesi · eylem. Telefonda
+   SİCİL FİŞİ: solda dikey kayıt no koçanı, gövdede konu, altta süre + eylem.
+   Tur 8 (jüri: 1920'de konu ile cetvel arasında 250–400 px ölü koridor): geniş ekranda artan
+   genişlik VADE ÇİZELGESİNE akar (160 → 280 → 360 px) — ölü bant veriyle dolar. */
+function useVadeGenislik() {
+  const g1 = useMedyaSorgusu("(min-width: 1800px)");
+  const g2 = useMedyaSorgusu("(min-width: 1600px)");
+  return g1 ? 360 : g2 ? 280 : 160;
+}
+const sablonOf = (vade) => ({
+  kolon: `${DEFTER_NO} minmax(0,1fr) ${vade + 12}px 112px`,
   marj: DEFTER_MARJ,
   satir: ADIM.rahat,
   alan: '"no ana sure eylem"',
   kolonDar: "34px minmax(0,1fr) auto",
   alanDar: '"no ana ana" "no sure eylem"',
-};
-const BASLIKLAR = [
+});
+const basliklarOf = (eksen, vade) => [
   <BaslikHucre key="n" alan="no">Kayıt no</BaslikHucre>,
   <BaslikHucre key="a" alan="ana">Konu · tür · önerilen birim</BaslikHucre>,
-  <BaslikHucre key="s" alan="sure">Yasal süre · vade cetveli</BaslikHucre>,
+  <VadeBaslik key="s" eksen={eksen} genislik={vade} />,
   <BaslikHucre key="e" alan="eylem" sag>Eylem</BaslikHucre>,
 ];
-const VADE_GENISLIK = 160;
 
 /* Bir gelen evrak kaydı — satırın kendisi odaklanır (Enter önizler); "İşle" ayrı eylem. */
 function GelenSatir({ s, i, done, vurgulu, gez, rowRef, onOnizle, onProcess, busy, jetonlar, vade }) {
@@ -100,10 +109,14 @@ function GelenSatir({ s, i, done, vurgulu, gez, rowRef, onOnizle, onProcess, bus
           <span><span style={SR_ONLY}>önerilen birim: </span>{onerilenBirim}</span>
         </div>
       </div>
-      <span {...HUCRE.grid} style={{ gridArea: "sure", minWidth: 0, alignSelf: "center" }}><VadeHucre {...vade} /></span>
-      {/* Tekrarlanan satır eylemi hayalet — ekranın tek primary'si başlıktaki "Yeni evrak yükle". */}
+      <span {...HUCRE.grid} {...bugunHucre(vade.eksen)} style={{ gridArea: "sure", minWidth: 0, alignSelf: "stretch", display: "flex", alignItems: "center", ...bugunHucre(vade.eksen).style }}>
+        <VadeHucre {...vade} />
+      </span>
+      {/* Satır eylemi PARAF: her satırda AYNI sessiz biçim, bakılınca/odakta çerçeve belirir
+          (tur 8 jüri 2: yalnız ilk satırın çerçeveli olması ritmi bozuyordu; aciliyet kırmızı
+          derkenar + vade cetveliyle taşınır). Tek primary başlıktaki "Yeni evrak yükle". */}
       <span {...HUCRE.grid} style={{ gridArea: "eylem", justifySelf: "end", alignSelf: "center" }}>
-        <button type="button" data-sd-eylem="" data-press=""
+        <button type="button" data-sd-eylem="" data-press="" data-sd-paraf=""
           onClick={(e) => { e.stopPropagation(); onProcess(s); }} disabled={busy} aria-label={`${konu} evrakını işle`}>
           {done ? "Yeniden işle" : "İşle"} <Icon.arrow width={14} height={14} />
         </button>
@@ -141,17 +154,18 @@ function useHedefVurgu({ hedef, onHedefAcildi, filter }) {
   return { vurgu, refOf };
 }
 
-/* Vade cetvelinin ortak ölçeği + en ağır çeyrek — görünen satırlar üzerinden. */
-function useVade(results, slaMap) {
+/* Vade çizelgesinin ortak ZAMAN EKSENİ + en ağır çeyrek — görünen satırlar üzerinden. */
+function useVade(results, slaMap, genislik) {
   return useMemo(() => {
-    const olculer = new Map(results.map((s) => [s.id, vadeOlcusu(slaMap?.[s.id])]));
-    const k = gunOlcegi([...olculer.values()], VADE_GENISLIK);
-    const esik = agirCeyrekEsigi([...olculer.values()].map((o) => o?.gecikme || 0));
-    return (id) => {
-      const olcu = olculer.get(id);
-      return { sla: slaMap?.[id], olcu, k, agir: !!olcu && olcu.gecikme >= esik };
+    const satir = new Map(results.map((s) => [s.id, { sla: slaMap?.[s.id], olcu: vadeOlcusu(slaMap?.[s.id]), aralik: goreliVade(slaMap?.[s.id]) }]));
+    const eksen = zamanEkseni([...satir.values()].map((x) => x.aralik), genislik);
+    const esik = agirCeyrekEsigi([...satir.values()].map((x) => x.olcu?.gecikme || 0));
+    const of = (id) => {
+      const x = satir.get(id) || {};
+      return { ...x, eksen, genislik, agir: !!x.olcu && x.olcu.gecikme >= esik };
     };
-  }, [results, slaMap]);
+    return { of, eksen };
+  }, [results, slaMap, genislik]);
 }
 
 /* Yasal süre önizlemesi gelene dek defter İSKELETTE kalır: varsayılan sıra "en acil önce"
@@ -171,10 +185,22 @@ function useSlaBekleme(slaMap, n) {
 
 /* Salt-okunur evrak önizleme — "önce oku, sonra işle": İşle perdenin TEK dolu düğmesi;
    başlıkta mono kayıt no. */
-function GelenOnizleme({ s, done, busy, onKapat, onIsle }) {
+/* Kaynak metin önizlemede MASKELİ gösterilir (tur 8 jüri 2: TCKN/telefon/e-posta açık
+   görünüyordu). Dipte mono künye: hangi alanların karartıldığı + kayıt no. */
+function OnizlemeKunye({ no, alanlar }) {
   return (
-    <BelgeModal acik={!!s} baslik="Evrak önizleme" kayitNo={s ? noOf(s) : ""} dosyaAdi={s?.label || ""}
-      metin={s?.text || ""} onKapat={onKapat}
+    <div data-bm-alt-kunye="" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: SP.m, fontFamily: MONO, ...TYPE.antet, color: PAL.onInk2 }}>
+      <span>{alanlar.length ? `KVKK · MASKELİ ÖNİZLEME · ${alanlar.join(", ").toLocaleUpperCase("tr-TR")}` : "KVKK · KİŞİSEL VERİ TESPİT EDİLMEDİ"}</span>
+      {no && <span>GELEN KAYIT {no}</span>}
+    </div>
+  );
+}
+
+function GelenOnizleme({ s, done, busy, onKapat, onIsle }) {
+  const mask = useMemo(() => onizlemeMaskele(s?.text || ""), [s]);
+  return (
+    <BelgeModal acik={!!s} baslik={s ? s.konu || s.label : ""} kayitNo={s ? noOf(s) : ""} dosyaAdi={s ? `önizleme · ${s.label}` : ""}
+      metin={mask.metin} onKapat={onKapat} akit altKunye={s ? <OnizlemeKunye no={noOf(s)} alanlar={mask.alanlar} /> : null}
       birincil={s ? (
         <ScrimDugme birincil onClick={onIsle} disabled={busy} title="Bu evrakı işle">
           {done ? "Yeniden işle" : "İşle"} <Icon.arrow width={13} height={13} />
@@ -183,7 +209,7 @@ function GelenOnizleme({ s, done, busy, onKapat, onIsle }) {
   );
 }
 
-function GelenBos({ samples, filter, bos, onUpload, busy }) {
+function GelenBos({ samples, filter, bos, onUpload, busy, SABLON, BASLIKLAR }) {
   if (samples.length === 0) {
     /* Kuyruk gerçekten boş — "eşleşme yok" DEĞİL, işin bittiği hâl: görünümün hükmü (damga). */
     return (
@@ -201,6 +227,22 @@ function GelenBos({ samples, filter, bos, onUpload, busy }) {
   );
 }
 
+/* Antet sağ künyesi + folyo — kuyruk, gecikme ve EN YAKIN son gün (backend son_tarih'inden;
+   yalnız süresi henüz dolmamış kayıtlar arasında). */
+function gelenKunye(items, slaMap) {
+  const gecikmis = items.filter((x) => x._slaDurum === "GECIKMIS").length;
+  const acik = items.map((x) => slaMap?.[x.id]).filter((x) => x && Number.isFinite(x.kalan_gun) && x.kalan_gun >= 0 && x.son_tarih);
+  const yakin = [...acik].sort((a, b) => a.kalan_gun - b.kalan_gun)[0];
+  return {
+    satirlar: [
+      { k: "Kuyruk", v: `${items.length} evrak` },
+      { k: "Gecikmiş", v: gecikmis ? `${String(gecikmis).padStart(2, "0")} · gecikti` : "", ton: "kirmizi" },
+      { k: "En yakın son gün", v: yakin ? yakin.son_tarih : "" },
+    ],
+    folyo: (n) => `Sayfa 1 · ${n} kayıt${yakin ? ` · en yakın son gün ${yakin.son_tarih}` : ""}`,
+  };
+}
+
 export default function GelenEvrakView({ samples = [], processedIds, slaMap = null, onProcess, onUpload, busy, hedef = null, onHedefAcildi, uid = null }) {
   const done = processedIds || new Set();
   const items = useMemo(() => samples.map((s) => ({
@@ -215,10 +257,14 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
   // Önizleme: memur evrakı İŞLEMEDEN önce okuyabilmeli ("önce oku, sonra işle").
   const [onizle, setOnizle] = useState(null);
   const gez = useDefterGezinme();
-  const vadeOf = useVade(filter.results, slaMap);
+  const vadeG = useVadeGenislik();
+  const { of: vadeOf, eksen } = useVade(filter.results, slaMap, vadeG);
+  const SABLON = useMemo(() => sablonOf(vadeG), [vadeG]);
+  const BASLIKLAR = basliklarOf(eksen, vadeG);
   const slaBekleniyor = useSlaBekleme(slaMap, samples.length);
   // Görünümün hükmü: gecikmiş evrak sayısı (tek damga) — satırlarda gecikme cetvelle ölçülü.
   const gecikmisSay = items.filter((x) => x._slaDurum === "GECIKMIS").length;
+  const kunye = gelenKunye(items, slaMap);
   const bos = bosDurumMetni({ ara: filter.filters.search, filtreVar: filter.hasActiveFilters, nesne: "evrak", kalici: "kuyruktaki evraklar silinmedi" });
   const isle = () => { const sec = onizle; setOnizle(null); onProcess(sec); };
 
@@ -226,7 +272,8 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
     <ViewWrap id="gelen-h" title="Gelen evrak" kunye="Gelen evrak defteri"
       sub={`${samples.length} evrak kuyrukta · önizlemek için satıra, işlemek için “İşle”ye`}
       damga={gecikmisSay ? { metin: `${gecikmisSay} gecikmiş`, ton: R, egim: -5 } : undefined}
-      actions={[<Btn key="u" primary onClick={onUpload} disabled={busy}><Icon.upload /> Yeni evrak yükle</Btn>]}>
+      actions={[<DefterAntetKunye key="k" etiket="Gelen evrak defteri özeti" satirlar={kunye.satirlar} />,
+        <Btn key="u" primary onClick={onUpload} disabled={busy}><Icon.upload /> Yeni evrak yükle</Btn>]}>
       <SicilStil />
       <VadeStil />
       <div>
@@ -234,10 +281,10 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
         {slaBekleniyor ? (
           <DefterIskelet sablon={SABLON} basliklar={BASLIKLAR} etiket="Yasal süreler hesaplanıyor" satir={8} />
         ) : samples.length === 0 || filter.results.length === 0 ? (
-          <GelenBos samples={samples} filter={filter} bos={bos} onUpload={onUpload} busy={busy} />
+          <GelenBos samples={samples} filter={filter} bos={bos} onUpload={onUpload} busy={busy} SABLON={SABLON} BASLIKLAR={BASLIKLAR} />
         ) : (
-          <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Gelen evrak kayıtları" listeRef={listeRef} gezinme={gez} ipucu={filter.results.length >= 3 ? "önizle" : undefined}
-            rol="grid" dolgu={Math.max(0, 4 - filter.results.length)}>
+          <DefterYuzey sablon={SABLON} basliklar={BASLIKLAR} etiket="Gelen evrak kayıtları" listeRef={listeRef} gezinme={gez} ipucu="önizle"
+            rol="grid" dolgu={Math.max(0, 4 - filter.results.length)} folyo={kunye.folyo(filter.results.length)}>
             {filter.results.map((s, i) => (
               <GelenSatir key={s.id} s={s} i={i} done={done.has(s.id)} vurgulu={vurgu === s.id} gez={gez} rowRef={refOf(s.id)}
                 onOnizle={setOnizle} onProcess={onProcess} busy={busy} jetonlar={filter.jetonlar} vade={vadeOf(s.id)} />
@@ -245,7 +292,7 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
           </DefterYuzey>
         )}
         <DefterNotu ikon={<Icon.info width={14} height={14} />}>
-          Gelen evrak kuyruğu örnek evraklarla hazır gelir. <strong style={{ color: PAL.ink2, fontWeight: 600 }}>EBYS / KEP</strong> entegrasyonunda gelen evrak otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur. Vade cetvelinde mavi bölüm yasal süre, kırmızı uzantı gecikmedir; tüm satırlar aynı ölçektedir.
+          Gelen evrak kuyruğu örnek evraklarla hazır gelir. <strong style={{ color: PAL.ink2, fontWeight: 600 }}>EBYS / KEP</strong> entegrasyonunda gelen evrak otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur. Vade çizelgesinde tüm satırlar tek zaman eksenindedir: kırmızı dikey çizgi bugündür; mavi bölüm yasal sürenin geçen kısmı, son gün çentiğinden bugüne uzanan kırmızı bölüm gecikmedir.
         </DefterNotu>
       </div>
 

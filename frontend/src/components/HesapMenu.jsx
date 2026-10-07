@@ -53,7 +53,7 @@ const Cip = ({ renk, zemin, children }) => (
    odaklanır, gövde kaydırması otomatik kilitlenir (react-remove-scroll, kütüphane içinde).
    Eskiden elle portal+focus-trap+Esc dinleyicisi vardı (sidebar'ın position:sticky'si kendi
    stacking context'ini kurduğundan portal ŞARTTI) — Dialog.Portal aynı işi görür. */
-function Kip({ baslik, onKapat, donusRef, children }) {
+function Kip({ baslik, kunye = "KAMU-EVRAK · Hesap", onKapat, donusRef, children }) {
   const kapatRef = useRef(null);
   const kabRef = useRef(null);
   return (
@@ -82,7 +82,7 @@ function Kip({ baslik, onKapat, donusRef, children }) {
             <Dialog.Description style={SR_ONLY}>{baslik} bilgi penceresi.</Dialog.Description>
             <div style={{ display: "flex", alignItems: "flex-end", gap: SP.s, padding: "16px 20px 0" }}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase" }}>KAMU-EVRAK · Hesap</div>
+                <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase" }}>{kunye}</div>
                 <Dialog.Title asChild>
                   <h2 style={{ margin: "4px 0 0", fontFamily: DISPLAY, fontWeight: 800, fontStretch: "112%", fontSize: 20, lineHeight: "24px", letterSpacing: "-.01em", color: PAL.ink }}>{baslik}</h2>
                 </Dialog.Title>
@@ -96,7 +96,7 @@ function Kip({ baslik, onKapat, donusRef, children }) {
                 </button>
               </Dialog.Close>
             </div>
-            <div aria-hidden="true" style={{ margin: "12px 20px 0", height: 4, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.85 }} />
+            <div aria-hidden="true" style={{ margin: "12px 20px 0", height: 4, borderTop: "2px solid var(--ke-antet-cizgi)", borderBottom: "1px solid var(--ke-antet-cizgi)", opacity: 0.85 }} />
             <div style={{ padding: "12px 20px 20px" }}>{children}</div>
           </motion.div>
           </Dialog.Content>
@@ -107,32 +107,59 @@ function Kip({ baslik, onKapat, donusRef, children }) {
   );
 }
 
-/* Profil modal satırı — etiket + değer (makine verisi MONO). */
-const PRow = ({ l, v, mono, renk }) => (
-  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: SP.m, padding: "8px 0", borderBottom: `1px solid ${PAL.line}` }}>
-    <span style={{ ...TYPE.meta, color: PAL.mut3, flexShrink: 0 }}>{l}</span>
-    <span style={mono
-      ? { fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: renk || PAL.ink2, textAlign: "right", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...TNUM }
-      : { ...TYPE.data, fontWeight: 500, color: renk || PAL.ink2, textAlign: "right" }}>{v}</span>
+/* Sicil fişi satırı — mono büyük harf künye etiketi · noktalı kılavuz · değer (personel sicil
+   defterinin satırı; KabukSicil ile aynı dil). */
+const PRow = ({ l, children }) => (
+  <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, padding: "9px 0", borderBottom: `1px solid ${PAL.line}` }}>
+    <span style={{ ...TYPE.antet, textTransform: "uppercase", color: PAL.mut3, flexShrink: 0 }}>{l}</span>
+    <span aria-hidden="true" style={{ flex: 1, minWidth: 12, borderBottom: `1px dotted ${PAL.lineHi}`, transform: "translateY(-3px)" }} />
+    <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink, textAlign: "right", minWidth: 0, overflowWrap: "anywhere" }}>{children}</span>
   </div>
 );
 
+/* Kör baskı "YOK" — yetkisi olmayan alan mürekkepsiz basılır: kesikli çerçeve + mut2 metin (AA). */
+const KorYok = () => (
+  <span style={{ display: "inline-block", padding: "0 6px", borderRadius: RAD.chip, border: `1px dashed ${PAL.lineHi}`, fontFamily: MONO, fontSize: 11, lineHeight: "18px", letterSpacing: ".12em", color: PAL.mut2 }}>YOK</span>
+);
+
+/* Kısa sicil no — kullanıcı kimliğinin ilk 8 hanesi, mono büyük harf (memura UUID gösterilmez;
+   tamamı "Teknik kimlik" altında, destek talebi için). */
+const sicilNo = (id) => (id ? `P-${String(id).replace(/-/g, "").slice(0, 8).toLocaleUpperCase("tr-TR")}` : "P-—");
+
+/* Profil — PERSONEL SİCİL FİŞİ (tur 8, jüri): menüdeki "Personel kartı · Oturum açık" künyesi kipte
+   devam eder. Jenerik etiket/değer listesi ve 36 haneli UUID yerine: kimlik başlığı + kısa sicil
+   no + sicil satırları; e-imza yetkisi yoksa kör baskı "YOK". Yalnız /auth/ben'in verdiği alanlar
+   (birim adı kimlik yanıtında yok → satır uydurulmaz). */
 function ProfilKip({ user, onKapat, donusRef }) {
   return (
-    <Kip baslik="Profil bilgileri" onKapat={onKapat} donusRef={donusRef}>
-      <div style={{ display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.m }}>
+    <Kip baslik="Personel sicil fişi" kunye="Personel kartı · Oturum açık" onKapat={onKapat} donusRef={donusRef}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.xs}px 0 ${SP.m}px` }}>
         <Avatar ad={user?.ad_soyad} boy={48} />
-        <span style={{ minWidth: 0 }}>
-          <span style={{ display: "block", ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{user?.ad_soyad || "Kullanıcı"}</span>
-          <span style={{ display: "block", fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.eposta || "—"}</span>
+        <span style={{ minWidth: 0, flex: 1 }}>
+          <span style={{ display: "block", fontFamily: DISPLAY, fontWeight: 700, fontStretch: "106%", fontSize: 17, lineHeight: "22px", color: PAL.ink }}>{user?.ad_soyad || "Kullanıcı"}</span>
+          <span style={{ display: "block", fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut2, overflowWrap: "anywhere" }}>{user?.eposta || "—"}</span>
+        </span>
+        <span style={{ alignSelf: "flex-start", textAlign: "right", flexShrink: 0 }}>
+          <span style={{ display: "block", ...TYPE.antet, fontSize: 10, textTransform: "uppercase", color: PAL.mut3 }}>Sicil no</span>
+          <span style={{ display: "block", fontFamily: MONO, fontSize: 13, lineHeight: "18px", fontWeight: 600, color: PAL.ink, ...TNUM }}>{sicilNo(user?.id)}</span>
         </span>
       </div>
-      <PRow l="Unvan" v={user?.unvan || "—"} />
-      <PRow l="Rol" v={ROL_TR[user?.rol] || user?.rol || "—"} renk={DERIN.V} />
-      <PRow l="E-imza yetkisi" v={user?.e_imza_yetkisi ? "Var" : "Yok"} renk={user?.e_imza_yetkisi ? DERIN.yesil : PAL.mut2} />
-      {user?.id && <PRow l="Kullanıcı no" v={String(user.id).slice(0, 13) + "…"} mono />}
+      <div style={{ borderTop: `1px solid ${PAL.lineHi}` }}>
+        <PRow l="Unvan">{user?.unvan || "—"}</PRow>
+        <PRow l="Rol"><span style={{ color: DERIN.V, fontWeight: 600 }}>{ROL_TR[user?.rol] || user?.rol || "—"}</span></PRow>
+        <PRow l="E-imza yetkisi">{user?.e_imza_yetkisi ? <span style={{ color: DERIN.yesil, fontWeight: 600 }}>Var</span> : <KorYok />}</PRow>
+        <PRow l="Gönderim kararı">Memur onayıyla</PRow>
+      </div>
+      {user?.id && (
+        <details style={{ marginTop: SP.m }}>
+          <summary style={{ cursor: "pointer", listStyle: "none", display: "inline-flex", alignItems: "center", gap: SP.xs, borderRadius: RAD.chip, padding: "2px 4px", margin: "0 -4px", ...TYPE.meta, color: PAL.mut2 }}>
+            <span aria-hidden="true" className="mev-chevron" style={{ display: "flex", transition: `transform .14s ${EASE.out}` }}><Icon.okSag width={12} height={12} /></span>Teknik kimlik
+          </summary>
+          <code style={{ display: "block", marginTop: SP.xs, fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.ink2, overflowWrap: "anywhere", ...TNUM }}>{String(user.id)}</code>
+        </details>
+      )}
       <p style={{ margin: `${SP.m}px 0 0`, ...TYPE.meta, color: PAL.mut2 }}>
-        Profil bilgileri kurum yöneticisi tarafından tanımlanır; değişiklik için sistem yöneticinize başvurun.
+        Sicil bilgileri kurum yöneticisi tarafından tanımlanır; değişiklik için sistem yöneticinize başvurun.
       </p>
     </Kip>
   );
@@ -255,7 +282,7 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
             kapatıyoruz — NeonSidebar'daki "örnek evrak" dropdown'ıyla aynı gerekçe). */}
         <DropdownMenu.Portal>
           <DropdownMenu.Content side="top" align="start" sideOffset={8} collisionPadding={12}
-            style={{ width: 252, background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s, boxShadow: SH.modal, zIndex: 60, transformOrigin: "var(--radix-dropdown-menu-content-transform-origin)", animation: "nu-kagit-pop .18s var(--ke-ease-out) both", outline: "none" }}>
+            style={{ width: 288, background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, padding: SP.s, boxShadow: SH.modal, zIndex: 60, transformOrigin: "var(--radix-dropdown-menu-content-transform-origin)", animation: "nu-kagit-pop .18s var(--ke-ease-out) both", outline: "none" }}>
             <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", padding: `${SP.xs}px 10px 0`, display: "flex", justifyContent: "space-between" }}>
               <span>Personel kartı</span><span>Oturum açık</span>
             </div>
@@ -264,7 +291,8 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
               <Avatar ad={user?.ad_soyad} boy={40} />
               <span style={{ minWidth: 0, flex: 1 }}>
                 <span style={{ display: "block", fontFamily: DISPLAY, fontWeight: 700, fontStretch: "106%", fontSize: 15, lineHeight: "20px", color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
-                <span style={{ display: "block", fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.eposta || "—"}</span>
+                {/* E-posta kırpılmaz (tur 8): kimlik bilgisi "kurum.go…" diye kesiliyordu → gerekirse iki satır. */}
+                <span style={{ display: "block", fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut2, overflowWrap: "anywhere" }}>{user?.eposta || "—"}</span>
                 <span style={{ display: "flex", gap: SP.xs, marginTop: 4, flexWrap: "wrap" }}>
                   <Cip renk={DERIN.V} zemin={ALFA(V)}>{ROL_TR[user?.rol] || user?.rol || "Kullanıcı"}</Cip>
                   {user?.e_imza_yetkisi && <Cip renk={DERIN.yesil} zemin={ALFA(BANT.yesil.c)}>E-imza</Cip>}

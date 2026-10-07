@@ -7,7 +7,24 @@
 
    Renkler yalnız token (var(--ke-*) / kagitDoku.js'teki --kd-*) ve onların color-mix'i. */
 export const SONUC_CSS = `
-.kd-sonuc{ --kd-gir: 0ms; }
+.kd-sonuc{ --kd-gir: 0ms; --kd-ip: var(--ke-t); }
+/* --kd-ip tükenmez mavisi (jüri tur 8): ip çiplerinin kırmızı noktası hata/uyarı gibi
+   okunuyordu. İp bir BAĞLANTIDIR; kırmızı yalnız aciliyet/hata için kalır. */
+
+/* ---------- Gönderim kilidi (jüri tur 8, yüksek) ----------
+   Şerit "Gönderime hazır değil" derken taslağın altındaki "Onayla ve gönder" dolu primary
+   duruyordu. data-gonderim-kilit (SonucCalismaAlani, gonderimDenetimi ile) varken düğme İKİNCİL
+   tona iner ve "eksik var" künyesi taşır; tıklamak onay fişini açar — fiş kilitlidir ve
+   "Taslağı düzenle"ye yönlendirir (gönderim yolu tek). Satır-içi stilin üstüne !important. */
+.kd-sonuc[data-gonderim-kilit] .sc-main-draft-shell .sc-decision-footer button[aria-label="Taslağı onayla ve gönder"]:not(:disabled){
+  background: var(--ke-surf) !important; color: var(--ke-ink2) !important;
+  border: 1px dashed var(--ke-input-line) !important; font-weight: 500 !important;
+}
+.kd-sonuc[data-gonderim-kilit] .sc-main-draft-shell .sc-decision-footer button[aria-label="Taslağı onayla ve gönder"]:not(:disabled)::after{
+  content: "eksik var"; margin-left: 8px; padding: 1px 6px; border-radius: 4px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; line-height: 14px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ke-derin-kirmizi); border: 1px solid currentColor;
+}
 
 /* ---------- HÜKÜM şeridi ---------- */
 .kd-sonuc .kd-hukum{
@@ -108,6 +125,63 @@ export const SONUC_CSS = `
    düşüyordu. İmzalanacak belge taslaktır; sütun ona genişlik verir (≈%59). Kaynak belge
    düz metin olduğu için kâğıt ölçeğine bağlı kalmaz, okunur puntoda kendi sütununa akar. */
 @media (min-width: 1121px){ .kd-sonuc .sc-result-document-grid{ grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); column-gap: 20px; } }
+/* TUR 8 (jüri: 1440'ta iki kâğıdın puntosu ayrışıyordu, kaynak 13 px · taslak 11,7 px): dar
+   masaüstünde taslak sütunu biraz daha pay alır (≈%64) → A4 ölçeği 0,80 → ~0,88; kaynak
+   puntosu aynı ölçeği izler (aşağıdaki clamp tabanı 12 px'e indi). Geniş ekranda (≥1680)
+   taslak zaten tam ölçeğe yakın; oran değişmez. */
+/* TUR 8 (jüri: asıl karar çubuğu katlama çizgisinin altında — 1440x900'de y≈960): masaüstünde
+   taslak kartının dibine YAPIŞIK. Kart overflow:hidden taşıdığından kendisi kaydırma kabı
+   sayılıyor ve sticky'yi yutuyordu → clip (kırpar ama kaydırma kabı kurmaz). Üstte ince
+   kâğıt gölgesi: altında belge devam ettiği okunur. Telefon düzeni değişmez. */
+@media (min-width: 1121px){
+  .kd-sonuc .sc-main-draft-shell .sc-draft-card{ overflow: clip !important; }
+  .kd-sonuc .sc-main-draft-shell .sc-decision-footer{ position: sticky; bottom: 0; z-index: 3; background: var(--ke-surf);
+    box-shadow: 0 -10px 16px -14px color-mix(in srgb, var(--ke-ink) 45%, transparent); }
+}
+/* Çift sarmalayıcı dar ekranda eski düzeni korur: tek sütun, 16px aralık (support-grid ile aynı). */
+.kd-sonuc .kd-destek-cift{ display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+/* TUR 8 — Ayrıntılar ızgarası (jüri: mevzuat satır ölçüsü ~1100px, okunamaz). Masaüstünde her
+   öneri iki sütun: metin ≤72ch · sağda dar künye sütunu (alaka çubuğu + göreli skor etiketi).
+   Başlıktaki göreli yüzde o sütuna taşınır (aynı bilgi iki yerde basılmaz). */
+@media (min-width: 1121px){
+  .kd-sonuc .kd-mev-govde{ display: grid !important; grid-template-columns: minmax(0, 72ch) minmax(150px, 200px); justify-content: space-between; column-gap: 32px; row-gap: 6px !important; }
+  .kd-sonuc .kd-mev-govde > *{ grid-column: 1; }
+  .kd-sonuc .kd-mev-govde > .kd-mev-cubuk{ grid-column: 2; grid-row: 1 / span 4; align-self: start; padding-top: 3px; }
+  .kd-sonuc .kd-mev-cubuk-etiket{ display: block !important; }
+  .kd-sonuc .kd-mev-pct{ display: none !important; }
+  /* Dosyalama künyesi üç eşit kolon (kod · plan başlığı · saklama) — "Saklama süresi" sağa
+     savrulmuyordu artık ızgaraya oturur. */
+  .kd-sonuc .kd-destek-cift{ display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; align-items: stretch; }
+  .kd-sonuc .kd-destek-cift[data-tek]{ grid-template-columns: minmax(0, 1fr); }
+  .kd-sonuc .sc-archive-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)) !important; column-gap: 24px; }
+}
+/* TUR 8 jüri: masaüstünde iki panelin ALT KENARI aynı hizada biter (kaynak kartı ızgara
+   satırını doldurur; taslak kartı da) — sağ panelin altında boş şerit kalmaz. Kart çiftleri
+   (Risk | Bilgiler, Yönlendirme | Doğrulama) içerik boyunda: kısa kartın altında 150–250px
+   ölü alan kalıyordu. Telefon düzenine dokunulmaz. */
+@media (min-width: 1121px){
+  .kd-sonuc .sc-result-document-grid{ align-items: stretch; }
+  .kd-sonuc .sc-result-document-grid > .sc-document-slot{ display: flex; flex-direction: column; min-height: 0; }
+  .kd-sonuc .sc-result-document-grid > .sc-document-slot > *{ flex: 1 1 auto; }
+  .kd-sonuc .sc-main-draft-shell .sc-draft-card .sc-document-stage{ flex: 1 1 auto; padding-bottom: 28px; }
+  /* TUR 8 · 2. jüri: içerik boyu çiftlerde alt kenarlar 40–80 px düzensiz kalıyordu. Çift
+     artık satırı doldurur (stretch) ve kartın gövdesi esner; alt eylem/dipnot kart DİBİNE
+     yaslanır (margin-top:auto) — boşluk içerik ile eylem arasına düşer, kartın altına değil. */
+  .kd-sonuc .sc-quick-review-grid, .kd-sonuc .kd-destek-cift{ align-items: stretch; }
+  .kd-sonuc .kd-destek-cift > .sc-support-half{ align-self: stretch; display: flex; }
+  .kd-sonuc .sc-quick-review-grid > .sc-review-anchor{ display: flex; }
+  .kd-sonuc .sc-quick-review-grid > .sc-review-anchor > section,
+  .kd-sonuc .sc-quick-review-grid > section,
+  .kd-sonuc .kd-destek-cift > .sc-support-half > section{ flex: 1 1 auto; height: auto !important; display: flex; flex-direction: column; }
+  .kd-sonuc .sc-quick-review-grid section > div:last-child,
+  .kd-sonuc .kd-destek-cift > .sc-support-half > section > div:last-child{ flex: 1 1 auto; display: flex; flex-direction: column; }
+  .kd-sonuc .sc-quick-info-footer, .kd-sonuc .kd-kart-dip{ margin-top: auto !important; }
+  .kd-sonuc .sc-quick-info-list + .sc-quick-info-footer{ padding-top: 16px; }
+  /* Sticky karar çubuğu imza bloğunu örtmesin (jüri, 1440): sahne çubuk yüksekliği kadar
+     alt pay ayırır → kâğıdın dibi, çubuk yapıştığında da çubuğun ÜSTÜNDE okunur. */
+  .kd-sonuc .sc-main-draft-shell .sc-draft-card .sc-document-stage{ padding-bottom: 96px !important; scroll-padding-bottom: 96px; }
+}
+@media (min-width: 1121px) and (max-width: 1679px){ .kd-sonuc .sc-result-document-grid{ grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr); } }
 .kd-sonuc .sc-source-slot [data-kd="kaynak-masa"]{
   container-type: inline-size; align-items: flex-start;
   padding: 18px 12px 22px !important;

@@ -21,8 +21,12 @@ const ADIM_AD = {
   yazi_taslak: "Yazı taslağı", verify: "Doğrulama", risk_guard: "Risk bandı",
   onay: "Onay kararı", arsiv: "Arşiv (SDP)", sla_triyaj: "Yasal süre",
 };
-const MUHUR_ARALIK = 120;
-const SIRA_HALKA = 6;          // kompakt zincirde satır başına halka (12 → iki eşit satır)   // halkalar arası mühür vuruşu (ms)
+const MUHUR_ARALIK = 120;     // halkalar arası mühür vuruşu (ms)
+/* Zincir ŞEMASI sabittir (backend denetim_izi._ADIMLAR — 12 adım, bu sırada). DB kaydı yalnız
+   adım SAYISINI taşır; sayı şemanın uzunluğuyla birebir tutuyorsa halka adları şemanın sabit
+   sırasından okunur — bu türetme, uydurma değil (sayı tutmazsa numara gösterilir). */
+const ADIM_SIRASI = Object.keys(ADIM_AD);
+export const semaAdi = (i, n) => (n === ADIM_SIRASI.length ? ADIM_AD[ADIM_SIRASI[i]] : null);
 
 export const kisaHash = (h) => { const s = String(h || ""); return s.length > 12 ? `${s.slice(0, 5)}…${s.slice(-5)}` : s || "—"; };
 
@@ -46,12 +50,28 @@ export function ParmakIzi({ h, yukseklik = 16, cubuk = 3, aralik = 2, renk = DER
   );
 }
 
+/* Halka şeridi — satır içi mini zincir: her halka bir düğüm, kökten sona tek ip. Genişliği
+   sütunun kalanını doldurur (tur 8: 1920'de hash ile ok arasında ~380 px boş şerit vardı);
+   düğüm sayısı VERİDİR (adım sayısı), aynı uzunluktaki zincirler aynı ritmi çizer. */
+export function HalkaSeridi({ adim, kirik = false }) {
+  if (!adim) return <span aria-hidden="true" style={{ flex: 1, height: 0, borderTop: `1.5px dashed ${PAL.lineHi}` }} />;
+  const renk = kirik ? DERIN.R : DERIN.V;
+  return (
+    <span aria-hidden="true" style={{ position: "relative", flex: 1, minWidth: 96, maxWidth: 440, height: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <span style={{ position: "absolute", left: 3, right: 3, top: 4, height: 1.5, background: `color-mix(in srgb, ${renk} 40%, transparent)` }} />
+      {Array.from({ length: adim }, (_, i) => (
+        <span key={i} style={{ position: "relative", width: 7, height: 7, boxSizing: "border-box", borderRadius: RAD.dot, background: i === adim - 1 ? renk : PAL.surf, border: `1.5px solid ${renk}` }} />
+      ))}
+    </span>
+  );
+}
+
 /* Halka listesi girdisi: zincir varsa adım adı + hash, yoksa yalnız sıra numarası. */
 function halkalar(di) {
   const zincir = Array.isArray(di?.zincir) ? di.zincir : [];
   if (zincir.length) return zincir.map((z, i) => ({ no: i + 1, ad: ADIM_AD[z.adim] || z.adim, hash: z.hash }));
   const n = Number.isFinite(di?.adim_sayisi) ? di.adim_sayisi : 0;
-  return Array.from({ length: n }, (_, i) => ({ no: i + 1, ad: null, hash: i === n - 1 ? (di.son_hash || di.kok_hash) : null }));
+  return Array.from({ length: n }, (_, i) => ({ no: i + 1, ad: semaAdi(i, n), sema: true, hash: i === n - 1 ? (di.son_hash || di.kok_hash) : null }));
 }
 
 /* Doğrulama durumu: bos → bekliyor → (mühürleme sürüyor) → sonuc | hata. */
@@ -83,7 +103,7 @@ function HalkaSatir({ h, son, durum, az }) {
   const muhurlu = durum === "muhurlu", kirik = durum === "kirik";
   const renk = kirik ? R : muhurlu ? V : PAL.lineHi;
   return (
-    <li style={{ position: "relative", display: "grid", gridTemplateColumns: "28px minmax(0,1fr) auto", columnGap: SP.m, alignItems: "center", minHeight: 34 }}>
+    <li style={{ position: "relative", display: "grid", gridTemplateColumns: "28px minmax(0,1fr) auto", columnGap: SP.m, alignItems: "center", minHeight: 32 }}>
       {!son && <span aria-hidden="true" style={{ position: "absolute", left: 13, top: 28, bottom: -6, width: 2, background: muhurlu ? `color-mix(in srgb, ${V} 45%, transparent)` : PAL.line, transition: "background .2s ease-out" }} />}
       <motion.span aria-hidden="true" initial={false} animate={muhurlu || kirik ? { scale: az ? 1 : [1.35, 1] } : { scale: 1 }} transition={{ duration: 0.28, ease: EASE_BEZIER.out }}
         style={{ position: "relative", width: 28, height: 28, borderRadius: RAD.dot, display: "grid", placeItems: "center", fontFamily: MONO, fontSize: 11, fontWeight: 600, ...TNUM,
@@ -93,34 +113,13 @@ function HalkaSatir({ h, son, durum, az }) {
       </motion.span>
       <span style={{ minWidth: 0, ...TYPE.data, color: h.ad ? PAL.ink2 : PAL.mut2, fontWeight: h.ad ? 500 : 400 }}>
         {h.ad || `Halka ${String(h.no).padStart(2, "0")}`}
+        {h.sema && h.ad && h.no === 1 && <span style={{ marginLeft: SP.s, ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase" }}>şema sırası</span>}
         {kirik && <span style={{ display: "block", ...TYPE.meta, color: DERIN.R, fontWeight: 600 }}>Bu halkanın hash'i yeniden hesapla tutmuyor</span>}
       </span>
-      <span title={h.hash || ""} style={{ fontFamily: MONO, fontSize: 11, color: h.hash ? PAL.mut2 : PAL.mut3, ...TNUM }}>{h.hash ? kisaHash(h.hash) : "—"}</span>
+      {/* Ara halkanın hash'i kalıcı kayıtta yok (sunucuda): değer sütunu boş kalır, not başlıkta
+          bir kez söylenir — 11 satır "· · ·" bilgi taşımıyordu (tur 8 jüri). */}
+      <span title={h.hash || ""} style={{ fontFamily: MONO, fontSize: 11, color: h.hash ? DERIN.V : PAL.mut3, ...TNUM }}>{h.hash ? kisaHash(h.hash) : son ? "—" : ""}</span>
     </li>
-  );
-}
-
-/* Adım adları bilinmiyorsa (DB kaydı) halkalar tek satırlık bir zincir olarak dizilir —
-   12 boş "Halka 01" satırı yerine kökten sona okunan mühür dizisi. */
-function KompaktZincir({ liste, d, az }) {
-  return (
-    <ol aria-label="Hash zinciri halkaları" style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: `repeat(${SIRA_HALKA}, 36px)`, rowGap: SP.m }}>
-      {liste.map((h, i) => {
-        const dr = halkaDurumu(i, d);
-        const renk = dr === "kirik" ? R : dr === "muhurlu" ? V : PAL.lineHi;
-        return (
-          <li key={h.no} aria-label={`Halka ${h.no}: ${dr === "muhurlu" ? "doğrulandı" : dr === "kirik" ? "kırık" : "doğrulanmadı"}`} style={{ position: "relative", display: "flex", alignItems: "center" }}>
-            {i % SIRA_HALKA !== SIRA_HALKA - 1 && i < liste.length - 1 && <span aria-hidden="true" style={{ position: "absolute", left: 26, width: 10, top: 12, height: 2, background: i < d.muhurlu ? `color-mix(in srgb, ${V} 50%, transparent)` : PAL.line, transition: "background .2s ease-out" }} />}
-            <motion.span aria-hidden="true" initial={false} animate={dr !== "bos" ? { scale: az ? 1 : [1.35, 1] } : { scale: 1 }} transition={{ duration: 0.28, ease: EASE_BEZIER.out }}
-              style={{ width: 26, height: 26, borderRadius: RAD.dot, display: "grid", placeItems: "center", fontFamily: MONO, fontSize: 10.5, fontWeight: 600, ...TNUM,
-                border: `1.5px ${dr === "kirik" ? "dashed" : "solid"} ${renk}`, background: dr === "muhurlu" ? ALFA(V) : dr === "kirik" ? ALFA(R) : PAL.surf,
-                color: dr === "kirik" ? DERIN.R : dr === "muhurlu" ? DERIN.V : PAL.mut2, transition: "background .2s ease-out, color .2s ease-out, border-color .2s ease-out" }}>
-              {dr === "muhurlu" ? <Icon.check width={12} height={12} strokeWidth={2.4} /> : dr === "kirik" ? "×" : String(h.no).padStart(2, "0")}
-            </motion.span>
-          </li>
-        );
-      })}
-    </ol>
   );
 }
 
@@ -162,6 +161,18 @@ function CekmeceBaslik({ kayit, onKapat, kapatRef }) {
       <h2 id="zincir-cekmece-h" style={{ margin: `${SP.xs}px 0 0`, ...TYPE.h2, color: PAL.ink, textWrap: "balance" }}>{kayit.baslik}</h2>
       <p style={{ margin: `${SP.xs}px 0 0`, fontFamily: MONO, fontSize: 12, lineHeight: "18px", color: PAL.mut2, ...TNUM }}>{kayit.meta}</p>
     </header>
+  );
+}
+
+/* Kök satırı — zincirin başlangıç değeri (genesis); ip buradan iner. */
+function KokSatiri({ h }) {
+  return (
+    <div style={{ position: "relative", display: "grid", gridTemplateColumns: "28px minmax(0,1fr) auto", columnGap: SP.m, alignItems: "center", minHeight: 30 }}>
+      <span aria-hidden="true" style={{ position: "absolute", left: 13, top: 22, bottom: -8, width: 2, background: PAL.line }} />
+      <span aria-hidden="true" style={{ justifySelf: "center", width: 12, height: 12, transform: "rotate(45deg)", border: `1.5px solid ${PAL.mut2}`, background: PAL.surf }} />
+      <span style={{ ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase" }}>Kök · başlangıç değeri</span>
+      <span title={h || ""} style={{ fontFamily: MONO, fontSize: 11, color: PAL.mut2, ...TNUM }}>{kisaHash(h)}</span>
+    </div>
   );
 }
 
@@ -214,22 +225,29 @@ export function ZincirCekmece({ kayit, onKapat }) {
         initial={{ x: az ? 0 : 32, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.26, ease: EASE_BEZIER.out }}
         style={{ width: "min(460px, 100vw)", height: "100dvh", display: "flex", flexDirection: "column", background: PAL.surfPop, borderLeft: `1px solid ${PAL.lineHi}`, boxShadow: SH.modal }}>
         <CekmeceBaslik kayit={kayit} onKapat={onKapat} kapatRef={kapatRef} />
-        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "contain", padding: `${SP.l}px ${SP.xl}px ${SP.xl}px`, display: "grid", gap: SP.l, alignContent: "start" }}>
-          <SonHashKutusu h={kayit.di.son_hash || kayit.di.kok_hash} />
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "contain", padding: `${SP.l}px ${SP.xl}px ${SP.xxxl}px`, scrollPaddingBottom: SP.xxxl, display: "grid", gap: SP.l, alignContent: "start" }}>
           <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, marginBottom: SP.s }}>
-              <span style={{ ...TYPE.antet, color: PAL.ink2, textTransform: "uppercase" }}>Halkalar · kök → son</span>
-              <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 11, color: PAL.mut3, ...TNUM }}>{d.muhurlu}/{liste.length} mühürlü</span>
+              <span style={{ ...TYPE.antet, color: PAL.ink2, textTransform: "uppercase" }}>Zincir defteri · kök → son</span>
+              {/* Doğrulama koşmadan "0/12 mühürlü" kırık kayıt gibi okunuyordu: sayaç yalnız
+                  doğrulama başladıktan sonra; öncesi nötr "doğrulanmadı". */}
+              <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 11, color: PAL.mut3, ...TNUM }}>
+                {d.asama === "bos" ? `doğrulanmadı · ${liste.length} halka` : `${d.muhurlu}/${liste.length} mühürlü`}
+              </span>
             </div>
-            {liste.some((h) => h.ad) ? (
-              <ol aria-label="Hash zinciri halkaları" style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
-                {liste.map((h, i) => <HalkaSatir key={h.no} h={h} son={i === liste.length - 1} durum={halkaDurumu(i, d)} az={az} />)}
-              </ol>
-            ) : <KompaktZincir liste={liste} d={d} az={az} />}
-            {!liste.some((h) => h.ad) && liste.length > 0 && (
-              <p style={{ margin: `${SP.s}px 0 0`, ...TYPE.meta, color: PAL.mut3 }}>Kalıcı kayıt halka sayısını ve son hash'i taşır; adım içerikleri sunucuda saklanır ve doğrulamada kullanılır.</p>
+            {liste.some((h) => h.sema) && liste.length > 0 && (
+              <p style={{ margin: `0 0 ${SP.m}px`, maxWidth: "52ch", ...TYPE.meta, color: PAL.mut3 }}>
+                Ara hash'ler sunucuda saklanır ve doğrulamada kullanılır; kalıcı kayıt halka sayısını ve son hash'i taşır.{liste[0]?.ad ? " Halka adları zincir şemasının sabit sırasındandır." : ""}
+              </p>
             )}
+            {/* Dikey zincir defteri (tur 8): halka başına bir satır, kökten sona tek kesintisiz
+                ip. 6+6 kompakt dizilim 06→07 arasında ipi koparıyor, zincir "kırık" okunuyordu. */}
+            {kayit.di.kok_hash && <KokSatiri h={kayit.di.kok_hash} />}
+            <ol aria-label="Hash zinciri halkaları" style={{ listStyle: "none", margin: kayit.di.kok_hash ? `${SP.s}px 0 0` : 0, padding: 0, display: "grid", gap: 6 }}>
+              {liste.map((h, i) => <HalkaSatir key={h.no} h={h} son={i === liste.length - 1} durum={halkaDurumu(i, d)} az={az} />)}
+            </ol>
           </div>
+          <SonHashKutusu h={kayit.di.son_hash || kayit.di.kok_hash} />
           <Hukum d={d} />
         </div>
         <CekmeceAlt islemId={kayit.islemId} d={d} calisiyor={calisiyor} />

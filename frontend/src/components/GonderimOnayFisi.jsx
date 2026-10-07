@@ -18,13 +18,8 @@ import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Btn, Icon, MONO, DISPLAY, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, odakDongusu, focusRing } from "./neonUi.jsx";
 import { riskOlcuEtiketi } from "../lib/detayYorum.js";
+import { bugunTarihi as bugun, tarihFarkli as tarihFarkliMi } from "../lib/gonderimTarihi.js";
 
-const bugun = () => new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
-/* "3.10.2026" / "03.10.2026" / "03/10/2026" aynı gün sayılsın — yalnız rakam üçlüsü karşılaştırılır. */
-const gunAnahtari = (s) => {
-  const m = String(s || "").match(/(\d{1,2})\D(\d{1,2})\D(\d{4})/);
-  return m ? `${+m[1]}.${+m[2]}.${m[3]}` : "";
-};
 /* Konu, kuyruk ve karar fişindeki gibi baş harfi büyük gösterilir (yalnız sunum; metne dokunulmaz). */
 const basHarf = (s) => (s ? s.charAt(0).toLocaleUpperCase("tr-TR") + s.slice(1) : s);
 const SATIR_GECIKME_MS = 40;
@@ -94,15 +89,17 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
   const olcu = riskOlcuEtiketi(r?.risk_metadata);
   const ayrinti = [kunye.antet && `Gönderen: ${kunye.antet}`].filter(Boolean)[0];
   // Yazı tarihi gönderim gününden farklıysa söylenir (imza öncesi son kontrol bunu yakalamalı).
-  const tarihFarkli = !!kunye.tarih && gunAnahtari(kunye.tarih) && gunAnahtari(kunye.tarih) !== gunAnahtari(bugun());
+  // Yüklem lib/gonderimTarihi'nden — karar fişinin "Gönderim kontrolü" ile AYNI hüküm (jüri tur 8).
+  const tarihFarkli = tarihFarkliMi(kunye.tarih);
   const isaret = (v) => (v ? "tamam" : "eksik");
 
   if (typeof document === "undefined") return null;
   return createPortal(
     <div role="presentation" onMouseDown={() => { if (!gonderiliyor) onVazgec(); }}
       style={{ position: "fixed", inset: 0, zIndex: 80, display: "grid", placeItems: "center", padding: 16,
-        background: PAL.scrim, animation: "ke-fis-zemin .16s ease-out both" }}>
-      {/* Örtü PAL.scrim: iki temada da KARARTIR (eski ink-%38 karışımı koyu temada açık
+        background: `color-mix(in srgb, ${PAL.scrim}, ${PAL.scrimKoyu} 30%)`, animation: "ke-fis-zemin .16s ease-out both" }}>
+      {/* Örtü scrim + %30 scrimKoyu (jüri tur 8: açık temada fiş aynı tonlu panellerden
+          ayrışmıyordu). Örtü PAL.scrim: iki temada da KARARTIR (eski ink-%38 karışımı koyu temada açık
           renk olduğundan sayfayı griye boyuyor, fiş yükselmek yerine çöküyordu). */}
       <style>{"@keyframes ke-fis-zemin{from{opacity:0}to{opacity:1}}@keyframes ke-fis-satir{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}"}</style>
       <section ref={kutuRef} role="alertdialog" aria-modal="true" aria-labelledby="ke-fis-baslik" aria-describedby="ke-fis-aciklama"
@@ -152,7 +149,11 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
             {uyari.map((u) => <Madde key={u.kod} ton="sari">{u.metin}</Madde>)}
             {tarihFarkli && (
               <Madde ton="sari">
-                Yazının tarihi {kunye.tarih}; bugün {bugun()}. Tarih bugün olarak gidecekse önce taslağı düzenleyin.
+                Yazının tarihi {kunye.tarih}; bugün {bugun()}. Tarih bugün olarak gidecekse önce taslağı düzenleyin.{" "}
+                <button type="button" onClick={onDuzenle} disabled={gonderiliyor} {...focusRing} data-press=""
+                  style={{ cursor: "pointer", padding: 0, border: "none", background: "transparent", ...TYPE.data, fontWeight: 600, color: DERIN.T, textDecoration: "underline", textUnderlineOffset: 3 }}>
+                  Tarihi düzenle
+                </button>
               </Madde>
             )}
           </ul>
@@ -173,12 +174,14 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
           )}
           <Btn onClick={onVazgec} disabled={gonderiliyor} style={{ minHeight: 44, marginLeft: onaylayan ? 0 : "auto" }}>Vazgeç</Btn>
           {hazir ? (
-            <button type="button" onClick={onOnayla} disabled={gonderiliyor} data-press="" {...focusRing}
-              aria-label={gonderiliyor ? "Gönderiliyor" : "Yazıyı onayla ve Giden Evrak'a gönder"}
-              style={{ cursor: gonderiliyor ? "progress" : "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, minHeight: 44, padding: "9px 20px",
-                borderRadius: RAD.ctl, border: "1px solid transparent", background: DERIN.T, color: PAL.onAccent, ...TYPE.ui, fontWeight: 600 }}>
+            /* Btn primary (tur 8): elle çizilen düğme koyu temada açık lavanta zemin + koyu metin
+               çiziyordu, Taslaklar'daki "Gönder" ise dolgu mavisi + beyaz — aynı eylem zincirinde
+               iki primary dili. Artık tek atom, tek token çifti (--ke-dolgu-t / --ke-on-dolgu). */
+            <Btn primary onClick={onOnayla} disabled={gonderiliyor}
+              ariaLabel={gonderiliyor ? "Gönderiliyor" : "Yazıyı onayla ve Giden Evrak'a gönder"}
+              style={{ minHeight: 44, padding: "9px 20px", fontWeight: 600, cursor: gonderiliyor ? "progress" : "pointer" }}>
               {gonderiliyor ? <><Icon.spin width={14} height={14} /> Gönderiliyor…</> : <><Icon.send width={14} height={14} /> {hata ? "Tekrar dene" : "Onayla ve gönder"}</>}
-            </button>
+            </Btn>
           ) : (
             <Btn primary onClick={onDuzenle} style={{ minHeight: 44 }}><Icon.edit width={14} height={14} /> Taslağı düzenle</Btn>
           )}

@@ -161,6 +161,16 @@ function TalepKumesi({ liste }) {
   );
 }
 
+/* Maskeleme rozeti OLGUNUN KENDİSİNİ söyler (tur 8): genel "PII maskelendi" rozetinin hemen
+   altında gönderen adı açık yazıyordu — iddia kapsamından genişti. Rozet yalnız gerçekten
+   maskeli gelen alanları sayar; maskeli alan yoksa rozet basılmaz. */
+const MASKE_ALAN = [["tckn_maskeli", "TCKN"], ["telefon_maskeli", "Telefon"]];
+function maskeRozeti(bu) {
+  const adlar = MASKE_ALAN.filter(([k]) => typeof bu[k] === "string" && bu[k].trim()).map(([, ad]) => ad);
+  if (!adlar.length) return null;
+  return `${adlar.join(" ve ")} maskelendi`;
+}
+
 function CikarDetay({ d, r }) {
   const bu = d.bilgi_unsurlari || r?.bilgi_unsurlari || {};
   // pii_var çipe taşınır; false boolean "yok" gürültüsü üretmesin diye elenir.
@@ -170,9 +180,9 @@ function CikarDetay({ d, r }) {
   if (!alanlar.length && !talepler.length) return <Not t="Çıkarılabilen bilgi unsuru yok." />;
   return (
     <>
-      {bu.pii_var && (
+      {bu.pii_var && maskeRozeti(bu) && (
         <div style={{ marginBottom: SP.s }}>
-          <Chip c={BANT.yesil.c} label="Kişisel veriler maskelendi"><Icon.shield width={12} height={12} /> PII maskelendi (KVKK)</Chip>
+          <Chip c={BANT.yesil.c} label={`${maskeRozeti(bu)} (KVKK)`}><Icon.shield width={12} height={12} /> {maskeRozeti(bu)} (KVKK)</Chip>
         </div>
       )}
       {alanlar.map(([k, v]) => (
@@ -190,11 +200,11 @@ function KanitDetay({ d, r }) {
   if (!spanlar.length) return <Not t="Bu evrakta bağlanacak kanıt pasajı bulunamadı." />;
   return (
     <>
-      {metin && (
-        <div style={{ ...TYPE.meta, color: PAL.mut3, marginBottom: SP.s }}>
-          Satırın üzerine gelin — kaynak belgedeki kanıt pasajı vurgulu açılır.
-        </div>
-      )}
+      {/* Değerler KAYNAKTAKİ YAZIMIYLA (tur 8: "Bilgi Çıkar"da başlık harfi, burada BÜYÜK HARF
+          aynı kurum iki biçimde okunuyordu) — bu tablo alıntıdır, normalize edilmez. */}
+      <div style={{ ...TYPE.meta, color: PAL.mut3, marginBottom: SP.s }}>
+        Değerler kaynaktaki yazımıyla{metin ? " · satırın üzerine gelin, kanıt pasajı vurgulu açılır." : "."}
+      </div>
       {spanlar.map((sp, i) => (
         <KanitAlinti key={i} span={sp} metin={metin}>
           <span style={{ display: "flex", justifyContent: "space-between", gap: SP.m, alignItems: "baseline", padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>

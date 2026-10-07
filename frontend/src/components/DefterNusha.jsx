@@ -12,19 +12,20 @@ import React, { useEffect, useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { MONO, PAL, TYPE, TNUM, RAD, SP, SH, DERIN, focusRing } from "./neonUi.jsx";
 import { ortaElips } from "../lib/defterSozluk.js";
+import { KAGIT_YUZEY } from "./kagitDoku.js";
 
 const kunyeEtiket = { ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", whiteSpace: "nowrap" };
 
 /** satirlar: [{ k, v, c?, mono? }] — v boşsa satır basılmaz (yokluk "—" ile yazılır). */
 export function KunyeFisi({ baslik, satirlar, children }) {
   return (
-    <section aria-label={baslik} style={{ background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, padding: `${SP.l}px ${SP.xl}px ${SP.l}px`, animation: "nu-kagit .22s var(--ke-ease-out) both" }}>
+    <section aria-label={baslik} data-kunye-fis="" data-evrak-kagit="" style={{ ...KAGIT_YUZEY, border: `1px solid ${PAL.lineHi}`, borderRadius: 2, boxShadow: SH.modal, padding: `${SP.l}px ${SP.xl}px ${SP.l}px`, animation: "nu-kagit .22s var(--ke-ease-out) both" }}>
       <div style={{ ...kunyeEtiket, marginBottom: SP.s }}>{baslik}</div>
       <dl style={{ margin: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", columnGap: SP.xl }}>
         {satirlar.filter((r) => r && r.v != null && r.v !== "").map((r) => (
           <div key={r.k} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: SP.m, padding: "7px 0", borderBottom: `1px solid ${PAL.line}`, minWidth: 0 }}>
             <dt style={{ ...TYPE.meta, color: PAL.mut3, flexShrink: 0 }}>{r.k}</dt>
-            <dd style={{ margin: 0, ...TYPE.data, fontWeight: 500, color: r.c || PAL.ink2, textAlign: "right", minWidth: 0, ...(r.mono ? { fontFamily: MONO, fontSize: 12 } : null), ...TNUM }}>{r.v}</dd>
+            <dd style={{ margin: 0, ...TYPE.data, fontWeight: 500, color: r.c || PAL.ink2, textAlign: "right", minWidth: 0, ...(r.mono ? { fontFamily: MONO, fontSize: 12, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } : null), ...TNUM }}>{r.v}</dd>
           </div>
         ))}
       </dl>

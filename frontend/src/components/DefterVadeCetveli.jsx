@@ -1,50 +1,91 @@
-/* DefterVadeCetveli — Gelen defterinin "Yasal süre" hücresi: VADE CETVELİ.
+/* DefterVadeCetveli — Gelen defterinin "Yasal süre" hücresi: VADE ÇİZELGESİ.
 
-   Ortak ölçekli ince cetvel (lib/defterVade): mavi bölüm yasal süredir — dolan kısım geçen
-   gün (tükenmez mavisi), çentikler haftalar; son gün mürekkep çizgisiyle işaretli. Süre
-   aşıldıysa KIRMIZI MÜREKKEP cetvelin dışına gecikme kadar uzar. Bütün satırlar aynı
-   gün→piksel ölçeğini paylaşır: 67 gün ile 36 gün ilk bakışta ayrılır. Metin rengi kırmızı
-   kalır (renk tek sinyal değil: sayı + cetvel boyu), tint zemin + uyarı ikonu YALNIZ en ağır
-   çeyrekte — alarm yorgunluğu biter (jüri tur 6: 15 satırın 9'u aynı kırmızı çipti).
-   Gecikme uzantısı da iki kademeli: en ağır çeyrekte dolu 4 px ACELE kırmızısı, kalanında
-   2 px soluk kırmızı kılcal — boy (gecikme günü) korunur, renk yine ayırt eder.
-   Hareket: cetvel soldan çizilir (scaleX, yalnız transform); reduced-motion global kapatır. */
+   Tur 8 (jüri): cetveller ortak ölçekliydi ama ortak ZAMAN EKSENİ yoktu — her satır kendi
+   başlangıcından çiziliyor, "bugün" hiçbir satırda aynı x'te değildi; sütun bir çizelge gibi
+   okunamıyordu. Şimdi tüm sütun tek eksen (lib/defterVade.zamanEkseni): bugün = 0, tek dikey
+   ACELE kırmızısı mürekkep çizgisi tüm satırlardan geçer (başlıkta "BUGÜN 07.10" künyesi).
+   · Gri iz: yasal süre (başlangıç → son gün); mavi dolu kısım: geçen gün (bugüne kadar).
+   · Son gün: mürekkep çentiği. Son gün bugünün SOLUNDAYSA aradaki bölüm gecikmedir —
+     kırmızı (en ağır çeyrekte dolu 4 px, kalanında 2 px soluk kılcal).
+   · Hafta çentikleri süre bölümünde. Renk tek sinyal değil: sayı + konum + "gecikti" sözcüğü.
+   Hareket: çizgi yukarıdan aşağı bir kez çizilir (scaleY), cetvel soldan (scaleX); yalnız
+   transform; reduced-motion global kuralı kapatır. Veri eksikse cetvel ÇİZİLMEZ (uydurma yok). */
 import React from "react";
 import { Icon, MONO, T, PAL, BANT, TYPE, TNUM, RAD, DERIN, ALFA } from "./neonUi.jsx";
-import { haftaCentikleri } from "../lib/defterVade.js";
+import { haftaCentikleri, eksenX } from "../lib/defterVade.js";
 
 const CETVEL_CSS = `
 @keyframes vc-ciz{from{transform:scaleX(0)}to{transform:none}}
-[data-vc-cetvel]{transform-origin:0 50%;animation:vc-ciz .5s var(--ke-ease-out) calc(min(var(--sd-i,0), 5) * 30ms + 80ms) both}
+[data-vc-cetvel]{transform-origin:0 50%;animation:vc-ciz .4s var(--ke-ease-out) calc(min(var(--sd-i,0), 7) * 18ms + 80ms) both}
+/* Bugün çizgisi — vade hücresinin ::before'u; hücre satır dolgusuna taşar (margin −12 /
+   padding 12) → bitişik satırlarda tek dikey çizgi. Metin etiketlerinin bandında maskeyle
+   AÇILIR: çizgi cetvel bandını keser (bugün ↔ son gün ilişkisi orada okunur), metnin içinden
+   geçmez. Etiket bandı hücre ortasına göre sabittir (cetvel 10 + 4 boşluk üstte, iki metin
+   satırı altta). Not: z-sırasıyla örtme Chrome'da birleştirme katmanında güvenilmez çıktı. */
+[data-vc-hucre]{--vc-cizgi:color-mix(in srgb, var(--ke-r) 62%, transparent);margin:-12px 0;padding:12px 0;position:relative}
+[data-vc-hucre]::before{content:"";position:absolute;top:0;bottom:0;left:var(--vc-x);width:1px;background:var(--vc-cizgi);pointer-events:none;
+  -webkit-mask-image:linear-gradient(to bottom, black calc(50% - 12px), transparent calc(50% - 12px), transparent calc(50% + 26px), black calc(50% + 26px));
+  mask-image:linear-gradient(to bottom, black calc(50% - 12px), transparent calc(50% - 12px), transparent calc(50% + 26px), black calc(50% + 26px))}
+[data-vc-bugun-baslik]{position:absolute;bottom:-9px;height:8px;border-left:1px solid var(--vc-cizgi, color-mix(in srgb, var(--ke-r) 62%, transparent))}
+@media (max-width:640px){[data-vc-bugun-baslik]{display:none}[data-vc-hucre]{margin:0;padding:0}[data-vc-hucre]::before{display:none}}
 `;
 export const VadeStil = () => <style>{CETVEL_CSS}</style>;
 
-function Cetvel({ olcu, k, agir }) {
-  const sureW = Math.max(6, olcu.sure * k);
-  const gecenW = Math.min(sureW, olcu.gecen * k);
-  const tasmaW = olcu.gecikme * k;
+/* Sütun başlığı — bugün çizgisinin başladığı yerde "BUGÜN 07.10" künyesi (çizginin geniş
+   tarafında). Sütun adı ekran okuyucuya columnheader etiketiyle verilir. */
+export function VadeBaslik({ eksen, genislik }) {
+  const bugun = new Date();
+  const etiket = `Bugün ${String(bugun.getDate()).padStart(2, "0")}.${String(bugun.getMonth() + 1).padStart(2, "0")}`;
+  const solda = eksen && eksen.bugunX >= 88;
   return (
-    <span data-vc-cetvel="" aria-hidden="true" style={{ position: "relative", display: "block", height: 10, width: sureW + tasmaW, maxWidth: "100%" }}>
-      <span style={{ position: "absolute", left: 0, top: 3, height: 4, width: sureW, borderRadius: 2, background: PAL.line }} />
-      <span style={{ position: "absolute", left: 0, top: 3, height: 4, width: gecenW, borderRadius: 2, background: T, opacity: olcu.gecikme ? 0.55 : 0.9 }} />
+    <span role="columnheader" aria-label="Yasal süre · vade çizelgesi" style={{ gridArea: "sure", position: "relative", display: "block", width: genislik, maxWidth: "100%",
+      ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", whiteSpace: "nowrap" }}>
+      {!eksen ? "Yasal süre" : (
+        <>
+          <span aria-hidden="true" data-vc-bugun-baslik="" style={{ left: eksen.bugunX }} />
+          <span aria-hidden="true" style={{ position: "absolute", top: 0, color: DERIN.R, fontWeight: 600, ...(solda ? { right: `calc(100% - ${eksen.bugunX - 6}px)` } : { left: eksen.bugunX + 6 }) }}>{etiket}</span>
+          <span aria-hidden="true" style={{ visibility: "hidden" }}>Yasal süre</span>
+        </>
+      )}
+    </span>
+  );
+}
+
+/* Bugün çizgisi — vade hücresinin zemin özniteliği: bitişik satırlarda tek kesintisiz dikey
+   mürekkep çizgisi olarak okunur. Hücreye {...bugunHucre(eksen)} yayılır. */
+export const bugunHucre = (eksen) => (eksen ? { "data-vc-hucre": "", style: { "--vc-x": `${eksen.bugunX}px` } } : {});
+
+function Cetvel({ aralik, olcu, eksen, agir }) {
+  const x0 = eksenX(eksen, aralik.bas);
+  const xSon = eksenX(eksen, aralik.son);
+  const xBugun = eksen.bugunX;
+  const iz = Math.max(4, xSon - x0);
+  const dolu = Math.max(0, Math.min(xSon, xBugun) - x0);
+  const gec = aralik.son < 0 ? xBugun - xSon : 0;
+  return (
+    <span data-vc-cetvel="" aria-hidden="true" style={{ position: "relative", display: "block", height: 10 }}>
+      <span style={{ position: "absolute", left: x0, top: 3, height: 4, width: iz, borderRadius: 2, background: PAL.line }} />
+      <span style={{ position: "absolute", left: x0, top: 3, height: 4, width: dolu, borderRadius: 2, background: T, opacity: gec ? 0.5 : 0.9 }} />
       {haftaCentikleri(olcu.sure).map((g) => (
-        <span key={g} style={{ position: "absolute", left: g * k, top: 2, width: 1, height: 6, background: PAL.surf, opacity: .9 }} />
+        <span key={g} style={{ position: "absolute", left: x0 + g * eksen.k, top: 2, width: 1, height: 6, background: PAL.surf, opacity: .9 }} />
       ))}
-      <span style={{ position: "absolute", left: sureW - 1, top: 0, width: 1.5, height: 10, background: PAL.ink2 }} />
-      {tasmaW > 0 && <span style={{ position: "absolute", left: sureW + 1, top: agir ? 3 : 4, height: agir ? 4 : 2, width: Math.max(2, tasmaW - 1), borderRadius: "0 2px 2px 0",
+      <span style={{ position: "absolute", left: xSon - 1, top: 0, width: 1.5, height: 10, background: PAL.ink2 }} />
+      {gec > 0 && <span style={{ position: "absolute", left: xSon + 1, top: agir ? 3 : 4, height: agir ? 4 : 2, width: Math.max(2, gec - 1), borderRadius: "0 2px 2px 0",
         background: agir ? BANT.kirmizi.c : `color-mix(in srgb, ${BANT.kirmizi.c} 45%, transparent)` }} />}
     </span>
   );
 }
 
+/* Gecikme metni — en ağır çeyrekte tint + uyarı ikonu; tint İÇ dolguyla verilir (negatif
+   marj sütunun solundan taşıyordu, tur 8 jüri). */
 function SureMetni({ sla, agir }) {
   const gec = sla.durum === "GECIKMIS", kri = sla.durum === "KRITIK";
   const metin = gec ? `${Math.abs(sla.kalan_gun)} gün gecikti` : kri ? `son ${sla.kalan_gun} gün` : `${sla.kalan_gun} gün süre`;
   const renk = gec ? DERIN.kirmizi : kri ? DERIN.sari : PAL.mut2;
   if (gec && agir) {
     return (
-      <span style={{ display: "inline-flex", alignItems: "center", gap: 5, alignSelf: "flex-start", padding: "1px 7px 1px 6px", margin: "0 -7px 0 -6px", borderRadius: RAD.chip,
-        background: ALFA(BANT.kirmizi.c), color: renk, ...TYPE.meta, fontWeight: 600, ...TNUM }}>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 5, alignSelf: "flex-start", padding: "1px 7px 1px 5px", borderRadius: RAD.chip,
+        background: `linear-gradient(${ALFA(BANT.kirmizi.c)}, ${ALFA(BANT.kirmizi.c)}), var(--ke-surf)`, color: renk, ...TYPE.meta, fontWeight: 600, ...TNUM }}>
         <Icon.alert width={12} height={12} />{metin}
       </span>
     );
@@ -52,14 +93,15 @@ function SureMetni({ sla, agir }) {
   return <span style={{ ...TYPE.meta, fontWeight: gec || kri ? 600 : 500, color: renk, ...TNUM }}>{metin}</span>;
 }
 
-/** sla: backend compute_sla · olcu: vadeOlcusu(sla) · k: px/gün (ortak) · agir: en ağır çeyrek */
-export default function VadeHucre({ sla, olcu, k, agir }) {
-  if (!sla || sla.durum === "tanimsiz") return <span style={{ ...TYPE.meta, color: PAL.mut3 }} aria-label="Yasal süre tanımsız">—</span>;
-  if (sla.durum === "tarih_yok") return <span title={sla.etiket} style={{ ...TYPE.meta, color: PAL.mut2, fontStyle: "italic" }}>tarih doğrulanmalı</span>;
+/** sla: backend compute_sla · olcu: vadeOlcusu(sla) · aralik: goreliVade(sla) · eksen: ortak
+    zaman ekseni (zamanEkseni) · agir: en ağır çeyrek · genislik: sütunun eksen genişliği (px) */
+export default function VadeHucre({ sla, olcu, aralik, eksen, agir, genislik }) {
+  const kap = { display: "flex", flexDirection: "column", gap: 4, alignItems: "stretch", minWidth: 0, width: genislik, maxWidth: "100%" };
+  if (!sla || sla.durum === "tanimsiz") return <span style={kap}><span style={{ ...TYPE.meta, color: PAL.mut3 }} aria-label="Yasal süre tanımsız">—</span></span>;
+  if (sla.durum === "tarih_yok") return <span style={kap}><span title={sla.etiket} style={{ ...TYPE.meta, color: PAL.mut2, fontStyle: "italic" }}>tarih doğrulanmalı</span></span>;
   return (
-    <span title={`${sla.etiket}; son tarih: ${sla.son_tarih || "?"} (${sla.mevzuat || "mevzuat"})`}
-      style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "stretch", minWidth: 0, width: "100%" }}>
-      {olcu && k > 0 && <Cetvel olcu={olcu} k={k} agir={agir} />}
+    <span title={`${sla.etiket}; son tarih: ${sla.son_tarih || "?"} (${sla.mevzuat || "mevzuat"})`} style={kap}>
+      {olcu && aralik && eksen && <Cetvel aralik={aralik} olcu={olcu} eksen={eksen} agir={agir} />}
       <SureMetni sla={sla} agir={agir} />
       {sla.son_tarih && <span style={{ fontFamily: MONO, fontSize: 11, lineHeight: "14px", color: PAL.mut3, ...TNUM }}>son gün {sla.son_tarih}</span>}
     </span>

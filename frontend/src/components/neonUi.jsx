@@ -29,7 +29,7 @@ export const T = "var(--ke-t)", V = "var(--ke-v)", R = "var(--ke-r)";
 export const PAL = {
   bg: "var(--ke-bg)", bg2: "var(--ke-bg2)", surf: "var(--ke-surf)", surf2: "var(--ke-surf2)", surfHi: "var(--ke-surf-hi)",
   /* surfPop: HAVADA DURAN katman yüzeyi (dropdown/tooltip/modal/toast). Açık modda surf ile
-     bit-aynı (#ffffff) — koyu modda bir basamak AÇIK (#252220): siyah üstünde siyah gölge
+     bit-aynı — koyu modda bir basamak AÇIK (değerler: bkz. temaCss --ke-surf-pop): siyah üstünde siyah gölge
      görünmediğinden koyu modda yükseklik ışıkla anlatılır (yüzey merdiveni, bkz. THEME_CSS). */
   surfPop: "var(--ke-surf-pop)",
   line: "var(--ke-line)", lineHi: "var(--ke-line-hi)",
@@ -190,6 +190,8 @@ export const NEON_KEYFRAMES = `
 /* nu-sol: scrim/perde girişi — YALNIZ opacity. Karartma perdesi mekânda hareket ETMEZ
    (Apple: materyal katman solar, içerik hareket eder) — nu-rise scrim'e verilmez. */
 @keyframes nu-sol{from{opacity:0}to{opacity:1}}
+/* Antet cetveli (tur 8): çift çizgi soldan sağa çekilir — tek eksen, tek yön. */
+@keyframes ke-cizgi{from{transform:scaleX(0)}to{transform:none}}
 /* nu-kagit: diyalog/kâğıt katmanının masaya İNİŞİ — tüm modallar için tek hareket sözcüğü
    (tur 4, jüri C#28: önizleme/düzenle 160 ms düz opacity, asistan 400 ms yay, mevzuat rise —
    üç dil). Yalnız transform+opacity; 220 ms var(--ke-ease-out). Perde nu-sol alır, kâğıt bunu. */
@@ -256,10 +258,17 @@ export const NEON_KEYFRAMES = `
    morflanır (tarayıcının grup animasyonu), içerik eski sayfa hızla solar, yenisi kâğıt gibi
    aşağıdan yerine oturur. Yalnız transform/opacity. Reduced-motion'da geçiş hiç başlamaz
    (DashboardApp.gecisle). */
+/* Tur 8 (jüri: ~90 ms "Panel" ile "İşlenen evrak" üst üste okunuyordu — çift pozlama): eski
+   ARDIŞIK çıkar, yeni sonra gelir. Eski başlık/içerik 80 ms'de tamamen söner; yeni 60 ms
+   gecikmeyle başlar → aynı anda ikisinin de okunur olduğu kare yok. Grup (konum) morfu sürer. */
 ::view-transition-group(ke-antet-baslik){animation-duration:.34s;animation-timing-function:cubic-bezier(.23,1,.32,1)}
 ::view-transition-old(ke-antet-baslik),::view-transition-new(ke-antet-baslik){height:100%;object-fit:none;object-position:left center}
-::view-transition-old(ke-icerik){animation:ke-vt-cik .14s ease-in both}
-::view-transition-new(ke-icerik){animation:ke-vt-gir .38s cubic-bezier(.23,1,.32,1) both}
+::view-transition-old(ke-antet-baslik){animation:ke-vt-son .08s ease-in both}
+::view-transition-new(ke-antet-baslik){animation:ke-vt-bel .22s cubic-bezier(.23,1,.32,1) .06s both}
+::view-transition-old(ke-icerik){animation:ke-vt-cik .08s ease-in both}
+::view-transition-new(ke-icerik){animation:ke-vt-gir .34s cubic-bezier(.23,1,.32,1) .06s both}
+@keyframes ke-vt-son{to{opacity:0}}
+@keyframes ke-vt-bel{from{opacity:0}}
 ::view-transition-group(ke-icerik){animation:none}
 @keyframes ke-vt-cik{to{opacity:0;transform:translateY(-6px)}}
 @keyframes ke-vt-gir{from{opacity:0;transform:translateY(14px)}}
@@ -360,13 +369,53 @@ const antetTarih = () => {
    duruyor, kabuk durmuyordu). Antet çizgisi de bu kutuya bağlıdır. genis: pencereye kilitli
    (ustSik) düzenler — A4 + karar paneli her pikseli kullanır; varsayılan olarak istisnadır. */
 export const ICERIK_AZAMI = 1600;
+/* Antet koreografisi (tur 8, brif #14): görünüm İLK açılışında çift antet çizgisi soldan sağa
+   çekilir (280 ms, scaleX), başlık 40 ms sonra yükselir; künye yalnız solar. Aynı oturumda ikinci
+   ziyarette yalnız 120 ms çapraz geçiş — cetvel her seferinde yeniden çekilmez (sıklık yasası).
+   Bayrak modül düzeyinde görünüm id'sine bağlı; hareket bitmeden yeniden çizim jesti kesmesin diye
+   "görüldü" kaydı 400 ms sonra düşer. reduced-motion global kuralı hepsini son kareye indirir. */
+const antetGoruldu = new Set();
+function useIlkAcilis(id) {
+  const ilk = !antetGoruldu.has(id);
+  React.useEffect(() => {
+    if (!ilk) return undefined;
+    const t = setTimeout(() => antetGoruldu.add(id), 400);
+    return () => clearTimeout(t);
+  }, [id, ilk]);
+  return ilk;
+}
+/* Antet sağ künyesi (tur 8, brif #1): resmî yazının üst-sağ "Sayı / Tarih / Ek" bloğu gibi, görünümün
+   canlı özeti mono ve tab-stop hizalı (defterlerin DefterAntetKunye çizimiyle bire bir). Satırları kabuk sağlar (AntetKunyeBaglam → lib/kabukAntetKunye,
+   yalnız kabuğun bildiği olgular); görünüm kendi araç/künye bloğunu (actions) taşıyorsa çizilmez.
+   Yalnız ≥ 1200 px — telefon ve dar masaüstü düzeni değişmez. Renk yok; gecikmiş > 0 ise satır derin
+   kırmızı — etiket zaten "Gecikmiş" sözcüğüdür (renk tek sinyal değil). */
+export const AntetKunyeBaglam = React.createContext(null);
+const ANTET_KUNYE_CSS = ".ke-antet-kunye{display:none}@media (min-width:1200px){.ke-antet-kunye{display:grid}}";
+function AntetKunye({ id }) {
+  const satirlar = React.useContext(AntetKunyeBaglam)?.(id) || [];
+  if (!satirlar.length) return null;
+  return (
+    <>
+    <style>{ANTET_KUNYE_CSS}</style>
+    <dl className="ke-antet-kunye" aria-label="Görünüm künyesi" style={{ margin: 0, gridTemplateColumns: "auto auto", columnGap: 14, rowGap: 3, alignSelf: "flex-end", alignContent: "end", fontFamily: MONO, fontSize: 11, lineHeight: "15px", letterSpacing: ".08em", textTransform: "uppercase", ...TNUM, paddingLeft: SP.l, borderLeft: `1px solid ${PAL.line}` }}>
+      {satirlar.map((s) => (
+        <React.Fragment key={s.e}>
+          <dt style={{ color: s.acil ? DERIN.kirmizi : PAL.mut3, fontWeight: s.acil ? 600 : 500, whiteSpace: "nowrap" }}>{s.e}</dt>
+          <dd style={{ margin: 0, textAlign: "right", whiteSpace: "nowrap", fontWeight: 600, color: s.acil ? DERIN.kirmizi : PAL.ink2 }}>{s.d}</dd>
+        </React.Fragment>
+      ))}
+    </dl>
+    </>
+  );
+}
 export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = false, genis = ustSik, damga, kunye = "Çalışma alanı", children }) {
+  const ilk = useIlkAcilis(id);
   return (
     <section aria-labelledby={id} style={{ position: "relative", padding: `${ustSik ? 16 : 28}px clamp(16px, 4vw, 40px) ${altDolgu}px`, minHeight: "calc(100vh - 1px)" }}>
       <div style={genis ? undefined : { maxWidth: ICERIK_AZAMI, marginInline: "auto" }}>
-      <header style={{ position: "relative", zIndex: 1, marginBottom: ustSik ? SP.l : SP.xl + 4, animation: "nu-rise .32s var(--ke-ease-out) both" }}>
+      <header style={{ position: "relative", zIndex: 1, marginBottom: ustSik ? SP.l : SP.xl + 4 }}>
         {!ustSik && (
-          <div aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.m, minWidth: 0 }}>
+          <div aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, display: "flex", alignItems: "center", gap: SP.m, marginBottom: SP.m, minWidth: 0, animation: `nu-sol ${ilk ? ".2s" : ".12s"} ease-out both` }}>
             {/* "T.C." YOK (tur 6): bağımsız ürün devlet kimliğini kendi anteti gibi taşıyamaz. Künye
                 ürün adından '·' ile ayrılır — "KAMU-EVRAK SABAH BRİFİNGİ" tek ad gibi okunuyordu. */}
             <span style={{ whiteSpace: "nowrap", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", textTransform: "uppercase" }}>KAMU-EVRAK<span style={{ margin: "0 .6em" }}>·</span>{kunye}</span>
@@ -374,7 +423,7 @@ export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = fals
             <span style={{ whiteSpace: "nowrap", ...TNUM }}>{antetTarih()}</span>
           </div>
         )}
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: SP.l, flexWrap: "wrap", animation: ilk ? "nu-rise .28s var(--ke-ease-out) .04s both" : "nu-sol .12s ease-out both" }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: SP.l, flexWrap: "wrap" }}>
               <h1 id={id} style={{ margin: 0, viewTransitionName: "ke-antet-baslik", ...TYPE.h1, ...(ustSik ? { fontSize: 30, lineHeight: "34px" } : null), color: PAL.ink, overflowWrap: "anywhere" }}>{title}</h1>
@@ -384,8 +433,9 @@ export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = fals
           </div>
           {/* minWidth:0 — <select>'li araç çubuğu telefonda kabından taşmasın (2026-08-12 ölçümü). */}
           {actions && <div style={{ display: "flex", gap: SP.m, flexWrap: "wrap", minWidth: 0, maxWidth: "100%" }}>{actions}</div>}
+          {!actions && !ustSik && <AntetKunye id={id} />}
         </div>
-        <div aria-hidden="true" style={{ marginTop: ustSik ? SP.m : SP.l, height: 5, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: .9 }} />
+        <div aria-hidden="true" data-antet-cizgi="" style={{ marginTop: ustSik ? SP.m : SP.l, height: 5, borderTop: "2px solid var(--ke-antet-cizgi)", borderBottom: "1px solid var(--ke-antet-cizgi)", opacity: .9, transformOrigin: "left center", animation: ilk ? "ke-cizgi .28s var(--ke-ease-out) both" : "none" }} />
       </header>
       <div style={{ position: "relative", zIndex: 1, viewTransitionName: "ke-icerik" }}>{children}</div>
       </div>

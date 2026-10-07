@@ -8,7 +8,7 @@ import { PAL, DERIN, TYPE, TNUM, RAD, SP, EASE, MONO, SR_ONLY, focusRing, MarkaK
 import HesapMenu from "./HesapMenu.jsx";
 import { NAV, DENETIM_OGE, NavBtn, RayIpucu, RayIpucuSaglayici } from "./kabukNav.jsx";
 import { Logotype, LOGOTYPE } from "./kabukAtomlari.jsx";
-import KabukSicil from "./KabukSicil.jsx";
+import KabukSicil, { CiltKorBaski } from "./KabukSicil.jsx";
 import KabukAltSerit from "./KabukAltSerit.jsx";
 
 /* Panel daralt/genişlet ikonu — ChatGPT kenar çubuğu toggle'ının çizgi-dili muadili. */
@@ -86,6 +86,11 @@ function NeonSidebar(props) {
   const { activeView, onNavigate, onUpload, busy, sayac, veriBayat = false, sicil, user, onLogout, tema, onTemaDegistir, kota } = props;
   const [dar, darDegistir] = useDarRay();
   const mobil = useMobil();
+  // Ray genişliği kökte yayınlanır (--ke-ray-w): içerik sütununa göre konumlanan kabuk katmanları
+  // (bildirim fişi) rayı hesaba katar. Telefonda ray yok → 0.
+  useEffect(() => {
+    document.documentElement.style.setProperty("--ke-ray-w", mobil ? "0px" : dar ? "64px" : "236px");
+  }, [mobil, dar]);
   if (mobil) return <KabukAltSerit {...props} />;
   const kompakt = dar;
 
@@ -99,7 +104,8 @@ function NeonSidebar(props) {
         <RayIpucu acik={kompakt} etiket={`${LOGOTYPE} · Panel`}>
           <button type="button" onClick={() => onNavigate("panel")} aria-label={`${LOGOTYPE} — Panel`} data-dokunma="" {...focusRing}
             style={{ display: "flex", alignItems: "center", gap: SP.s, padding: kompakt ? 0 : "4px 4px", background: "none", border: "none", cursor: "pointer", textAlign: "left", borderRadius: RAD.card, minWidth: 0 }}>
-            <MarkaKaro size={kompakt ? 32 : 36} nokta={false} />
+            {/* Geniş rayda 32 px (tur 8): logotype noktası daralt düğmesine 14 px'e kadar yaklaşıyordu. */}
+            <MarkaKaro size={32} nokta={false} />
             {!kompakt && <Logotype />}
           </button>
         </RayIpucu>
@@ -114,7 +120,7 @@ function NeonSidebar(props) {
       <YukleDugme kompakt={kompakt} busy={busy} onUpload={onUpload} />
 
       <DemoKotaSayaci kota={kota} kompakt={kompakt} />
-      {!kompakt && <KabukSicil sicil={sicil} bayat={veriBayat} />}
+      {!kompakt && <KabukSicil sicil={sicil} bekliyor={sayac?.bekliyor} bayat={veriBayat} onSonAc={() => onNavigate("islenen")} />}
       {/* Geçici "Denetim izi" sırtı (tur 7): ana listenin içinde açılınca "Yeni evrak yükle"yi
           ~60 px aşağı itiyordu. Artık alt bloğun (marginTop:auto) ÜSTÜNDEKİ boş alana iner →
           üstteki hiçbir öğe zıplamaz. */}
@@ -124,6 +130,7 @@ function NeonSidebar(props) {
         </nav>
       )}
 
+      {!kompakt ? <CiltKorBaski /> : null}
       <AsistanDugme kompakt={kompakt} />
       {kompakt && <div style={{ paddingBottom: SP.s }}><DaraltDugme dar onClick={darDegistir} /></div>}
       <HesapMenu user={user} onLogout={onLogout} onDenetimAc={() => onNavigate("denetim")}

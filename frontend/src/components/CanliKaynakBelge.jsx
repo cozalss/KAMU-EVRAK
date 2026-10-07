@@ -29,7 +29,7 @@ export function buildSegments(metin, spanlar) {
 
 /* Fosfor kalem: kanıt spanları canlı koşumda soldan sağa sırayla boyanır (çıkarım "şimdi"
    işaretleniyor); sonuç ekranında statik. */
-function FosforMetin({ segs, canli, style = null }) {
+export function FosforMetin({ segs, canli, style = null }) {
   let m = 0;
   return (
     <pre style={{ margin: 0, ...TYPE.read, color: PAL.ink2, whiteSpace: "pre-wrap", wordBreak: "break-word", animation: "nu-rise .18s var(--ke-ease-out) both", ...style }}>
@@ -98,26 +98,33 @@ export function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = fals
   // Klavye/SR yolu başlıktaki BuyutDugme (kâğıda role=button vermek tüm metni tek kontrol
   // adına düzleştiriyordu — a11y bulgusu); fare için kâğıdın kendisi tıklanabilir.
   const tiklanabilir = !!onBuyut && (!!fileUrl || !!segs);
+  /* CANLI KİPTE KÂĞIT DOĞRUDAN MASADA (tur 8): kart içinde kart (çift çerçeve) dar bir şerit
+     gibi okunuyordu. Canlı sahnede dış kart yok — üstte antet künyesi + hairline, altında kâğıt
+     sayfa zemininde (SH.kagit) durur; okuma puntosu 14/22 (satır başına ~45 karakter). */
+  const masada = canli && !compact;
+  const kabStil = masada
+    ? { display: "flex", flexDirection: "column", minWidth: 0, width: "100%", height: "100%" }
+    : { display: "flex", flexDirection: "column", minWidth: 0, width: "100%", height: "100%", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, overflow: "hidden" };
   return (
-    <div data-kd="kaynak-kart" style={{ display: "flex", flexDirection: "column", minWidth: 0, width: "100%", height: "100%", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, overflow: "hidden" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.m}px ${SP.l}px`, borderBottom: `1px solid ${PAL.line}`, flexWrap: "wrap" }}>
-        <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.doc /></span>
-        <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink, flex: 1, minWidth: 60 }}>Okunan belge</span>
+    <div data-kd="kaynak-kart" style={kabStil}>
+      <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: masada ? `0 0 ${SP.s}px` : `${SP.m}px ${SP.l}px`, borderBottom: `1px solid ${masada ? PAL.lineHi : PAL.line}`, flexWrap: "wrap", minHeight: masada ? 36 : undefined }}>
+        {!masada && <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN.T }}><Icon.doc /></span>}
+        <span style={masada ? { ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase", flex: 1, minWidth: 60 } : { ...TYPE.ui, fontWeight: 600, color: PAL.ink, flex: 1, minWidth: 60 }}>Okunan belge</span>
         {ekAksiyon}
         {fileUrl && segs && (<><SekmeBtn id="belge" label="Belge" sekme={sekme} setSekme={setSekme} /><SekmeBtn id="metin" label="Metin" sekme={sekme} setSekme={setSekme} /></>)}
         {tiklanabilir && <BuyutDugme onClick={onBuyut} label="Okunan belgeyi A4 görünümde büyüt" />}
       </div>
-      <div data-kd="kaynak-masa" style={{ flex: 1, background: PAL.surf2, padding: `${SP.m}px ${SP.s}px`, display: "flex", minHeight: 0, ...(compact || canli ? { overflowY: "auto" } : null) }}>
+      <div data-kd="kaynak-masa" style={{ flex: 1, background: masada ? "transparent" : PAL.surf2, padding: masada ? `${SP.m}px 2px ${SP.s}px` : `${SP.m}px ${SP.s}px`, display: "flex", minHeight: 0, ...(compact || canli ? { overflowY: "auto" } : null) }}>
         <div data-kd="kaynak-kagit" data-evrak-kagit=""
           {...(tiklanabilir ? { onClick: onBuyut, title: "Büyüt (A4 görünüm)" } : {})}
-          style={{ position: "relative", flex: 1, minWidth: 0, maxWidth: 840, margin: "0 auto", alignSelf: "flex-start", minHeight: "100%", boxSizing: "border-box", background: PAL.surf, color: PAL.ink2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, padding: "clamp(24px,3.5vw,48px) clamp(20px,4vw,60px)", boxShadow: SH.kagit, cursor: tiklanabilir ? "zoom-in" : "default", overflow: "hidden", viewTransitionName: KAGIT_VT }}>
+          style={{ position: "relative", flex: 1, minWidth: 0, maxWidth: 840, margin: "0 auto", alignSelf: "flex-start", minHeight: "100%", boxSizing: "border-box", background: PAL.surf, color: PAL.ink2, border: `1px solid ${PAL.line}`, borderRadius: masada ? RAD.ctl : RAD.card, padding: masada ? "clamp(24px,2.4vw,40px) clamp(20px,2.2vw,36px)" : "clamp(24px,3.5vw,48px) clamp(20px,4vw,60px)", boxShadow: SH.kagit, cursor: tiklanabilir ? "zoom-in" : "default", overflow: "hidden", viewTransitionName: KAGIT_VT }}>
           {canli && busy && !segs && !pdfGoster && <Tarayici />}
           {canli && havale && <HavaleNotu havale={havale} />}
           {pdfGoster ? (
             <Suspense fallback={<div style={{ ...TYPE.data, color: PAL.mut2 }}>PDF açılıyor…</div>}>
               <PdfOnizleme fileUrl={fileUrl} />
             </Suspense>
-          ) : segs ? <FosforMetin segs={segs} canli={canli} /> : <BelgeIskeleti busy={busy} glow={glow} />}
+          ) : segs ? <FosforMetin segs={segs} canli={canli} style={masada ? { fontSize: 14, lineHeight: "22px" } : null} /> : <BelgeIskeleti busy={busy} glow={glow} />}
         </div>
       </div>
     </div>

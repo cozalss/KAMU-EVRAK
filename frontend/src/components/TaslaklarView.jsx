@@ -17,8 +17,9 @@ import { EVRAK_TR, BIRIM_LBL, cleanDemoText } from "../lib/evrakEtiket.js";
 import { sutunButcesi, BOSLUK, KUYRUK_AZAMI } from "../lib/taslakSutun.js";
 import { gonderimDenetimi, taslakKunyesi } from "../lib/gonderimHazirlik.js";
 import { SATIR_H, defterZemini, useIslemDurumu, IskeletSatirlar, KararIskeleti } from "./TaslakDefter.jsx";
-import { AracCubugu, DefterBasligi, KuyrukSatiri, BosFiltre, Tus, icOdak, ikizKumesi } from "./TaslakKuyruk.jsx";
+import { AracCubugu, DefterBasligi, KuyrukSatiri, BosFiltre, Tus, icOdak, KUYRUK_ODAK_CSS } from "./TaslakKuyruk.jsx";
 import KararPaneli, { BosMasa } from "./TaslakKararPaneli.jsx";
+import TaslakBosMasa from "./TaslakBosMasa.jsx";
 
 /* Düzenlenen metni DOĞRUDAN DOCX indir (pipeline yok → /yazi/render). Gövde olduğu gibi. */
 async function docxIndir(text, name, onToast) {
@@ -165,7 +166,16 @@ const optIdOf = (id) => `tas-${String(id).replace(/[^\w-]+/g, "_")}`;
 
 export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = null, onUpdate = () => {}, onDelete = () => {}, onSend = () => {}, onRevize = null, onToast = () => {}, hedef = null, onHedefAcildi, yukleniyor: yukleniyorProp, hata: hataProp, onYenidenDene }) {
   const islem = useIslemDurumu();
-  const yukleniyor = drafts.length === 0 && (yukleniyorProp ?? islem.yukleniyor);
+  const yukleniyorHam = drafts.length === 0 && (yukleniyorProp ?? islem.yukleniyor);
+  /* "Boş" ancak BİR commit sonra kesinleşir (jüri tur 8, ölçüldü): /islemler yanıtı gelince
+     sorgu "yüklendi" der ama taslak listesi üst bileşenin efektinde türetilir — arada tek
+     commit'te drafts=[] + yükleniyor=false olur, boş durum bir kare basılır ve masa ızgarası
+     sökülüp yeniden kurulur (kuyruk soluklaşıp yeniden belirir, kâğıt+fiş ~1 kare yok). Boşluk
+     efekt turunu atlatınca kesinleşir; o tura kadar iskelet kalır. */
+  const hamBos = drafts.length === 0 && !yukleniyorHam;
+  const [bosKesin, setBosKesin] = useState(false);
+  useEffect(() => { setBosKesin(hamBos); }, [hamBos]);
+  const yukleniyor = yukleniyorHam || (hamBos && !bosKesin);
   const yuklemeHatasi = drafts.length === 0 && !yukleniyor && !!(hataProp ?? islem.hata);
   // drafts: yalnız karar bekleyenler (her biri result.yazi_taslak_md taşır; onay_durumu yok).
   const [duzenleId, setDuzenleId] = useState(null);
@@ -215,7 +225,6 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
   }), [drafts]);
   const filter = useFilter(aramaKaynagi, config);
   const sonuc = filter.results;
-  const ikizler = useMemo(() => ikizKumesi(sonuc), [sonuc]);
 
   // Seçim türetilir: seçili id listede yoksa (gönderildi/silindi/filtrelendi) ilk satıra düşer.
   const secili = sonuc.find((d) => d.id === seciliId) || sonuc[0] || null;
@@ -325,18 +334,21 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
      künye kayboluyordu (CLS 0,03). Sayım damgası KALDIRILDI: aynı sayı kenar çubuğunda ve
      defter başlığında zaten var; damga yalnız karar anında basılır (gönderim mührü). */
   const baslik = { id: "taslak-h", title: "Taslaklar", kunye: "Karar kuyruğu", altDolgu: genis ? SP.xl : undefined };
-  if (drafts.length === 0 && !yukleniyor) {
-    const toplam = karar.gonderildi + karar.silindi;
-    // Kuyruk BU oturumda çalışarak boşaltıldıysa: sakin zafer — oturum özeti + Giden'e köprü.
-    if (toplam > 0) {
-      return <KuyrukTemiz gonderildi={karar.gonderildi} silindi={karar.silindi} onGoOutbox={onGoOutbox} onGoInbox={onGoInbox} />;
-    }
+  const bos = drafts.length === 0 && !yukleniyor;
+  const oturumKarari = karar.gonderildi + karar.silindi;
+  // Kuyruk BU oturumda çalışarak boşaltıldıysa: sakin zafer — oturum özeti + Giden'e köprü.
+  if (bos && oturumKarari > 0) {
+    return <KuyrukTemiz gonderildi={karar.gonderildi} silindi={karar.silindi} onGoOutbox={onGoOutbox} onGoInbox={onGoInbox} />;
+  }
+  const yenidenDene = onYenidenDene || islem.yeniden;
+  // Telefonda boş/hata hâli kısa kart olarak kalır (dar düzen değişmedi); geniş düzende masa.
+  if (bos && !genis) {
     if (yuklemeHatasi) {
       return (
         <ViewWrap {...baslik} altDolgu={undefined} sub="Karar bekleyen taslaklar alınamadı">
           <EmptyState icon={<Icon.alert />} damga="Bağlantı yok" title="Taslaklar şu an alınamadı"
             sub="Kalıcı kayda ulaşılamadı. Taslaklar sunucuda duruyor; bağlantı düzelince liste geri gelir."
-            actions={[<Btn key="r" primary onClick={onYenidenDene || islem.yeniden}><Icon.undo /> Tekrar dene</Btn>]} />
+            actions={[<Btn key="r" primary onClick={yenidenDene}><Icon.undo /> Tekrar dene</Btn>]} />
         </ViewWrap>
       );
     }
@@ -350,8 +362,15 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
   }
 
   const dar = !genis || (butce?.kuyruk ?? KUYRUK_AZAMI) < 360;
-  const aracIcerde = <AracCubugu filter={filter} dar={dar} siraSecenek={BASE_CONFIG.sort.options}
+  // Dar KUYRUK (masaüstünde ~1440 ve altı): tarih kısalır, konuya yer kalır. Telefon değişmez.
+  const kisaTarih = genis && (butce?.kuyruk ?? KUYRUK_AZAMI) < 400;
+  // Arama kutusunun "dar"ı YALNIZ telefondur (44px hedef + 16px girdi); dar masaüstü kuyruğu (1440)
+  // kısa yer tutucu alır ama "/" kısayol rozetini korur (jüri tur 8: rozet yalnız 1920'de vardı).
+  const aracIcerde = <AracCubugu filter={filter} dar={!genis} kisa={dar} siraSecenek={BASE_CONFIG.sort.options}
     turSecenek={config.select[0].options.slice(1)} birimSecenek={config.select[1].options.slice(1)} />;
+  // Alt başlık DURUMU söyler (jüri tur 8: yeniden deneme sürerken "Satırı seçin…" diyordu).
+  const altBaslik = yukleniyor ? (islem.deneme > 0 ? "Bağlantı yeniden deneniyor — taslaklar sunucuda duruyor" : "Karar kuyruğu açılıyor")
+    : bos ? (yuklemeHatasi ? "Karar bekleyen taslaklar alınamadı" : "Karar bekleyen taslak yok") : null;
   const oturumEki = karar.gonderildi + karar.silindi > 0 ? ` · oturumda ${karar.gonderildi + karar.silindi} karar` : "";
   /* altDolgu (JS yorumu — JSX yorumu DEĞİL; kök elemanın önüne konsa iki kardeş doğar ve
      sözdizimi hatası verir, bu depoda daha önce yaşandı): geniş düzende sütunlar pencereye
@@ -361,7 +380,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
      düzende sayfa kaydırıldığından varsayılan 96px korunur — yüzen sohbet düğmesi son satırı
      örtmesin. */
   return (
-    <ViewWrap {...baslik} sub={`Satırı seçin, belgeyi okuyun, karar verin${oturumEki}`}>
+    <ViewWrap {...baslik} sub={altBaslik ?? `Satırı seçin, belgeyi okuyun, karar verin${oturumEki}`}>
       {(
         /* Üç sütun: kuyruk | kâğıt | karar — üçünün genişliği de `sutunButcesi`den gelir
            (saf + birim testli). Kâğıt ölçülen yükseklikten türer (A4 oranı); artan genişlik
@@ -374,9 +393,9 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
         <div ref={gridRef} style={{
           display: "grid",
           gridTemplateColumns: !genis ? "minmax(0, 1fr)"
-            // Filtre hiçbir şey bulamadı: üç sütun KORUNUR (kuyruk aynı genişlikte — arama kutusu
-            // yazarken yerinden oynamaz); kâğıt+karar yerine tek "boş masa" hücresi (BosMasa).
-            : !secili && !yukleniyor && !butce ? `minmax(0, ${KUYRUK_AZAMI}px) minmax(0, 1fr)`
+            // Üç sütun HER hâlde (yükleniyor · filtre boş · kayıt yok · hata): eskiden ölçüm
+            // gelmeden seçim yoksa iki sütuna iniyordu (jüri tur 8: 2→3 sütun sıçraması).
+            // Filtre boşsa kâğıt+karar yerine tek "boş masa" hücresi (BosMasa, 2 / -1).
             : butce ? `${butce.kuyruk}px minmax(${butce.kagit}px, 1fr) ${butce.karar}px`
             // Ölçüm gelmeden önceki tek kare: oransal yedek — ilk karede de üç sütun görünür.
             : "minmax(260px, 420px) minmax(0, 0.8fr) minmax(236px, 300px)",
@@ -385,12 +404,13 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
           // bitişik durur, kalan genişlik tek parça sağ boşluk olur ve düzen sol hizada kalır.
           gap: GRID_BOSLUK, alignItems: "start",
         }}>
+          {bos ? <TaslakBosMasa hata={yuklemeHatasi} sutunH={sutunH} onGoInbox={onGoInbox} onYenidenDene={yenidenDene} /> : <>
           {/* Kuyruk listesi — listbox: ↑/↓ gezinme, Enter düzenleme; satırda eylem yok
               (eylemler panelde — Hick yasası: 244 hedef → 4 hedef). */}
           <div style={{ display: "flex", flexDirection: "column", minWidth: 0, background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, overflow: "hidden",
             height: genis ? (sutunH ?? undefined) : undefined, animation: "nu-rise .32s var(--ke-ease-out) .04s both" }}>
             {aracIcerde}
-            <DefterBasligi adet={yukleniyor ? null : sonuc.length} toplam={drafts.length} dar={dar}
+            <DefterBasligi adet={yukleniyor ? null : sonuc.length} toplam={drafts.length} dar={dar} deneme={yukleniyor ? islem.deneme : 0}
               filtreli={!yukleniyor && filter.hasActiveFilters} onTemizle={filter.clearAll} />
             {yukleniyor && <IskeletSatirlar />}
             {/* Liste kabı boşken de DOM'da kalır (hidden): auto-animate'in çıkış hayaletleri
@@ -403,7 +423,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
                 // ilk ekrana yaklaşır (tur 6: belge y=800'de başlıyordu).
                 maxHeight: genis ? undefined : Math.round(SATIR_H * 4.5) }}>
               {sonuc.map((h, i) => (
-                <KuyrukSatiri key={h.id} h={h} konu={h.konu} muhatap={h.muhatap} sira={i + 1} ikiz={ikizler.has(h.id)} secili={secili?.id === h.id} optId={optIdOf(h.id)}
+                <KuyrukSatiri key={h.id} h={h} konu={h.konu} muhatap={h.muhatap} sira={i + 1} kisa={kisaTarih} secili={secili?.id === h.id} optId={optIdOf(h.id)}
                   onSec={() => { if (!sendBusy) setSeciliId(h.id); }} onAc={() => { if (!sendBusy) acDuzenle(h.id); }} />
               ))}
             </div>
@@ -425,9 +445,11 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
               onDuzenle={() => acDuzenle(secili.id)} onKurul={() => acKurul(secili.id)}
               onGonder={() => gonderImzali(secili, secili.result.yazi_taslak_md)} onSil={() => sil(secili)} />
           )}
+          </>}
         </div>
       )}
 
+      <style>{KUYRUK_ODAK_CSS}</style>
       {imza && <TaslakImza key={imza.k} kare={imza} onBitti={imzaBitti} />}
 
       {/* A4 düzenleme modalı — koşullu render: kapanınca unmount, her açılış taze taslakla başlar */}

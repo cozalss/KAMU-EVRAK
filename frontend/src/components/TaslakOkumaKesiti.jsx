@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { BELGE_FONT, BELGE_MURAKKEP, ROL_STIL } from "./A4Belge.jsx";
 import { antetSiniflandir } from "../lib/a4Antet.js";
 import { kagitStilYukle } from "./kagitDoku.js";
-import { PAL, ALFA, T, DERIN, TYPE, RAD, SH, EASE, focusRing } from "./neonUi.jsx";
+import { PAL, ALFA, T, DERIN, TYPE, RAD, SH, SP, EASE, focusRing } from "./neonUi.jsx";
 
 const OKUMA_PX = 15;
 const OKUMA_SATIR = 1.55;
@@ -78,6 +78,14 @@ export default function TaslakOkumaKesiti({ metin = "" }) {
           : (rol.tip === "duz" ? (s === "" ? " " : s) : rol.metin);
         return <div key={i} style={{ ...temel, ...ROL_STIL[rol.tip], ...(rol.tip === "imza" ? { marginLeft: "45%" } : null) }}>{ic}</div>;
       })}
+      {/* KESİTİN SONU (jüri tur 8: kâğıdın dibi işaretsiz bitiyordu) — hairline + künye: yazı
+          burada biter; bağlayıcı biçim A4 sayfasındadır. Kâğıt mürekkebinin soluk tonu. */}
+      <div aria-hidden="true" style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.xl, ...TYPE.antet, fontSize: 10, textTransform: "uppercase",
+        color: `color-mix(in srgb, ${BELGE_MURAKKEP} 45%, transparent)` }}>
+        <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${BELGE_MURAKKEP} 16%, transparent)` }} />
+        Yazının sonu · biçim A4 sayfasında
+        <span style={{ flex: 1, height: 1, background: `color-mix(in srgb, ${BELGE_MURAKKEP} 16%, transparent)` }} />
+      </div>
     </article>
   );
 }

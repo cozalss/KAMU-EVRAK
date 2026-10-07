@@ -73,3 +73,50 @@ test("sonKayitlar: en yeni önce, tarihsiz atlanır, aynı belge tek satır, ad 
   ], 2);
   assert.deepEqual(r.map((x) => x.ad), ["Su kesintisi", "İzin talebi"]);
 });
+
+test("kabukSayaclari (tur 8): ilk yüklemede 'bekliyor' ile 'yok' ayrışır — UI aynı '—' glifini çizmesin", async () => {
+  const { kabukSayaclari } = await import("./kabukSicil.js");
+  const r = kabukSayaclari({ gelen: 15, taslak: 0, giden: 0, kuyrukSla: [], history: [], outbox: [], kaynak: { islemler: "bekliyor", giden: "yok", sla: "bekliyor" }, simdi: SIMDI });
+  assert.equal(r.sayac.taslak, null);
+  assert.equal(r.sayac.bekliyor.taslak, true);
+  assert.equal(r.sayac.bekliyor.bugunIslenen, true);
+  assert.equal(r.sayac.bekliyor.giden, false);      // yok ≠ bekliyor
+  assert.equal(r.sayac.bekliyor.gecikmis, true);
+  assert.equal(r.bayat, true);                      // giden yok → sicil başlığı yine uyarır
+});
+
+test("slaKaynakDurumu (tur 8): 200 ama sonuclar dizi değilse veri YOK sayılır (GECİKMİŞ 00 uydurulmaz)", async () => {
+  const { slaKaynakDurumu } = await import("./kabukSicil.js");
+  assert.equal(slaKaynakDurumu({ data: {}, isError: false }), "yok");
+  assert.equal(slaKaynakDurumu({ data: { sonuclar: null }, isError: false }), "yok");
+  assert.equal(slaKaynakDurumu({ data: { sonuclar: [] }, isError: false }), "ok");
+  assert.equal(slaKaynakDurumu({ data: { sonuclar: [] }, isError: true }), "bayat");
+  assert.equal(slaKaynakDurumu({ data: undefined, isError: false }), "bekliyor");
+});
+
+test("tumKaynaklarYok (tur 8): kabuk düzeyi 'sunucuya ulaşılamıyor' fişi yalnız HEPSİ yokken", async () => {
+  const { tumKaynaklarYok } = await import("./kabukSicil.js");
+  assert.equal(tumKaynaklarYok({ islemler: "yok", giden: "yok", sla: "yok" }), true);
+  assert.equal(tumKaynaklarYok({ islemler: "bayat", giden: "yok", sla: "yok" }), true);
+  assert.equal(tumKaynaklarYok({ islemler: "ok", giden: "yok", sla: "yok" }), false);
+  assert.equal(tumKaynaklarYok({ islemler: "bekliyor", giden: "yok", sla: "yok" }), false);
+});
+
+test("sonKayitlar (tur 8): her satır İşlenen defteriyle AYNI sicil numarasını taşır", async () => {
+  const { sonKayitlar } = await import("./kabukSicil.js");
+  const yil = new Date(SIMDI).getFullYear();
+  const r = sonKayitlar([{ id: "a", ts: DUN, name: "a.txt" }, { id: "b", ts: SIMDI, name: "b.txt" }], 2);
+  assert.deepEqual(r.map((x) => x.no), [`İ-${yil}/0002`, `İ-${yil}/0001`]);
+});
+
+test("sicil başlığı satır durumundan türer: rakam varken 'Yanıt yok' basılmaz", async () => {
+  const { sicilBaslikDurumu } = await import("./kabukSicil.js");
+  const tam = { bugunIslenen: 0, bugunGiden: 0, taslak: 32, gecikmis: 1 };
+  assert.deepEqual(sicilBaslikDurumu(tam, {}, false, "07.10"), { metin: "07.10", uyari: false });
+  assert.deepEqual(sicilBaslikDurumu({ ...tam, gecikmis: null }, {}, true, "07.10"), { metin: "Kısmen · 07.10", uyari: true });
+  assert.deepEqual(sicilBaslikDurumu(tam, {}, true, "07.10"), { metin: "Son bilinen", uyari: true });
+  const bos = { bugunIslenen: null, bugunGiden: null, taslak: null, gecikmis: null };
+  assert.equal(sicilBaslikDurumu(bos, {}, true, "07.10").metin, "Yanıt yok");
+  // İlk yükleme: bekleyen satır "yok" sayılmaz.
+  assert.equal(sicilBaslikDurumu(bos, { bugunIslenen: 1, bugunGiden: 1, taslak: 1, gecikmis: 1 }, false, "07.10").metin, "07.10");
+});

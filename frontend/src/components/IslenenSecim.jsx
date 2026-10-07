@@ -5,7 +5,7 @@
    Risk skoru dökümde YER ALMAZ (yalnız bant kodu) — skor olasılık değildir (CLAUDE.md §7). */
 import React, { useEffect, useRef, useState } from "react";
 import { Download } from "lucide-react";
-import { MONO, PAL, T, TYPE, TNUM, RAD, SP, ALFA, DERIN, focusRing } from "./neonUi.jsx";
+import { MONO, PAL, T, TYPE, TNUM, RAD, SP, SH, ALFA, DERIN, focusRing } from "./neonUi.jsx";
 import { sicilDokumCsv } from "../lib/sicilDefter.js";
 
 /* Yerel onay kutusu — native input (klavye + ekran okuyucu + indeterminate yerel), dokunma
@@ -30,7 +30,14 @@ const indir = (metin, ad) => {
 };
 const bugunDamga = () => { const d = new Date(); const p = (n) => String(n).padStart(2, "0"); return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}`; };
 
-/* Seçim çubuğu — defterin hemen üstünde, yalnız seçim varken. Sayı mono, eylemler fiil önce. */
+/* Seçim çubuğu — yalnız seçim varken; AKIŞA YÜKSEKLİK EKLEMEZ (tur 8 jüri: defterin üstüne
+   girip listeyi 50 px kaydırıyor, tıklanan satır imlecin altından kayıyordu). Sıfır yükseklikli
+   yapışkan yuva defterin dibinde durur: çubuk görünüm altında (bottom 16) yüzer, defterin sonuna
+   gelince orada oturur. Telefonda alt sekme şeridinin üstünde (SECIM_CSS). */
+const SECIM_CSS = `
+[data-secim-yuva]{position:sticky;bottom:16px;height:0;z-index:6}
+@media (max-width:640px){[data-secim-yuva]{bottom:calc(84px + env(safe-area-inset-bottom))}}
+`;
 export function SecimCubugu({ seciliKayitlar, sutunlar, onBirak }) {
   const [durum, setDurum] = useState("");
   const n = seciliKayitlar.length;
@@ -47,9 +54,12 @@ export function SecimCubugu({ seciliKayitlar, sutunlar, onBirak }) {
   const dugme = { cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 32, padding: "0 12px", borderRadius: RAD.ctl,
     ...TYPE.data, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" };
   return (
-    <div role="toolbar" aria-label="Seçili kayıtlar" style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", marginBottom: SP.s,
-      padding: `${SP.xs}px ${SP.xs}px ${SP.xs}px ${SP.m}px`, borderRadius: RAD.card, border: `1px solid color-mix(in srgb, ${T} 30%, transparent)`, background: ALFA(T),
-      animation: "nu-rise .16s var(--ke-ease-out) both" }}>
+    <div data-secim-yuva="">
+    <style>{SECIM_CSS}</style>
+    <div role="toolbar" aria-label="Seçili kayıtlar" style={{ position: "absolute", left: SP.l, right: SP.l, bottom: 0, display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap",
+      padding: `${SP.xs}px ${SP.xs}px ${SP.xs}px ${SP.m}px`, borderRadius: RAD.card, border: `1px solid color-mix(in srgb, ${T} 30%, transparent)`,
+      background: `linear-gradient(${ALFA(T)}, ${ALFA(T)}), ${PAL.surfPop}`, boxShadow: SH.pop,
+      animation: "nu-rise .22s var(--ke-ease-out) both" }}>
       <span style={{ fontFamily: MONO, fontSize: 12, color: DERIN.T, ...TNUM }}><strong style={{ fontSize: 13 }}>{n}</strong> kayıt seçildi</span>
       <span role="status" aria-live="polite" style={{ ...TYPE.meta, color: PAL.mut2 }}>{durum}</span>
       <span style={{ marginLeft: "auto", display: "inline-flex", gap: SP.xs, flexWrap: "wrap" }}>
@@ -62,6 +72,7 @@ export function SecimCubugu({ seciliKayitlar, sutunlar, onBirak }) {
           Seçimi bırak <kbd style={{ fontFamily: MONO, fontSize: 10, padding: "0 4px", border: `1px solid ${PAL.lineHi}`, borderRadius: 4 }}>Esc</kbd>
         </button>
       </span>
+    </div>
     </div>
   );
 }

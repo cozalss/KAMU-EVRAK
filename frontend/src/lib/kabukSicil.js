@@ -3,6 +3,8 @@
    (gonderim_tarihi + durum), taslak sayısı, kuyruk SLA'sı. Tahmin yok; tarihsiz kayıt bugüne
    sayılmaz. Saf → node --test. */
 
+import { islenenSicilNolari } from "./defterSozluk.js";
+
 const gunBasi = (t) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
 
 /** @param {number|undefined} ts @param {number} simdi */
@@ -30,11 +32,12 @@ export function sicilOzeti({ history = [], outbox = [], taslak = 0, gecikmis = 0
 const kayitAdi = (h) => String(h.result?.bilgi_unsurlari?.konu || h.result?.alt_talepler?.[0]?.ozet || h.konu || h.name || "Evrak").trim();
 export function sonKayitlar(history = [], adet = 3) {
   const goruldu = new Set();
+  const nolar = islenenSicilNolari(history);   // İşlenen defterindeki numarayla bire bir (tur 8)
   return history
     .filter((h) => Number.isFinite(h?.ts))
     .slice()
     .sort((a, b) => b.ts - a.ts)
-    .map((h) => ({ id: h.id, ts: h.ts, ad: kayitAdi(h) }))
+    .map((h) => ({ id: h.id, ts: h.ts, ad: kayitAdi(h), no: nolar.get(h.id) || "" }))
     .filter((k) => (goruldu.has(k.ad) ? false : goruldu.add(k.ad)))   // aynı belge yeniden işlendiyse tek satır
     .slice(0, adet);
 }
@@ -46,6 +49,22 @@ export function sonKayitlar(history = [], adet = 3) {
 export function kaynakDurumu(q) {
   if (q?.data !== undefined) return q.isError ? "bayat" : "ok";
   return q?.isError ? "yok" : "bekliyor";
+}
+
+/** SLA kaynağı: 200 dönüp `sonuclar` dizisi taşımayan yanıt VERİ DEĞİLDİR (tur 8 jüri: bozuk yanıtta
+    sicil "GECİKMİŞ 00" basıyordu — yanlış olgu). Hata + bozuk önbellek de "yok" sayılır. */
+export function slaKaynakDurumu(q) {
+  const d = kaynakDurumu(q);
+  if (d === "bekliyor") return d;
+  if (!Array.isArray(q?.data?.sonuclar)) return "yok";
+  return d;
+}
+
+/** Kabuk düzeyinde "sunucuya ulaşılamıyor": kaynakların HEPSİ son denemede hata verdiyse (yok/bayat).
+    Biri bile sağlamsa ya da hâlâ ilk yüklemedeyse sinyal yok — görünümler kendi bantlarını taşır. */
+export function tumKaynaklarYok(kaynak = {}) {
+  const v = Object.values(kaynak);
+  return v.length > 0 && v.every((d) => d === "yok" || d === "bayat");
 }
 
 /* Bilinmeyen sayı null'dır (UI "—" çizer). Kaynak yokken canlı oturumda üretilmiş kayıt varsa
@@ -60,15 +79,31 @@ export function kabukSayaclari({ gelen, taslak, giden, kuyrukSla, history, outbo
   const gecikmis = k.sla === "ok" || k.sla === "bayat" ? gecikmisSay(kuyrukSla) : null;
   const ham = sicilOzeti({ history, outbox, taslak, gecikmis: gecikmis ?? 0, simdi });
   const bayat = { taslak: bayatMi(k.islemler), giden: bayatMi(k.giden), gecikmis: bayatMi(k.sla) };
+  /* bekliyor: ilk yükleme sürüyor — UI sakin nabız çizer; "—" yalnız yanıt YOK içindir (tur 8). */
+  const bk = (d) => d === "bekliyor";
+  const bekliyor = { taslak: bk(k.islemler), bugunIslenen: bk(k.islemler), giden: bk(k.giden), bugunGiden: bk(k.giden), gecikmis: bk(k.sla) };
   return {
-    sayac: { gelen, taslak: bilinen(taslak, k.islemler), giden: bilinen(giden, k.giden), gecikmis, bayat },
+    sayac: { gelen, taslak: bilinen(taslak, k.islemler), giden: bilinen(giden, k.giden), gecikmis, bayat, bekliyor },
     sicil: {
       bugunIslenen: bilinen(ham.bugunIslenen, k.islemler),
       bugunGiden: bilinen(ham.bugunGiden, k.giden),
       taslak: bilinen(ham.taslak, k.islemler),
       gecikmis,
-      son: sonKayitlar(history, 5),
+      son: sonKayitlar(history, 6),
     },
     bayat: bayat.taslak || bayat.giden || bayat.gecikmis,
   };
+}
+
+/** Sicil başlığının durum etiketi (tur 8 j2: sağlıklı veride rakamlar dururken başlık "YANIT YOK"
+    diyordu — tek bir bayat kaynak tüm bloğu düşmüş gösteriyordu). Başlık SATIRLARIN durumundan
+    türetilir: hepsi bilinmiyor → "Yanıt yok" · bazısı bilinmiyor → "Kısmen" · hepsi var ama bir
+    kaynak bayat → "Son bilinen" · aksi → bugünün tarihi (gg.aa). uyari: sarı ton yalnız ilk üçünde. */
+const SICIL_ALANLARI = ["bugunIslenen", "bugunGiden", "taslak", "gecikmis"];
+export function sicilBaslikDurumu(sicil = {}, bekliyor = {}, bayat = false, gunAy = "") {
+  const yok = SICIL_ALANLARI.filter((k) => sicil?.[k] == null && !bekliyor?.[k]).length;
+  if (yok === SICIL_ALANLARI.length) return { metin: "Yanıt yok", uyari: true };
+  if (yok > 0) return { metin: `Kısmen · ${gunAy}`, uyari: true };
+  if (bayat) return { metin: "Son bilinen", uyari: true };
+  return { metin: gunAy, uyari: false };
 }

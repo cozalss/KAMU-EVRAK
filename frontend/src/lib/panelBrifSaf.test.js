@@ -71,3 +71,29 @@ test("paraf baş harfleri Türkçe büyük harfle", () => {
   assert.equal(parafHarf("  "), "—");
   assert.equal(parafHarf("Ali Rıza Can Demir"), "ARC");
 });
+
+test("kaynakOzeti: etkilenmedi listesi yalnız gelen kaynaklardan", async () => {
+  const { kaynakOzeti } = await import("./panelBrifSaf.js");
+  const ucDe = kaynakOzeti({ sla: "yok", islemler: "yok", giden: "yok" });
+  assert.equal(ucDe.saglamCumle, null);
+  assert.equal(ucDe.dusenCumle, "yasal süreler, işlem geçmişi ve giden sayısı alınamadı");
+  const bir = kaynakOzeti({ sla: "ok", islemler: "yok", giden: "bayat" });
+  assert.equal(bir.saglamCumle, "yasal süreler ve giden sayısı etkilenmedi");
+  assert.deepEqual(bir.dusen, ["islemler"]);
+  const yukleniyor = kaynakOzeti({ sla: "yok", islemler: "bekliyor", giden: "bekliyor" });
+  assert.equal(yukleniyor.saglamCumle, null);
+  assert.equal(yukleniyor.hazirN, 0);
+  assert.equal(kaynakOzeti({ sla: "yok", islemler: "ok" }, 15).saglamCumle, "kuyruktaki 15 evrak ve işlem geçmişi etkilenmedi");
+});
+
+test("parafOrani: onay_durumu sayımı", async () => {
+  const { parafOrani } = await import("./panelBrifSaf.js");
+  const r = parafOrani([{ result: { onay_durumu: "onaylandı" } }, { result: { onay_durumu: "reddedildi" } }, { result: {} }, {}]);
+  assert.deepEqual(r, { onaylandi: 1, reddedildi: 1, bekliyor: 2, toplam: 4 });
+});
+
+test("parafOrani: kabuk taslak süzgeciyle aynı — dolu her onay_durumu karar verilmiştir", async () => {
+  const { parafOrani } = await import("./panelBrifSaf.js");
+  const r = parafOrani([{ result: { onay_durumu: "onaylandi" } }, { result: { onay_durumu: "duzenlendi" } }, { result: { onay_durumu: "" } }]);
+  assert.deepEqual(r, { onaylandi: 2, reddedildi: 0, bekliyor: 1, toplam: 3 });
+});

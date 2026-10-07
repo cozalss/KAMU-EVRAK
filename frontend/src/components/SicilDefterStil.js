@@ -13,10 +13,11 @@ export const SICIL_CSS = `
 [data-sd-yuzey]{background:var(--ke-surf);border:1px solid var(--ke-line);border-radius:12px;box-shadow:var(--ke-sh-card);overflow:clip}
 [data-sd-baslik],[data-sicil-satir],[data-sd-hayalet]{display:grid;grid-template-columns:var(--sd-kolon);grid-template-areas:var(--sd-alan);column-gap:28px;align-items:center}
 [data-sd-baslik]{position:relative;padding:9px 20px 8px;border-bottom:1px solid var(--ke-line-hi);background:var(--ke-surf2)}
-/* Giriş koreografisi: ≤6 satır kademeli, 30ms aralık, 240ms — toplam <400ms. */
+/* Giriş koreografisi (tur 8 hareket kuralı): ≤8 satır kademeli, 18 ms aralık, 220 ms — gerisi
+   aynı anda; toplam <400 ms. */
 [data-sicil-satir]{position:relative;padding:12px 20px;min-height:var(--sd-satir,auto);box-sizing:border-box;border-top:1px solid var(--ke-line);cursor:pointer;
   content-visibility:auto;contain-intrinsic-size:auto var(--sd-satir,76px);
-  transition:background .15s ease;animation:sd-gir .24s var(--ke-ease-out) both;animation-delay:calc(min(var(--sd-i,0), 5) * 30ms)}
+  transition:background .15s ease;animation:sd-gir .22s var(--ke-ease-out) both;animation-delay:calc(min(var(--sd-i,0), 7) * 18ms)}
 [data-sicil-satir][aria-selected="true"]{background:color-mix(in srgb, var(--ke-t) 9%, transparent)}
 [data-sicil-satir]:first-of-type{border-top:none}
 [data-sicil-satir]::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;
@@ -25,8 +26,9 @@ export const SICIL_CSS = `
 [data-sicil-satir]:hover::before,[data-sicil-satir]:focus-within::before,[data-sicil-satir][data-vurgu]::before{transform:scaleY(1)}
 @keyframes sd-murekkep{0%,25%{background:color-mix(in srgb, var(--ke-bant-sari) 24%, transparent)}100%{background:color-mix(in srgb, var(--ke-t) 6%, transparent)}}
 [data-sicil-satir][data-vurgu]{animation:sd-murekkep 1.2s var(--ke-ease-out) both;background:color-mix(in srgb, var(--ke-t) 6%, transparent)}
-/* Satırın kendisi odak alır (tabIndex=0) — halka satırın İÇ kenarında, içerik metnini örtmez. */
-[data-sicil-satir]:focus-visible{outline:2px solid var(--ke-t);outline-offset:-3px}
+/* Satırın kendisi odak alır (tabIndex=0) — halka satırın İÇ kenarında, dört kenarı tam
+   (outline yüzeyin overflow:clip'inde yanlardan kırpılıyordu; tur 8 jüri): inset gölge. */
+[data-sicil-satir]:focus-visible{outline:none;box-shadow:inset 0 0 0 2px var(--ke-t)}
 [data-sd-no-sira]{transition:color .18s ease}
 [data-sicil-satir]:hover [data-sd-no-sira],[data-sicil-satir]:focus-within [data-sd-no-sira]{color:var(--ke-derin-t)}
 /* Kayıt no hücresi + DERKENAR: marjın solundaki kenar notu (bürokrasinin kendi kavramı) —
@@ -35,6 +37,7 @@ export const SICIL_CSS = `
 [data-sd-derkenar]{font:600 10px/12px 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ke-derin-v);white-space:nowrap}
 [data-sd-derkenar][data-ton="yesil"]{color:var(--ke-derin-yesil)}
 [data-sd-derkenar][data-ton="kirmizi"]{color:var(--ke-derin-kirmizi)}
+[data-sd-derkenar][data-ton="sari"]{color:var(--ke-derin-sari)}
 [data-sd-derkenar][data-ton="sessiz"]{color:var(--ke-mut2);font-weight:500;text-transform:none;letter-spacing:.02em;font-size:11px}
 [data-sd-eylem]{display:inline-flex;align-items:center;gap:6px;justify-self:end;cursor:pointer;white-space:nowrap;
   padding:6px 12px;min-height:36px;border-radius:8px;border:1px solid var(--ke-input-line);background:var(--ke-surf);color:var(--ke-ink);
@@ -43,6 +46,13 @@ export const SICIL_CSS = `
 [data-sd-eylem] svg{transition:transform .22s var(--ke-ease-out)}
 /* Satır eylemi = Panel'deki ikincil Btn ile aynı çerçeveli düğme (metin bağlantısı değil). */
 [data-sd-eylem]:hover:not(:disabled){background:var(--ke-hov)}
+/* PARAF eylemi (tur 8): tekrarlanan satır düğmesi dinlenmede çerçevesiz sessiz künye; satıra
+   bakılınca (hover/odak) çerçeve belirir. Düğme DOM'da hep var (klavye + ekran okuyucu).
+   İlk satır (en acil) tam düğme kalır — defterin ritmi düğme duvarına ezilmez. */
+@media (min-width:641px) and (hover:hover){
+  [data-sd-eylem][data-sd-paraf]{border-color:transparent;background:transparent;color:var(--ke-mut2)}
+  [data-sicil-satir]:hover [data-sd-paraf],[data-sicil-satir]:focus-within [data-sd-paraf]{border-color:var(--ke-input-line);background:var(--ke-surf);color:var(--ke-ink)}
+}
 /* Telefon: satır eylemi + seçim kutusu 44 px dokunma alanı (neonUi [data-dokunma] eşiğiyle aynı);
    kutunun görsel yeri değişmesin diye negatif marj büyür. Hover olmayan ekranda gizli eylem görünür. */
 @media (max-width:640px){
@@ -65,18 +75,26 @@ export const SICIL_CSS = `
 [data-sd-liste]{position:relative}
 [data-sd-liste]::after,[data-sd-baslik]::after{content:"";position:absolute;top:0;bottom:0;left:var(--sd-marj,158px);width:4px;pointer-events:none;
   border-left:1px solid color-mix(in srgb, var(--ke-r) 42%, transparent);border-right:1px solid color-mix(in srgb, var(--ke-r) 22%, transparent)}
-[data-sd-ipucu]{display:flex;align-items:center;gap:14px;padding:8px 20px;border-top:1px solid var(--ke-line-hi);background:var(--ke-surf2);
+[data-sd-ipucu]{display:flex;align-items:center;gap:14px;min-height:32px;box-sizing:border-box;padding:8px 20px;border-top:1px solid var(--ke-line-hi);background:var(--ke-surf2);
   font:500 11px/14px 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em;color:var(--ke-mut3)}
+[data-sd-folyo]{margin-left:auto;letter-spacing:.08em;text-transform:uppercase;font-variant-numeric:tabular-nums;color:var(--ke-mut2)}
 [data-sd-ipucu] kbd{font:inherit;color:var(--ke-ink2);padding:1px 6px;border:1px solid var(--ke-line-hi);border-bottom-width:2px;border-radius:4px;background:var(--ke-surf)}
 /* Hayalet satır (iskelet + boş defter): gerçek satırın ızgarası ve adımı. */
 [data-sd-hayalet]{padding:12px 20px;min-height:var(--sd-satir,64px);box-sizing:border-box;border-top:1px solid var(--ke-line)}
 [data-sd-hayalet]:first-child{border-top:none}
 [data-sd-cubuk]{display:block;height:8px;border-radius:3px;background:var(--ke-line)}
+/* uzar: defter, yanındaki sütunun (nüsha önizlemesi) boyuna uzar; artan boy dolgu cetveline akar,
+   folyo dipte kalır → iki sütunun dip çizgisi aynı y'de biter. */
+[data-sd-uzar]{display:flex;flex-direction:column}
+[data-sd-uzar]>[data-sd-liste]{flex:1 0 auto}
+[data-sd-uzar] [data-sd-dolgu]{flex:1 0 auto}
+[data-sd-dolgu-not]{display:flex;align-items:center;height:var(--sd-adim,64px);padding-left:calc(var(--sd-marj,158px) + 28px);font:500 11px/14px 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ke-mut3)}
 [data-sd-dolgu]{border-top:1px solid var(--ke-line);background-image:repeating-linear-gradient(to bottom, transparent 0 calc(var(--sd-adim,64px) - 1px), color-mix(in srgb, var(--ke-line) 70%, transparent) calc(var(--sd-adim,64px) - 1px) var(--sd-adim,64px))}
-@keyframes sd-tara{from{transform:translateX(-60%)}to{transform:translateX(160%)}}
-[data-sd-iskelet]{position:relative;overflow:hidden}
-[data-sd-iskelet]::after{content:"";position:absolute;inset:0;width:40%;pointer-events:none;
-  background:linear-gradient(90deg, transparent, color-mix(in srgb, var(--ke-surf) 75%, transparent), transparent);animation:sd-tara 1.4s var(--ke-ease-in-out) infinite}
+/* İskelet = BOŞ DEFTER SAYFASI (tur 8): parlak tarama yerine kâğıdın hafif "nefesi"
+   (opaklık .55↔.75, 1,2 sn) — yükleniyor olgusunu anlatır, gözü çekmez. reduced-motion: durur. */
+@keyframes sd-nefes{from{opacity:.55}to{opacity:.8}}
+[data-sd-iskelet]{position:relative}
+[data-sd-iskelet] [data-sd-cubuk]{animation:sd-nefes 1.2s var(--ke-ease-in-out) infinite alternate}
 [data-sd-grup]{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:8px;padding:6px 20px;background:var(--ke-surf2);border-bottom:1px solid var(--ke-line)}
 [data-sd-grup]+[data-sicil-satir]{border-top:none}
 [data-sd-liste]>[data-sd-grup]~[data-sd-grup]{border-top:1px solid var(--ke-line-hi)}

@@ -47,15 +47,16 @@ export function NavIkon({ item, busy, canli }) {
    yanıt vermedi); bayat → kendi kaynağının son denemesi hata verdi (kabukSicil.kabukSayaclari). */
 export function rozetDegeri(item, sayac = {}) {
   const b = sayac.bayat || {};
-  if (item.sayac === "gelen") return { n: sayac.gelen, acil: sayac.gecikmis || 0, bayat: false };
-  if (item.sayac === "taslak") return { n: sayac.taslak, acil: 0, bayat: !!b.taslak };
-  if (item.sayac === "giden") return { n: sayac.giden, acil: 0, bayat: !!b.giden };
-  return { n: 0, acil: 0, bayat: false };
+  const bk = sayac.bekliyor || {};
+  if (item.sayac === "gelen") return { n: sayac.gelen, acil: sayac.gecikmis || 0, bayat: false, bekliyor: false };
+  if (item.sayac === "taslak") return { n: sayac.taslak, acil: 0, bayat: !!b.taslak, bekliyor: sayac.taslak == null && !!bk.taslak };
+  if (item.sayac === "giden") return { n: sayac.giden, acil: 0, bayat: !!b.giden, bekliyor: sayac.giden == null && !!bk.giden };
+  return { n: 0, acil: 0, bayat: false, bekliyor: false };
 }
 
 /* Rozet çizilecek mi: sayı > 0, ya da sayı bilinmiyor VE kaynak hata verdi ("—" çizilir —
    eskiden Taslaklar rozeti 500'de sessizce kayboluyordu). */
-export const rozetCizilir = (r) => r?.n > 0 || (r?.n == null && !!r?.bayat);
+export const rozetCizilir = (r) => r?.n > 0 || (r?.n == null && (!!r?.bayat || !!r?.bekliyor));
 
 /* Erişilebilir ad eki — ikon-only öğelerde (dar ray, alt şerit) düğmenin aria-label'ı rozetin
    kendi etiketini ezer; sayı/aciliyet/bilinmezlik buradan söylenir. */
@@ -124,16 +125,20 @@ export function NavBtn({ item, active, onClick, busy, sayac, dar }) {
           <span style={{ position: "relative", zIndex: 1, display: "flex", color: ikonRenk }}>
             <NavIkon item={item} busy={busy} canli={canli} />
             {canli && <span aria-hidden="true" style={{ position: "absolute", top: -3, right: -5, width: 7, height: 7, borderRadius: RAD.dot, background: "var(--ke-t)", animation: "nu-think 1.2s ease-in-out infinite" }} />}
-            {!canli && rozetVar && <span style={{ position: "absolute", top: -8, left: 11 }}><SayiRozet n={rozet.n} acil={rozet.acil} bayat={rozet.bayat} kucuk /></span>}
+            {/* Rozet ikonun DIŞINDA, sağ üst köşeye asılı; ray/sırt renginde 2 px ayırma halkası (tur 8 jüri:
+                rozet zarf/belge ikonunu örtüyordu). */}
+            {!canli && rozetVar && <span style={{ position: "absolute", top: -7, left: 13, borderRadius: 999, boxShadow: `0 0 0 2px ${active ? "var(--ke-sayfa)" : PAL.bg2}` }}><SayiRozet n={rozet.n} acil={rozet.acil} bayat={rozet.bayat} bekliyor={rozet.bekliyor} etkin={active} kucuk /></span>}
           </span>
         ) : (
           <>
-            <span style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: SP.s + 2 }}>
-              <span style={{ color: ikonRenk, display: "flex" }}><NavIkon item={item} busy={busy} canli={canli} /></span>{item.label}
+            {/* Ray genişleyince etiketler genişlikle birlikte SOLARAK gelir (tur 8: yalnız width
+                animasyonu vardı, metin bir karede beliriyordu). */}
+            <span style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: SP.s + 2, minWidth: 0, whiteSpace: "nowrap", animation: "nu-sol .22s ease-out .06s both" }}>
+              <span style={{ color: ikonRenk, display: "flex" }}><NavIkon item={item} busy={busy} canli={canli} /></span><span data-ray-etiket="">{item.label}</span>
             </span>
             {canli
               ? <span aria-hidden="true" style={{ width: 14, height: 14, flexShrink: 0, boxSizing: "border-box", borderRadius: RAD.dot, border: "2px solid color-mix(in srgb, var(--ke-sayfa-ink) 16%, transparent)", borderTopColor: "var(--ke-sayfa-t)", animation: "nu-spin .8s linear infinite", marginLeft: "auto", position: "relative", zIndex: 1 }} />
-              : <SayiRozet n={rozet.n} acil={rozet.acil} bayat={rozet.bayat} etkin={active} />}
+              : <SayiRozet n={rozet.n} acil={rozet.acil} bayat={rozet.bayat} bekliyor={rozet.bekliyor} etkin={active} />}
           </>
         )}
       </button>

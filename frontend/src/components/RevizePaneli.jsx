@@ -94,6 +94,43 @@ function BeklemeDurumu({ sure }) {
   );
 }
 
+/* HAZIR TALİMAT ŞERİDİ (tur 8, jüri: jenerik hap dizisi, hepsi aynı ağırlıkta ve tek tık LLM
+   çağrısı). Artık mono künyeli numaralı talimat fişleri: seçim talimatı GİRDİYE YAZAR ve odağı
+   "Revize et"e taşır — memur görür, gerekirse değiştirir, Enter'la gönderir (çağrı onun
+   kararıdır). Son kullanılan öne alınır (yalnız bu tarayıcıda; depolama yoksa sıra sabit). */
+const REVIZE_ET = "Talimatla revize et";
+const SON_TALIMAT = "ke-revize-son-talimat";
+const sonTalimatOku = () => { try { return window.localStorage.getItem(SON_TALIMAT) || ""; } catch { return ""; } };
+const sonTalimatYaz = (e) => { try { window.localStorage.setItem(SON_TALIMAT, e); } catch { /* depolama kapalı: sıra sabit kalır */ } };
+
+function HazirTalimatlar({ onSec }) {
+  const kapRef = useRef(null);
+  const [son, setSon] = useState(sonTalimatOku);
+  const sirali = [...HAZIR_TALIMATLAR].sort((a, b) => (b.etiket === son) - (a.etiket === son));
+  const sec = (h) => {
+    onSec(h.talimat);
+    sonTalimatYaz(h.etiket);
+    setSon(h.etiket);
+    // Girdi güncellenince düğme etkinleşir; odak bir sonraki karede taşınır.
+    requestAnimationFrame(() => kapRef.current?.parentElement?.querySelector(`button[aria-label="${REVIZE_ET}"]`)?.focus());
+  };
+  return (
+    <div ref={kapRef} role="group" aria-label="Hazır revizyon talimatları — seçim talimatı girdiye yazar"
+      style={{ display: "flex", alignItems: "stretch", gap: 0, flexWrap: "wrap", marginLeft: 38, borderTop: `1px dashed ${PAL.line}`, paddingTop: 6 }}>
+      {sirali.map((h, i) => (
+        <button key={h.etiket} type="button" onClick={() => sec(h)} title={`${h.talimat} — girdiye yazar`} {...focusRing} data-press="" data-revize-hazir=""
+          style={{ cursor: "pointer", display: "inline-flex", alignItems: "baseline", gap: 6, padding: "4px 10px 4px 0", marginRight: 10, border: "none", background: "transparent",
+            color: PAL.ink2, ...TYPE.meta, fontWeight: 500, transition: `color .12s ease-out, transform .14s ${EASE.out}` }}>
+          <span aria-hidden="true" style={{ ...TYPE.antet, ...TNUM, color: h.etiket === son ? DERIN.V : PAL.mut3 }}>T{i + 1}</span>
+          <span>{h.etiket}</span>
+          {h.etiket === son && <span style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>· son</span>}
+        </button>
+      ))}
+      <style>{"[data-revize-hazir]:hover>span:nth-child(2){color:var(--ke-ink);text-decoration:underline;text-underline-offset:3px}"}</style>
+    </div>
+  );
+}
+
 /* Giriş şeridi — talimat yaz/söyle ya da hazır talimata tek tıkla. Revize masası: kâğıdın
    üstünde duran ince bir talimat şeridi — havada duran katman (surfPop + SH.pop), kâğıttan
    ayrı okunur. Hazır talimatlar hap biçimli, sessiz. */
@@ -121,24 +158,11 @@ function GirisSeridi({ busy, sure, talimat, setTalimat, setHata, girisRef, stt, 
                 <Icon.mic width={13} height={13} />
               </button>
             )}
-            <Btn onClick={() => revizeIste()} disabled={!talimat.trim()}>Revize et</Btn>
+            <Btn onClick={() => revizeIste()} disabled={!talimat.trim()} ariaLabel={REVIZE_ET}>Revize et</Btn>
           </>
         )}
       </div>
-      {!busy && (
-        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", paddingLeft: 38 }} aria-label="Hazır revizyon talimatları">
-          <span aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", marginRight: 2 }}>Hazır</span>
-          {HAZIR_TALIMATLAR.map((h) => (
-            <button key={h.etiket} type="button" onClick={() => revizeIste(h.talimat)} title={h.talimat} {...focusRing}
-              data-press=""
-              onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; e.currentTarget.style.borderColor = PAL.lineHi; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = PAL.line; }}
-              style={{ cursor: "pointer", padding: "3px 11px", borderRadius: RAD.chip, border: `1px solid ${PAL.line}`, background: "transparent", color: PAL.ink2, ...TYPE.meta, fontWeight: 500, transition: `background .12s ease-out, border-color .12s ease-out, transform .14s ${EASE.out}` }}>
-              {h.etiket}
-            </button>
-          ))}
-        </div>
-      )}
+      {!busy && <HazirTalimatlar onSec={(t) => { setTalimat(t); setHata(null); }} />}
       {stt.hata && <div role="alert" style={{ ...TYPE.meta, color: DERIN.kirmizi }}>{stt.hata}</div>}
     </div>
   );

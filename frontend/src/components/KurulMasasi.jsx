@@ -69,7 +69,9 @@ const MASA_CSS = `
 .ke-kurul-masa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) minmax(0,1fr);grid-template-areas:". hukukcu ." "taslakci masa birim_amiri" ". vatandas .";gap:10px 18px;align-items:center}
 @media (max-width:720px){.ke-kurul-masa{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"masa masa" "taslakci hukukcu" "vatandas birim_amiri"}.ke-kurul-masa > [data-koltuk]{justify-self:stretch!important;width:auto!important;padding:8px 6px!important}.ke-kurul-masa > [data-koltuk] [data-koltuk-metin]{white-space:normal!important}}
 .ke-kurul-besleme{max-height:460px;overflow-y:auto;overscroll-behavior:contain}
-[data-tur-serit]{position:sticky;top:0;z-index:1;background:var(--ke-bg);box-shadow:0 10px 8px -8px var(--ke-bg)}
+[data-tur-serit]{position:sticky;top:0;z-index:1;background:var(--ke-bg)}
+[data-tur-serit]::after{content:"";position:absolute;left:0;right:0;top:100%;height:16px;background:linear-gradient(var(--ke-bg),transparent);pointer-events:none}
+.ke-kurul-besleme:focus-visible{outline-offset:2px}
 @media (max-width:720px){.ke-kurul-besleme{max-height:none;overflow:visible}}
 @keyframes ke-koltuk-soz{0%{box-shadow:0 0 0 0 var(--soz)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
 `;
@@ -83,6 +85,10 @@ export const DURUS = {
   gelistir: { etiket: "katkı verdi", glif: "plus" },
   karsi: { etiket: "şerh düştü", glif: "Ş" },
   karar: { etiket: "kararı açıkladı", glif: "shield" },
+  // Söz almış ama tutum alanı taşımayan üye (açılış turu, denetim notu): nötr "görüş bildirdi".
+  // Oy değil — yalnız tutanakta sözü olduğunu söyler (tur 8: kapanışta 4 üyenin 2'si mühürsüzdü,
+  // masa "yarım bitmiş" okunuyordu).
+  gorus: { etiket: "görüş bildirdi", glif: "§" },
 };
 /** Açılmış maddelerden üye başına SON duruş — `turEtiketi` ile aynı kaynaktan (tutanak). */
 export function duruslariCikar(turlar) {
@@ -90,6 +96,7 @@ export function duruslariCikar(turlar) {
   for (const t of turlar || []) {
     if (t.who === "birim_amiri" && turEtiketi(t) === "Karar") d[t.who] = "karar";
     else if (t.tutum && DURUS[t.tutum]) d[t.who] = t.tutum;
+    else if (t.who && !d[t.who]) d[t.who] = "gorus";
   }
   return d;
 }
@@ -100,7 +107,7 @@ function KoltukMuhru({ renk, durus, az }) {
   const c = DERIN_OF(renk);
   const serh = durus === "karsi";
   return (
-    <span aria-hidden="true" style={{ "--egim": "-14deg", position: "absolute", right: -10, bottom: -10, width: 21, height: 21, borderRadius: RAD.dot,
+    <span aria-hidden="true" style={{ "--egim": "-14deg", position: "absolute", right: -6, bottom: -6, width: 21, height: 21, borderRadius: RAD.dot,
       display: "grid", placeItems: "center", color: c, background: PAL.surf, border: `1.5px ${serh ? "dashed" : "solid"} ${c}`,
       // Avatarın DIŞINA oturur + zemin renginde halka: mühür avatarın çerçevesini kesmez (tur 6).
       boxShadow: `0 0 0 2px ${PAL.bg}`, outline: serh ? "none" : `1px solid ${c}`, outlineOffset: 1.5, transform: "rotate(-14deg)",
@@ -139,7 +146,7 @@ function Koltuk({ uye, aktif, durus, yukleniyor, az, i }) {
   const oy = !!DURUS[durus];
   const durum = yukleniyor ? "taslağı okuyor…" : aktif ? "söz alıyor…" : oy ? DURUS[durus].etiket : uye.rol;
   return (
-    <div data-koltuk="" style={{ gridArea: uye.id, justifySelf: HIZA[uye.id] || "stretch", width: KOLTUK_GENISLIK, maxWidth: "100%", boxSizing: "border-box", minWidth: 0, display: "flex", alignItems: "center", gap: SP.m, padding: "8px 12px", borderRadius: RAD.card,
+    <div data-koltuk="" style={{ gridArea: uye.id, justifySelf: HIZA[uye.id] || "stretch", width: KOLTUK_GENISLIK, maxWidth: "100%", boxSizing: "border-box", minWidth: 0, display: "flex", alignItems: "center", gap: SP.l, padding: "8px 12px", borderRadius: RAD.card,
       background: aktif ? ALFA(uye.col) : "transparent", transition: "background .2s ease-out",
       animation: az ? "none" : `nu-rise .36s var(--ke-ease-out) ${0.06 + i * 0.06}s both`,
       ...(yukleniyor && !az ? { opacity: 0.85 } : null) }}>
@@ -255,13 +262,13 @@ function satirDuzeni(draft) {
 
 /* Taslak kâğıdı — müzakere sürerken orijinal, kurul revize önerdiyse REVİZE taslağı.
    Masadaki evrak: beyaz yüzey, keskin köşe, kâğıt gölgesi; vurgulu satırlar kenar notuyla. */
-export function TaslakKarti({ draft, revize }) {
+export function TaslakKarti({ draft, revize, kunye = null }) {
   const satirlar = satirDuzeni(draft);
   return (
     <div style={{ position: "relative", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: 3, boxShadow: SH.kagit, minWidth: 0 }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "10px 18px", borderBottom: `1px solid ${PAL.line}`, ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>
         <span style={{ color: revize ? DERIN.V : PAL.ink2 }}>{revize ? "Kurulun revize taslağı" : "Resmî yazı taslağı"}</span>
-        <span style={{ marginLeft: "auto", color: revize ? DERIN.V : PAL.mut3 }}>{revize ? "önerilen sürüm" : "müzakerede"}</span>
+        <span style={{ marginLeft: "auto", color: revize ? DERIN.V : PAL.mut3 }}>{kunye || (revize ? "önerilen sürüm" : "müzakerede")}</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", maxHeight: 460, overflowY: "auto", padding: "20px 26px 24px" }}>
         {satirlar.map((l) => {

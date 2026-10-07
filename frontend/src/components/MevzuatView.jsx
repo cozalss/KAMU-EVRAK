@@ -12,9 +12,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import NumberFlow from "@number-flow/react";
-import { ViewWrap, EmptyState, Icon, Btn, MONO, DISPLAY, T, V, R, BANT, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY } from "./neonUi.jsx";
+import { ViewWrap, EmptyState, Icon, Btn, MONO, DISPLAY, T, V, R, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, focusRing, SR_ONLY } from "./neonUi.jsx";
 import { cleanDemoText } from "./result-cards.jsx";
 import { OkumaModal } from "./MevzuatOkuma.jsx";
+import { Dizin, DerinSonucSatir } from "./MevzuatDizin.jsx";
 import { kunyeCoz, NITELIK, atifCoz, katalogEslesir } from "../lib/mevzuatKunye.js";
 import { vurguParcala } from "../lib/mevzuatVurgu.js";
 
@@ -104,7 +105,7 @@ const mulgaMi = (m, kn) => kn.mulga || /\bMÜLGA\b/.test(m.baslik);
    İmza: kart üzerinde mevzuat numarası Archivo'nun GENİŞLİK ekseninde açılır (font-stretch) —
    sırt sütunu sabit genişlikte, komşu yerleşim kıpırdamaz. */
 const MV_CSS = `
-.mv-duzen{display:grid;grid-template-columns:clamp(232px,17vw,296px) minmax(0,1fr);gap:${SP.xxl + 8}px;align-items:start}
+.mv-duzen{display:grid;grid-template-columns:clamp(268px,18vw,304px) minmax(0,1fr);gap:${SP.xxl + 8}px;align-items:start}
 .mv-dizin{min-width:0;position:sticky;top:${SP.l}px;max-height:calc(100vh - ${SP.xxl}px);overflow-y:auto;overscroll-behavior:contain;padding-bottom:${SP.l}px;scrollbar-width:thin}
 .mv-dizin-oge:hover{background:var(--ke-hov)}
 .mv-dizin-oge:hover .mv-dizin-ad{color:var(--ke-ink)}
@@ -112,6 +113,8 @@ const MV_CSS = `
 .mv-kart:hover{border-color:var(--ke-line-hi)!important;box-shadow:var(--ke-sh-card)}
 .mv-kart .mv-no{transition:font-stretch .42s var(--ke-ease-out), letter-spacing .42s var(--ke-ease-out)}
 .mv-kart:hover .mv-no,.mv-kart:focus-visible .mv-no{font-stretch:125%!important;letter-spacing:-.045em!important}
+.mv-ek{transition:background .12s ease-out}
+.mv-ek:hover{background:var(--ke-hov)}
 .mv-kart .mv-ok{opacity:0;transform:translateX(-4px);transition:opacity .16s ease-out, transform .2s var(--ke-ease-out)}
 .mv-kart:hover .mv-ok,.mv-kart:focus-visible .mv-ok{opacity:1;transform:none}
 .mv-ara:focus-within{border-color:var(--ke-t)!important;box-shadow:0 0 0 3px color-mix(in srgb, var(--ke-t) 18%, transparent)!important}
@@ -160,15 +163,21 @@ function Vurgulu({ metin, q }) {
 function SirtNumara({ no, yil, tur, mulga, cekirdek, ek }) {
   const uzun = String(no || "").length > 4;
   const ana = no || yil || "§";
-  const renk = mulga ? PAL.mut3 : cekirdek ? DERIN.T : no ? PAL.ink : PAL.mut2;
+  const renk = mulga ? PAL.mut3 : cekirdek ? DERIN.T : PAL.ink;
   return (
     <span aria-hidden="true" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", gap: SP.s, padding: `${SP.m + 2}px ${SP.s}px ${SP.m}px ${SP.m + 2}px`,
       background: cekirdek ? ALFA(T) : PAL.surf2, borderRight: `1px solid ${PAL.line}`, position: "relative", minWidth: 0 }}>
       {cekirdek && <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: T }} />}
       <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-        {!no && yil && <span style={{ ...TYPE.antet, fontSize: 9.5, color: PAL.mut3 }}>RG YILI</span>}
-        <span className="mv-no" style={{ fontFamily: DISPLAY, fontWeight: no ? 800 : 700, fontSize: uzun ? 19 : no ? 28 : 24, lineHeight: uzun ? "22px" : "28px",
-          fontStretch: "100%", letterSpacing: "-.03em", color: renk, textDecoration: mulga ? "line-through" : "none", textDecorationThickness: 2, whiteSpace: "nowrap", ...TNUM }}>{ana}</span>
+        {/* Numarasız kayıt (tur 8): yıl, numarayla AYNI ağırlık/boyutta; "RG" öneki aynı satırda
+            mono künye — ızgarada iki farklı ağırlıkta sırt yan yana durmaz, yıl numarayla da karışmaz. */}
+        <span style={{ display: "flex", alignItems: "flex-start", gap: 3, minWidth: 0 }}>
+          {/* "RG" yılın ÜST İNDİSİ (tur 8 2. jüri): yıl numaralı kartlarla aynı taban çizgisinde
+              kalır; önek satır yüksekliğini kaydırmaz. */}
+          {!no && yil && <span style={{ ...TYPE.antet, fontSize: 9.5, lineHeight: "10px", color: PAL.mut3, paddingTop: 3 }}>RG</span>}
+          <span className="mv-no" style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: uzun ? 19 : 28, lineHeight: uzun ? "22px" : "28px",
+            fontStretch: "100%", letterSpacing: "-.03em", color: renk, textDecoration: mulga ? "line-through" : "none", textDecorationThickness: 2, whiteSpace: "nowrap", ...TNUM }}>{ana}</span>
+        </span>
         {ek && <span style={{ alignSelf: "flex-start", fontFamily: MONO, fontSize: 10, lineHeight: "14px", fontWeight: 600, letterSpacing: ".06em", color: cekirdek ? DERIN.T : PAL.mut2, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.chip, padding: "0 5px" }}>EK · {ek}</span>}
       </span>
       <span style={{ ...TYPE.antet, fontSize: 9.5, letterSpacing: ".1em", color: cekirdek ? DERIN.T : PAL.mut3, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -223,16 +232,34 @@ function KartKunye({ m, kn, mulga }) {
   );
 }
 
-function KatalogKart({ m, onAc, sira = 0, q = "", ciftNo = false }) {
+/* Kademelendirme yalnız ilk 6 kartta, 18 ms aralık, 280 ms — toplam < 400 ms (tur 8: 2,5 sn
+   sonra bile alt satır yarı saydamdı). Gerisi anında görünür. */
+const kartGiris = (sira) => (sira < 6 ? `nu-rise .28s var(--ke-ease-out) ${sira * 18}ms backwards` : "none");
+
+/* Ek kayıtlar (aynı numaralı "— Ek Bölüm" dosyaları) ana kartın altında ayrı bir satır düğmesi:
+   iç içe düğme olmaz, kart + ek kardeş öğelerdir (tur 8: 2646 iki komşu kartta kopya gibiydi). */
+function EkSatirlari({ ekler, onAc, q }) {
+  return ekler.map((e) => (
+    <button key={e.dosya} type="button" onClick={() => onAc({ dosya: e.dosya, maddeNo: null })} aria-haspopup="dialog" {...focusRing} data-press="" className="mv-ek"
+      style={{ display: "flex", alignItems: "baseline", gap: SP.s, width: "100%", textAlign: "left", cursor: "pointer", padding: `${SP.s}px ${SP.l}px ${SP.s}px 106px`, border: "none", borderTop: `1px dashed ${PAL.lineHi}`, background: "transparent", color: "inherit", font: "inherit" }}>
+      <span style={{ ...TYPE.antet, fontSize: 10, color: DERIN.T, flexShrink: 0 }}>EK</span>
+      <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}><Vurgulu metin={ekAdi(e.baslik)} q={q} /></span>
+      <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 11.5, color: PAL.mut3, flexShrink: 0, ...TNUM }}>{e.madde_sayisi > 0 ? `${e.madde_sayisi} md.` : "tam metin"}</span>
+    </button>
+  ));
+}
+const ekAdi = (baslik) => String(baslik || "").split(/\s[—–]\s/)[1] || baslik;
+
+function KatalogKart({ m, onAc, sira = 0, q = "", ciftNo = false, ekler = [] }) {
   const cekirdek = CEKIRDEK_NO.has(m.no);
   const kn = kunyeCoz(m.kunye);
   const mulga = mulgaMi(m, kn);
-  return (
+  const kart = (
     <button type="button" onClick={() => onAc({ dosya: m.dosya, maddeNo: null })} aria-haspopup="dialog" {...focusRing} data-press="" className="mv-kart"
       title={m.kunye || undefined} data-dosya={m.dosya}
-      style={{ display: "grid", gridTemplateColumns: "92px minmax(0,1fr)", textAlign: "left", padding: 0, overflow: "hidden", borderRadius: RAD.card, background: PAL.surf,
-        border: `1px solid ${PAL.line}`, cursor: "pointer", minHeight: 112, color: "inherit", font: "inherit",
-        animation: `nu-rise .38s var(--ke-ease-out) ${Math.min(sira, 14) * 28}ms backwards` }}>
+      style={{ display: "grid", gridTemplateColumns: "92px minmax(0,1fr)", width: "100%", textAlign: "left", padding: 0, overflow: "hidden", borderRadius: ekler.length ? 0 : RAD.card, background: PAL.surf,
+        border: ekler.length ? "none" : `1px solid ${PAL.line}`, cursor: "pointer", minHeight: 112, color: "inherit", font: "inherit",
+        animation: ekler.length ? "none" : kartGiris(sira) }}>
       <SirtNumara no={m.no} yil={rgYili(kn)} tur={turBul(m)} mulga={mulga} cekirdek={cekirdek} ek={ciftNo ? ekKisaltma(m.baslik) : null} />
       <span style={{ display: "flex", flexDirection: "column", gap: SP.s, padding: `${SP.m + 2}px ${SP.l}px ${SP.m}px`, minWidth: 0 }}>
         {(cekirdek || NITELIK[m.nitelik]) && (
@@ -247,6 +274,13 @@ function KatalogKart({ m, onAc, sira = 0, q = "", ciftNo = false }) {
         <KartKunye m={m} kn={kn} mulga={mulga} />
       </span>
     </button>
+  );
+  if (!ekler.length) return kart;
+  return (
+    <div className="mv-kart" style={{ display: "flex", flexDirection: "column", overflow: "hidden", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, animation: kartGiris(sira) }}>
+      {kart}
+      <EkSatirlari ekler={ekler} onAc={onAc} q={q} />
+    </div>
   );
 }
 
@@ -279,67 +313,26 @@ function OneriSatir({ m, dosyalar, katalogAd, onAc }) {
   );
 }
 
-/* Tipografik dizin — kitabın içindekiler sayfası: sıra no · konu · noktalı kılavuz · adet.
-   Seçili konu, yay fiziğiyle kayan mürekkep imleci (layoutId) ile işaretlenir. Telefonda
-   yatay kaydırılan şeride dönüşür (CSS). Filtre mantığı değişmedi: tıklama = kategori seç/bırak. */
-function DizinOge({ ad, adet, sira, aktif, onSec }) {
-  return (
-    <li style={{ position: "relative", minWidth: 0 }}>
-      {aktif && <motion.span layoutId="mv-dizin-imlec" className="mv-dizin-imlec" aria-hidden="true"
-        transition={{ type: "spring", stiffness: 520, damping: 40 }}
-        style={{ position: "absolute", left: 0, top: 6, bottom: 6, width: 2, borderRadius: 2, background: T }} />}
-      <button type="button" onClick={onSec} aria-pressed={aktif} {...focusRing} data-press="" className="mv-dizin-oge"
-        style={{ display: "flex", alignItems: "last baseline", gap: SP.s, width: "100%", boxSizing: "border-box", textAlign: "left", cursor: "pointer", border: "none",
-          background: aktif ? ALFA(T) : "transparent", borderRadius: RAD.chip, padding: "6px 10px 6px 14px", color: "inherit", font: "inherit",
-          transition: "background .12s ease-out" }}>
-        <span className="mv-dizin-sira" style={{ alignSelf: "first baseline", fontFamily: MONO, fontSize: 11, color: aktif ? DERIN.T : PAL.mut3, minWidth: 18, ...TNUM }}>{sira}</span>
-        <span className="mv-dizin-ad" style={{ ...TYPE.data, fontWeight: aktif ? 600 : 450, color: aktif ? PAL.ink : PAL.ink2, minWidth: 0, textWrap: "balance", transition: "color .12s ease-out" }}>{ad}</span>
-        <span className="mv-dizin-kilavuz" aria-hidden="true" style={{ flex: 1, minWidth: 8, alignSelf: "flex-end", marginBottom: 4, borderBottom: `1px dotted ${PAL.lineHi}` }} />
-        <span style={{ fontFamily: MONO, fontSize: 11.5, color: aktif ? DERIN.T : PAL.mut, ...TNUM }}>{adet}</span>
-      </button>
-    </li>
-  );
-}
-
-function Dizin({ kategoriler, kategoriAdet, toplam, kategori, setKategori, cekirdekSayi }) {
-  return (
-    <nav aria-label="Kategori dizini" className="mv-dizin">
-      <div className="mv-dizin-baslik" style={{ ...TYPE.antet, color: PAL.mut3, display: "flex", alignItems: "center", gap: SP.s, padding: `0 0 ${SP.s}px 14px`, borderBottom: `1px solid ${PAL.ink}`, marginBottom: SP.s }}>
-        DİZİN<span style={{ marginLeft: "auto" }}>ADET</span>
-      </div>
-      <div role="group" aria-label="Kategori filtresi">
-        <ol className="mv-dizin-liste" style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 1 }}>
-          <DizinOge ad="Tüm mevzuat" adet={toplam} sira="—" aktif={!kategori} onSec={() => setKategori("")} />
-          {kategoriler.map((ad, i) => (
-            <DizinOge key={ad} ad={ad} sira={String(i + 1).padStart(2, "0")} adet={kategoriAdet.get(ad) || 0} aktif={kategori === ad}
-              onSec={() => setKategori(kategori === ad ? "" : ad)} />
-          ))}
-        </ol>
-      </div>
-      <div className="mv-dizin-dip" style={{ marginTop: SP.l, padding: `${SP.m}px 0 0 14px`, borderTop: `1px solid ${PAL.line}`, display: "grid", gap: SP.s, ...TYPE.meta, color: PAL.mut2 }}>
-        <span style={{ display: "flex", alignItems: "center", gap: SP.s }}>
-          <span aria-hidden="true" style={{ width: 10, height: 14, background: ALFA(T), boxShadow: `inset 3px 0 0 ${T}`, borderRadius: 2 }} />
-          Çekirdek mevzuat · {cekirdekSayi}
-        </span>
-        <span style={{ display: "flex", alignItems: "center", gap: SP.s }}>
-          <span aria-hidden="true" style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 11, color: PAL.mut3, textDecoration: "line-through", textDecorationThickness: 2 }}>00</span>
-          Mülga (yürürlükte değil)
-        </span>
-        <span style={{ display: "flex", alignItems: "flex-start", gap: SP.s, textWrap: "pretty" }}>
-          <span aria-hidden="true" style={{ flexShrink: 0, width: 10, height: 10, marginTop: 3, borderRadius: 2, background: ALFA(BANT.sari.c), boxShadow: `inset 0 0 0 1px ${BANT.sari.c}` }} />
-          Metnin niteliği (lafzî / madde özeti) okuma penceresinde yazar; özet metin hukuki atıf için yeterli değildir.
-        </span>
-      </div>
-    </nav>
-  );
-}
-
 /* Açılır chevron — <summary> katlama durumunu gösterir (details[open]'da 90° döner). */
 const ChevronSag = (p) => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...p}>
     <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
+
+/* Aynı numaralı kayıtlar: "— Ek" kuyruğu taşımayan ana kayıt + ekleri tek kart. Ana kayıt
+   listede yoksa (arama yalnız eki buldu) ek kendi kartıyla kalır. */
+function ekGrupla(liste, ciftNolar) {
+  const ana = new Map();
+  for (const m of liste) if (m.no && ciftNolar?.has(m.no) && !/\s[—–]\s/.test(m.baslik)) ana.set(m.no, m);
+  const ekler = new Map();
+  const kalan = [];
+  for (const m of liste) {
+    if (ana.has(m.no) && ana.get(m.no) !== m) ekler.set(m.no, [...(ekler.get(m.no) || []), m]);
+    else kalan.push(m);
+  }
+  return kalan.map((m) => ({ m, ekler: (ana.get(m.no) === m && ekler.get(m.no)) || [] }));
+}
 
 const KART_IZGARA = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(340px, 100%), 1fr))", gap: SP.m, alignItems: "stretch" };
 
@@ -360,7 +353,7 @@ function KategoriGrup({ ad, sira, mevzuatlar, onAc, acik, q, ciftNolar }) {
         <p style={{ margin: `0 0 ${SP.l}px 46px`, ...TYPE.data, color: PAL.mut2, maxWidth: 720 }}>{KATEGORI_ACIKLAMA[ad]}</p>
       )}
       <div style={KART_IZGARA}>
-        {mevzuatlar.map((m, i) => <KatalogKart key={m.dosya} m={m} onAc={onAc} sira={i} q={q} ciftNo={!!m.no && ciftNolar?.has(m.no)} />)}
+        {ekGrupla(mevzuatlar, ciftNolar).map(({ m, ekler }, i) => <KatalogKart key={m.dosya} m={m} ekler={ekler} onAc={onAc} sira={i} q={q} ciftNo={!!m.no && ciftNolar?.has(m.no) && !ekler.length} />)}
       </div>
     </details>
   );
@@ -378,33 +371,11 @@ function AramaModSecici({ modu, onSec }) {
           {modu === k && <motion.span layoutId="mv-mod-zemin" aria-hidden="true" transition={{ type: "spring", stiffness: 500, damping: 38 }}
             style={{ position: "absolute", inset: 0, borderRadius: RAD.ctl, background: PAL.surf, boxShadow: SH.card }} />}
           <span style={{ position: "relative" }}>{ad}</span>
+          {/* İkinci sinyal (renk tek sinyal değil): etkin sekmenin altında mürekkep çizgisi. */}
+          {modu === k && <span aria-hidden="true" style={{ position: "absolute", left: 14, right: 14, bottom: 4, height: 2, borderRadius: 1, background: DERIN.T }} />}
         </button>
       ))}
     </div>
-  );
-}
-
-/* Derin arama sonucu — madde alıntısı: sırtta madde no (mühür moru), sağda kanun + alıntı.
-   Tıklanınca okuma modalı İLGİLİ MADDEDE açılır. */
-function DerinSonucSatir({ s, onAc, sira = 0, q = "" }) {
-  return (
-    <button type="button" onClick={() => onAc({ dosya: s.dosya, maddeNo: s.madde_no ?? null, maddeTur: s.madde_tur ?? null, sorgu: q })}
-      aria-haspopup="dialog" {...focusRing} data-press="" className="mv-kart"
-      style={{ display: "grid", gridTemplateColumns: "72px minmax(0,1fr)", width: "100%", textAlign: "left", padding: 0, overflow: "hidden", borderRadius: RAD.card, background: PAL.surf,
-        border: `1px solid ${PAL.line}`, cursor: "pointer", color: "inherit", font: "inherit", animation: `nu-rise .34s var(--ke-ease-out) ${Math.min(sira, 12) * 24}ms backwards` }}>
-      <span aria-hidden="true" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 2, padding: `${SP.m + 2}px ${SP.s}px ${SP.m}px ${SP.m + 2}px`, background: ALFA(V), borderRight: `1px solid ${PAL.line}` }}>
-        <span style={{ ...TYPE.antet, fontSize: 9.5, color: DERIN.V }}>{s.madde_tur === "ek" ? "EK" : s.madde_tur === "gecici" ? "GEÇİCİ" : "MADDE"}</span>
-        <span className="mv-no" style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 28, lineHeight: "30px", fontStretch: "100%", letterSpacing: "-.03em", color: DERIN.V, ...TNUM }}>{s.madde_no ?? "§"}</span>
-      </span>
-      <span style={{ display: "flex", flexDirection: "column", gap: SP.xs + 2, padding: `${SP.m + 2}px ${SP.l}px ${SP.m}px`, minWidth: 0 }}>
-        <span style={{ display: "flex", alignItems: "baseline", gap: SP.s, minWidth: 0 }}>
-          {s.no && <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, color: DERIN.T, flexShrink: 0 }}>{s.no}</span>}
-          <span style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>{s.baslik}</span>
-        </span>
-        <span style={{ ...TYPE.ui, color: PAL.ink2, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}><Vurgulu metin={s.snippet} q={q} /></span>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: SP.xs, marginTop: "auto", ...TYPE.meta, fontWeight: 600, color: DERIN.T }}>Maddeye git <Icon.arrow /></span>
-      </span>
-    </button>
   );
 }
 
@@ -617,6 +588,24 @@ export default function MevzuatView({ history = [] }) {
     if (Array.isArray(katalog)) for (const m of katalog) if (m.no) say.set(m.no, (say.get(m.no) || 0) + 1);
     return new Set([...say].filter(([, n]) => n > 1).map(([no]) => no));
   }, [katalog]);
+  // Arama sürerken dizin isabet/toplam yazar (tur 8). Kategori süzgeci UYGULANMADAN sayılır —
+  // memur başka konudaki isabeti de görebilsin.
+  const katalogIsabet = useMemo(() => {
+    const q = filtre.trim();
+    if (!q || !Array.isArray(katalog)) return null;
+    const sayim = new Map();
+    for (const m of katalog) if (katalogEslesir(m, q)) sayim.set(m.kategori, (sayim.get(m.kategori) || 0) + 1);
+    return sayim;
+  }, [katalog, filtre]);
+  const dosyaKategori = useMemo(() => new Map(Array.isArray(katalog) ? katalog.map((m) => [m.dosya, m.kategori]) : []), [katalog]);
+  const derinListe = derin && derin !== "hata" ? derin.sonuclar : null;
+  const derinIsabet = useMemo(() => {
+    if (!derinListe) return null;
+    const sayim = new Map();
+    for (const r of derinListe) { const k = dosyaKategori.get(r.dosya); if (k) sayim.set(k, (sayim.get(k) || 0) + 1); }
+    return sayim;
+  }, [derinListe, dosyaKategori]);
+  const derinGorunen = derinListe && kategori ? derinListe.filter((r) => dosyaKategori.get(r.dosya) === kategori) : derinListe;
   const cekirdekSayi = useMemo(() => (Array.isArray(katalog) ? katalog.filter((m) => CEKIRDEK_NO.has(m.no)).length : 0), [katalog]);
 
   // Gruplu görünüm: backend'in kategori sırasıyla, yalnız eşleşmesi olan gruplar.
@@ -634,7 +623,7 @@ export default function MevzuatView({ history = [] }) {
   const atif = atifCoz(filtre);
   const atifHedefleri = katalogHazir && atif ? listelenen : [];
   const sayac = aramaModu === "derin"
-    ? (derin && derin !== "hata" ? <span><Sayi n={derin.sonuclar.length} /> MADDE EŞLEŞTİ</span> : <span>MADDE METİNLERİNDE TAM METİN ARAMA</span>)
+    ? (derin && derin !== "hata" ? <><span><Sayi n={derin.sonuclar.length} /> MADDE EŞLEŞTİ</span><span aria-hidden="true">·</span><span>ALAKAYA GÖRE SIRALI</span>{kategori ? <span>· {kategori.toLocaleUpperCase("tr")}</span> : null}</> : <span>MADDE METİNLERİNDE TAM METİN ARAMA</span>)
     : Array.isArray(katalog) ? (
       filtre.trim() || kategori
         ? <span><Sayi n={listelenen.length} /> / {katalog.length} KAYNAK{kategori ? ` · ${kategori.toLocaleUpperCase("tr")}` : ""}</span>
@@ -676,11 +665,18 @@ export default function MevzuatView({ history = [] }) {
             aciklama="Arama sunucusuna ulaşılamadı. Sorgunuz duruyor; tekrar deneyin ya da kataloğa geçip kanun adı ve numarasıyla arayın." />
         ) : derin && derin.sonuclar.length === 0 ? (
           <EmptyState icon={<Icon.book />} title="Eşleşen madde yok"
-            sub={`"${filtre.trim()}" için madde metinlerinde sonuç bulunamadı. Farklı terimlerle deneyin.`}
+            sub={`“${filtre.trim()}” için madde metinlerinde sonuç bulunamadı. Farklı terimlerle deneyin.`}
             actions={<Btn onClick={() => setFiltre("")}>Aramayı temizle</Btn>} />
         ) : derin ? (
-          <div aria-live="polite" style={{ ...KART_IZGARA, gridTemplateColumns: "repeat(auto-fill, minmax(min(380px, 100%), 1fr))", opacity: derinBekliyor ? 0.6 : 1, transition: "opacity .12s ease-out" }}>
-            {derin.sonuclar.map((s, i) => <DerinSonucSatir key={`${s.dosya}-${s.madde_no}-${s.madde_tur ?? "madde"}`} s={s} onAc={ac} sira={i} q={filtre.trim()} />)}
+          /* Dizin bu modda da görünür: konu başına eşleşen MADDE sayısı / konudaki kaynak (tur 8). */
+          <div className="mv-duzen">
+            {kategoriler.length > 0 && Array.isArray(katalog) ? (
+              <Dizin kategoriler={kategoriler} kategoriAdet={kategoriAdet} toplam={katalog.length} kategori={kategori} setKategori={setKategori} cekirdekSayi={cekirdekSayi} isabet={derinIsabet} birim="KAYNAK" />
+            ) : <span />}
+            <div aria-live="polite" style={{ ...KART_IZGARA, gridTemplateColumns: "repeat(auto-fill, minmax(min(380px, 100%), 1fr))", alignContent: "start", opacity: derinBekliyor ? 0.6 : 1, transition: "opacity .12s ease-out" }}>
+              {derinGorunen.map((s, i) => <DerinSonucSatir key={`${s.dosya}-${s.madde_no}-${s.madde_tur ?? "madde"}`} s={s} onAc={ac} sira={i} q={filtre.trim()} />)}
+              {derinGorunen.length === 0 && <p style={{ margin: 0, ...TYPE.ui, color: PAL.mut2 }}>Bu konuda eşleşen madde yok — dizinden başka bir konu seçin ya da “Tüm mevzuat”a dönün.</p>}
+            </div>
           </div>
         ) : null
       )}
@@ -691,7 +687,7 @@ export default function MevzuatView({ history = [] }) {
       {katalogHazir && (
         <div className="mv-duzen">
           {kategoriler.length > 0 ? (
-            <Dizin kategoriler={kategoriler} kategoriAdet={kategoriAdet} toplam={katalog.length} kategori={kategori} setKategori={setKategori} cekirdekSayi={cekirdekSayi} />
+            <Dizin kategoriler={kategoriler} kategoriAdet={kategoriAdet} toplam={katalog.length} kategori={kategori} setKategori={setKategori} cekirdekSayi={cekirdekSayi} isabet={katalogIsabet} />
           ) : <span />}
           <div style={{ minWidth: 0 }}>
             {atifHedefleri.length > 0 && (
@@ -707,7 +703,7 @@ export default function MevzuatView({ history = [] }) {
             {listelenen.length === 0 ? (
               <EmptyState icon={<Icon.book />} title="Eşleşen mevzuat yok"
                 sub={filtre.trim()
-                  ? `"${filtre.trim()}" için ${kategori ? `${kategori} grubunda` : "katalogda"} kaynak adı eşleşmedi. Aynı ifadeyi madde metinlerinin içinde arayabilirsiniz.`
+                  ? `“${filtre.trim()}” için ${kategori ? `${kategori} grubunda` : "katalogda"} kaynak adı eşleşmedi. Aynı ifadeyi madde metinlerinin içinde arayabilirsiniz.`
                   : "Bu grupta gösterilecek mevzuat yok."}
                 actions={filtre.trim()
                   ? [<Btn key="d" primary onClick={() => setAramaModu("derin")}><Icon.search /> Madde içinde ara</Btn>,

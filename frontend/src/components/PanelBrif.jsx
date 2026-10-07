@@ -10,6 +10,8 @@
      Satırlar sırayla "yazılır" (stagger).
    · Şerit: kuyruğun süre kompozisyonu, sayılar Archivo — renk tek sinyal değil (sayı+söz). */
 import { useEffect, useState } from "react";
+import SureCetveli from "./PanelCetvel.jsx";
+import { useMedyaSorgusu } from "../hooks/useMedya.js";
 import NumberFlow from "@number-flow/react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Btn, Damga, Icon, MONO, DISPLAY, T, R, TYPE, TNUM, SP, RAD, SH, EASE, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
@@ -30,6 +32,7 @@ export const PANEL_KF = `
 @keyframes pv-cizgi{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 @keyframes pv-serit{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes pv-nefes{from{opacity:.7}to{opacity:1}}
+@keyframes pv-ciz{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
 `;
 
 /* Blok giriş stili — gecikme ms. Tek kaynak: hem PanelView ızgara hücreleri hem bu dosya. */
@@ -48,7 +51,52 @@ export function useAcilisSayaci(deger, gecikme = 220) {
 }
 
 /* Defter marjı rengi — kırmızı damga mürekkebinin soluk hâli (yeni token değil, color-mix). */
-const MARJ = `color-mix(in srgb, ${R} 38%, transparent)`;
+export const MARJ = `color-mix(in srgb, ${R} 38%, transparent)`;
+
+/* Süre kompozisyonu lejantı — sayı Archivo + söz (renk tek sinyal değil). */
+function SeritLejant({ dilimler }) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: `${SP.xs}px ${SP.xl}px`, marginTop: SP.s + 2 }}>
+      {dilimler.map((d) => (
+        <span key={d.l} style={{ display: "inline-flex", alignItems: "baseline", gap: 6, ...TYPE.data, color: PAL.mut2 }}>
+          <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 2, background: d.c, alignSelf: "center" }} />
+          <span style={{ fontFamily: DISPLAY, fontWeight: 700, fontStretch: "112%", fontSize: 15, color: PAL.ink, ...TNUM }}>{d.n}</span>
+          {d.l}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/* Kuyruk bileşimi — ≥1600 px'te manşetin SAĞ SÜTUNU (tur 8: 1920'de manşet ~600 px'te kırılıp
+   sağında ~400 px boş dikdörtgen kalıyordu). Lejantın büyük, dikey, cetvel-hizalı hâli. */
+function BilesimSutun({ dilimler, toplam }) {
+  return (
+    <div style={{ flex: "0 0 248px", alignSelf: "stretch", paddingLeft: SP.xl, borderLeft: `1px solid ${PAL.line}` }}>
+      <p style={{ margin: `0 0 ${SP.s}px`, ...TYPE.antet, color: PAL.mut3, ...TNUM }}>KUYRUK BİLEŞİMİ · {toplam}</p>
+      {dilimler.map((d) => (
+        <div key={d.l} style={{ display: "grid", gridTemplateColumns: "10px 44px minmax(0, 1fr)", alignItems: "baseline", columnGap: SP.s,
+          padding: "5px 0", borderTop: `1px solid ${PAL.line}`, ...TYPE.data, color: PAL.mut2 }}>
+          <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 2, background: d.c, alignSelf: "center" }} />
+          <span style={{ fontFamily: DISPLAY, fontWeight: 800, fontStretch: "118%", fontSize: 22, lineHeight: "24px", color: PAL.ink, textAlign: "right", ...TNUM }}>{d.n}</span>
+          <span style={{ minWidth: 0 }}>{d.l}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* Süre bandı — telefonda yığılı şerit (eski hâl), masaüstünde SÜRE CETVELİ (PanelCetvel).
+   ≥1600 px'te lejant manşetin sağındaki BilesimSutun'a taşınır. */
+function SureBandi({ dilimler, toplam, kuyrukSla, dar, cokGenis, odak, onOdak }) {
+  if (dar) return <SlaSerit dilimler={dilimler} toplam={toplam} />;
+  return (
+    <div>
+      <SureCetveli kuyrukSla={kuyrukSla} odak={odak} onOdak={onOdak} />
+      {!cokGenis && <SeritLejant dilimler={dilimler} />}
+    </div>
+  );
+}
 
 /* Süre kompozisyonu şeridi — dilimler soldan sağa "dolar" (scaleX, transform-only). */
 function SlaSerit({ dilimler, toplam }) {
@@ -98,16 +146,22 @@ function GecikmeRakam({ sla, renk }) {
    genişlikte (136). */
 /* Tur 7: DURUM/SON GÜN sabit dar sütun, DURUM sola yaslı → ad uzar, ad ile durum arası
    ölü alan kapanır (1920 ölçümü); ad kesilmez. */
-const DEFTER_SUTUN = "44px minmax(0, 1fr) 132px 136px auto";
+/* Tur 8: DURUM 132→116 (1440'ta ad kesiliyordu; "7 gün gecikti" 104 px'e sığar). */
+const DEFTER_SUTUN = "44px minmax(0, 1fr) 116px 136px auto";
 
 /* En eski gecikmiş evrakın SON GÜNÜ = kırmızı TARİH DAMGASI (resmî evrakın gelen-tarih
    ıstampası). Ekran başına ≤2 damga bütçesi bileşende zorlanır; burada yalnız 1. satır. */
-function SonGun({ sla, damga, dar }) {
+/* Damga OTURUM başına bir kez basılır (tur 8 jüri: geç gelen veri satırı yeniden bağlayınca
+   mühür baştan basılıyor, 1920 koyu çekimde hücre boş yakalanmıştı). */
+const BASILAN_DAMGA = new Set();
+function SonGun({ sla, damga, dar, id }) {
+  const [animasyon] = useState(() => !BASILAN_DAMGA.has(id));
+  useEffect(() => { BASILAN_DAMGA.add(id); }, [id]);
   if (!sla.son_tarih) return <span style={{ ...TYPE.meta, color: PAL.mut3 }}>—</span>;
   if (damga) {
     return (
       <span title={`Son gün ${sla.son_tarih} — süre geçti`} style={{ display: "inline-flex" }}>
-        <Damga ton={R} egim={-5} kucuk oncelik={1}>{dar ? sla.son_tarih.slice(0, 5) : sla.son_tarih}</Damga>
+        <Damga ton={R} egim={-5} kucuk oncelik={1} animasyon={animasyon}>{dar ? sla.son_tarih.slice(0, 5) : sla.son_tarih}</Damga>
       </span>
     );
   }
@@ -125,8 +179,10 @@ function DefterAd({ x, renk, normal, dolgu = false }) {
       <span style={{ display: "flex", alignItems: "center", gap: 6, ...TYPE.ui, fontWeight: 600, color: PAL.ink, minWidth: 0 }}>
         {/* Renk tek sinyal değil: üçgen ikon "dikkat" der (renk körlüğünde de okunur). */}
         <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN_OF(renk) }}>{normal ? <Icon.clock width={14} height={14} /> : <Icon.alert width={14} height={14} />}</span>
-        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.label}</span>
-        {dolgu && <span aria-hidden="true" style={{ flex: "1 1 0", minWidth: 16, alignSelf: "flex-end", marginBottom: 5, borderBottom: `2px dotted ${PAL.lineHi}` }} />}
+        <span title={x.label} style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: "0 1 auto", minWidth: 0 }}>{x.label}</span>
+        {/* Tur 8: dolgu taban-0 esnek → ad kesildiğinde genişliği 0'a iner (kesik ad + "…" + nokta
+            çizgisi üst üste binmez); yalnız ad TAM sığdığında görünür. */}
+        {dolgu && <span aria-hidden="true" style={{ flex: "1 1 0", minWidth: 0, alignSelf: "flex-end", marginBottom: 5, borderBottom: `2px dotted ${PAL.lineHi}` }} />}
       </span>
       <span style={{ display: "block", ...TYPE.meta, color: dayanak ? PAL.mut2 : PAL.mut3, marginTop: 2, paddingLeft: 20, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
         {dayanak || "yasal dayanak belirlenmedi"}
@@ -137,7 +193,7 @@ function DefterAd({ x, renk, normal, dolgu = false }) {
 
 /* Sicil defteri satırı. Geniş ekranda 5 sütunlu ızgara; telefonda iki satıra iner (ad tam
    genişlik, künye + İşle altta) — hiçbir bilgi kırpılmaz, yatay kayma yok. */
-function DefterSatir({ x, sira, onIsle, dar, gecikme, damga }) {
+function DefterSatir({ x, sira, onIsle, dar, gecikme, damga, odak, onOdak }) {
   const durum = x.sla.durum;
   const renk = durum === "GECIKMIS" ? BANT.kirmizi.c : durum === "KRITIK" ? BANT.sari.c : BANT.yesil.c;
   const normal = durum !== "GECIKMIS" && durum !== "KRITIK";
@@ -156,34 +212,69 @@ function DefterSatir({ x, sira, onIsle, dar, gecikme, damga }) {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.s, minWidth: 0 }}>
           <GecikmeRakam sla={x.sla} renk={renk} />
-          <SonGun sla={x.sla} damga={damga} dar />
+          <SonGun sla={x.sla} damga={damga} id={x.id} dar />
           <span style={{ marginLeft: "auto" }}>{isle}</span>
         </div>
       </div>
     );
   }
+  /* Mürekkep köprüsü (tur 8): satıra gelince takvimdeki günü ve cetveldeki iğneyi vurgular;
+     karşı yuvadan gelen vurguda sıra no tükenmez mavisiyle basılır. Yalnız renk/zemin. */
+  const vurgu = odak === x.id;
+  const kopru = onOdak ? { onMouseEnter: () => onOdak(x.id), onMouseLeave: () => onOdak(null),
+    onFocus: () => onOdak(x.id), onBlur: () => onOdak(null) } : null;
   return (
-    <div style={{ display: "grid", gridTemplateColumns: DEFTER_SUTUN, alignItems: "center", gap: SP.l,
-      padding: `${SP.m}px 0`, borderTop: `1px solid ${PAL.line}`, ...giris(gecikme, "pv-yaz", 0.42) }}>
-      <span style={{ fontFamily: MONO, fontSize: 12, color: PAL.mut3, textAlign: "right", paddingRight: SP.s, ...TNUM }}>{no}</span>
+    <div {...kopru} style={{ display: "grid", gridTemplateColumns: DEFTER_SUTUN, alignItems: "center", gap: SP.l,
+      padding: `${SP.m}px 0`, borderTop: `1px solid ${PAL.line}`, background: vurgu ? PAL.hov : "transparent",
+      transition: `background .14s ${EASE.out}`, ...giris(gecikme, "pv-yaz", 0.42) }}>
+      <span style={{ fontFamily: MONO, fontSize: 12, color: vurgu ? DERIN.T : PAL.mut3, fontWeight: vurgu ? 600 : 400, textAlign: "right", paddingRight: SP.s,
+        transition: `color .14s ${EASE.out}`, ...TNUM }}>{no}</span>
       <DefterAd x={x} renk={renk} normal={normal} dolgu />
       <span style={{ textAlign: "left" }}><GecikmeRakam sla={x.sla} renk={renk} /></span>
-      <span style={{ textAlign: "right" }}><SonGun sla={x.sla} damga={damga} /></span>
+      <span style={{ textAlign: "right" }}><SonGun sla={x.sla} damga={damga} id={x.id} /></span>
       {isle}
     </div>
+  );
+}
+
+/* Defterin devamı (tur 8): kart takvimin boyuna gerildiğinde son satırın altı boş kart
+   yüzeyiydi (1440'ta ~70 px). Artık sayfa sürer: soluklaşan boş cetvel çizgileri + soluk marj —
+   boş defter sayfasının kendisi; içerik iddia etmez (aria-hidden). Kalan yüksekliği bu kaplar. */
+function DefterDevami({ gecikme }) {
+  return (
+    <div aria-hidden="true" style={{ flex: 1, minHeight: 0, position: "relative", ...giris(gecikme, "pv-gir", 0.4),
+      backgroundImage: `repeating-linear-gradient(to bottom, transparent 0 31px, ${PAL.line} 31px 32px)`,
+      WebkitMaskImage: "linear-gradient(to bottom, rgb(0 0 0 / .7), transparent)", maskImage: "linear-gradient(to bottom, rgb(0 0 0 / .7), transparent)" }}>
+      <span style={{ position: "absolute", top: 0, bottom: 0, left: 44, width: 1, background: MARJ }} />
+    </div>
+  );
+}
+
+/* Defterin alt kenarına sabit "devamı" satırı — kuyruğun geri kalanına tek ikincil yol. */
+function DevamSatiri({ onClick, gecikme, children }) {
+  return (
+    <button type="button" onClick={onClick} {...focusRing} data-press=""
+      onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+      style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: SP.s, width: "100%",
+        padding: `${SP.m}px 0`, background: "transparent", border: "none", borderTop: `1px dashed ${PAL.lineHi}`,
+        borderRadius: 0, ...TYPE.ui, fontWeight: 500, color: DERIN.T, transition: `background .14s ${EASE.out}, transform .14s ${EASE.out}`,
+        ...giris(gecikme, "pv-yaz", 0.42) }}>
+      {children} <Icon.arrow width={14} height={14} />
+    </button>
   );
 }
 
 /* Sicil defteri — acil hâlde süresi dolan/dolmak üzere olanlar; sükûnette SIRADAKİ süreler
    (tur 3: sükûnet kahramanı takvim boyuna gerilip ortada tek manşetle boş kalıyordu; artık
    aynı defter "ufku" gösterir — veri aynı kuyrukSla, yalnız süzgeç farklı). */
-function Defter({ liste, pad, dar, onIsle, onGoInbox, etiket, fazlaMetin, damgali = false }) {
+function Defter({ liste, pad, dar, onIsle, onGoInbox, etiket, fazlaMetin, damgali = false, odak, onOdak, kuyrukN = 0 }) {
   const [acilRef] = useAutoAnimate();
   const gorunen = liste.slice(0, 5);
   return (
     <>
       {/* Sicil defteri — marj çizgisi sıra no sütununun sağında, yukarıdan aşağı çizilir. */}
-      <div style={{ flex: 1, padding: `0 ${pad}px ${SP.s}px`, background: PAL.surf2, borderTop: `1px solid ${PAL.line}` }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: `0 ${pad}px ${SP.s}px`, background: PAL.surf2, borderTop: `1px solid ${PAL.line}` }}>
         {/* Marj çizgisi YALNIZ yazılı satırlar boyunca iner (kart takvim boyuna gerildiğinde
             "+N evrak daha"nın altında boş inen kırmızı çizgi bırakmıyordu — tur 6 denetimi). */}
         <div style={{ position: "relative" }}>
@@ -202,11 +293,19 @@ function Defter({ liste, pad, dar, onIsle, onGoInbox, etiket, fazlaMetin, damgal
         <div ref={acilRef} role="list" aria-label={etiket}>
           {gorunen.map((x, i) => (
             <div role="listitem" key={x.id}>
-              <DefterSatir x={x} sira={i + 1} onIsle={onIsle} dar={dar} gecikme={380 + i * 70} damga={damgali && i === 0 && x.sla.durum === "GECIKMIS"} />
+              <DefterSatir x={x} sira={i + 1} onIsle={onIsle} dar={dar} gecikme={380 + i * 70} damga={damgali && i === 0 && x.sla.durum === "GECIKMIS"}
+                odak={odak} onOdak={onOdak} />
             </div>
           ))}
         </div>
         </div>
+        {!dar && <DefterDevami gecikme={380 + gorunen.length * 70} />}
+        {!dar && liste.length <= 5 && kuyrukN > liste.length && (
+          <DevamSatiri onClick={() => onGoInbox()} gecikme={380 + gorunen.length * 70}>
+            <span style={{ fontFamily: DISPLAY, fontWeight: 700, fontStretch: "112%", ...TNUM }}>{kuyrukN - liste.length}</span>
+            evrak daha kuyrukta — Gelen evrakı aç
+          </DevamSatiri>
+        )}
         {liste.length > 5 && (
           <button type="button" onClick={() => onGoInbox()} {...focusRing} data-press=""
             onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
@@ -230,9 +329,11 @@ function Defter({ liste, pad, dar, onIsle, onGoInbox, etiket, fazlaMetin, damgal
    kutusu ~6 px aşağıdan başlıyordu). Geniş ekranda rakam ve başlık akışkan büyür (1920'de
    kahraman 1060 px'lik kartta küçük kalıyordu). */
 const RAKAM_BOY = "clamp(132px, 8.4vw, 168px)";
-function Manset({ sayi, renk, baslik, baglam, kunye, eylem, dar }) {
+/* Sakin hâl rakamı bir boy küçük (tur 8 jüri: "hiçbirinde süre tanımlı değil" acil hâlle aynı sesle bağırıyordu). */
+const RAKAM_BOY_SAKIN = "clamp(99px, 6.3vw, 126px)";
+function Manset({ sayi, renk, baslik, baglam, kunye, eylem, dar, yan, sakin }) {
   const akan = useAcilisSayaci(sayi, 260);
-  const boy = dar ? "88px" : RAKAM_BOY;
+  const boy = dar ? "88px" : sakin ? RAKAM_BOY_SAKIN : RAKAM_BOY;   // telefon düzeni korunur
   return (
     <div style={{ display: "flex", alignItems: "flex-start", gap: dar ? SP.l : SP.xl + 4, flexWrap: dar ? "wrap" : "nowrap" }}>
       {/* overflow:hidden (tur 3): açılış sayımında NumberFlow'un dönen rakam şeridi kutunun
@@ -243,7 +344,8 @@ function Manset({ sayi, renk, baslik, baglam, kunye, eylem, dar }) {
         <NumberFlow value={akan} style={{ lineHeight: 1 }} />
       </span>
       <div style={{ flex: "1 1 280px", minWidth: "min(280px, 100%)" }}>
-        <h2 style={{ margin: 0, fontFamily: DISPLAY, fontSize: dar ? 22 : "clamp(28px, 1.9vw, 34px)", lineHeight: 1.16, fontWeight: 700,
+        {/* Tur 8 jüri: 1920'de başlık tek satırda ~1000 px uzanıyordu → ölçü ≤22ch (masaüstü). */}
+        <h2 style={{ margin: 0, maxWidth: dar ? "none" : "22ch", fontFamily: DISPLAY, fontSize: dar ? 22 : "clamp(28px, 2vw, 40px)", lineHeight: 1.16, fontWeight: 700,
           fontStretch: "110%", letterSpacing: "-.02em", color: PAL.ink, textWrap: "balance", textBox: "trim-both cap alphabetic" }}>
           <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>{sayi} </span>
           {baslik}
@@ -252,6 +354,7 @@ function Manset({ sayi, renk, baslik, baglam, kunye, eylem, dar }) {
         {kunye && <p style={{ margin: `${SP.xs}px 0 0`, ...TYPE.antet, color: PAL.mut3, ...TNUM }}>{kunye}</p>}
         {eylem && <div style={{ display: "flex", flexWrap: "wrap", gap: SP.s, marginTop: SP.l }}>{eylem}</div>}
       </div>
+      {yan}
     </div>
   );
 }
@@ -384,28 +487,55 @@ export function BrifIskelet() {
 
 /* SLA servisi hatası — kahraman yuvası BOŞ kalmaz (tur 6): manşet kuyruğun kendisi, süre
    uydurulmaz; ekranın tek primary'si "Kuyruğu aç", yanında ikincil "Yeniden dene". */
-export function BrifHata({ kuyrukN, onGoInbox, onYeniden }) {
+export function BrifHata({ kuyrukN, onGoInbox, onYeniden, saglamCumle }) {
   return (
     <HataFisi ton="uyari" baslik="Yasal süreler şu an hesaplanamadı" onYenidenDene={onYeniden}
       ikincil={<Btn onClick={() => onGoInbox()} ariaLabel="Gelen evrak kuyruğunu aç">Kuyruğu aç ({kuyrukN}) <Icon.arrow /></Btn>}
       style={{ height: "100%" }}>
       Süre servisi yanıt vermedi; takvim ve aciliyet sırası gizlendi, tahmini süre gösterilmez.
-      Kuyruktaki {kuyrukN} evrak ve gözlem verileri etkilenmedi.
+      {/* Tur 8 jüri: sabit "gözlem verileri etkilenmedi" aynı ekrandaki geçmiş fişini yalanlıyordu —
+          cümle artık gerçek kaynak durumundan (kaynakOzeti); sağlam kaynak yoksa basılmaz. */}
+      {saglamCumle ? ` ${saglamCumle.charAt(0).toLocaleUpperCase("tr")}${saglamCumle.slice(1)}.` : ""}
     </HataFisi>
   );
 }
 
-/* Sükûnet hâli: dev rakam kuyruğun kendisi (mürekkep rengi, alarm değil) + sıradaki süreler.
-   Tur 6: antet satırı burada da var; "şimdi ne yapayım" sorusu cevapsız kalmasın diye ilk
-   yaklaşan evrak için ekranın tek primary'si. */
-function SakinBrif({ kuyrukSla, dilimler, toplam, onIsle, onGoInbox, dar, pad }) {
+/* Süre tanımlı evrak YOK (tur 8, jüri "boş hâl 4,5"): SLA servisi BAŞARILI döndü ama hiçbir
+   kuyruk evrakı için son gün hesaplanmadı. Eskiden bu hâl boş diziden "SLA yolda" sanılıyor,
+   iskelet sonsuza dek "yükleniyor" diyordu. Artık sakin, dürüst bir kahraman: kuyruk sayısı +
+   tek primary "Kuyruğu aç". Süre uydurulmaz. */
+export function SureYokBrif({ kuyrukN, onGoInbox }) {
+  const dar = useDarEkran();
+  const genis = useMedyaSorgusu("(min-width: 1200px)");
+  const pad = dar ? SP.l : SP.xl + 4;
+  /* Geniş ekranda sağ sütun dolu hâlle aynı: kuyruk bileşimi (tek kalem — süre tanımsız). */
+  const yan = genis && !dar ? <BilesimSutun dilimler={[{ l: "süre tanımsız", n: kuyrukN, c: PAL.mut3 }]} toplam={kuyrukN} /> : null;
+  return (
+    <section aria-label="Kuyruk yasal süre durumu" style={{ ...yuzey(null), padding: `${pad + 4}px ${pad}px ${pad}px` }}>
+      <AntetSatir vurgu={null} sag="SÜRE TANIMLI EVRAK YOK" />
+      <Manset sayi={kuyrukN} renk={PAL.mut2} dar={dar} sakin
+        baslik="evrak kuyrukta — hiçbirinde yasal süre tanımlı değil"
+        baglam="Süre servisi yanıt verdi; kuyruktaki evrakların hiçbiri için son gün hesaplanamadı. Son gün, evrak işlendiğinde türüne ve dayanağına göre belirlenir."
+        kunye={`KUYRUK ${String(kuyrukN).padStart(2, "0")} · SON GÜN —`}
+        eylem={<Btn primary onClick={() => onGoInbox()} ariaLabel="Gelen evrak kuyruğunu aç">Kuyruğu aç <Icon.arrow /></Btn>} yan={yan} />
+    </section>
+  );
+}
+
+/* Kahraman gövdesi — antet + manşet + süre bandı; iki hâl (acil · sakin) aynı iskelet. */
+function UstBlok({ pad, children }) {
+  return <div style={{ padding: `${pad + 4}px ${pad}px ${pad - 4}px` }}>{children}</div>;
+}
+
+/* Sükûnet hâli: dev rakam kuyruğun kendisi (mürekkep rengi, alarm değil) + sıradaki süreler. */
+function SakinBrif({ kuyrukSla, dilimler, toplam, onIsle, onGoInbox, dar, cokGenis, pad, odak, onOdak }) {
   const siradaki = kuyrukSla
     .filter((x) => x.sla.durum === "NORMAL" && Number.isFinite(x.sla.kalan_gun))
     .sort((a, b) => a.sla.kalan_gun - b.sla.kalan_gun);
   const yaklasan = siradaki[0];
   return (
     <section aria-label="Kuyruk yasal süre durumu" style={{ ...yuzey(null), height: "100%", display: "flex", flexDirection: "column" }}>
-      <div style={{ padding: `${pad + 4}px ${pad}px ${pad - 4}px` }}>
+      <UstBlok pad={pad}>
         <AntetSatir vurgu={null} sag="ACİL YOK" />
         <Manset sayi={kuyrukSla.length} renk={PAL.ink} dar={dar}
           baslik="evrak kuyrukta — tamamı normal takvimde"
@@ -415,39 +545,41 @@ function SakinBrif({ kuyrukSla, dilimler, toplam, onIsle, onGoInbox, dar, pad })
             <Btn primary onClick={() => onIsle(yaklasan.id)} ariaLabel={`İlk yaklaşan evrak: ${yaklasan.label} — işle`}>
               Sıradaki evrakı işle <Icon.arrow />
             </Btn>
-          ) : null} />
-        <div style={{ marginTop: SP.xl }}><SlaSerit dilimler={dilimler} toplam={toplam} /></div>
-      </div>
+          ) : null}
+          yan={cokGenis ? <BilesimSutun dilimler={dilimler} toplam={toplam} /> : null} />
+        <div style={{ marginTop: SP.xl }}><SureBandi dilimler={dilimler} toplam={toplam} kuyrukSla={kuyrukSla} dar={dar} cokGenis={cokGenis} odak={odak} onOdak={onOdak} /></div>
+      </UstBlok>
       {siradaki.length > 0 && (
-        <Defter liste={siradaki} pad={pad} dar={dar} onIsle={onIsle} onGoInbox={onGoInbox}
+        <Defter liste={siradaki} pad={pad} dar={dar} onIsle={onIsle} onGoInbox={onGoInbox} odak={odak} onOdak={onOdak} kuyrukN={kuyrukSla.length}
           etiket="Sıradaki yasal süreler" fazlaMetin="tümü kuyrukta" />
       )}
     </section>
   );
 }
 
-export default function KahramanBrif({ kuyrukSla, onGoInbox, onIsle }) {
+export default function KahramanBrif({ kuyrukSla, onGoInbox, onIsle, kuyrukN = kuyrukSla.length, odak = null, onOdak }) {
   const dar = useDarEkran();
+  const cokGenis = useMedyaSorgusu("(min-width: 1760px)");
   const { say, dilimler } = sayimVeDilim(kuyrukSla);
   const acil = kuyrukSla
     .filter((x) => x.sla.durum === "GECIKMIS" || x.sla.durum === "KRITIK")
     .sort((a, b) => (a.sla.kalan_gun ?? 0) - (b.sla.kalan_gun ?? 0));
   const toplam = kuyrukSla.length || 1;
   const pad = dar ? SP.l : SP.xl + 4;
+  const ortak = { dilimler, toplam, dar, cokGenis, pad, odak, onOdak };
 
   if (acil.length === 0) {
-    return <SakinBrif kuyrukSla={kuyrukSla} dilimler={dilimler} toplam={toplam} onIsle={onIsle} onGoInbox={onGoInbox} dar={dar} pad={pad} />;
+    return <SakinBrif kuyrukSla={kuyrukSla} onIsle={onIsle} onGoInbox={onGoInbox} {...ortak} />;
   }
 
   const enEski = acil[0];
   const vurgu = say.gecikmis ? BANT.kirmizi.c : BANT.sari.c;
-  /* Bağlam cümlesi parantezsiz (tur 6: "(67 / gün gecikti)" satıra bölünüp yetim kalıyordu);
-     gecikme + son gün ayrı mono künye satırına iner. */
+  /* Bağlam cümlesi parantezsiz; gecikme + son gün ayrı mono künye satırına iner. */
   const kunye = [kalanMetin(enEski.sla).toLocaleUpperCase("tr"), enEski.sla.son_tarih ? `SON GÜN ${enEski.sla.son_tarih}` : null].filter(Boolean).join(" · ");
 
   return (
     <section aria-label="Bugünün özeti — kuyruk yasal süre durumu" style={{ ...yuzey(vurgu), height: "100%", display: "flex", flexDirection: "column" }}>
-      <div style={{ padding: `${pad + 4}px ${pad}px ${pad - 4}px` }}>
+      <UstBlok pad={pad}>
         <AntetSatir vurgu={vurgu} alarmAnahtar={`${say.gecikmis}-${say.kritik}`} sag={`${kuyrukSla.length} EVRAKLIK KUYRUK`} />
         <Manset sayi={acil.length} renk={DERIN_OF(vurgu)} dar={dar} baslik={acilBaslik(say)}
           baglam={`En acili: ${enEski.label}`} kunye={kunye}
@@ -455,11 +587,11 @@ export default function KahramanBrif({ kuyrukSla, onGoInbox, onIsle }) {
             <Btn primary onClick={() => onIsle(enEski.id)} ariaLabel={`En acil evrak: ${enEski.label} — hemen işle`}>
               En acil evrakı işle <Icon.arrow />
             </Btn>
-          )} />
-        <div style={{ marginTop: SP.xl }}><SlaSerit dilimler={dilimler} toplam={toplam} /></div>
-      </div>
-
-      <Defter liste={acil} pad={pad} dar={dar} onIsle={onIsle} onGoInbox={onGoInbox} damgali
+          )}
+          yan={cokGenis ? <BilesimSutun dilimler={dilimler} toplam={kuyrukSla.length} /> : null} />
+        <div style={{ marginTop: SP.xl }}><SureBandi dilimler={dilimler} toplam={toplam} kuyrukSla={kuyrukSla} dar={dar} cokGenis={cokGenis} odak={odak} onOdak={onOdak} /></div>
+      </UstBlok>
+      <Defter liste={acil} pad={pad} dar={dar} onIsle={onIsle} onGoInbox={onGoInbox} damgali odak={odak} onOdak={onOdak} kuyrukN={kuyrukN}
         etiket="Süresi dolan ya da dolmak üzere olan evraklar" fazlaMetin="tümü kuyrukta aciliyet sırasıyla" />
     </section>
   );

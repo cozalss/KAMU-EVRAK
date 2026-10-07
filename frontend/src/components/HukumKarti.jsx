@@ -140,12 +140,20 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
     return () => document.removeEventListener("pointerdown", disariTik, true);
   }, [acikYardim]);
   const hy = hukumYorum(r);
-  const [ana, ...kuyruk] = String(hy.baslik || "İşlem tamamlandı").split(" · ");
+  // Gönderimi engelleyen taslak kusuru (boş gövde vb.) — onay fişiyle AYNI denetim. Varken manşet
+  // "İşlem tamamlandı" DEMEZ (jüri tur 8: "Gönderim kilitli" ile zafer manşeti yan yanaydı).
+  const engeller = r.yazi_taslak_md ? gonderimDenetimi(r.yazi_taslak_md).engel : [];
+  const engel = engeller[0] || null;
+  const [hamAna, ...kuyruk] = String(hy.baslik || "İşlem tamamlandı").split(" · ");
+  const ana = engel ? "Gönderime hazır değil" : hamAna;
   const band = BANT[r.risk_metadata?.bant] ? r.risk_metadata.bant : "yesil";
   const denetimIz = denetimRozeti(r.denetim_izi);
   const kontrolSayisi = eksik.length + uyari.length + tutar.length + arr(r.lint_2646?.uyari).length;
   const riskEtiket = r.risk_metadata?.bant ? `${band === "sari" ? "sarı" : band === "kirmizi" ? "kırmızı" : "yeşil"} risk bandı` : "risk bandı yok";
-  const durumSatiri = kuyruk.length ? kuyruk.join(" · ") : riskEtiket;
+  const hamDurum = kuyruk.length ? kuyruk.join(" · ") : riskEtiket;
+  // Eksik varken bant bilgisi YALNIZ damgada (2. jüri: "1 eksik · sarı risk bandı" + damga +
+  // "Gönderim kilitli" aynı şeyi üç kez söylüyordu); alt satır yalnız eksik sayısını taşır.
+  const durumSatiri = engel ? `${engeller.length} eksik` : hamDurum;
   const bolum = durumSatiri.lastIndexOf(" ");
   const durumBas = bolum > 0 ? durumSatiri.slice(0, bolum + 1) : "";
   const durumSon = bolum > 0 ? durumSatiri.slice(bolum + 1) : durumSatiri;
@@ -164,8 +172,6 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
       ? "Havaleyi onaylamadan önce işaretli kontrol noktalarını inceleyin."
       : "Kontroller temiz; nihai havale kararı yetkili memurundur.";
   const riskAciklama = RISK_BAND_HELP[band] || RISK_BAND_HELP.yesil;
-  // Gönderimi engelleyen taslak kusuru (boş gövde vb.) şeritte de AÇIKÇA söylenir — yalnız fişte değil.
-  const engel = r.yazi_taslak_md ? gonderimDenetimi(r.yazi_taslak_md).engel[0] : null;
   const kontroleGit = () => {
     setAcikYardim(null);
     const hedef = document.getElementById("sc-memur-kontrol");
@@ -239,9 +245,9 @@ export default function DecisionCard({ r, eksik, uyari, tutar }) {
       <div className="kd-hukum-izgara">
         <div className="kd-hukum-baslik">
           <h2 id="sc-decision-title" ref={baslikRef} tabIndex={-1} style={{ outline: "none" }}>{ana}</h2>
-          <span className="sc-decision-status-line" style={{ color: TON[hy.ton] || DERIN.sari }}>
-            {bantVar ? durumBas : durumSatiri}
-            {bantVar && (
+          <span className="sc-decision-status-line" style={{ color: engel ? DERIN.kirmizi : (TON[hy.ton] || DERIN.sari) }}>
+            {bantVar && !engel ? durumBas : durumSatiri}
+            {bantVar && !engel && (
               /* Son kelime + '?' BÖLÜNMEZ: dar ekranda '?' tek başına bir satıra düşüyordu (tur 6). */
               <span style={{ whiteSpace: "nowrap" }}>{durumSon}<span className="sc-risk-help" onKeyDown={(e) => { if (e.key === "Escape") setAcikYardim(null); }}>
                 <button

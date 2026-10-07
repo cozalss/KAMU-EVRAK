@@ -60,3 +60,32 @@ export function haftaCentikleri(sure) {
   for (let g = 7; g < sure; g += 7) out.push(g);
   return out;
 }
+
+/* ——— Ortak ZAMAN EKSENİ (tur 8 jüri: "her cetvel kendi başlangıcından çiziliyor; 'bugün'
+   hiçbir satırda aynı x'te değil") ———————————————————————————————————————————————
+   Bugün = 0. Her satırın yasal süresi göreli gün aralığıdır: [son − süre, son], son =
+   kalan_gun (backend). Tüm sütun tek eksende: x(g) = (g − lo)·k; bugün tek dikey çizgi.
+   Geçmiş solda, kalan süre sağda; geciken satırın son günü bugünün SOLUNDA kalır, aradaki
+   bölüm gecikmedir. */
+
+/** @param {{kalan_gun?:number}|null} sla @returns {{bas:number, son:number}|null} */
+export function goreliVade(sla) {
+  const o = vadeOlcusu(sla);
+  if (!o) return null;
+  return { bas: sla.kalan_gun - o.sure, son: sla.kalan_gun };
+}
+
+/** Eksen: aralıkların ve bugünün (0) birleşimi `genislik` piksele sığar.
+    @param {({bas:number, son:number}|null)[]} araliklar @param {number} genislik
+    @returns {{lo:number, hi:number, k:number, bugunX:number}|null} */
+export function zamanEkseni(araliklar, genislik) {
+  const dolu = araliklar.filter(Boolean);
+  if (!dolu.length || !(genislik > 0)) return null;
+  const lo = Math.min(0, ...dolu.map((a) => a.bas));
+  const hi = Math.max(0, ...dolu.map((a) => a.son));
+  const k = genislik / Math.max(1, hi - lo);
+  return { lo, hi, k, bugunX: -lo * k };
+}
+
+/** Eksen üzerinde bir göreli günün x'i (px). */
+export const eksenX = (eksen, gun) => (gun - eksen.lo) * eksen.k;

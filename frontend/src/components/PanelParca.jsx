@@ -17,7 +17,6 @@ import { kaynakHazir } from "./panelKaynak.js";
 import { HataFisi } from "./kabukAtomlari.jsx";
 import { Printer, RotateCw } from "lucide-react";
 
-const iki = (n) => String(n).padStart(2, "0");
 
 /* En yakın (henüz geçmemiş) son gün — "gg.aa". */
 function enYakinSonGun(kuyrukSla) {
@@ -48,14 +47,15 @@ export function AntetKunye({ kaynaklar, inboxCount, kuyrukSla, islemN, gidenN })
      (ya da kuyruk gerçekten boşsa) bilinir. */
   const slaBilinen = kuyrukSla.length > 0 || (inboxCount === 0 && kaynakHazir(kaynaklar.sla));
   const sureTanimsiz = !slaBilinen && kaynakHazir(kaynaklar.sla);
-  const gecikmis = slaBilinen ? iki(kuyrukSla.filter((x) => x.sla?.durum === "GECIKMIS").length) : "—";
+  const gecikmis = slaBilinen ? String(kuyrukSla.filter((x) => x.sla?.durum === "GECIKMIS").length) : "—";
   const defter = dusen ? `BAĞLANTI YOK · ${dusen}/${durumlar.length} KAYNAK DÜŞTÜ`
     : acilan ? `AÇILIYOR · ${hazir}/${durumlar.length} KAYNAK` : `İŞLEM ${islemN} · GİDEN ${gidenN}`;
   return (
     <div role="status" aria-label="Brif künyesi" style={{ display: "grid", gridTemplateColumns: "auto auto", columnGap: SP.l, rowGap: 3, paddingBottom: 2, ...TYPE.antet, ...TNUM, whiteSpace: "nowrap" }}>
-      <KunyeSatir sol="KUYRUK">{iki(inboxCount)} EVRAK · {gecikmis} GECİKMİŞ</KunyeSatir>
+      <KunyeSatir sol="KUYRUK">{inboxCount} EVRAK · {gecikmis} GECİKMİŞ</KunyeSatir>
       <KunyeSatir sol="SÜRE">{sureTanimsiz ? "SÜRE BİLİNMİYOR · TANIMLI EVRAK YOK" : `EN YAKIN SON GÜN ${slaBilinen ? enYakinSonGun(kuyrukSla) : "—"}`}</KunyeSatir>
-      <KunyeSatir sol="DEFTER" vurgu={dusen ? DERIN.kirmizi : acilan ? DERIN.T : null}>{defter}</KunyeSatir>
+      {/* Tur 9 jüri: hata dört yerde kırmızıydı → künye olguyu söyler ama alarm rengi fişte kalır. */}
+      <KunyeSatir sol="DEFTER" vurgu={acilan ? DERIN.T : null}>{defter}</KunyeSatir>
     </div>
   );
 }
@@ -123,7 +123,11 @@ export function ParafKapanis({ hazirlandi, kuyrukN, islemN, user, dar, hazir = t
           <span style={{ display: "block", marginTop: 2 }}>VERİ · KUYRUK {kuyrukN} · İŞLEM {islemN} · KAYNAK: OTURUM + KAYITLI GEÇMİŞ</span>
         </div>
         <span data-yazdirma-gizle="">
-          <Btn onClick={() => window.print()} ariaLabel="Sabah brifini yazdır"><Printer size={15} strokeWidth={1.75} aria-hidden="true" /> Brifi yazdır</Btn>
+          {/* Tur 9 jüri: yüklenirken yarım brif basılabiliyordu → kaynaklar açılana dek devre dışı. */}
+          <Btn onClick={() => window.print()} disabled={!hazir} ariaLabel={hazir ? "Sabah brifini yazdır" : "Brif henüz hazır değil — kaynaklar açılıyor"}
+            title={hazir ? undefined : "Kaynaklar açılıyor; brif hazır olunca yazdırılabilir"}>
+            <Printer size={15} strokeWidth={1.75} aria-hidden="true" /> Brifi yazdır
+          </Btn>
         </span>
         <ParafKutu user={user} dar={dar} atildi={atildi} kutuRef={ref} />
       </div>
@@ -178,6 +182,38 @@ export function GozlemBos({ span, onGoInbox, onUpload }) {
   );
 }
 
+/** Panel tamamen boş (kuyruk + geçmiş yok) — boş defter sayfası. Tek primary: yeni evrak yükle.
+ *  01 satırı kesikli davettir; 02–07 soluklaşan cetvel; sağ altta mürekkepsiz paraf yeri. */
+export function BosDefterSayfasi({ onUpload }) {
+  return (
+    <section aria-label="Evrak defteri boş" style={{ position: "relative", height: "100%", boxSizing: "border-box", background: PAL.surf, border: `1px solid ${PAL.line}`,
+      borderRadius: RAD.card, boxShadow: SH.card, padding: `${SP.l}px ${SP.xl + 4}px ${SP.l}px`, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <span aria-hidden="true" style={{ position: "absolute", top: 0, bottom: 0, left: SP.xl + 4 + 44 + SP.l / 2, width: 1, background: MARJ,
+        transformOrigin: "50% 0", ...giris(200, "pv-cizgi", 0.7) }} />
+      <div style={{ display: "flex", justifyContent: "space-between", gap: SP.m, padding: `0 0 ${SP.s}px`, ...TYPE.antet, color: PAL.mut2, ...TNUM }}>
+        <span>SIRA · KAYIT</span><span>DEFTER · SAYFA 1 · 0 EVRAK</span>
+      </div>
+      <BosDefterSatir no="01">
+        <span style={{ display: "flex", alignItems: "center", gap: SP.l, flexWrap: "wrap", margin: `${SP.s}px 0`, padding: `${SP.m}px ${SP.l}px`,
+          border: `1px dashed ${PAL.lineHi}`, borderRadius: RAD.ctl }}>
+          <span style={{ minWidth: 0, flex: "1 1 280px" }}>
+            <h2 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>Kuyruk boş</h2>
+            <span style={{ display: "block", ...TYPE.data, color: PAL.mut2, marginTop: 2, textWrap: "pretty" }}>
+              Bugünün ilk evrakını kaydedin — işlenen her evrak bu sayfaya sıra numarasıyla yazılır, yasal süresi takvime düşer.
+            </span>
+          </span>
+          {onUpload && <Btn primary onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>}
+        </span>
+      </BosDefterSatir>
+      {[["02", 0.8], ["03", 0.62], ["04", 0.46], ["05", 0.32], ["06", 0.2]].map(([no, o]) => <BosDefterSatir key={no} no={no} soluk={o} />)}
+      <div style={{ marginTop: "auto", paddingTop: SP.l, display: "flex", justifyContent: "flex-end", alignItems: "flex-end", gap: SP.m, ...TYPE.antet, color: PAL.mut2 }}>
+        <span>KAPANIŞ · PARAF</span>
+        <span aria-hidden="true" style={{ width: 76, height: 44, border: `1px dashed ${PAL.lineHi}`, borderRadius: RAD.ctl }} />
+      </div>
+    </section>
+  );
+}
+
 /** Gözlem — kaynak düştü (tur 8 jüri: hata hâlinde Gözlem tek çizgiye iniyor, 1440'ta 200 px+
  *  ölü alan kalıyordu). Boş hâldeki defter sayfasının aynısı ama yazısız: satırlar kaynak
  *  gelince dolacak yerlerdir; tahmini değer yok, eylem yok (tek yeniden-dene fişte/bantta). */
@@ -202,6 +238,21 @@ export function GozlemDusenDefter({ span }) {
   );
 }
 
+/* Fişin kaynak cetveli — hangi kaynak düştü, hangisi sağlam (renk + işaret + ad: tek sinyal değil). */
+const KAYNAK_KISA = { sla: "SÜRE", islemler: "İŞLEM", giden: "GİDEN" };
+function KaynakCetveli({ ozet }) {
+  const satir = [...ozet.dusen.map((k) => [k, false]), ...ozet.saglam.map((k) => [k, true])];
+  return (
+    <span style={{ display: "flex", flexWrap: "wrap", gap: `2px ${SP.m}px`, marginTop: SP.s, ...TYPE.antet, ...TNUM }}>
+      {satir.map(([k, ok]) => (
+        <span key={k} style={{ color: ok ? PAL.mut2 : DERIN.kirmizi, fontWeight: ok ? 400 : 600 }}>
+          {KAYNAK_KISA[k] || k.toLocaleUpperCase("tr")} {ok ? "✓" : "✕"}<span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>{ok ? " sağlam" : " alınamadı"}</span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
 const buyukBas = (m) => (m ? m.charAt(0).toLocaleUpperCase("tr") + m.slice(1) : "");
 
 /** Birleşik hata fişi — ≥2 kaynak düştüğünde TEK fiş + TEK "Yeniden dene" (tur 8 jüri: üç ayrı
@@ -218,6 +269,7 @@ export function BirlesikHata({ ozet, onYeniden, onGoInbox, kuyrukN, birincil, ba
       {buyukBas(ozet.dusenCumle)}; ilgili bölümler boş bırakıldı, tahmini değer gösterilmez.
       {ozet.saglamCumle ? ` ${buyukBas(ozet.saglamCumle)}.` : " Şu an hiçbir kaynaktan veri yok."}
       {bantVar && " Yeniden deneme sayfanın üstündeki bağlantı kaydındadır."}
+      <KaynakCetveli ozet={ozet} />
     </HataFisi>
   );
 }

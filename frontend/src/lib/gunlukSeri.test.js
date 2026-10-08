@@ -65,7 +65,7 @@ test("son7N ve onceki7N: iki ardışık 7 günlük pencere", () => {
 });
 
 test("haftalikKiyas: fark önceki 7 güne göre, aynı ölçek", () => {
-  assert.deepEqual(haftalikKiyas({ son7N: 26, onceki7N: 0 }), { metin: "ilk hafta · önceki 7 gün: 0", yon: "artis" });
+  assert.deepEqual(haftalikKiyas({ son7N: 26, onceki7N: 0 }), { metin: "ilk hafta · önceki 7 gün: 0", yon: "notr" });
   assert.deepEqual(haftalikKiyas({ son7N: 3, onceki7N: 5 }), { metin: "−2 · önceki 7 gün: 5", yon: "azalis" });
   assert.deepEqual(haftalikKiyas({ son7N: 9, onceki7N: 4 }), { metin: "+5 · önceki 7 gün: 4", yon: "artis" });
   assert.deepEqual(haftalikKiyas({ son7N: 4, onceki7N: 4 }), { metin: "önceki 7 günle aynı", yon: "sabit" });

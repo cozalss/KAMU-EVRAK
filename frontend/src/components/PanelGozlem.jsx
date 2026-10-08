@@ -12,7 +12,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { RotateCw } from "lucide-react";
 import { NeonCard, Btn, Icon, MONO, DISPLAY, T, V, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
 import { EVRAK_TR, BIRIM_GOSTER } from "./result-cards.jsx";
-import { iskeletCizgi, iskeletNefes } from "./PanelBrif.jsx";
+import { iskeletCizgi, iskeletNefes, MARJ } from "./PanelBrif.jsx";
 import { useDarEkran, useMedyaSorgusu } from "../hooks/useMedya.js";
 import { HataFisi } from "./kabukAtomlari.jsx";
 import { GUN_MS, gunBasi } from "../lib/gunlukSeri.js";
@@ -40,8 +40,8 @@ function BarList({ rows, color, bos = "Kayıt yok." }) {
   const max = rows[0][1] || 1;
   return rows.map(([label, c]) => (
     <div key={label} title={`${label}: ${c} evrak`} style={{ marginBottom: SP.m }}>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: SP.s, ...TYPE.data, color: PAL.mut2, marginBottom: SP.xs }}>
-        <span style={{ color: PAL.ink2, fontWeight: 500, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</span>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: SP.s, ...TYPE.data, color: PAL.mut2, marginBottom: SP.xs }}>
+        <span style={{ color: PAL.ink2, fontWeight: 500, minWidth: 0, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", textWrap: "pretty" }}>{label}</span>
         <span style={{ color: DERIN_OF(color), fontWeight: 600, ...TNUM, flexShrink: 0 }}>{c}</span>
       </div>
       <div style={{ height: 8, borderRadius: RAD.chip, background: PAL.surfHi, overflow: "hidden" }}>
@@ -178,7 +178,9 @@ export function BirimGecikmeKart({ rows, dar, onGoIslenen }) {
 /* Tur 8 jüri (2. tur): bant işareti "● S" tek harfi şifre gibiydi ve 8 satırın 8'inde aynıydı →
    bant sütunu da durum gibi YALNIZ farklılaştığında; aynıysa grup başlığında tek kez ("TÜMÜ SARI
    BANT"). ≥1600 px'te başlık ile birim arasındaki ~350 px boşluğa "SON GÜN" sütunu (yasal süre). */
-const FEED_SUTUN = ({ cipli, bantli, sonGunlu }) => [bantli ? "52px" : "10px", "minmax(0, 1fr)", cipli && "112px", sonGunlu && "minmax(0, 168px)",
+/* Tur 9 jüri: tüm satırlarda aynı nokta bilgi taşımıyordu → bant ortaksa nokta sütunu YOK
+   (başlık "TÜMÜ SARI BANT" der); <1600 px'te son gün meta satırına mono iner. */
+const FEED_SUTUN = ({ cipli, bantli, sonGunlu }) => [bantli && "52px", "minmax(0, 1fr)", cipli && "112px", sonGunlu && "minmax(0, 168px)",
   cipli ? "minmax(0, 220px)" : "minmax(0, 240px)", "88px"].filter(Boolean).join(" ");
 const bekliyorMu = (h) => !!(h.result?.yazi_taslak_md && !h.result?.onay_durumu);
 
@@ -221,10 +223,13 @@ function FeedSatir({ h, onGoIslenen, bugunGrubu, dar, cipli, bantli = true, sonG
   return (
     <button type="button" onClick={git} aria-label={`${ad}${riskSr} — işlenen evrak arşivinde gör`} {...focusRing} {...hover} data-press=""
       style={{ ...ortak, display: "grid", gridTemplateColumns: FEED_SUTUN({ cipli, bantli, sonGunlu }), alignItems: "center", columnGap: SP.m }}>
-      {nokta}
+      {bantli && nokta}
       <span style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
         {adMetin}
-        <span style={{ ...TYPE.meta, color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{EVRAK_TR(h.evrak_turu)}</span>
+        <span style={{ ...TYPE.meta, color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {EVRAK_TR(h.evrak_turu)}
+          {!sonGunlu && <span style={{ fontFamily: MONO, fontSize: 11, color: sla?.durum === "GECIKMIS" ? DERIN.kirmizi : PAL.mut2, ...TNUM }}> · son gün {sonGun}</span>}
+        </span>
       </span>
       {cipli && <span>{cip}</span>}
       {sonGunlu && <span style={{ fontFamily: MONO, fontSize: 12, color: sla?.durum === "GECIKMIS" ? DERIN.kirmizi : sla?.son_tarih ? PAL.ink2 : PAL.mut3,
@@ -263,7 +268,7 @@ export function SonIslemlerFeed({ history, n, onGoIslenen }) {
       {/* Başlıklar ve satırlar aynı konteynerin DOĞRUDAN çocukları — auto-animate yalnız onları izler. */}
       <div ref={sonRef}>
         {gruplar.flatMap(([etiket, list, bugunGrubu]) => [
-          <div key={`grup-${etiket}`} style={{ display: "flex", justifyContent: "space-between", gap: SP.m, ...TYPE.antet, fontSize: 10, color: PAL.mut3, padding: `${SP.s}px ${SP.xs}px ${SP.xs}px`, ...TNUM }}>
+          <div key={`grup-${etiket}`} style={{ display: "flex", justifyContent: "space-between", gap: SP.m, ...TYPE.antet, fontSize: 11, color: PAL.mut2, padding: `${SP.s}px ${SP.xs}px ${SP.xs}px`, ...TNUM }}>
             <span>{etiket.toLocaleUpperCase("tr")} · {list.length}</span>
             {ortakDurum && <span style={{ color: DERIN.sari }}>{ortakDurum.toLocaleUpperCase("tr")}</span>}
           </div>,
@@ -284,14 +289,18 @@ export function SonIslemlerFeed({ history, n, onGoIslenen }) {
 
 /* ---------- Gözlem: yükleniyor / hata ---------- */
 
-function IskeletKart({ satir, gecikme, satirH = 29 }) {
+/* Tur 9 jüri: iskelet düz gri çubuktu → `defter` kartında defter cetveli: mono sıra no sütunu
+   + ACELE kırmızısı kenar çizgisi (kâğıt imzası); nabız 1,6 sn (reduced-motion'da statik). */
+function IskeletKart({ satir, gecikme, satirH = 29, defter = false }) {
   return (
-    <div aria-hidden="true" style={{ background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card,
+    <div aria-hidden="true" style={{ position: "relative", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card,
       padding: SP.l + 4, ...iskeletNefes(gecikme) }}>
+      {defter && <span style={{ position: "absolute", top: 0, bottom: 0, left: SP.l + 4 + 26, width: 1, background: MARJ, opacity: 0.7 }} />}
       <div style={iskeletCizgi(120, 14, { marginBottom: SP.l })} />
       {Array.from({ length: satir }, (_, i) => (
         <div key={i} style={{ boxSizing: "border-box", height: satirH, display: "flex", gap: SP.m, alignItems: "center", borderTop: `1px solid ${PAL.line}` }}>
-          <span style={iskeletCizgi(8, 8, { borderRadius: RAD.dot })} />
+          {defter ? <span style={{ width: 20, fontFamily: MONO, fontSize: 11, color: PAL.mut3, ...TNUM }}>{String(i + 1).padStart(2, "0")}</span>
+            : <span style={iskeletCizgi(8, 8, { borderRadius: RAD.dot })} />}
           <span style={iskeletCizgi(`${[62, 48, 70, 40, 56][i % 5]}%`, 10, { flexShrink: 1 })} />
           <span style={iskeletCizgi(44, 10, { marginLeft: "auto" })} />
         </div>
@@ -365,16 +374,19 @@ function GozlemIskelet({ span, genis, kol }) {
   if (!genis) {
     return (
       <div style={{ ...span(12), display: "flex", flexDirection: "column", gap: SP.l + 4 }}>
-        <DagilimIskelet genis={false} /><IskeletKart satir={9} gecikme={120} satirH={52} /><IskeletKart satir={4} gecikme={60} satirH={44} /><SureIskelet />
+        <DagilimIskelet genis={false} /><IskeletKart satir={9} gecikme={120} satirH={52} defter /><IskeletKart satir={4} gecikme={60} satirH={44} /><SureIskelet />
       </div>
     );
   }
-  const sutun = { alignSelf: "stretch", display: "flex", flexDirection: "column", gap: SP.l + 4 };
+  /* Gerçek kuşakla aynı 2×2 iç ızgara (tur 9): veri gelince kartlar yerinden oynamaz. */
+  const hucre = (k) => ({ gridColumn: `span ${k}`, minWidth: 0, display: "flex", flexDirection: "column" });
   return (
-    <>
-      <div style={{ ...span(kol[0]), ...sutun }}><DagilimIskelet genis /><IskeletKart satir={9} gecikme={120} satirH={44} /></div>
-      <div style={{ ...span(kol[1]), ...sutun }}><IskeletKart satir={6} gecikme={60} satirH={44} /><SureIskelet /></div>
-    </>
+    <div data-gozlem-hucre-iskelet="" style={{ ...span(12), display: "grid", gridTemplateColumns: "repeat(12, minmax(0, 1fr))", gap: SP.l + 4 }}>
+      <div style={hucre(kol[0])}><DagilimIskelet genis /></div>
+      <div style={hucre(kol[1])}><IskeletKart satir={4} gecikme={60} satirH={44} /></div>
+      <div style={hucre(kol[0])}><IskeletKart satir={9} gecikme={120} satirH={44} defter /></div>
+      <div style={hucre(kol[1])}><SureIskelet /></div>
+    </div>
   );
 }
 

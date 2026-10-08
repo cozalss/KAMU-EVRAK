@@ -26,7 +26,7 @@ import { PAL, SP, EASE_BEZIER, TYPE, SR_ONLY } from "./neonUi.jsx";
 import {
   DURUM_ETIKET, MASA_GENISLIK, MASA_ORB, MASA_SAHNE, TELEFON_ORB, TELEFON_DOK, TELEFON_SAHNE,
   SUTUN_DOK, SUTUN_ORB, SUTUN_SAHNE,
-  DurumKunyesi, SesliOrbDugme, SesliKontroller,
+  DurumKunyesi, SesliSutunBasligi, OturumKunyesi, SesliOrbDugme, SesliKontroller,
 } from "./SesliSahne.jsx";
 
 // MALİYET KORUMASI — realtime'da ses açık kaldığı sürece ücretlendirilir ve eski zincirdeki
@@ -52,12 +52,14 @@ function azHareketMi() {
 // kendisi yapmaz — kabuk (DashboardApp) yapar; sahne yalnız komutu çözer ve bildirir.
 // konum: sohbet panelinin çapası ({left, bottom}); disk masaüstünde sağ-alt köşede doğar
 // (içerikle çakışmasın). null → telefon: ekranın alt-ortasında.
-export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKapat, konum = null }) {
+export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKapat, konum = null, baglamAdi = "" }) {
   const [durum, setDurum] = useState(DURUM.HAZIR);
   const [susturuldu, setSusturuldu] = useState(false);
   const [sonUser, setSonUser] = useState("");   // canlı transcript — kullanıcı
   const [sonYanit, setSonYanit] = useState(""); // canlı transcript — asistan (stream)
   const [uyari, setUyari] = useState("");        // izin/STT/TTS notu
+  const [tur, setTur] = useState(0);              // oturum künyesi: tamamlanan kullanıcı turu
+  const [sonEylem, setSonEylem] = useState("");   // oturum künyesi: son YÜRÜTÜLEN komut
 
   const durumRef = useRef(DURUM.HAZIR);
   const acikRef = useRef(false);
@@ -297,7 +299,7 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     });
     if (komut.tur !== "yok") {
       const onay = komutOnayi(komut);
-      onKomut?.(komut);
+      onKomut?.(komut); setTur((n) => n + 1); setSonEylem(onay);
       setSonUser(metin); setSonYanit(onay);   // görünmez (SR_ONLY) — ekran okuyucu için
       gecmisRef.current = [...gecmisRef.current,
         { rol: "kullanici", icerik: metin }, { rol: "asistan", icerik: onay }].slice(-8);
@@ -305,7 +307,7 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
       return;
     }
 
-    setSonUser(metin); setSonYanit(""); gecir("sonuc");
+    setSonUser(metin); setSonYanit(""); setTur((n) => n + 1); gecir("sonuc");
     const kuyruk = sesKuyruguOlustur({
       sesGetir, oynat: oynatBlob, onIlkSes: () => gecir("yanit_basladi"),
       onIptal: () => audioElRef.current?.pause(),   // kesme/hata: çalan ses de sussun
@@ -482,7 +484,7 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
     if (olay.type === "conversation.item.input_audio_transcription.completed") {
       const metin = (olay.transcript || "").trim();
       if (!metin) return;
-      setSonUser(metin); sonUserRef.current = metin;
+      setSonUser(metin); sonUserRef.current = metin; setTur((n) => n + 1);
       const komut = onayRef.current ? { tur: "yok" } : komutCoz(metin, {
         basliklar: ekranRef.current?.liste?.ilkler || [],
       });
@@ -490,7 +492,7 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
         onKomut?.(komut);
         // Model bu tur için konuşmaya başlamış olabilir: kes. Eylem zaten görünür geri bildirim.
         rtRef.current?.gonder({ type: "response.cancel" });
-        setSonYanit(komutOnayi(komut));
+        setSonYanit(komutOnayi(komut)); setSonEylem(komutOnayi(komut));
       }
       return;
     }
@@ -552,7 +554,7 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
 
   const kur = useCallback(async () => {
     azHareketRef.current = azHareketMi();
-    setUyari(""); setSonUser(""); setSonYanit(""); setSusturuldu(false); susturRef.current = false;
+    setUyari(""); setSonUser(""); setSonYanit(""); setSusturuldu(false); susturRef.current = false; setTur(0); setSonEylem("");
     gecmisRef.current = [];   // her oturum temiz hafızayla başlar
     onayRef.current = null;   // önceki oturumdan sarkan teyit bağlamı taşınmaz
     // Araç turu ortasında kapatılan bir oturum, "bekliyor" bayrağını açık bırakırdı: yeni
@@ -710,6 +712,24 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
           <div ref={dialogRef} tabIndex={-1} role="dialog" aria-label="Sesli görüşme" onKeyDown={(e) => { if (e.key === "Escape") kapat(); }}
             style={sutun ? SUTUN_SAHNE : konum ? MASA_SAHNE : TELEFON_SAHNE}>
             <div aria-live="polite" style={SR_ONLY}>{DURUM_ETIKET[durum]}</div>
+            {sutun ? (
+              <>
+                <SesliSutunBasligi baglamAdi={baglamAdi} kapat={kapat} />
+                {/* Optik merkez: üst boşluk 0,6 / alt 1 oranında (küre ~%38'de oturur). */}
+                <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", alignItems: "center", padding: `0 ${SP.xl}px` }}>
+                  <div aria-hidden="true" style={{ flex: 0.6 }} />
+                  <DurumKunyesi durum={durum} ortala />
+                  <div style={{ height: SP.xl }} />
+                  <SesliOrbDugme boyut={SUTUN_ORB} konusuyor={konusuyor} kes={kes} dusunuyor={dusunuyor} azHareket={azHareket} orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />
+                  <div style={{ height: SP.xl }} />
+                  <SesliKontroller susturuldu={susturuldu} susturDegistir={susturDegistir} kapat={kapat} />
+                  {uyari && <p role="status" aria-live="polite" style={{ margin: `${SP.l}px 0 0`, textAlign: "center", ...TYPE.meta, color: PAL.mut }}>{uyari}</p>}
+                  <div aria-hidden="true" style={{ flex: 1 }} />
+                </div>
+                <div style={SR_ONLY}>{sonUser}{sonYanit ? ` — ${sonYanit}` : ""}</div>
+                <OturumKunyesi tur={tur} sonEylem={sonEylem} />
+              </>
+            ) : (<>
             {!konum && <SesliOrbDugme boyut={TELEFON_ORB} konusuyor={konusuyor} kes={kes} dusunuyor={dusunuyor} azHareket={azHareket} orbRef={orbRef} haloRef={haloRef} parlaRef={parlaRef} />}
             <div style={konum ? { display: "contents" } : { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: SP.m, minWidth: 0, flex: 1 }}>
               <DurumKunyesi durum={durum} ortala={!!konum} />
@@ -722,6 +742,7 @@ export default function SesliGorusme({ acik = false, ekran = null, onKomut, onKa
                 <p role="status" aria-live="polite" style={{ position: "relative", zIndex: 1, margin: 0, maxWidth: "100%", textAlign: konum ? "center" : "left", ...TYPE.meta, color: PAL.mut }}>{uyari}</p>
               )}
             </div>
+            </>)}
           </div>
         </motion.div>
       )}

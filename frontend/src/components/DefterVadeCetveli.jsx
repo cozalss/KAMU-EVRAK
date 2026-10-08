@@ -9,7 +9,8 @@
      kırmızı (en ağır çeyrekte dolu 4 px, kalanında 2 px soluk kılcal).
    · Hafta çentikleri süre bölümünde. Renk tek sinyal değil: sayı + konum + "gecikti" sözcüğü.
    Hareket: çizgi yukarıdan aşağı bir kez çizilir (scaleY), cetvel soldan (scaleX); yalnız
-   transform; reduced-motion global kuralı kapatır. Veri eksikse cetvel ÇİZİLMEZ (uydurma yok). */
+   transform; reduced-motion global kuralı kapatır. Satıra bakılınca geçen süre mürekkep gibi
+   yeniden dolar (CETVEL_CSS vc-murekkep). Veri eksikse cetvel ÇİZİLMEZ (uydurma yok). */
 import React from "react";
 import { Icon, MONO, T, PAL, BANT, TYPE, TNUM, RAD, DERIN, ALFA } from "./neonUi.jsx";
 import { haftaCentikleri, eksenX } from "../lib/defterVade.js";
@@ -17,6 +18,13 @@ import { haftaCentikleri, eksenX } from "../lib/defterVade.js";
 const CETVEL_CSS = `
 @keyframes vc-ciz{from{transform:scaleX(0)}to{transform:none}}
 [data-vc-cetvel]{transform-origin:0 50%;animation:vc-ciz .4s var(--ke-ease-out) calc(min(var(--sd-i,0), 7) * 18ms + 80ms) both}
+/* Mürekkep dolumu (tur 9 imza anı): satıra bakılınca/odaklanınca GEÇEN süre bölümü başından
+   bugüne yeniden akar — kalemin cetveli doldurması. Yalnız transform; reduced-motion'da yok. */
+@keyframes vc-murekkep{from{transform:scaleX(0)}to{transform:none}}
+[data-vc-dolu]{transform-origin:0 50%}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  [data-sicil-satir]:hover [data-vc-dolu],[data-sicil-satir]:focus-visible [data-vc-dolu]{animation:vc-murekkep .55s var(--ke-ease-out) both}
+}
 /* Bugün çizgisi — vade hücresinin ::before'u; hücre satır dolgusuna taşar (margin −12 /
    padding 12) → bitişik satırlarda tek dikey çizgi. Metin etiketlerinin bandında maskeyle
    AÇILIR: çizgi cetvel bandını keser (bugün ↔ son gün ilişkisi orada okunur), metnin içinden
@@ -27,7 +35,7 @@ const CETVEL_CSS = `
   -webkit-mask-image:linear-gradient(to bottom, black calc(50% - 12px), transparent calc(50% - 12px), transparent calc(50% + 26px), black calc(50% + 26px));
   mask-image:linear-gradient(to bottom, black calc(50% - 12px), transparent calc(50% - 12px), transparent calc(50% + 26px), black calc(50% + 26px))}
 [data-vc-bugun-baslik]{position:absolute;bottom:-9px;height:8px;border-left:1px solid var(--vc-cizgi, color-mix(in srgb, var(--ke-r) 62%, transparent))}
-@media (max-width:640px){[data-vc-bugun-baslik]{display:none}[data-vc-hucre]{margin:0;padding:0}[data-vc-hucre]::before{display:none}}
+@media (max-width:640px){[data-vc-lejant]{display:none!important}[data-vc-bugun-baslik]{display:none}[data-vc-hucre]{margin:0;padding:0}[data-vc-hucre]::before{display:none}}
 `;
 export const VadeStil = () => <style>{CETVEL_CSS}</style>;
 
@@ -51,6 +59,22 @@ export function VadeBaslik({ eksen, genislik }) {
   );
 }
 
+/* LEJANT (tur 9 jüri: açıklama 15 satırın altındaki dipnot paragrafındaydı, ilk ekranda
+   görünmüyordu) — defterin üstünde, vade sütununa SAĞDAN hizalı tek mono künye satırı; işaretler
+   cetvelin kendi çizim öğeleriyle aynı (renk + şekil + sözcük). */
+export function VadeLejant() {
+  const isaret = (stil) => <span aria-hidden="true" style={{ display: "inline-block", verticalAlign: "middle", marginRight: 6, ...stil }} />;
+  return (
+    <p data-vc-lejant="" style={{ margin: 0, display: "flex", justifyContent: "flex-end", flexWrap: "wrap", columnGap: 16, rowGap: 4, ...TYPE.antet, fontSize: 10, color: PAL.mut2, textTransform: "uppercase", ...TNUM }}>
+      <span style={{ color: PAL.mut3 }}>Vade çizelgesi</span>
+      <span>{isaret({ width: 1, height: 12, background: "color-mix(in srgb, var(--ke-r) 62%, transparent)" })}bugün</span>
+      <span>{isaret({ width: 14, height: 4, borderRadius: 2, background: T, opacity: .9 })}geçen süre</span>
+      <span>{isaret({ width: 1.5, height: 10, background: PAL.ink2 })}son gün</span>
+      <span>{isaret({ width: 14, height: 4, borderRadius: 2, background: BANT.kirmizi.c })}gecikme</span>
+    </p>
+  );
+}
+
 /* Bugün çizgisi — vade hücresinin zemin özniteliği: bitişik satırlarda tek kesintisiz dikey
    mürekkep çizgisi olarak okunur. Hücreye {...bugunHucre(eksen)} yayılır. */
 export const bugunHucre = (eksen) => (eksen ? { "data-vc-hucre": "", style: { "--vc-x": `${eksen.bugunX}px` } } : {});
@@ -65,7 +89,7 @@ function Cetvel({ aralik, olcu, eksen, agir }) {
   return (
     <span data-vc-cetvel="" aria-hidden="true" style={{ position: "relative", display: "block", height: 10 }}>
       <span style={{ position: "absolute", left: x0, top: 3, height: 4, width: iz, borderRadius: 2, background: PAL.line }} />
-      <span style={{ position: "absolute", left: x0, top: 3, height: 4, width: dolu, borderRadius: 2, background: T, opacity: gec ? 0.5 : 0.9 }} />
+      <span data-vc-dolu="" style={{ position: "absolute", left: x0, top: 3, height: 4, width: dolu, borderRadius: 2, background: T, opacity: gec ? 0.5 : 0.9 }} />
       {haftaCentikleri(olcu.sure).map((g) => (
         <span key={g} style={{ position: "absolute", left: x0 + g * eksen.k, top: 2, width: 1, height: 6, background: PAL.surf, opacity: .9 }} />
       ))}
@@ -80,7 +104,8 @@ function Cetvel({ aralik, olcu, eksen, agir }) {
    marj sütunun solundan taşıyordu, tur 8 jüri). */
 function SureMetni({ sla, agir }) {
   const gec = sla.durum === "GECIKMIS", kri = sla.durum === "KRITIK";
-  const metin = gec ? `${Math.abs(sla.kalan_gun)} gün gecikti` : kri ? `son ${sla.kalan_gun} gün` : `${sla.kalan_gun} gün süre`;
+  // Tek dilbilgisi (tur 9 jüri: "son 1 gün" · "15 gün süre" kalan mı toplam mı belirsizdi).
+  const metin = gec ? `${Math.abs(sla.kalan_gun)} gün gecikti` : sla.kalan_gun === 0 ? "bugün son gün" : `${sla.kalan_gun} gün kaldı`;
   const renk = gec ? DERIN.kirmizi : kri ? DERIN.sari : PAL.mut2;
   if (gec && agir) {
     return (

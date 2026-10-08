@@ -88,7 +88,7 @@
   Tailwind yalnız çalışma alanında, renkler `var(--ke-*)`. Legacy
   `styles/kamu-evrak.css` değişkenleri dosya sonundaki köprüyle `--ke-*`'ye bağlı.
 - **a11y:** focusRing, renk tek sinyal değil, reduced-motion, telefonda 44px hedef + 16px girdi.
-- **Kabuk hareket/durum sözleşmeleri (tur 8):** görünüm geçişi ARDIŞIK (eski 80 ms söner, yeni
+- **Kabuk hareket/durum sözleşmeleri (tur 8):** görünüm geçişi ARDIŞIK (eski 60 ms söner, yeni
   60 ms sonra — çift pozlama yok); sicil/rozet üç hâl (sayı · bekliyor `··` · yok `—`); etkin sırt
   üstü renkler `--ke-sayfa*`; giriş formu dikey ortalanmaz (üstü sabit). Ayrıntı: MASTER.md "Kabuk".
 - **Ayrı tanıtım (landing) sayfası YOK** (2026-10-04 kullanıcı kararı: ürün memurun iş aracıdır).

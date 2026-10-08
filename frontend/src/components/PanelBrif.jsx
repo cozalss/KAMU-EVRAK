@@ -33,7 +33,17 @@ export const PANEL_KF = `
 @keyframes pv-serit{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes pv-nefes{from{opacity:.7}to{opacity:1}}
 @keyframes pv-ciz{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes pv-muhur{from{transform:rotate(var(--pv-egim,-8deg)) scale(.92)}to{transform:rotate(var(--pv-egim,-8deg)) scale(1)}}
+[data-defter-satir]{cursor:pointer}
+[data-defter-satir] [data-satir-eylem]{color:${PAL.mut2};text-decoration:none;text-underline-offset:3px}
+[data-defter-satir]:hover [data-satir-eylem],[data-defter-satir]:focus-within [data-satir-eylem]{color:${DERIN.T};text-decoration:underline}
+[data-panel-izgara]{--pv-kahraman-r:${DERIN.kirmizi}}
+:root[data-theme="dark"] [data-panel-izgara]{--pv-kahraman-r:${R}}
 `;
+/* Tur 9 jüri: koyu temada kahraman "3" derin-kırmızının açık tonunda (somon/pastel) ACELE
+   ağırlığını yitiriyordu → kahraman rakamı koyu temada DOYGUN R (--ke-r, koyu zeminde
+   AA ≥4.5) kullanır; metin boyu tonlar değişmez. Paylaşılan token önerisi A-kabuk'a. */
+const KAHRAMAN_R = "var(--pv-kahraman-r)";
 
 /* Blok giriş stili — gecikme ms. Tek kaynak: hem PanelView ızgara hücreleri hem bu dosya. */
 export const giris = (ms, ad = "pv-gir", sure = 0.56) => ({ animation: `${ad} ${sure}s ${EASE.out} ${ms}ms both` });
@@ -179,7 +189,8 @@ function DefterAd({ x, renk, normal, dolgu = false }) {
       <span style={{ display: "flex", alignItems: "center", gap: 6, ...TYPE.ui, fontWeight: 600, color: PAL.ink, minWidth: 0 }}>
         {/* Renk tek sinyal değil: üçgen ikon "dikkat" der (renk körlüğünde de okunur). */}
         <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: DERIN_OF(renk) }}>{normal ? <Icon.clock width={14} height={14} /> : <Icon.alert width={14} height={14} />}</span>
-        <span title={x.label} style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: "0 1 auto", minWidth: 0 }}>{x.label}</span>
+        {/* Tur 9: 1440'ta ad sütunu ~230 px — tek satır kesiği yerine en çok 2 satır (defter kalemi). */}
+        <span title={x.label} style={{ overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", textWrap: "pretty", flex: "0 1 auto", minWidth: 0 }}>{x.label}</span>
         {/* Tur 8: dolgu taban-0 esnek → ad kesildiğinde genişliği 0'a iner (kesik ad + "…" + nokta
             çizgisi üst üste binmez); yalnız ad TAM sığdığında görünür. */}
         {dolgu && <span aria-hidden="true" style={{ flex: "1 1 0", minWidth: 0, alignSelf: "flex-end", marginBottom: 5, borderBottom: `2px dotted ${PAL.lineHi}` }} />}
@@ -198,10 +209,18 @@ function DefterSatir({ x, sira, onIsle, dar, gecikme, damga, odak, onOdak }) {
   const renk = durum === "GECIKMIS" ? BANT.kirmizi.c : durum === "KRITIK" ? BANT.sari.c : BANT.yesil.c;
   const normal = durum !== "GECIKMIS" && durum !== "KRITIK";
   const no = String(sira).padStart(2, "0");
-  const isle = (
-    <Btn onClick={() => onIsle(x.id)} ariaLabel={`${x.label} evrakını hemen işle`} style={{ padding: "6px 12px", minHeight: dar ? 44 : 36, whiteSpace: "nowrap" }}>
+  /* Tur 9 jüri (brif madde 5): her satırda çerçeveli "İşle →" birincil eylemle yarışıyordu →
+     masaüstünde satırın tamamı tıklanır, eylem çerçevesiz yazı-bağlantısı (hover/odakta mürekkep). */
+  const isle = dar ? (
+    <Btn onClick={() => onIsle(x.id)} ariaLabel={`${x.label} evrakını hemen işle`} style={{ padding: "6px 12px", minHeight: 44, whiteSpace: "nowrap" }}>
       İşle <Icon.arrow width={14} height={14} />
     </Btn>
+  ) : (
+    <button type="button" data-satir-eylem="" {...focusRing} onClick={(e) => { e.stopPropagation(); onIsle(x.id); }} aria-label={`${x.label} evrakını hemen işle`}
+      style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "6px 4px", minHeight: 32, background: "transparent", border: "none",
+        borderRadius: RAD.ctl, cursor: "pointer", ...TYPE.ui, fontWeight: 600, whiteSpace: "nowrap", transition: `color .14s ${EASE.out}` }}>
+      İşle <Icon.arrow width={14} height={14} />
+    </button>
   );
   if (dar) {
     return (
@@ -224,7 +243,7 @@ function DefterSatir({ x, sira, onIsle, dar, gecikme, damga, odak, onOdak }) {
   const kopru = onOdak ? { onMouseEnter: () => onOdak(x.id), onMouseLeave: () => onOdak(null),
     onFocus: () => onOdak(x.id), onBlur: () => onOdak(null) } : null;
   return (
-    <div {...kopru} style={{ display: "grid", gridTemplateColumns: DEFTER_SUTUN, alignItems: "center", gap: SP.l,
+    <div {...kopru} data-defter-satir="" onClick={() => onIsle(x.id)} style={{ display: "grid", gridTemplateColumns: DEFTER_SUTUN, alignItems: "center", gap: SP.l,
       padding: `${SP.m}px 0`, borderTop: `1px solid ${PAL.line}`, background: vurgu ? PAL.hov : "transparent",
       transition: `background .14s ${EASE.out}`, ...giris(gecikme, "pv-yaz", 0.42) }}>
       <span style={{ fontFamily: MONO, fontSize: 12, color: vurgu ? DERIN.T : PAL.mut3, fontWeight: vurgu ? 600 : 400, textAlign: "right", paddingRight: SP.s,
@@ -418,7 +437,8 @@ function acilBaslik(say) {
 export const ISKELET_MUREKKEP = `color-mix(in srgb, ${PAL.lineHi} 75%, transparent)`;
 export const iskeletCizgi = (width, height, ek) => ({ display: "block", flexShrink: 0, width, height, borderRadius: RAD.chip, background: ISKELET_MUREKKEP, ...ek });
 /* Nefes — iskelet yüzeyinin yavaş opaklık salınımı (transform yok; reduced-motion söndürür). */
-export const iskeletNefes = (gecikme = 0) => ({ animation: `pv-nefes .9s ease-in-out ${gecikme}ms infinite alternate both` });
+/* Tur 9 jüri: nabız 0,9 sn'de huzursuzdu → 1,6 sn'lik yavaş mürekkep süzülmesi. */
+export const iskeletNefes = (gecikme = 0) => ({ animation: `pv-nefes 1.6s ease-in-out ${gecikme}ms infinite alternate both` });
 
 /* Ölçüler gerçek KahramanBrif'in "acil" hâlinden alındı (statik örnek kuyruğunun olağan hâli;
    412 ve 1440 px'te DOM ölçümü, 2026-10-03). İskelet bu kutularla AYNI yüksekliği kaplar —
@@ -516,7 +536,7 @@ export function SureYokBrif({ kuyrukN, onGoInbox }) {
       <Manset sayi={kuyrukN} renk={PAL.mut2} dar={dar} sakin
         baslik="evrak kuyrukta — hiçbirinde yasal süre tanımlı değil"
         baglam="Süre servisi yanıt verdi; kuyruktaki evrakların hiçbiri için son gün hesaplanamadı. Son gün, evrak işlendiğinde türüne ve dayanağına göre belirlenir."
-        kunye={`KUYRUK ${String(kuyrukN).padStart(2, "0")} · SON GÜN —`}
+        kunye={`KUYRUK ${kuyrukN} · SON GÜN —`}
         eylem={<Btn primary onClick={() => onGoInbox()} ariaLabel="Gelen evrak kuyruğunu aç">Kuyruğu aç <Icon.arrow /></Btn>} yan={yan} />
     </section>
   );
@@ -581,7 +601,7 @@ export default function KahramanBrif({ kuyrukSla, onGoInbox, onIsle, kuyrukN = k
     <section aria-label="Bugünün özeti — kuyruk yasal süre durumu" style={{ ...yuzey(vurgu), height: "100%", display: "flex", flexDirection: "column" }}>
       <UstBlok pad={pad}>
         <AntetSatir vurgu={vurgu} alarmAnahtar={`${say.gecikmis}-${say.kritik}`} sag={`${kuyrukSla.length} EVRAKLIK KUYRUK`} />
-        <Manset sayi={acil.length} renk={DERIN_OF(vurgu)} dar={dar} baslik={acilBaslik(say)}
+        <Manset sayi={acil.length} renk={say.gecikmis ? KAHRAMAN_R : DERIN_OF(vurgu)} dar={dar} baslik={acilBaslik(say)}
           baglam={`En acili: ${enEski.label}`} kunye={kunye}
           eylem={(
             <Btn primary onClick={() => onIsle(enEski.id)} ariaLabel={`En acil evrak: ${enEski.label} — hemen işle`}>

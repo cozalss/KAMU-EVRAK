@@ -10,13 +10,14 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { ViewWrap, Btn, Icon, R, PAL, BANT, TYPE, SP, DERIN, SR_ONLY, MONO } from "./neonUi.jsx";
 import { onizlemeMaskele } from "../lib/defterMaske.js";
-import { SicilStil, BaslikHucre, DefterYuzey, BosDefter, DefterIskelet, DefterNotu, useDefterGezinme, Imlec, HUCRE, KayitNoHucre, Derkenar, Vurgulu, DEFTER_NO, DEFTER_MARJ, ADIM } from "./SicilDefter.jsx";
+import { SicilStil, BaslikHucre, DefterYuzey, BosDefter, DefterIskelet, useDefterGezinme, Imlec, HUCRE, KayitNoHucre, Derkenar, Vurgulu, DEFTER_NO, DEFTER_MARJ, ADIM } from "./SicilDefter.jsx";
 import DefterAntetKunye from "./DefterAntetKunye.jsx";
 import { useMedyaSorgusu } from "../hooks/useMedya.js";
 import { bosDurumMetni } from "../lib/sicilDefter.js";
 import FilterBar from "./FilterBar.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
-import VadeHucre, { VadeStil, VadeBaslik, bugunHucre } from "./DefterVadeCetveli.jsx";
+import { KunyeFisi } from "./DefterNusha.jsx";
+import VadeHucre, { VadeStil, VadeBaslik, VadeLejant, bugunHucre } from "./DefterVadeCetveli.jsx";
 import { useFilter } from "../hooks/useFilter.js";
 import { useDefterArama } from "../lib/useDefterArama.js";
 import { vadeOlcusu, goreliVade, zamanEkseni, agirCeyrekEsigi } from "../lib/defterVade.js";
@@ -60,11 +61,19 @@ const metinOf = (s) => [s.konu, s.label, s.aciklama, s.grup, kategoriMeta(s._kat
    SİCİL FİŞİ: solda dikey kayıt no koçanı, gövdede konu, altta süre + eylem.
    Tur 8 (jüri: 1920'de konu ile cetvel arasında 250–400 px ölü koridor): geniş ekranda artan
    genişlik VADE ÇİZELGESİNE akar (160 → 280 → 360 px) — ölü bant veriyle dolar. */
+/* Tur 9 jüri: 1440'ta cetvel ~90 px'e sıkışıp okunmuyordu → ≥1360 ara kırılımı (220). */
 function useVadeGenislik() {
   const g1 = useMedyaSorgusu("(min-width: 1800px)");
   const g2 = useMedyaSorgusu("(min-width: 1600px)");
-  return g1 ? 360 : g2 ? 280 : 160;
+  const g3 = useMedyaSorgusu("(min-width: 1360px)");
+  return g1 ? 360 : g2 ? 280 : g3 ? 220 : 160;
 }
+/* Açıklama "Tür · Kurum · ayrıntı" biçimindedir; meta satırında KURUM öne alınır (tür zaten
+   kategoride söylenir), ayrıntının tamamı title'da. Biçim dışıysa açıklama olduğu gibi. */
+const kurumOf = (s) => {
+  const p = String(s.aciklama || "").split(" · ");
+  return p.length >= 2 ? p[1] : s.aciklama || "";
+};
 const sablonOf = (vade) => ({
   kolon: `${DEFTER_NO} minmax(0,1fr) ${vade + 12}px 112px`,
   marj: DEFTER_MARJ,
@@ -97,16 +106,14 @@ function GelenSatir({ s, i, done, vurgulu, gez, rowRef, onOnizle, onProcess, bus
         <span data-sd-konu="" title={konu} style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink, display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2, overflow: "hidden" }}>
           <Vurgulu metin={konu} jetonlar={jetonlar} />
         </span>
-        <div style={{ ...TYPE.meta, color: PAL.mut, marginTop: 3, display: "flex", columnGap: SP.s, rowGap: 2, flexWrap: "wrap", minWidth: 0 }}>
-          <span style={{ color: PAL.mut2, fontWeight: 500 }}>{kat.label}</span>
+        {/* Tur 9 jüri: meta iki satırın ikisinde de "…" ile kesiliyordu → TEK satır: kategori ·
+            kurum · önerilen birim (birim en sona, kısalan o değil kurum). */}
+        <div title={s.aciklama} style={{ ...TYPE.meta, color: PAL.mut, marginTop: 4, display: "flex", alignItems: "center", columnGap: SP.s, minWidth: 0, whiteSpace: "nowrap" }}>
+          <span style={{ color: PAL.mut2, fontWeight: 500, flexShrink: 0 }}>{kat.label}</span>
           <span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span>
-          <span>{s.grup || "Evrak"}</span>
-          <span aria-hidden="true" style={{ color: PAL.mut3 }}>·</span>
-          <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: "1 1 200px" }} title={s.aciklama}><Vurgulu metin={s.aciklama || ""} jetonlar={jetonlar} /></span>
-        </div>
-        <div style={{ ...TYPE.meta, color: PAL.mut2, marginTop: 2, display: "flex", alignItems: "center", gap: 6 }}>
-          <span aria-hidden="true" style={{ display: "flex", color: DERIN.V }}><Icon.route width={12} height={12} /></span>
-          <span><span style={SR_ONLY}>önerilen birim: </span>{onerilenBirim}</span>
+          <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", flex: "0 1 auto" }}><Vurgulu metin={kurumOf(s)} jetonlar={jetonlar} /></span>
+          <span aria-hidden="true" style={{ display: "flex", color: DERIN.V, flexShrink: 0, marginLeft: 2 }}><Icon.route width={12} height={12} /></span>
+          <span style={{ color: PAL.mut2, flexShrink: 0 }}><span style={SR_ONLY}>önerilen birim: </span>{onerilenBirim}</span>
         </div>
       </div>
       <span {...HUCRE.grid} {...bugunHucre(vade.eksen)} style={{ gridArea: "sure", minWidth: 0, alignSelf: "stretch", display: "flex", alignItems: "center", ...bugunHucre(vade.eksen).style }}>
@@ -118,7 +125,7 @@ function GelenSatir({ s, i, done, vurgulu, gez, rowRef, onOnizle, onProcess, bus
       <span {...HUCRE.grid} style={{ gridArea: "eylem", justifySelf: "end", alignSelf: "center" }}>
         <button type="button" data-sd-eylem="" data-press="" data-sd-paraf=""
           onClick={(e) => { e.stopPropagation(); onProcess(s); }} disabled={busy} aria-label={`${konu} evrakını işle`}>
-          {done ? "Yeniden işle" : "İşle"} <Icon.arrow width={14} height={14} />
+          <span data-sd-paraf-metin="">{done ? "Yeniden işle" : "İşle"}</span> <Icon.arrow width={14} height={14} />
         </button>
       </span>
     </div>
@@ -196,10 +203,29 @@ function OnizlemeKunye({ no, alanlar }) {
   );
 }
 
-function GelenOnizleme({ s, done, busy, onKapat, onIsle }) {
+/* GELİŞ KÜNYESİ (tur 9 jüri: Gelen modalı künyesiz, öbür iki defterin nüshasından ayrı bir dil
+   konuşuyordu) — Giden/İşlenen'le aynı fişli nüsha ızgarası: kayıt no, yasal süre, son gün,
+   önerilen birim, kategori. Değerler yalnız eldeki veriden (uydurma yok). */
+const SLA_DURUM = { GECIKMIS: ["Gecikmiş", DERIN.kirmizi], KRITIK: ["Kritik", DERIN.sari], NORMAL: ["Süresinde", DERIN.yesil] };
+function gelisSatirlari(s, sla) {
+  const durum = SLA_DURUM[sla?.durum];
+  const kalan = Number.isFinite(sla?.kalan_gun) ? (sla.kalan_gun < 0 ? `${Math.abs(sla.kalan_gun)} gün gecikti` : sla.kalan_gun === 0 ? "bugün son gün" : `${sla.kalan_gun} gün kaldı`) : "";
+  return [
+    { k: "Kayıt no", v: noOf(s), mono: true },
+    { k: "Kategori", v: kategoriMeta(s._kategori).label },
+    { k: "Gönderen kurum", v: kurumOf(s) },
+    { k: "Yasal süre", v: !sla ? "" : durum ? `${durum[0]}${kalan ? ` · ${kalan}` : ""}` : sla.durum === "tarih_yok" ? "Tarih doğrulanmalı" : "Tanımsız", c: durum ? durum[1] : PAL.mut2 },
+    { k: "Son gün", v: sla?.son_tarih || "", mono: true },
+    { k: "Dayanak", v: sla?.mevzuat || "" },
+    { k: "Önerilen birim", v: BIRIM_LBL(KATEGORI_BIRIM[s._kategori] || "yazi_isleri_evrak"), c: DERIN.V },
+  ];
+}
+
+function GelenOnizleme({ s, sla, done, busy, onKapat, onIsle }) {
   const mask = useMemo(() => onizlemeMaskele(s?.text || ""), [s]);
   return (
-    <BelgeModal acik={!!s} baslik={s ? s.konu || s.label : ""} kayitNo={s ? noOf(s) : ""} dosyaAdi={s ? `önizleme · ${s.label}` : ""}
+    <BelgeModal acik={!!s} baslik={s ? s.konu || s.label : ""} kayitNo={s ? noOf(s) : ""} dosyaAdi={s ? `önizleme · ${s.label}` : ""} cilt="Gelen"
+      ustIcerik={s ? <KunyeFisi baslik="Geliş künyesi" satirlar={gelisSatirlari(s, sla)} /> : null}
       metin={mask.metin} onKapat={onKapat} akit altKunye={s ? <OnizlemeKunye no={noOf(s)} alanlar={mask.alanlar} /> : null}
       birincil={s ? (
         <ScrimDugme birincil onClick={onIsle} disabled={busy} title="Bu evrakı işle">
@@ -236,10 +262,11 @@ function gelenKunye(items, slaMap) {
   return {
     satirlar: [
       { k: "Kuyruk", v: `${items.length} evrak` },
-      { k: "Gecikmiş", v: gecikmis ? `${String(gecikmis).padStart(2, "0")} · gecikti` : "", ton: "kirmizi" },
+      { k: "Gecikmiş", v: gecikmis ? `${gecikmis} · gecikti` : "", ton: "kirmizi" },
       { k: "En yakın son gün", v: yakin ? yakin.son_tarih : "" },
     ],
-    folyo: (n) => `Sayfa 1 · ${n} kayıt${yakin ? ` · en yakın son gün ${yakin.son_tarih}` : ""}`,
+    // Folyo yalnız sayfa künyesi — "en yakın son gün" antet künyesinde zaten var (tekrar yok).
+    folyo: (n) => `Sayfa 1 · ${n} kayıt`,
   };
 }
 
@@ -270,7 +297,7 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
 
   return (
     <ViewWrap id="gelen-h" title="Gelen evrak" kunye="Gelen evrak defteri"
-      sub={`${samples.length} evrak kuyrukta · önizlemek için satıra, işlemek için “İşle”ye`}
+      sub="Önce okuyun, sonra işleyin: önizleme için satıra, işlem için “İşle”ye"
       damga={gecikmisSay ? { metin: `${gecikmisSay} gecikmiş`, ton: R, egim: -5 } : undefined}
       actions={[<DefterAntetKunye key="k" etiket="Gelen evrak defteri özeti" satirlar={kunye.satirlar} />,
         <Btn key="u" primary onClick={onUpload} disabled={busy}><Icon.upload /> Yeni evrak yükle</Btn>]}>
@@ -278,6 +305,7 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
       <VadeStil />
       <div>
         <FilterBar config={filterConfig} filter={filter} />
+        {!slaBekleniyor && filter.results.length > 0 && <div data-gelen-lejant="" style={{ margin: `-${SP.xs}px 0 ${SP.s}px` }}><VadeLejant /></div>}
         {slaBekleniyor ? (
           <DefterIskelet sablon={SABLON} basliklar={BASLIKLAR} etiket="Yasal süreler hesaplanıyor" satir={8} />
         ) : samples.length === 0 || filter.results.length === 0 ? (
@@ -291,12 +319,13 @@ export default function GelenEvrakView({ samples = [], processedIds, slaMap = nu
             ))}
           </DefterYuzey>
         )}
-        <DefterNotu ikon={<Icon.info width={14} height={14} />}>
-          Gelen evrak kuyruğu örnek evraklarla hazır gelir. <strong style={{ color: PAL.ink2, fontWeight: 600 }}>EBYS / KEP</strong> entegrasyonunda gelen evrak otomatik düşer; güven skoru, sisteme geliş ve son işlem tarihleri işleme anında oluşur. Vade çizelgesinde tüm satırlar tek zaman eksenindedir: kırmızı dikey çizgi bugündür; mavi bölüm yasal sürenin geçen kısmı, son gün çentiğinden bugüne uzanan kırmızı bölüm gecikmedir.
-        </DefterNotu>
+        {/* Örnek veri notu: ürün içinde geliştirici paragrafı değil, tek mono künye (tur 9 jüri). */}
+        <p style={{ margin: `${SP.m}px 0 0`, ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", textAlign: "center", textWrap: "balance" }}>
+          Örnek kuyruk · EBYS / KEP bağlantısında gelen evrak buraya kendiliğinden düşer
+        </p>
       </div>
 
-      <GelenOnizleme s={onizle} done={onizle ? done.has(onizle.id) : false} busy={busy} onKapat={() => setOnizle(null)} onIsle={isle} />
+      <GelenOnizleme s={onizle} sla={onizle ? slaMap?.[onizle.id] : null} done={onizle ? done.has(onizle.id) : false} busy={busy} onKapat={() => setOnizle(null)} onIsle={isle} />
     </ViewWrap>
   );
 }

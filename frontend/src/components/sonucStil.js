@@ -26,6 +26,16 @@ export const SONUC_CSS = `
   text-transform: uppercase; color: var(--ke-derin-kirmizi); border: 1px solid currentColor;
 }
 
+/* TUR 9 (jüri, yüksek): kilitliyken ekranda dolu primary kalmıyordu. Onarım eylemi Düzenle
+   TEK dolu primary'ye terfi eder (aynı dolgu token çifti); Onayla ikincil kilit olarak kalır. */
+.kd-sonuc[data-gonderim-kilit] .sc-main-draft-shell .sc-decision-footer button[aria-label="Taslağı düzenle"]:not(:disabled){
+  background: var(--ke-dolgu-t) !important; color: var(--ke-on-dolgu) !important;
+  border-color: transparent !important; font-weight: 600 !important;
+}
+.kd-sonuc[data-gonderim-kilit] .sc-main-draft-shell .sc-decision-footer button[aria-label="Taslağı düzenle"]:not(:disabled):hover{
+  background: var(--ke-dolgu-th) !important;
+}
+
 /* ---------- HÜKÜM şeridi ---------- */
 .kd-sonuc .kd-hukum{
   position: relative; padding: 14px 24px 18px; overflow: visible;
@@ -96,6 +106,24 @@ export const SONUC_CSS = `
 .kd-damga-ust{ font-size: 10px; line-height: 12px; letter-spacing: .2em; font-weight: 700; }
 .kd-damga-ad{ font-size: 25px; line-height: 26px; letter-spacing: .06em; font-weight: 900; }
 
+/* TUR 9 (jüri: 1440'ta dört sütun sıkışıyordu — kurum/birim 2 satır, kilit nedeni 4 satır):
+   1181–1679 aralığında 2+1 düzen — üstte hüküm · havale · damga, kilit nedeni/sıradaki adım
+   tam genişlikte ALT ŞERİT (etiket · metin · bağlantı tek satırda). ≥1680 dört sütun kalır. */
+@media (min-width: 1181px) and (max-width: 1679px){
+  .kd-hukum-izgara{
+    grid-template-columns: max-content minmax(0, 1fr) auto;
+    grid-template-areas: "baslik havale damga" "not not not";
+    row-gap: 12px;
+  }
+  .kd-hukum-not{
+    display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 12px; row-gap: 2px;
+    padding: 10px 0 0; border-left: 0; border-top: 1px dashed var(--ke-line);
+  }
+  .kd-hukum-not-etiket{ display: inline; margin: 0; flex: none; font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  .kd-hukum-not > [role="status"], .kd-hukum-not > span:not(.kd-hukum-not-etiket){ flex: 1 1 320px; min-width: 0; }
+  .kd-hukum-karar{ margin: 0 0 0 auto; min-height: 28px; padding: 2px; }
+}
 @media (max-width: 1180px){
   .kd-hukum-baslik h2{ white-space: normal; }
   .kd-hukum-izgara{

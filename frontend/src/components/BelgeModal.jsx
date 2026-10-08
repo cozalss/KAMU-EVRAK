@@ -51,7 +51,7 @@ const PERDE_CSS = `
 [data-perde-dugme][data-birincil]{border-color:transparent;background:var(--ke-t);color:var(--ke-on-accent);font-weight:600}
 [data-perde-dugme][data-birincil]:hover:not(:disabled){background:color-mix(in srgb, var(--ke-t) 86%, var(--ke-on-ink))}
 [data-perde-ipucu]{color:color-mix(in srgb, var(--ke-on-ink) 62%, transparent)}
-@media (max-width:640px){[data-perde-dugme]{justify-content:center}}
+@media (max-width:640px){[data-perde-dugme]{justify-content:center}[data-perde-esc]{display:none}}
 /* ARŞİV NÜSHASI BÜTÜNLÜĞÜ (tur 8 jüri: künye fişi ile A4 kâğıt "iki ayrı malzeme" gibi üst
    üste duruyordu): fiş kâğıda İLİŞTİRİLMİŞ kayıt fişidir — aralarında karartı boşluğu yok,
    perforasyon (kesikli kenar) ayırır. Geniş masaüstünde (≥1280) fiş kâğıdın SOLUNA derkenar
@@ -61,8 +61,11 @@ const PERDE_CSS = `
 [data-bm-govde][data-fisli]>[data-bm-fis] [data-kunye-fis]{border-bottom:1.5px dashed var(--ke-line-hi);border-bottom-left-radius:0;border-bottom-right-radius:0}
 @media (min-width:1280px){
   [data-bm-kap][data-fisli]{width:min(1040px, 100%)!important}
-  [data-bm-govde][data-fisli]{display:grid;grid-template-columns:256px minmax(0,1fr);align-items:start}
-  [data-bm-govde][data-fisli]>[data-bm-fis]{position:sticky;top:0;margin-top:0;z-index:1}
+  [data-bm-govde][data-fisli]{display:grid;grid-template-columns:256px minmax(0,1fr);align-items:stretch}
+  /* Tur 9 jüri: künye kartı kâğıttan kısa kalıp iki kolon kopuk duruyordu → fiş kâğıtla
+     birlikte uzar (cilt sırtı); içerik üstte kalır. */
+  [data-bm-govde][data-fisli]>[data-bm-fis]{display:flex;flex-direction:column;margin-top:0;z-index:1}
+  [data-bm-govde][data-fisli]>[data-bm-fis]>[data-kunye-fis]{flex:1}
   [data-bm-govde][data-fisli]>[data-bm-fis] [data-kunye-fis]{border-bottom:1px solid var(--ke-line-hi);border-right:1.5px dashed var(--ke-line-hi);border-radius:2px 0 0 2px;padding:16px 18px}
   [data-bm-govde][data-fisli]>[data-bm-fis] [data-kunye-fis] dl{grid-template-columns:1fr!important}
   [data-bm-govde][data-fisli]>[data-bm-fis] [data-kunye-fis] dl>div{flex-direction:column;align-items:flex-start!important;gap:2px!important}
@@ -70,6 +73,14 @@ const PERDE_CSS = `
 }
 `;
 const perdeDugmeStil = (disabled) => ({ cursor: disabled ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", gap: SP.s, padding: "6px 12px", minHeight: 32, borderRadius: RAD.ctl, opacity: disabled ? 0.55 : 1, ...TYPE.data, fontWeight: 500, transition: `background .12s ease-out, transform .14s ${EASE.out}` });
+
+/* DEFTER NÜSHASI kipi (`cilt`, tur 9 jüri): üç defterin nüshası tek "dosya cildi" modalıdır.
+   Açık temada karartı neredeyse siyahtı ("uygulama koyu temaya döndü") → cilt kipinde sıcak,
+   yarı saydam kâğıt karartısı (--ke-scrim; koyu temada zaten koyu). Arka sayfa sezilir ama
+   ÜST ve ALT ŞERİT dolu cilt yüzeyidir (inkSurf) — perde metni artık karartıya değil cilde
+   basılır, okunurluk temadan bağımsız kalır. */
+const CILT_KARARTI = { background: PAL.scrim };
+const ciltSerit = (alt) => ({ background: PAL.inkSurf, padding: alt ? "8px 16px" : "10px 12px 10px 16px", borderRadius: alt ? `0 0 ${RAD.card}px ${RAD.card}px` : `${RAD.card}px ${RAD.card}px 0 0`, boxShadow: SH.modal });
 
 /* Karartı — scrimKoyu üç kat serilir (1−(1−a)³ ≈ .99): tek kat (a≈.82) sayfanın Archivo
    başlığını modal başlık şeridinin tam arkasından okutuyordu, iki kat hâlâ hayalet bırakıyordu
@@ -169,10 +180,11 @@ function DuzenlemeEylemleri({ d }) {
 }
 
 /* Üst şerit — künye no + başlık + dosya kimliği + eylemler + Kapat + (sağda) tek birincil. */
-function UstSerit({ kayitNo, baslik, dosyaAdi, duzenleme, eylemler, kapatRef, kapatIstegi, birincil }) {
+function UstSerit({ kayitNo, baslik, dosyaAdi, duzenleme, eylemler, kapatRef, kapatIstegi, birincil, cilt }) {
   const duz = !!duzenleme;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: `${SP.s}px ${SP.m}px`, flexWrap: "wrap" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: `${SP.s}px ${SP.m}px`, flexWrap: "wrap", ...(cilt ? ciltSerit(false) : null) }}>
+      {cilt && <span style={{ fontFamily: MONO, fontSize: 10, lineHeight: "14px", letterSpacing: ".1em", textTransform: "uppercase", color: PAL.onInk2, paddingRight: SP.m, borderRight: `1px solid color-mix(in srgb, ${PAL.onInk} 22%, transparent)` }}>{cilt} · nüsha</span>}
       {kayitNo && <span style={{ fontFamily: MONO, fontSize: 13, lineHeight: "18px", fontWeight: 600, color: PAL.onInk, letterSpacing: ".02em", ...TNUM }}>{kayitNo}</span>}
       <Dialog.Title asChild>
         <span style={{ ...TYPE.ui, fontWeight: 600, color: PAL.onInk, minWidth: 0 }}>{baslik}</span>
@@ -184,6 +196,7 @@ function UstSerit({ kayitNo, baslik, dosyaAdi, duzenleme, eylemler, kapatRef, ka
         <button ref={kapatRef} type="button" onClick={kapatIstegi} aria-label={duz ? "Vazgeç ve kapat (Esc)" : "Kapat (Esc)"} {...focusRing} data-press="" data-dokunma=""
           data-perde-dugme="" style={perdeDugmeStil(false)}>
           <Icon.x width={12} height={12} /> {duz ? "Vazgeç" : "Kapat"}
+          {cilt && <kbd data-perde-esc="" style={{ fontFamily: MONO, fontSize: 10, lineHeight: "14px", padding: "0 4px", borderRadius: 4, border: `1px solid color-mix(in srgb, ${PAL.onInk} 30%, transparent)`, color: PAL.onInk2 }}>Esc</kbd>}
         </button>
         {birincil}
       </span>
@@ -247,7 +260,7 @@ function useDuzenleme({ metin, duzenlenebilir, alanRef, onKaydet, onGonder, onIn
    künye · ustIcerik: kâğıdın üstünde künye fişi · kagitKose: kâğıdın sağ üst köşesine basılan
    öğe (posta damgası) · altKunye: kâğıdın dibinde mono künye (denetim hash'i) · birincil:
    Kapat'ın SAĞINDA tek dolu eylem. */
-export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", segmentler = null, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onGonder = null, onIndir = null, onRevize = null, kayitNo = "", ustIcerik = null, kagitKose = null, altKunye = null, birincil = null, akit = false }) {
+export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", segmentler = null, fileUrl = "", onKapat = () => {}, eylemler = null, duzenlenebilir = false, onKaydet = null, onGonder = null, onIndir = null, onRevize = null, kayitNo = "", ustIcerik = null, kagitKose = null, altKunye = null, birincil = null, akit = false, cilt = "", derkenar = null }) {
   const dar = useDarEkran();
   const kapatRef = useRef(null);
   const alanRef = useRef(null);
@@ -271,17 +284,17 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
           <Dialog.Portal forceMount>
             <Dialog.Overlay asChild forceMount>
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
-                style={{ position: "fixed", inset: 0, zIndex: 300, ...KARARTI, overflowY: "auto", overscrollBehavior: "contain", padding: dar ? "16px 12px calc(32px + env(safe-area-inset-bottom))" : "32px 16px 48px" }}>
+                style={{ position: "fixed", inset: 0, zIndex: 300, ...(cilt ? CILT_KARARTI : KARARTI), overflowY: "auto", overscrollBehavior: "contain", padding: dar ? "16px 12px calc(32px + env(safe-area-inset-bottom))" : "32px 16px 48px" }}>
                 <Dialog.Content asChild forceMount onCloseAutoFocus={odakIade}
                   onOpenAutoFocus={(e) => { e.preventDefault(); (duzenlenebilir ? alanRef.current : kapatRef.current)?.focus(); }}>
                   <motion.div initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }}
                     transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
                     data-bm-kap="" {...(fisli ? { "data-fisli": "" } : null)}
-                    style={{ width: "min(760px, 100%)", margin: "0 auto", display: "flex", flexDirection: "column", gap: SP.m, outline: "none" }}>
+                    style={{ width: "min(760px, 100%)", margin: "0 auto", display: "flex", flexDirection: "column", gap: cilt ? 0 : SP.m, outline: "none" }}>
                     <style>{PERDE_CSS}</style>
                     <Dialog.Description style={SR_ONLY}>{baslik} — A4 belge önizlemesi.</Dialog.Description>
                     <UstSerit kayitNo={kayitNo} baslik={baslik} dosyaAdi={dosyaAdi} duzenleme={duzenlenebilir ? d : null} eylemler={eylemler}
-                      kapatRef={kapatRef} kapatIstegi={kapatIstegi} birincil={birincil} />
+                      kapatRef={kapatRef} kapatIstegi={kapatIstegi} birincil={birincil} cilt={cilt} />
                     {/* Perde hep koyu → hata rengi tema-bağımsız açık mercan (onInkHata). */}
                     {duzenlenebilir && d.stt.hata && <div role="alert" style={{ ...TYPE.data, fontWeight: 500, color: PAL.onInkHata, textAlign: "center" }}>{d.stt.hata}</div>}
                     {d.kapatUyari && d.kirli && <KirliUyari onKaydet={() => onKaydet?.(d.metinD)} onCik={onKapat} />}
@@ -290,7 +303,8 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                     )}
                     <div data-bm-govde="" {...(fisli ? { "data-fisli": "" } : null)}>
                       {ustIcerik && <div data-bm-fis="">{ustIcerik}</div>}
-                      <div style={{ display: "flex", flexDirection: "column", gap: SP.m, minWidth: 0 }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: SP.m, minWidth: 0, ...(cilt ? { background: PAL.bg2, padding: dar ? SP.s : SP.l } : null) }}>
+                        {derkenar}
                         {/* Düz metin + düzenlenemez + vurgusuz → GERÇEK A4 düzeni (A4Belge). Diğer üç kip
                             (PDF, kâğıt üstünde düzenleme, çıkarım vurgulu kaynak) kendi düzenini korur. */}
                         {!revizeOneriAcik && !calisma && <NushaKagit metin={metin || "İçerik henüz hazır değil."} dar={dar} kose={kagitKose} akit={akit} />}
@@ -298,10 +312,11 @@ export default function BelgeModal({ acik, baslik, dosyaAdi = "", metin = "", se
                           <CalismaKagidi fileUrl={fileUrl} duzenlenebilir={duzenlenebilir} segmentler={vurgulu ? segmentler : []} metin={metin}
                             alanRef={alanRef} metinD={d.metinD} onYaz={d.yaz} />
                         )}
-                        {altKunye}
+                        {!cilt && altKunye}
                       </div>
                     </div>
-                    {!dar && (
+                    {cilt && altKunye && <div style={ciltSerit(true)}>{altKunye}</div>}
+                    {!dar && !cilt && (
                       <div data-perde-ipucu="" style={{ ...TYPE.meta, textAlign: "center" }}>
                         {duzenlenebilir ? "Esc vazgeçer; kaydedilmemiş değişiklikte önce sorar" : "Kapatmak için Esc'e basın ya da dışarı tıklayın"}
                       </div>

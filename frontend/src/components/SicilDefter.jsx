@@ -229,7 +229,7 @@ export function BosDefter({ sablon, basliklar, baslik, sub, actions, damga = "Ka
           {damga && <div style={{ marginBottom: SP.l }}><Damga ton={V} egim={-6}>{damga}</Damga></div>}
           {kunye && <div style={{ ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase", marginBottom: SP.s, ...TNUM }}>{kunye}</div>}
           <h2 style={{ margin: 0, ...TYPE.h2, color: PAL.ink }}>{baslik}</h2>
-          {sub && <div style={{ margin: `${SP.s}px auto 0`, ...TYPE.ui, color: PAL.mut2 }}>{sub}</div>}
+          {sub && <div style={{ margin: `${SP.s}px auto 0`, ...TYPE.ui, color: PAL.mut2, textWrap: "balance" }}>{sub}</div>}
           {actions && <div style={{ display: "flex", gap: SP.m, justifyContent: "center", flexWrap: "wrap", marginTop: SP.l }}>{actions}</div>}
         </div>
       </div>
@@ -350,6 +350,6 @@ export function Imlec({ gezinme, kimlik }) {
   return (
     <motion.span layoutId={`sd-imlec-${kimlik}`} aria-hidden="true"
       transition={anlik ? { duration: 0 } : { type: "spring", stiffness: 520, damping: 42, mass: 0.6 }}
-      style={{ position: "absolute", left: 0, top: 6, bottom: 6, width: 3, borderRadius: "0 3px 3px 0", background: T, zIndex: 1 }} />
+      style={{ position: "absolute", left: 4, top: 8, bottom: 8, width: 3, borderRadius: 2, background: T, zIndex: 1 }} />
   );
 }

@@ -16,8 +16,10 @@ const ACIK_TOKENLER = `
   --ke-bg:#eceee9; --ke-bg2:#e2e5de; --ke-surf:#ffffff; --ke-surf2:#f7f8f4; --ke-surf-hi:rgba(17,22,40,.05);
   --ke-line:rgba(17,22,40,.11); --ke-line-hi:rgba(17,22,40,.22);
   --ke-ink:#10131d; --ke-ink2:#2c3140; --ke-mut:#5c6272; --ke-mut2:#474d5d; --ke-mut3:#5b6173;
+  /* yer-tutucu: girdi ipucu — değerden belirgin açık (tur 9 j2: boş alan dolu okunuyordu), beyazda 4,6:1. */
+  --ke-yer-tutucu:#747986;
   --ke-hov:rgba(17,22,40,.04); --ke-press:rgba(17,22,40,.075);
-  --ke-input-line:rgba(17,22,40,.47); --ke-on-accent:#ffffff; --ke-ink-surf:#141827; --ke-scrim:rgba(12,15,28,.40);
+  --ke-input-line:rgba(17,22,40,.47); --ke-on-accent:#ffffff; --ke-ink-surf:#141827; --ke-scrim:rgba(40,34,24,.26);
   /* scrim-koyu: A4/kurul modallarının "her iki temada koyu" karartısı (bkz. --ke-on-ink
      gerekçesi) — dark'ta YENİDEN TANIMLANMAZ. on-ink-2: bu karartı üstündeki ikincil metin. */
   --ke-scrim-koyu:rgba(10,12,22,.82); --ke-on-ink-2:rgba(238,241,250,.74);
@@ -89,7 +91,7 @@ ${ACIK_TOKENLER}}
   --ke-t:#7491ff; --ke-v:#b98de6; --ke-r:#ff6a5a;
   --ke-bg:#0c0e14; --ke-bg2:#08090e; --ke-surf:#1a1d2a; --ke-surf2:#11131b; --ke-surf-hi:rgba(255,255,255,.07);
   --ke-line:rgba(255,255,255,.10); --ke-line-hi:rgba(255,255,255,.22);
-  --ke-ink:#eef0f7; --ke-ink2:#cfd3df; --ke-mut:#9aa0b2; --ke-mut2:#b8bdcb; --ke-mut3:#8c92a5;
+  --ke-ink:#eef0f7; --ke-ink2:#cfd3df; --ke-mut:#9aa0b2; --ke-mut2:#b8bdcb; --ke-mut3:#8c92a5; --ke-yer-tutucu:#80869a;
   --ke-hov:rgba(255,255,255,.05); --ke-press:rgba(255,255,255,.09);
   --ke-input-line:rgba(255,255,255,.34); --ke-on-accent:#0b0d16; --ke-ink-surf:#1a1e2c; --ke-scrim:rgba(0,0,0,.66);
   --ke-cam:rgba(24,27,38,.6); --ke-cam-line:rgba(255,255,255,.10);
@@ -159,8 +161,8 @@ ${ACIK_TOKENLER}}
 /* Cilt bezi: çok ince atkı/çözgü örgüsü — rayın "lacivert bez kapak" malzemesi. Statik,
    tek katman, metnin altında (ray zemininin background-image'ı). */
 /* Kör baskı (tur 8): cilde mürekkepsiz basılmış yazı — zemin tonu + alttan ışık + üstten gölge. */
-[data-ray]{ --ke-kor-zemin:#18203b; --ke-kor-isik:rgba(255,255,255,.07); --ke-kor-golge:rgba(0,0,0,.45); }
-:root[data-theme="dark"] [data-ray]{ --ke-kor-zemin:#16204a; --ke-kor-isik:rgba(255,255,255,.06); --ke-kor-golge:rgba(0,0,0,.55); }
+[data-ray]{ --ke-kor-zemin:#18203b; --ke-kor-isik:rgba(255,255,255,.07); --ke-kor-golge:rgba(0,0,0,.45); --ke-kor-cizgi:rgba(255,255,255,.17); }
+:root[data-theme="dark"] [data-ray]{ --ke-kor-zemin:#16204a; --ke-kor-isik:rgba(255,255,255,.06); --ke-kor-golge:rgba(0,0,0,.55); --ke-kor-cizgi:rgba(255,255,255,.14); }
 [data-ray]{ --ke-ray-doku:repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, rgba(255,255,255,.016) 0 1px, transparent 1px 3px); }
 /* KÂĞIT KAPSAMI (tur 4) — [data-evrak-kagit] taşıyan alt ağaç koyu temada AÇIK kâğıt
    token'larına döner (ray kapsamının tersi): kâğıdın üstündeki her atom (Damga, havale fişi,

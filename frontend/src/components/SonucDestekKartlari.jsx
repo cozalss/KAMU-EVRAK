@@ -306,7 +306,7 @@ export function RiskCard({ r, band, bantC }) {
             return (
               <div key={i} className="sc-risk-reason">
                 <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: bantC, flex: "none" }} />
-                <span style={{ flex: 1, minWidth: 0, color: PAL.mut2 }}>{yorum.cevrildi ? yorum.sade : clean(yorum.sade)}</span>
+                <span style={{ flex: 1, minWidth: 0, color: PAL.mut2 }}>{gerekceSade(yorum.cevrildi ? yorum.sade : clean(yorum.sade))}</span>
                 {pay != null && (
                   <>
                     <span className="sc-risk-meter" aria-hidden="true" style={{ background: PAL.press }}>
@@ -330,6 +330,11 @@ export function RiskCard({ r, band, bantC }) {
     </NeonCard>
   );
 }
+
+/* Risk gerekçesinde iç içe ham etiket ("… — (mevzuat kanıtı) Doğrulanmış…") memura
+   gösterilmez; tire sonrası cümle büyük harfle sürer (2. jüri: ham etiket). */
+const ICTEKI_ETIKET_RE = /(—\s*)\(([^)]{2,40})\)\s*(\S)/u;
+const gerekceSade = (t) => String(t ?? "").replace(ICTEKI_ETIKET_RE, (_, tire, _e, ilk) => tire + ilk.toLocaleUpperCase("tr-TR"));
 
 /* Ham sinyal etiketi ("(mevzuat kanıtı) Doğrulanmış…") cümlenin başına yapışık gelmesin
    (2. jüri): etiket ayrı mono künye olur, cümle büyük harfle başlar. */

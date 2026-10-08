@@ -5,6 +5,7 @@
    sürerken dizin KATALOG adetini değil İSABET / TOPLAM'ı yazar ("2 / 27"); isabeti olmayan konu
    sönükleşir — memur hangi konuda sonuç olduğunu dizinden okur. Madde içinde (derin) aramada
    da dizin görünür kalır ve konu başına eşleşen madde sayısını gösterir. */
+import { useState } from "react";
 import { motion } from "motion/react";
 import { Icon, MONO, DISPLAY, T, V, BANT, PAL, DERIN, ALFA, TYPE, TNUM, RAD, SP, focusRing } from "./neonUi.jsx";
 import { vurguParcala } from "../lib/mevzuatVurgu.js";
@@ -59,6 +60,13 @@ function DizinDip({ cekirdekSayi }) {
 /* isabet: Map<kategori, n> | null — null ise katalog adetleri (arama yok). birim: başlık sağı. */
 export function Dizin({ kategoriler, kategoriAdet, toplam, kategori, setKategori, cekirdekSayi, isabet = null, birim = "ADET" }) {
   const toplamIsabet = isabet ? [...isabet.values()].reduce((a, b) => a + b, 0) : null;
+  // Sorgu varken isabetsiz bölümler tek satıra katlanır (tur 9 jüri: 15 sönük tam boy satır
+  // dizini gürültüye çeviriyordu). Seçili bölüm isabetsiz olsa da görünür kalır.
+  const [acik, setAcik] = useState(false);
+  const tum = kategoriler.map((ad, i) => ({ ad, i }));
+  const isabetli = ({ ad }) => !isabet || (isabet.get(ad) || 0) > 0 || kategori === ad;
+  const gorunen = acik ? tum : tum.filter(isabetli);
+  const katlanan = isabet ? tum.filter((x) => !isabetli(x)).length : 0;
   return (
     <nav aria-label="Kategori dizini" className="mv-dizin">
       <div className="mv-dizin-baslik" style={{ ...TYPE.antet, color: PAL.mut3, display: "flex", alignItems: "center", gap: SP.s, padding: `0 0 ${SP.s}px 14px`, borderBottom: `1px solid ${PAL.ink}`, marginBottom: SP.s }}>
@@ -67,11 +75,21 @@ export function Dizin({ kategoriler, kategoriAdet, toplam, kategori, setKategori
       <div role="group" aria-label="Kategori filtresi">
         <ol className="mv-dizin-liste" style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 1 }}>
           <DizinOge ad="Tüm mevzuat" adet={isabet ? toplamIsabet : toplam} toplam={isabet ? toplam : null} sira="—" aktif={!kategori} onSec={() => setKategori("")} />
-          {kategoriler.map((ad, i) => (
+          {gorunen.map(({ ad, i }) => (
             <DizinOge key={ad} ad={ad} sira={String(i + 1).padStart(2, "0")} aktif={kategori === ad}
               adet={isabet ? (isabet.get(ad) || 0) : (kategoriAdet.get(ad) || 0)} toplam={isabet ? (kategoriAdet.get(ad) || 0) : null}
               onSec={() => setKategori(kategori === ad ? "" : ad)} />
           ))}
+          {katlanan > 0 && (
+            <li>
+              <button type="button" onClick={() => setAcik((a) => !a)} aria-expanded={acik} {...focusRing} data-press="" className="mv-dizin-oge"
+                style={{ display: "flex", alignItems: "baseline", gap: SP.s, width: "100%", boxSizing: "border-box", textAlign: "left", cursor: "pointer", border: "none", background: "transparent", borderRadius: RAD.chip, padding: "6px 10px 6px 14px", color: PAL.mut2, ...TYPE.meta }}>
+                <span aria-hidden="true" style={{ fontFamily: MONO, fontSize: 11, color: PAL.mut3, minWidth: 18 }}>{acik ? "−" : "+"}</span>
+                <span style={{ flex: 1 }}>{acik ? "İsabetsiz bölümleri gizle" : `Diğer ${katlanan} bölüm`}</span>
+                {!acik && <span style={{ fontFamily: MONO, fontSize: 11.5, color: PAL.mut3, ...TNUM }}>0</span>}
+              </button>
+            </li>
+          )}
         </ol>
       </div>
       <DizinDip cekirdekSayi={cekirdekSayi} />

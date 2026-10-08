@@ -180,7 +180,9 @@ function GelisFisi({ ad, meta, saat }) {
     <motion.div key="fis" initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: 72, transition: { duration: 0.28, ease: EASE_BEZIER.inOut } }}
       transition={{ duration: 0.22, ease: EASE_BEZIER.out }}
-      style={{ position: "absolute", left: "50%", top: "50%", width: "min(80%, 300px)", marginLeft: "calc(min(80%, 300px) / -2)", marginTop: -52, zIndex: 3, background: PAL.surf, borderRadius: 3, boxShadow: `${SH.pop}, 0 0 0 1px ${PAL.line}`, padding: `${SP.m}px ${SP.l}px`, pointerEvents: "none" }}>
+      style={{ position: "absolute", inset: 0, zIndex: 3, display: "flex", alignItems: "center", justifyContent: "center", background: PAL.surf2, pointerEvents: "none" }}>
+      {/* Fiş defterin YERİNİ tam kaplar (tur 9: ortada yüzerken kenarlarda kırpık yuva artıkları görünüyordu). */}
+      <div style={{ width: "min(84%, 340px)", background: PAL.surf, borderRadius: 3, boxShadow: `${SH.pop}, 0 0 0 1px ${PAL.line}`, padding: `${SP.m}px ${SP.l}px` }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.antet, fontSize: 10, color: PAL.mut2, textTransform: "uppercase", whiteSpace: "nowrap" }}>
         <span>Evrak geldi</span>
         <span style={{ flex: 1, height: 1, background: PAL.line }} />
@@ -189,6 +191,7 @@ function GelisFisi({ ad, meta, saat }) {
       <div style={{ marginTop: 6, height: 3, borderTop: `1.5px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.85 }} />
       <div style={{ marginTop: SP.s, ...TYPE.ui, fontWeight: 600, color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{ad}</div>
       <div style={{ marginTop: 2, fontFamily: MONO, fontSize: 11, lineHeight: "16px", color: PAL.mut2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", ...TNUM }}>{meta || "okunmayı bekliyor"}</div>
+      </div>
     </motion.div>
   );
 }
@@ -210,7 +213,7 @@ function YuvaBag({ y, durum, vurgulu, onYuva }) {
   return (
     <>
       <span style={{ position: "absolute", left: x - r - 4, top: y.y - r - 4, width: r * 2 + 8, height: r * 2 + 8, boxSizing: "border-box", borderRadius: RAD.dot, border: `1.5px solid ${col}`, opacity: vurgulu ? 1 : 0, transform: vurgulu ? "scale(1)" : "scale(.9)", transition: "opacity .14s var(--ke-ease-out), transform .14s var(--ke-ease-out)", pointerEvents: "none" }} />
-      {onYuva && <span onClick={() => onYuva(a.sira)} style={{ position: "absolute", left: x - r, top: y.y - r, width: r * 2, height: r * 2, borderRadius: RAD.dot, cursor: "pointer", zIndex: 2 }} />}
+      {onYuva && <span onClick={() => onYuva(a.sira)} title={`${String(a.sira + 1).padStart(2, "0")} · ${a.label}`} style={{ position: "absolute", left: x - r, top: y.y - r, width: r * 2, height: r * 2, borderRadius: RAD.dot, cursor: "pointer", zIndex: 2 }} />}
       <Yuva y={y} durum={durum} />
     </>
   );
@@ -258,7 +261,7 @@ function Yuva({ y, durum }) {
   const kenar = {
     gerekmedi: `1.5px solid ${PAL.lineHi}`, atlandi: `1.5px dashed ${PAL.lineHi}`,
     kesildi: `1.5px dashed ${BANT.kirmizi.c}`, yarida: `1.5px dashed ${BANT.kirmizi.c}`, islenmedi: `1px dotted ${PAL.lineHi}`,
-  }[durum] || `1px dotted ${PAL.lineHi}`;
+  }[durum] || `1.5px solid ${PAL.lineHi}`;   // bekliyor: koyuda da seçilen halka (tur 9)
   const kirmizi = durum === "kesildi" || durum === "yarida";
   return (
     <span style={{ ...kutu, border: kenar, color: kirmizi ? DERIN_OF(BANT.kirmizi.c) : PAL.mut3 }}>

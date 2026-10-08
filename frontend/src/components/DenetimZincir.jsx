@@ -103,7 +103,7 @@ function HalkaSatir({ h, son, durum, az }) {
   const muhurlu = durum === "muhurlu", kirik = durum === "kirik";
   const renk = kirik ? R : muhurlu ? V : PAL.lineHi;
   return (
-    <li style={{ position: "relative", display: "grid", gridTemplateColumns: "28px minmax(0,1fr) auto", columnGap: SP.m, alignItems: "center", minHeight: 32 }}>
+    <li data-halka={h.no} style={{ position: "relative", display: "grid", gridTemplateColumns: "28px minmax(0,1fr) auto", columnGap: SP.m, alignItems: "center", minHeight: 32 }}>
       {!son && <span aria-hidden="true" style={{ position: "absolute", left: 13, top: 28, bottom: -6, width: 2, background: muhurlu ? `color-mix(in srgb, ${V} 45%, transparent)` : PAL.line, transition: "background .2s ease-out" }} />}
       <motion.span aria-hidden="true" initial={false} animate={muhurlu || kirik ? { scale: az ? 1 : [1.35, 1] } : { scale: 1 }} transition={{ duration: 0.28, ease: EASE_BEZIER.out }}
         style={{ position: "relative", width: 28, height: 28, borderRadius: RAD.dot, display: "grid", placeItems: "center", fontFamily: MONO, fontSize: 11, fontWeight: 600, ...TNUM,
@@ -201,6 +201,22 @@ const CekmeceAlt = ({ islemId, d, calisiyor }) => (
   </footer>
 );
 
+/* Mühür yürüyüşü (tur 9, jüri: hüküm 1440x900'de ekranın altında kalıyordu): halkalar
+   mühürlenirken çekmece ip boyunca son mühürlü halkayı görünür tutar; sonuçta hüküm
+   damgası görüş alanına getirilir. reduced-motion → animasyonsuz atlama. */
+function useMuhurYuruyusu(govdeRef, d, az) {
+  useEffect(() => {
+    const kap = govdeRef.current;
+    if (!kap) return;
+    const davranis = az ? "auto" : "smooth";
+    if (d.asama === "sonuc" || d.asama === "hata" || d.asama === "yok") {
+      kap.querySelector("[data-hukum]")?.scrollIntoView?.({ block: "nearest", behavior: davranis });
+    } else if (d.asama === "muhurleniyor" && d.muhurlu > 0) {
+      kap.querySelector(`[data-halka="${d.muhurlu}"]`)?.scrollIntoView?.({ block: "nearest", behavior: davranis });
+    }
+  }, [govdeRef, d.asama, d.muhurlu, az]);
+}
+
 /* Çekmece kabuğu: scrim + sağdan kayan panel; Esc/scrim kapatır, odak içeride döner. */
 export function ZincirCekmece({ kayit, onKapat }) {
   const az = typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -217,6 +233,8 @@ export function ZincirCekmece({ kayit, onKapat }) {
     return () => { document.removeEventListener("keydown", tus); document.body.style.overflow = eski; onceki?.focus?.(); };
   }, [onKapat]);
   const calisiyor = d.asama === "bekliyor" || d.asama === "muhurleniyor";
+  const govdeRef = useRef(null);
+  useMuhurYuruyusu(govdeRef, d, az);
   // Portal ZORUNLU: ViewWrap içeriği kendi yığın bağlamını (zIndex 1) kurar; içeride kalan
   // sabit çekmece telefonun alt sekme şeridinin (z 90) ALTINDA kalıyordu (ölçüldü, 390 px).
   return createPortal(
@@ -225,7 +243,7 @@ export function ZincirCekmece({ kayit, onKapat }) {
         initial={{ x: az ? 0 : 32, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.26, ease: EASE_BEZIER.out }}
         style={{ width: "min(460px, 100vw)", height: "100dvh", display: "flex", flexDirection: "column", background: PAL.surfPop, borderLeft: `1px solid ${PAL.lineHi}`, boxShadow: SH.modal }}>
         <CekmeceBaslik kayit={kayit} onKapat={onKapat} kapatRef={kapatRef} />
-        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "contain", padding: `${SP.l}px ${SP.xl}px ${SP.xxxl}px`, scrollPaddingBottom: SP.xxxl, display: "grid", gap: SP.l, alignContent: "start" }}>
+        <div ref={govdeRef} style={{ flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "contain", padding: `${SP.l}px ${SP.xl}px ${SP.xxxl}px`, scrollPaddingBottom: SP.xxxl, display: "grid", gap: SP.l, alignContent: "start" }}>
           <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, marginBottom: SP.s }}>
               <span style={{ ...TYPE.antet, color: PAL.ink2, textTransform: "uppercase" }}>Zincir defteri · kök → son</span>
@@ -248,7 +266,7 @@ export function ZincirCekmece({ kayit, onKapat }) {
             </ol>
           </div>
           <SonHashKutusu h={kayit.di.son_hash || kayit.di.kok_hash} />
-          <Hukum d={d} />
+          <div data-hukum="" style={{ scrollMarginBottom: SP.l }}><Hukum d={d} /></div>
         </div>
         <CekmeceAlt islemId={kayit.islemId} d={d} calisiyor={calisiyor} />
       </motion.aside>

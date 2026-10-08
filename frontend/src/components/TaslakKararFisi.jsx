@@ -11,6 +11,26 @@ import { tarihHukmu, bugunTarihi } from "../lib/gonderimTarihi.js";
 
 const dolu = (v) => v != null && String(v).trim() && v !== "—";
 
+/* Yazının özü — 3 satır; uzunsa "Tamamı" ile yerinde açılır (tur 9 jüri: 6 satır + solma maskesi
+   fişi uzatıp "Devamı" künyesini zorunlu kılıyordu). */
+const OZ_SATIR = 3;
+function YazininOzu({ oz }) {
+  const [acik, setAcik] = useState(false);
+  const uzun = String(oz).length > 150;
+  return (
+    <div>
+      <BaslikEtiket>Yazının özü</BaslikEtiket>
+      <p style={{ margin: 0, ...TYPE.data, color: PAL.ink2, ...(acik ? null : { display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: OZ_SATIR, overflow: "hidden" }) }}>{oz}</p>
+      {uzun && (
+        <button type="button" onClick={() => setAcik((a) => !a)} aria-expanded={acik} {...focusRing} data-press=""
+          style={{ marginTop: 4, padding: "2px 0", border: "none", background: "transparent", cursor: "pointer", fontFamily: MONO, fontSize: 11, letterSpacing: ".08em", textTransform: "uppercase", color: DERIN.T }}>
+          {acik ? "Kısalt ↑" : "Tamamı ↓"}
+        </button>
+      )}
+    </div>
+  );
+}
+
 /* Yazının özü: gövdenin ilk anlamlı paragrafı (hitap/ilgi/künye satırları taslakOzeti'nde
    zaten ayıklanır). Kapanış kalıpları ("Bilgilerinize sunulur.") öz değildir. */
 function ozCikar(govde = "") {
@@ -139,14 +159,7 @@ export default function TaslakKararFisi({ h, r, ad, govde, tarih, sira, toplam, 
           </div>
         )}
 
-        {oz && (
-          <div>
-            <BaslikEtiket>Yazının özü</BaslikEtiket>
-            {/* 6 satır; altında gönderim kontrolü + künye gelir (tur 8: künye artık dibe
-                itilmez — özün altında ~250px ölü alan kalıyordu, 1920). */}
-            <p title={oz} style={{ margin: 0, ...TYPE.data, color: PAL.ink2, display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 6, overflow: "hidden" }}>{oz}</p>
-          </div>
-        )}
+        {oz && <YazininOzu oz={oz} />}
 
         <GonderimKontrolu kunye={yaziKunyesi} />
 

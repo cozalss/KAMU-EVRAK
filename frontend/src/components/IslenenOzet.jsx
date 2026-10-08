@@ -70,6 +70,7 @@ const CETELE_CSS = `
 @keyframes cg-ciz{from{transform:scaleY(0)}to{transform:none}}
 [data-cetele-cubuk]{transform-origin:50% 100%;animation:cg-ciz .28s var(--ke-ease-out) both}
 [data-cetele-gun]:not(:disabled):hover{background:var(--ke-hov)!important}
+[data-karar-eylem]:hover{background:var(--ke-hov)!important}
 `;
 
 function Cetele({ items, filter }) {
@@ -95,7 +96,8 @@ function Cetele({ items, filter }) {
       {/* Kayıtlı günlerin ortalaması — kesikli kılavuz (yalnız ≥2 dolu gün varsa anlamlı). */}
       {ort > 0 && (
         <span aria-hidden="true" title={`Kayıtlı gün ortalaması: ${sn(ort)}`} style={{ position: "absolute", left: 0, right: 0, bottom: CUBUK_TABAN + cubukBoyu(ort, azami), borderTop: `1px dashed ${PAL.mut3}`, opacity: 0.6, pointerEvents: "none" }}>
-          <span style={{ position: "absolute", left: 0, bottom: 2, ...TYPE.antet, fontSize: 9, lineHeight: "10px", color: PAL.mut3, ...TNUM }}>ORT {sn(ort)}</span>
+          {/* Tur 9 jüri: 9 px etiket çizginin üstüne biniyordu → sağ uçta, çizginin ÜSTÜNDE, 10 px. */}
+          <span style={{ position: "absolute", right: 0, bottom: 3, padding: "0 0 0 6px", background: PAL.surf, ...TYPE.antet, fontSize: 10, lineHeight: "12px", color: PAL.mut2, ...TNUM }}>ort {sn(ort)}</span>
         </span>
       )}
       {gunler.map((g, i) => <CeteleGun key={i} g={g} azami={azami} bugun={i === GUN_SAYISI - 1} aktif={secili(g.d)} onSec={sec} />)}
@@ -104,6 +106,21 @@ function Cetele({ items, filter }) {
 }
 
 const kunye = { ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", whiteSpace: "nowrap" };
+
+/* Çetelenin dürüst dipnotu (tur 9 jüri: seyrek veride 12 boş gün açıklamasızdı) — kayıtlı gün
+   sayısı + hafta sonu taraması tek mono satırda. */
+function CeteleNotu({ items }) {
+  const bugun = gunBasi(Date.now());
+  const gunler = new Set(items.map((x) => gunBasi(x.ts)).filter((t) => Number.isFinite(t) && bugun - t < GUN_SAYISI * GUN_MS));
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", gap: SP.m, marginTop: SP.xs, ...kunye, color: PAL.mut2, ...TNUM }}>
+      <span>Kayıtlı gün {gunler.size} / {GUN_SAYISI}</span>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: PAL.mut3 }}>
+        <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 2, background: `color-mix(in srgb, ${PAL.mut3} 14%, transparent)` }} />hafta sonu
+      </span>
+    </div>
+  );
+}
 const karo = { borderRadius: RAD.card, background: PAL.surf, boxShadow: SH.card, border: `1px solid ${PAL.line}`, padding: `${SP.l}px ${SP.l + 4}px ${SP.m}px`, minWidth: 0 };
 
 /* Sol karo — BİLGİ karosu (tur 8: tamamı "tümünü göster" düğmesiydi; büyük alan imleçte el
@@ -113,7 +130,8 @@ function EtkinlikKarosu({ items, gorunen, filter, ortSn }) {
   const bugunBas = gunBasi(Date.now());
   const say = (gun) => items.filter((x) => { const t = gunBasi(x.ts); return Number.isFinite(t) && t >= bugunBas - gun * GUN_MS; }).length;
   const suzuk = gorunen.length !== items.length;
-  const kunyeSatir = [["Bugün", String(say(0)).padStart(2, "0")], ["Son 7 gün", String(say(6)).padStart(2, "0")], ["Ort. süre", ortSn ? `${sn(ortSn)} sn` : "—"]];
+  // Tur 9 jüri: "00" bir kod gibi okunuyordu → dolgusuz sayı; sıfır soluk "—".
+  const kunyeSatir = [["Bugün", say(0)], ["Son 7 gün", say(6)], ["Ort. süre", ortSn ? `${sn(ortSn)} sn` : 0]];
   return (
     <section aria-label="Sicil etkinliği" style={{ ...karo, display: "flex", flexDirection: "column", position: "relative" }}>
       <span style={kunye}>Sicil · son {GUN_SAYISI} gün</span>
@@ -126,12 +144,13 @@ function EtkinlikKarosu({ items, gorunen, filter, ortSn }) {
           {kunyeSatir.map(([k, v]) => (
             <React.Fragment key={k}>
               <dt style={{ ...kunye, fontSize: 10, lineHeight: "15px" }}>{k}</dt>
-              <dd style={{ margin: 0, textAlign: "right", color: PAL.ink2, fontWeight: 600 }}>{v}</dd>
+              <dd style={{ margin: 0, textAlign: "right", color: v ? PAL.ink2 : PAL.mut3, fontWeight: v ? 600 : 500 }}>{v || "—"}</dd>
             </React.Fragment>
           ))}
         </dl>
       </div>
       <Cetele items={gorunen} filter={filter} />
+      <CeteleNotu items={gorunen} />
     </section>
   );
 }
@@ -150,7 +169,8 @@ function KararDugmesi({ k, n, aktif, dar, onSec }) {
         padding: dar ? "6px 6px" : "8px 10px", minWidth: 0, borderRadius: RAD.ctl, border: `1px solid ${aktif ? PAL.lineHi : "transparent"}`,
         background: aktif ? ALFA(k.renk) : "transparent",
         transition: "background .12s ease, border-color .12s ease, transform .14s var(--ke-ease-out)" }}>
-      <span style={{ ...TYPE.num, ...(dar ? { fontSize: 22, lineHeight: "26px" } : null), color: n ? (aktif ? DERIN_OF(k.renk) : PAL.ink) : PAL.mut3 }}><NumberFlow value={n} /></span>
+      {/* Tur 9 jüri: sıfırlara dev punto ağırlık veriyordu → sıfır küçük, soluk "yok" (aynı satır yüksekliği). */}
+      <span style={{ ...TYPE.num, ...(dar ? { fontSize: 22, lineHeight: "26px" } : null), color: n ? (aktif ? DERIN_OF(k.renk) : PAL.ink) : PAL.mut3, ...(n ? null : { display: "flex", alignItems: "flex-end", fontFamily: MONO, fontSize: 13, fontWeight: 500, letterSpacing: ".04em" }) }}>{n ? <NumberFlow value={n} /> : "yok"}</span>
       <span style={{ display: "flex", alignItems: "center", gap: 6, ...TYPE.meta, color: n ? PAL.mut2 : PAL.mut3 }}>
         {!dar && <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: RAD.dot, background: k.renk, opacity: n ? k.doluluk : 0.3, flexShrink: 0 }} />}
         <span title={k.label} style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", ...(dar ? { fontSize: 11, borderBottom: `2px solid ${k.renk}`, paddingBottom: 1 } : null) }}>{k.key === "duzenlendi" || dar ? k.kisa : k.label}</span>
@@ -159,7 +179,25 @@ function KararDugmesi({ k, n, aktif, dar, onSec }) {
   );
 }
 
-function KararKarosu({ say, aktifSet, onSec, onTumu }) {
+/* Karar karosunun dibi — EYLEM SATIRI (tur 9 jüri: kartın alt üçte biri boştu): en eski bekleyen
+   kaydın sicil no'su + yaşı; tıklayınca defter bekleyenlere süzülür. Taramalı dilim açıklaması
+   title'da kalır. */
+function EnEskiBekleyen({ enEski, aktif, onSec }) {
+  if (!enEski) return null;
+  const gun = Math.max(0, Math.round((gunBasi(Date.now()) - gunBasi(enEski.ts)) / GUN_MS));
+  return (
+    <button type="button" onClick={onSec} aria-pressed={aktif} {...focusRing} data-press="" data-karar-eylem=""
+      title="Taramalı dilim memur kararı bekleyen taslaklardır — onaylanınca yeşile döner"
+      style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.s, padding: `${SP.s}px 10px`, border: "none", borderTop: `1px dashed ${PAL.line}`, background: "transparent", textAlign: "left", borderRadius: 0, color: PAL.ink2, ...TYPE.meta }}>
+      <span style={{ ...kunye, color: PAL.mut3 }}>En eski bekleyen</span>
+      <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, color: DERIN.T, ...TNUM }}>{enEski._no}</span>
+      <span style={{ color: PAL.mut2, ...TNUM }}>· {gun ? `${gun} gündür bekliyor` : "bugün kaydedildi"}</span>
+      <span aria-hidden="true" style={{ marginLeft: "auto", color: PAL.mut3 }}>{aktif ? "süzülü" : "bekleyenleri süz →"}</span>
+    </button>
+  );
+}
+
+function KararKarosu({ say, aktifSet, onSec, onTumu, enEski }) {
   const dar = useDarEkran();
   const toplam = KARARLAR.reduce((a, k) => a + say[k.key], 0);
   const ozet = KARARLAR.filter((k) => say[k.key] > 0).map((k) => `${say[k.key]} ${k.label.toLocaleLowerCase("tr-TR")}`).join(", ");
@@ -191,11 +229,7 @@ function KararKarosu({ say, aktifSet, onSec, onTumu }) {
         style={{ display: "grid", gridTemplateColumns: dar ? "repeat(2, minmax(0, 1fr))" : "repeat(auto-fit, minmax(min(112px, 100%), 1fr))", gap: dar ? 2 : SP.xs, marginTop: SP.m, flex: 1 }}>
         {KARARLAR.map((k) => <KararDugmesi key={k.key} k={k} n={say[k.key]} aktif={aktifSet.has(k.key)} dar={dar} onSec={onSec} />)}
       </div>
-      {bekleyenPay > 0 && !dar && (
-        <span style={{ ...TYPE.meta, color: PAL.mut2, marginTop: SP.s, paddingTop: SP.s, borderTop: `1px dashed ${PAL.line}` }}>
-          Taramalı dilim memur kararı bekleyen taslaklardır — onaylanınca yeşile döner.
-        </span>
-      )}
+      {bekleyenPay > 0 && !dar && <EnEskiBekleyen enEski={enEski} aktif={aktifSet.has("bekliyor")} onSec={() => onSec("bekliyor")} />}
     </div>
   );
 }
@@ -248,7 +282,8 @@ export default function IslenenOzet({ items, filter, ortSn }) {
     /* auto-fit: dar ekranda tek sütuna iner (390px'te taşma yok). */
     <div id="isl-ozet-karo" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: SP.m, marginBottom: SP.l, alignItems: "stretch", ...(dar ? { marginTop: SP.s, animation: "nu-rise .18s var(--ke-ease-out) both" } : null) }}>
       <EtkinlikKarosu items={items} gorunen={aktifSet.size ? items.filter((x) => aktifSet.has(x._durum)) : items} filter={filter} ortSn={ortSn} />
-      <KararKarosu say={say} aktifSet={aktifSet} onSec={(k) => filter.toggleChip("durum", k)} onTumu={temizle} />
+      <KararKarosu say={say} aktifSet={aktifSet} onSec={(k) => filter.toggleChip("durum", k)} onTumu={temizle}
+        enEski={items.filter((x) => x._durum === "bekliyor").reduce((a, x) => (!a || Number(x.ts) < Number(a.ts) ? x : a), null)} />
     </div>
   );
   if (!dar) return karolar;

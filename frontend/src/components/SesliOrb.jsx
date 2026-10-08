@@ -17,7 +17,7 @@
    SÖZLEŞME: kabı `position: relative` ve 1:1. Animasyonu çağıranın rAF döngüsü sürer:
    `orbRef` (transform: scale — mühür basıncı), `haloRef` (opacity — dış halka nefesi),
    `parlaRef` (opacity — mürekkep yoğunluğu). Bkz. SesliGorusme.dongu ve lib/orbCizim.orbKare. */
-import React from "react";
+import React, { useId } from "react";
 import { PAL, DERIN, MONO } from "./neonUi.jsx";
 
 // Mühür mürekkebi: AA-güvenli derin ıstampa moru (koyu temada açık lavanta) — iki temada da
@@ -28,8 +28,14 @@ const ince = (yuzde, ek = {}) => ({ position: "absolute", inset: yuzde, borderRa
 // Ritim: içe doğru sıklaşan çizgi aralığı — gerçek mühürlerin rozet halkası dili.
 const IC_HALKALAR = [[30, 1.1, 0.55], [24, 0.9, 0.42], [18.5, 0.9, 0.3]];
 // Halka yazısı: lastik mührün kenar yazısı. Kurum adı DEĞİL (devlet kimliği taklidi yok) —
-// ürünün kendi künyesi; mono, büyük harf, aralıklı.
-const KENAR_YAZI = "KAMU-EVRAK · SESLİ GÖRÜŞME · DANIŞMA MASASI · ";
+// ürünün kendi künyesi; mono, büyük harf, aralıklı. Gerçek lastik mühür tipografisi (tur 9
+// jüri: tek tam daire yolunda alt yay baş aşağı okunuyordu): üst yay SAAT YÖNÜNDE, alt yay
+// TERSİNE — ikisi de soldan sağa okunur; 9 ve 3 yönünde iki ayıraç noktası.
+const UST_YAZI = "KAMU-EVRAK · SESLİ GÖRÜŞME";
+const ALT_YAZI = "DANIŞMA MASASI";
+const UST_R = 40.5;   // üst yay taban çizgisi: harfler dışa doğru yükselir
+const ALT_R = 43.9;   // alt yay taban çizgisi dışta: harfler içe doğru durur, iki yay aynı bantta
+const KENAR_STIL = { fontFamily: MONO, fontSize: 5.6, letterSpacing: ".45px", fontWeight: 600 };
 
 /* Dış durum halkası: dinliyor/hazır düz, düşünüyor kesikli (+ dönüş), yanıtlıyor yayılan çift. */
 function DurumHalkasi({ dusunuyor, konusuyor, azHareket, haloRef }) {
@@ -52,15 +58,25 @@ function DurumHalkasi({ dusunuyor, konusuyor, azHareket, haloRef }) {
    Tek SVG (viewBox 100): çizgiler ölçekle birlikte keskin kalır. orbRef kabın transform'unu,
    parlaRef çekirdek dairesinin opaklığını sürer (SVG öğesinde style.opacity çalışır). */
 function MuhurIzi({ orbRef, parlaRef }) {
+  const kimlik = useId().replace(/:/g, "");
+  const ust = `ke-muhur-ust-${kimlik}`, alt = `ke-muhur-alt-${kimlik}`;
   return (
     <span ref={orbRef} aria-hidden="true" style={ince("12%", { willChange: "transform" })}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: "block", overflow: "visible" }}>
-        <defs><path id="ke-muhur-yol" d="M50 50 m-40.5 0 a40.5 40.5 0 1 1 81 0 a40.5 40.5 0 1 1 -81 0" /></defs>
+        <defs>
+          <path id={ust} d={`M${50 - UST_R} 50 A${UST_R} ${UST_R} 0 0 1 ${50 + UST_R} 50`} />
+          <path id={alt} d={`M${50 - ALT_R} 50 A${ALT_R} ${ALT_R} 0 0 0 ${50 + ALT_R} 50`} />
+        </defs>
         <circle cx="50" cy="50" r="49" fill={PAL.surf} stroke={MUREKKEP} strokeWidth="2.6" />
         <circle cx="50" cy="50" r="45.4" fill="none" stroke={MUREKKEP} strokeWidth="0.8" opacity=".75" />
-        <text fill={MUREKKEP} style={{ fontFamily: MONO, fontSize: 6.1, letterSpacing: ".9px", fontWeight: 600 }} opacity=".85">
-          <textPath href="#ke-muhur-yol" textLength="250" lengthAdjust="spacing">{KENAR_YAZI}</textPath>
+        <text fill={MUREKKEP} style={KENAR_STIL} opacity=".85">
+          <textPath href={`#${ust}`} startOffset="50%" textAnchor="middle">{UST_YAZI}</textPath>
         </text>
+        <text fill={MUREKKEP} style={KENAR_STIL} opacity=".85">
+          <textPath href={`#${alt}`} startOffset="50%" textAnchor="middle">{ALT_YAZI}</textPath>
+        </text>
+        {/* İki ayıraç: üst ve alt yazının buluştuğu 9 ve 3 yönünde birer mürekkep noktası. */}
+        {[50 - 40.7, 50 + 40.7].map((x) => <circle key={x} cx={x} cy="48.2" r="1.15" fill={MUREKKEP} opacity=".8" />)}
         <circle cx="50" cy="50" r="36" fill="none" stroke={MUREKKEP} strokeWidth="0.8" opacity=".75" />
         {IC_HALKALAR.map(([r, w, o]) => <circle key={r} cx="50" cy="50" r={r} fill="none" stroke={MUREKKEP} strokeWidth={w} opacity={o} />)}
         {/* Mürekkep çekirdeği: taban her zaman basılı, genlik yoğunluğu parlaRef ile artar. */}

@@ -9,16 +9,16 @@
    · R3  GÖZLEM — iki sütun ortak taban çizgisinde biter (son kartlar esner, eylemleri dibe).
    · R4  PARAF kapanışı + yazdırma (print CSS: brif A4'e dökülür, kabuk gizlenir).
    Kaynak durumu (bekliyor/ok/bayat/yok) panelKaynak'tan: boş dizi "yükleniyor" sayılmaz. */
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { ViewWrap, Btn, EmptyState, Icon, SP } from "./neonUi.jsx";
+import { ViewWrap, Icon, SP } from "./neonUi.jsx";
 import { EVRAK_TR, BIRIM_LBL } from "./result-cards.jsx";
 import SureTakvimi, { TakvimIskelet } from "./SureTakvimi.jsx";
 import KahramanBrif, { BrifIskelet, BrifHata, SureYokBrif, PANEL_KF, giris } from "./PanelBrif.jsx";
 import AkisKarti, { kuyrukCetelesi } from "./PanelAkis.jsx";
 import IslemSuresiKart from "./PanelSure.jsx";
 import { DagilimYuzeyi, BirimGecikmeKart, SonIslemlerFeed, GozlemDurum, GozlemAntet } from "./PanelGozlem.jsx";
-import { AntetKunye, ParafKapanis, GozlemBos, GozlemDusenDefter, BirlesikHata } from "./PanelParca.jsx";
+import { AntetKunye, ParafKapanis, GozlemBos, GozlemDusenDefter, BirlesikHata, BosDefterSayfasi } from "./PanelParca.jsx";
 import { usePanelKaynaklari, kaynakHazir } from "./panelKaynak.js";
 import { kaynakOzeti, parafOrani } from "../lib/panelBrifSaf.js";
 import { useDarEkran, useMedyaSorgusu } from "../hooks/useMedya.js";
@@ -44,6 +44,10 @@ const YAZDIR_CSS = `
   *{animation:none!important;transition:none!important}
 }`;
 
+/* Tur 9 jüri: 6 satırlık Birim Gecikme ilk sırayı Dağılım'dan ~94 px uzatıyordu → 4 satır;
+   gerisi kartın "tümü" bağlantısında (İşlenen arşivi). */
+const BIRIM_GECIKME_N = 4;
+
 /* Kuyruk + geçmiş özeti (dağılım, birim gecikmesi + havale adedi, ortalama tür güveni). */
 function ozetHesapla(history) {
   const risk = { yesil: 0, sari: 0, kirmizi: 0 };
@@ -68,7 +72,7 @@ function ozetHesapla(history) {
     birimList: Object.entries(birimler).sort((a, b) => b[1] - a[1]).slice(0, 4),
     // Tur 8: birim satırı havale adedini de taşır (Dağılım ile Birim Gecikme aynı birim ekseni).
     birimGecikmeList: Object.entries(birimGecikme)
-      .sort((a, b) => (b[1].gecikmis - a[1].gecikmis) || (b[1].kritik - a[1].kritik)).slice(0, 6)
+      .sort((a, b) => (b[1].gecikmis - a[1].gecikmis) || (b[1].kritik - a[1].kritik)).slice(0, BIRIM_GECIKME_N)
       .map(([b, e]) => [b, { ...e, havale: birimler[b] || 0 }]),
     ortGuven: guvenler.length ? Math.round((guvenler.reduce((a, x) => a + x, 0) / guvenler.length) * 100) : null,
   };
@@ -126,10 +130,16 @@ function UstSira({ sla, kuyrukSla, inboxCount, onGoInbox, onIsle, onSlaYeniden, 
   return <div style={{ ...span(12), ...giris(60) }}><SureYokBrif kuyrukN={inboxCount} onGoInbox={onGoInbox} /></div>;
 }
 
-/* Gözlem kuşağı — dört hâl: yükleniyor · hata · boş · dolu. Dolu hâlde iki sütun ORTAK TABAN
-   çizgisinde biter (tur 8 jüri): sütunlar gerilir, her sütunun son kartı esner; esneyen kartın
-   eylemi (Detay raporu / Tüm işlenen) dibe yaslanır — boşluk kartın içinde, eylemin üstünde. */
-function GozlemKusak({ n, history, ozet, islemDurum, span, genis, dar, kol, hata, onGoInbox, onGoIslenen, onRapor, onYeniden, onUpload }) {
+/* Gözlem kuşağı — dört hâl: yükleniyor · hata · boş · dolu. Dolu hâlde (masaüstü) iki SIRA ×
+   iki sütunluk İÇ ızgara (tur 9 jüri: tur 8'in "ortak taban"ı yalnız ikinci sırada tutuyordu,
+   ilk sırada Dağılım ↔ Birim Gecikme 1920'de ~94 px kayıktı). Her sıranın iki kartı aynı
+   yüksekliğe gerilir (grid satırı); kart kökleri hücreyi doldurur → her sırada ortak taban.
+   Telefonda düz sıra korunur (Dağılım → Son İşlemler → Birim → Süre). */
+const GOZLEM_CSS = "[data-gozlem-hucre]>*{flex:1 1 auto}";
+function GozlemHucre({ kol, gecikme, children }) {
+  return <div data-gozlem-hucre="" style={{ gridColumn: kol ? `span ${kol}` : "1 / -1", minWidth: 0, display: "flex", flexDirection: "column", ...giris(gecikme) }}>{children}</div>;
+}
+function GozlemKusak({ n, history, ozet, islemDurum, span, genis, dar, kol, hata, onGoInbox, onGoIslenen, onRapor, raporRef, onYeniden, onUpload }) {
   const [k1, k2] = kol;
   if (n === 0 && (islemDurum === "bekliyor" || islemDurum === "yok")) {
     /* Birleşik fiş kahraman yuvasında DEĞİLSE (SLA sağlam) burada basılır — yine tek fiş. */
@@ -139,18 +149,20 @@ function GozlemKusak({ n, history, ozet, islemDurum, span, genis, dar, kol, hata
       saglamCumle={hata.ozet.saglamCumle} birlesik={hata.birlesik} />;
   }
   if (n === 0) return <GozlemBos span={span} onGoInbox={onGoInbox} onUpload={onUpload} />;
-  const sutun = { alignSelf: genis ? "stretch" : "start", display: "flex", flexDirection: "column", gap: SP.l + 4 };
-  const esnek = { flex: 1, display: "flex", flexDirection: "column" };
+  const dagilim = <DagilimYuzeyi n={n} {...ozet} genis={genis} />;
+  const birim = <BirimGecikmeKart rows={ozet.birimGecikmeList} dar={dar} onGoIslenen={onGoIslenen} />;
+  const son = <SonIslemlerFeed history={history} n={n} onGoIslenen={onGoIslenen} />;
+  const sure = <IslemSuresiKart history={history} onRapor={onRapor} raporRef={raporRef} />;
+  const k = genis ? [k1, k2] : [null, null];
   return (
     <>
+      <style>{GOZLEM_CSS}</style>
       <GozlemAntet sag={`${n} İŞLEM`} giris={giris(380)} />
-      <div style={{ ...span(k1), ...sutun }}>
-        <div style={giris(420)}><DagilimYuzeyi n={n} {...ozet} genis={genis} /></div>
-        <div style={{ ...esnek, ...giris(500) }}><SonIslemlerFeed history={history} n={n} onGoIslenen={onGoIslenen} /></div>
-      </div>
-      <div style={{ ...span(k2), ...sutun }}>
-        <div style={giris(460)}><BirimGecikmeKart rows={ozet.birimGecikmeList} dar={dar} onGoIslenen={onGoIslenen} /></div>
-        <div style={{ ...esnek, ...giris(540) }}><IslemSuresiKart history={history} onRapor={onRapor} /></div>
+      <div style={{ ...span(12), display: "grid", gridTemplateColumns: genis ? "repeat(12, minmax(0, 1fr))" : "minmax(0, 1fr)", gap: SP.l + 4 }}>
+        <GozlemHucre kol={k[0]} gecikme={420}>{dagilim}</GozlemHucre>
+        {genis ? <GozlemHucre kol={k[1]} gecikme={460}>{birim}</GozlemHucre> : <GozlemHucre gecikme={500}>{son}</GozlemHucre>}
+        {genis ? <GozlemHucre kol={k[0]} gecikme={500}>{son}</GozlemHucre> : <GozlemHucre gecikme={460}>{birim}</GozlemHucre>}
+        <GozlemHucre kol={k[1]} gecikme={540}>{sure}</GozlemHucre>
       </div>
     </>
   );
@@ -189,13 +201,18 @@ function gunKunyesi(inboxCount) {
 /* DashboardApp bayrakları önbellek durumuyla birleşir: prop hata derken önbellek boşsa "yok". */
 const birlesik = (onbellek, hata) => (hata && onbellek === "bekliyor" ? "yok" : onbellek);
 
-/* Kuyruk + geçmiş tamamen boş — tek davet: yeni evrak yükle. */
-function PanelBos({ baslik, kunye, onUpload }) {
+/* Kuyruk + geçmiş tamamen boş — tur 9 jüri: jenerik EmptyState ürünün diline bağsızdı →
+   BOŞ DEFTER SAYFASI (kırmızı marj, numaralı cetvel satırları, 01'de kesikli davet + tek
+   primary) ∥ takvim boş ay ızgarası olarak yine görünür. */
+function PanelBos({ baslik, kunye, onUpload, genis }) {
+  const span = (kol) => ({ gridColumn: genis ? `span ${kol}` : "1 / -1", minWidth: 0 });
   return (
     <ViewWrap id="panel-h" title={baslik} sub={gunKunyesi(0)} kunye={kunye}>
-      <EmptyState icon={<Icon.chart />} title="Kuyruk Boş"
-        sub="Yeni bir belge yükleyerek başlayın — işlenen her evrak burada özetlenir."
-        actions={[<Btn key="u" primary onClick={onUpload}><Icon.upload /> Yeni evrak yükle</Btn>]} />
+      <style>{PANEL_KF}</style>
+      <div style={{ display: "grid", gridTemplateColumns: genis ? "repeat(12, minmax(0, 1fr))" : "minmax(0, 1fr)", gap: SP.l + 4, alignItems: "stretch" }}>
+        <div style={{ ...span(8), ...giris(60) }}><BosDefterSayfasi onUpload={onUpload} /></div>
+        <div style={{ ...span(4), ...giris(180) }}><SureTakvimi kuyrukSla={[]} /></div>
+      </div>
     </ViewWrap>
   );
 }
@@ -206,10 +223,15 @@ export default function PanelView({ history: hamGecmis = [], outbox = [], inboxC
   const dar = useDarEkran();
   const queryClient = useQueryClient();
   const [raporAcik, setRaporAcik] = useState(false);
+  const raporRef = useRef(null);
   const [odak, setOdak] = useState(null);
   const [hazirlandi] = useState(() => Date.now());
   const onb = usePanelKaynaklari();
-  const kaynak = { sla: birlesik(onb.sla, slaHatasi), islemler: birlesik(onb.islemler, gecmisHatasi), giden: onb.giden };
+  /* Tur 9 jüri: /sla/onizleme 200 + {} (sonuclar yok) "yanıt verdi" sayılıp SureYokBrif'i
+     basıyordu — şema dışı yanıt olgu değildir → kaynak "yok" (hata yolu). */
+  const slaVeri = queryClient.getQueryData(["sla-onizleme"]);
+  const slaSemaDisi = slaVeri !== undefined && !Array.isArray(slaVeri?.sonuclar);
+  const kaynak = { sla: slaSemaDisi ? "yok" : birlesik(onb.sla, slaHatasi), islemler: birlesik(onb.islemler, gecmisHatasi), giden: onb.giden };
   const { history, n, gonderilenler, ozet, seriler } = useBrifVerisi(hamGecmis, outbox);
   /* Yeniden dene — DashboardApp prop verirse o, yoksa sorgunun kendisi tazelenir. */
   const slaYeniden = onSlaYeniden || (() => queryClient.refetchQueries({ queryKey: ["sla-onizleme"] }));
@@ -228,7 +250,7 @@ export default function PanelView({ history: hamGecmis = [], outbox = [], inboxC
   const baslik = "Sabah Brifi";
 
   if (n === 0 && inboxCount === 0 && kuyrukSla.length === 0 && kaynak.islemler !== "bekliyor" && kaynak.islemler !== "yok") {
-    return <PanelBos baslik={baslik} kunye={kunye} onUpload={onUpload} />;
+    return <PanelBos baslik={baslik} kunye={kunye} onUpload={onUpload} genis={genis} />;
   }
 
   const git = { islenen: onGoIslenen, gelen: () => onGoInbox(), taslak: onGoTaslaklar || onGoIslenen, giden: onGoGiden };
@@ -254,11 +276,11 @@ export default function PanelView({ history: hamGecmis = [], outbox = [], inboxC
           <AkisKarti hucreler={hucreler} kolon={dar || !genis ? 2 : 4} />
         </div>
         <GozlemKusak n={n} history={history} ozet={ozet} islemDurum={kaynak.islemler} span={span} genis={genis} dar={dar} kol={kol} hata={hata}
-          onGoInbox={onGoInbox} onGoIslenen={onGoIslenen} onRapor={() => setRaporAcik(true)} onYeniden={gecmisYeniden} onUpload={onUpload} />
+          onGoInbox={onGoInbox} onGoIslenen={onGoIslenen} onRapor={() => setRaporAcik(true)} raporRef={raporRef} onYeniden={gecmisYeniden} onUpload={onUpload} />
         <ParafKapanis hazirlandi={hazirlandi} kuyrukN={inboxCount} islemN={islemKunye(n, kaynak.islemler)} user={user} dar={dar}
           hazir={brifHazir} kaynakIlerleme={`${kOzet.hazirN}/${kOzet.toplam} KAYNAK`} />
       </div>
-      <SureRaporModal acik={raporAcik} onKapat={() => setRaporAcik(false)} history={history} />
+      <SureRaporModal acik={raporAcik} onKapat={() => setRaporAcik(false)} history={history} donusRef={raporRef} />
     </ViewWrap>
   );
 }

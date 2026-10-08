@@ -38,7 +38,7 @@ const gunAy = () => {
 
 /* Etiket ölçüsü: 11 px mono (10 px okuma sınırındaydı — jüri). */
 const ETIKET = { ...TYPE.antet, fontSize: 11, lineHeight: "16px", textTransform: "uppercase" };
-const SICIL_CSS = ".ke-ray-sicil{display:block}.ke-ray-son{display:none}@media (max-height:819px){.ke-ray-sicil{display:none}}@media (min-height:960px){.ke-ray-son{display:block}}.ke-ray-son li{display:block}.ke-ray-son li:nth-child(n+3){display:none}@media (min-height:1040px){.ke-ray-son li:nth-child(n+3){display:block}}.ke-ray-son li:nth-child(n+5){display:none}@media (min-height:1120px){.ke-ray-son li:nth-child(n+5){display:block}}"
+const SICIL_CSS = ".ke-ray-sicil{display:block}.ke-ray-son{display:none}@media (max-height:819px){.ke-ray-sicil{display:none}}@media (min-height:880px){.ke-ray-son{display:block}}.ke-ray-son li{display:block}.ke-ray-son li:nth-child(n+3){display:none}@media (min-height:1040px){.ke-ray-son li:nth-child(n+3){display:block}}.ke-ray-son li:nth-child(n+5){display:none}@media (min-height:1120px){.ke-ray-son li:nth-child(n+5){display:block}}"
   + ".ke-son-btn:hover{background:var(--ke-hov)}.ke-son-btn:hover .ke-son-ok{opacity:1;transform:none}";
 
 /* Bekliyor işareti — iki nokta, 1,2 sn'lik sakin opaklık nabzı (nu-think; reduced-motion global kuralı söndürür). */
@@ -58,7 +58,7 @@ function SicilSatir({ s, n, bekliyor, i, ilk }) {
       <dd style={{ margin: 0, minWidth: 20, textAlign: "right", fontFamily: MONO, fontSize: 13, lineHeight: "18px", fontWeight: 600, color: renk, ...TNUM }}>
         {bilinmiyor && bekliyor ? <Bekliyor />
           : bilinmiyor ? <><span aria-hidden="true">—</span><span style={SR_ONLY}>bilinmiyor</span></>
-            : <NumberFlow value={n} format={{ minimumIntegerDigits: 2 }} spinTiming={{ duration: 280, easing: "cubic-bezier(.23,1,.32,1)" }} />}
+            : <NumberFlow value={n} spinTiming={{ duration: 280, easing: "cubic-bezier(.23,1,.32,1)" }} />}
       </dd>
     </div>
   );
@@ -108,8 +108,9 @@ export default function KabukSicil({ sicil, bekliyor = {}, bayat = false, onSonA
       {/* Dikiş — cilt kapağındaki iplik çizgisi: kesikli, yarı saydam (ray kenar dikişiyle aynı dil). */}
       <span aria-hidden="true" style={{ position: "absolute", left: SP.m, right: SP.m, top: 0, borderTop: `1px dashed ${PAL.lineHi}` }} />
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: `${SP.s}px 0 ${SP.s}px` }}>
-        {/* Kör baskı etiket: cilde basılmış ama mürekkepsiz — yalnız ton farkı. */}
-        <span aria-hidden="true" style={{ fontFamily: DISPLAY, fontWeight: 800, fontStretch: "125%", fontSize: 11, lineHeight: "16px", letterSpacing: ".16em", textTransform: "uppercase", color: PAL.mut3 }}>Günlük</span>
+        {/* Ray başlığı (tur 9, j1: Archivo geniş başlık mono künyelerden kopuktu): ray üstündeki
+            tüm etiketler tek ses — mono künye (ETIKET). Sayılar dolgusuz (panel rakamlarıyla aynı dil). */}
+        <span aria-hidden="true" style={{ ...ETIKET, color: PAL.mut2 }}>Günlük</span>
         <span style={{ ...ETIKET, color: durum.uyari ? "var(--ke-derin-sari)" : PAL.mut3, whiteSpace: "nowrap", ...TNUM }}>{durum.metin}</span>
       </div>
       <dl style={{ margin: 0, display: "grid", position: "relative" }}>
@@ -125,14 +126,18 @@ export default function KabukSicil({ sicil, bekliyor = {}, bayat = false, onSonA
    min-height 0 + overflow hidden: yer yoksa tamamen çöker; kısa ekranda hiçbir öğeyi itmez. */
 export function CiltKorBaski() {
   return (
-    <div aria-hidden="true" className="ke-kor-baski" style={{ flex: "1 1 0", minHeight: 0, overflow: "hidden", display: "flex", alignItems: "flex-end", justifyContent: "center", padding: `${SP.xl}px 0 ${SP.l}px`, containerType: "size" }}>
+    <div aria-hidden="true" className="ke-kor-baski" style={{ flex: "1 1 0", minHeight: 0, overflow: "hidden", display: "flex", alignItems: "flex-end", justifyContent: "center", padding: `${SP.s}px 0 ${SP.m}px`, containerType: "size" }}>
       {/* Kabın kendisi ölçülür (tur 8): Denetim sırtı açılınca kalan yer baskıdan kısa kalıyor, baskı
           yarısı kesik "artık" gibi okunuyordu. Sığmıyorsa HİÇ basılmaz — yarım baskı yok. */}
-      <style>{"@media (max-height:899px){.ke-kor-baski{visibility:hidden}}@container (max-height:46px){.ke-kor-ic{visibility:hidden}}"}</style>
-      <div className="ke-kor-ic" style={{ display: "grid", justifyItems: "center", gap: SP.xs, color: "var(--ke-kor-zemin)", textShadow: "0 1px 0 var(--ke-kor-isik), 0 -1px 0 var(--ke-kor-golge)" }}>
-        <span style={{ width: 56, borderTop: "1px solid var(--ke-kor-golge)", boxShadow: "0 1px 0 var(--ke-kor-isik)", marginBottom: SP.s }} />
-        <span style={{ fontFamily: DISPLAY, fontWeight: 800, fontStretch: "125%", fontSize: 12, lineHeight: "16px", letterSpacing: ".22em", whiteSpace: "nowrap" }}>KAMU-EVRAK</span>
-        <span style={{ fontFamily: MONO, fontSize: 10, lineHeight: "14px", letterSpacing: ".14em", whiteSpace: "nowrap", ...TNUM }}>SİCİL DEFTERİ · {new Date().getFullYear()}</span>
+      <style>{"@media (max-height:899px){.ke-kor-baski{visibility:hidden}}@container (max-height:77px){.ke-kor-ic{visibility:hidden}}"}</style>
+      {/* Tur 9 (j2: iki satırlık küçük kör baskı ±1 px gölgeyle "leke" gibi okunuyordu): ölçülü,
+          yuvarlak cilt MÜHRÜ — çift halka + ortada geniş "KE", altında yıl. Gölge tek yönlü (yalnız
+          ışık kenarı) → harf kenarı keskin; mürekkepsiz, bilgi taşımaz. */}
+      <div className="ke-kor-ic" style={{ width: 76, height: 76, borderRadius: "50%", display: "grid", placeItems: "center", boxShadow: "inset 0 1px 0 var(--ke-kor-golge), 0 1px 0 var(--ke-kor-isik)", border: "1.5px solid var(--ke-kor-cizgi)" }}>
+        <div style={{ width: 62, height: 62, borderRadius: "50%", border: "1px dashed var(--ke-kor-cizgi)", display: "grid", placeItems: "center", alignContent: "center", gap: 1, color: "var(--ke-kor-zemin)", textShadow: "0 1px 0 var(--ke-kor-isik)" }}>
+          <span style={{ fontFamily: DISPLAY, fontWeight: 800, fontStretch: "125%", fontSize: 17, lineHeight: "18px", letterSpacing: ".06em", color: "var(--ke-kor-cizgi)", textShadow: "0 -1px 0 var(--ke-kor-golge)" }}>KE</span>
+          <span style={{ fontFamily: MONO, fontSize: 9, lineHeight: "11px", letterSpacing: ".14em", color: "var(--ke-kor-cizgi)", ...TNUM }}>{new Date().getFullYear()}</span>
+        </div>
       </div>
     </div>
   );

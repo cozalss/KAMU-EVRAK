@@ -14,7 +14,7 @@ import { useMemo } from "react";
 import { Btn, NeonCard, Icon, MONO, T, R, TYPE, TNUM, SP, EASE, DERIN, PAL, SR_ONLY } from "./neonUi.jsx";
 import { kayitAdi } from "../lib/sohbetMetin.js";
 import SureKiyasBloku, { TrendRozet } from "./SureKiyas.jsx";
-import { olcumler, ortalama, esikMs, genelTrend, hizKademe, fmtSn } from "../lib/sureRapor.js";
+import { olcumler, ortalama, esikMs, genelTrend, hizKademe, fmtSn, ESIK_KAT } from "../lib/sureRapor.js";
 import { kronometreEksen, eksenYuzde, eksenIsaretleri, noktaliSaat, noktaliGunSaat } from "../lib/panelBrifSaf.js";
 
 /* Kademe → çubuk boyası. Mavi açıklık rampası surf ile karıştırılır (opak; iki temada da
@@ -80,10 +80,10 @@ function Eksen({ satir, isaret, tavanSn }) {
       <span aria-hidden="true" style={{ gridColumn: 2, gridRow: satir, position: "relative", height: 18, borderTop: `1px solid ${PAL.lineHi}` }}>
         {isaret.map((v, i) => (
           <span key={v} style={{ position: "absolute", top: 3, left: `${eksenYuzde(v * 1000, tavanSn)}%`, transform: i === 0 ? "none" : i === isaret.length - 1 ? "translateX(-100%)" : "translateX(-50%)",
-            fontFamily: MONO, fontSize: 11, lineHeight: "14px", color: PAL.mut3, ...TNUM }}>{sayiSn(v)}</span>
+            fontFamily: MONO, fontSize: 11, lineHeight: "14px", color: PAL.mut2, ...TNUM }}>{sayiSn(v)}</span>
         ))}
       </span>
-      <span aria-hidden="true" style={{ gridColumn: 3, gridRow: satir, fontFamily: MONO, fontSize: 11, lineHeight: "20px", color: PAL.mut3, textAlign: "right" }}>sn</span>
+      <span aria-hidden="true" style={{ gridColumn: 3, gridRow: satir, fontFamily: MONO, fontSize: 11, lineHeight: "20px", color: PAL.mut2, textAlign: "right" }}>sn</span>
     </>
   );
 }
@@ -96,6 +96,10 @@ function Lejant() {
           <span aria-hidden="true" style={{ width: 12, height: 8, borderRadius: 2, background: v.fill, border: `1px solid ${v.kenar}` }} />{v.l}
         </span>
       ))}
+      {/* Tur 9 jüri: kırmızı dikey çizginin anlamı lejantta yazılı (renk tek sinyal değil). */}
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+        <span aria-hidden="true" style={{ width: 1.5, height: 12, background: R }} />eşik çizgisi = ortalama × {String(ESIK_KAT).replace(".", ",")}
+      </span>
     </div>
   );
 }
@@ -117,16 +121,20 @@ function SrListe({ satirlar, ort }) {
 
 /* Kronometre şeridi. `olcum` en yeni önce gelir; satırlar da en yeni üstte (defter sırası).
    `vurgu`/`onVurgu`: rapor modalında çubuk ↔ tablo satırı eşlemesi (hover'da ikisi birlikte). */
-export function Kronometre({ olcum, ort, satirN = 7, buyuk = false, vurgu = null, onVurgu = null }) {
+/* `eksenMs`: eksene ek katılacak süreler — rapor modalı tüm ölçümleri verir ki tür tablosu ile
+   AYNI 0–tavan ölçeğini ve aynı eşik x'ini paylaşsın (tur 8 jüri 2). */
+export function Kronometre({ olcum, ort, satirN = 7, buyuk = false, vurgu = null, onVurgu = null, eksenMs = null }) {
   const esik = esikMs(ort);
   const satirlar = olcum.slice(0, satirN);
-  const { tavanSn, adimSn } = kronometreEksen(satirlar.map((x) => x.ms), esik);
+  const { tavanSn, adimSn } = kronometreEksen([...satirlar.map((x) => x.ms), ...(eksenMs || [])], esik);
   const isaret = eksenIsaretleri(tavanSn, adimSn);
   const ortX = eksenYuzde(ort, tavanSn), esikX = eksenYuzde(esik, tavanSn);
   const satirH = buyuk ? 26 : 22;
   /* Etiket sütunu kart genişliğiyle büyür (1920'de 96 px'e kilitli adlar gereksiz kesiliyordu). */
   /* Tur 8 jüri: kartta adlar ~13 karakterde kesiliyordu ("4982 sayılı Kan…") → en az 140 px. */
-  const etiketW = buyuk ? "220px" : "minmax(150px, 46%)";   // tur 8 jüri 2: 1920'de bile "kapsa…"
+  /* Tur 9 jüri 2: %56'lık etiket sütunu izi 1440'ta ~40 px'e sıkıştırıyordu, eksen rakamları
+     üst üste biniyordu → etiket en çok %38 (ad title'da tam), iz kalan genişliği alır. */
+  const etiketW = buyuk ? "220px" : "minmax(96px, 38%)";
   const degerW = buyuk ? 112 : 50;
   const n = satirlar.length;
   return (
@@ -134,7 +142,7 @@ export function Kronometre({ olcum, ort, satirN = 7, buyuk = false, vurgu = null
       <SrListe satirlar={satirlar} ort={ort} />
       <div role="img" aria-label={`Son ${n} işlemin süreleri; ortalama ${fmtSn(ort)}, yavaş işlem eşiği ${fmtSn(esik)} saniye`}
         style={{ display: "grid", gridTemplateColumns: `${etiketW} minmax(0, 1fr) ${degerW}px`, columnGap: SP.s, marginTop: SP.m }}>
-        <span aria-hidden="true" style={{ gridColumn: 1, gridRow: 1, alignSelf: "end", ...TYPE.antet, fontSize: 10, color: PAL.mut3, ...TNUM }}>SON {n} İŞLEM</span>
+        <span aria-hidden="true" style={{ gridColumn: 1, gridRow: 1, alignSelf: "end", ...TYPE.antet, fontSize: 11, color: PAL.mut2, ...TNUM }}>SON {n} İŞLEM</span>
         <span aria-hidden="true" style={{ gridColumn: 2, gridRow: 1, position: "relative", height: 20 }}>
           <RefEtiket x={ortX} yon="sol" renk={PAL.mut2}>ort. {fmtSn(ort)}</RefEtiket>
           <RefEtiket x={esikX} yon="sag" renk={DERIN.R}>eşik {fmtSn(esik)}</RefEtiket>
@@ -168,14 +176,17 @@ export function Kronometre({ olcum, ort, satirN = 7, buyuk = false, vurgu = null
   );
 }
 
+/* Tur 9 jüri: kart sıra yüksekliğine gerilince dipte ~120 px boşluk kalıyordu → 10 satır. */
+const KART_SATIR_N = 10;
+
 /* Panel kartı — büyük ortalama + trend, kronometre, kıyas, detay raporu (ikincil). */
-export default function IslemSuresiKart({ history, onRapor }) {
+export default function IslemSuresiKart({ history, onRapor, raporRef }) {
   const olcum = useMemo(() => olcumler(history), [history]);
   const ort = useMemo(() => ortalama(olcum), [olcum]);
   const gTrend = useMemo(() => genelTrend(olcum), [olcum]);
   return (
     <NeonCard title="İşlem Süresi" accent={T} icon={<Icon.clock width={16} height={16} />} style={{ flex: 1, display: "flex", flexDirection: "column" }} bodyCenter
-      tag={olcum.length ? `son ${Math.min(olcum.length, 7)} işlem` : undefined}>
+      tag={olcum.length ? `son ${Math.min(olcum.length, KART_SATIR_N)} işlem` : undefined}>
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
       {olcum.length === 0 ? (
         <p style={{ margin: 0, ...TYPE.data, color: PAL.mut2 }}>Süre verisi bu oturumdan itibaren toplanıyor; bir evrak işleyin.</p>
@@ -185,13 +196,13 @@ export default function IslemSuresiKart({ history, onRapor }) {
             <span style={{ ...TYPE.num, fontSize: 30, lineHeight: "34px", color: PAL.ink, ...TNUM }}>{fmtSn(ort)}<span style={{ ...TYPE.data, fontWeight: 500, color: PAL.mut2, marginLeft: 4 }}>sn ort.</span></span>
             <TrendRozet t={gTrend} sade />
           </div>
-          <Kronometre olcum={olcum} ort={ort} />
+          <Kronometre olcum={olcum} ort={ort} satirN={KART_SATIR_N} />
           <SureKiyasBloku history={history} />
         </>
       )}
       {/* Esneyen kartta boşluk eylemin ÜSTÜNDE kalır; düğme kartın tabanına oturur (ortak taban). */}
       <div style={{ marginTop: "auto", paddingTop: SP.l }}>
-        <Btn onClick={onRapor} ariaLabel="İşlem süresi detay raporunu aç" style={{ width: "100%", justifyContent: "center" }}>
+        <Btn onClick={(e) => { if (raporRef) raporRef.current = e.currentTarget; onRapor(); }} ariaLabel="İşlem süresi detay raporunu aç" style={{ width: "100%", justifyContent: "center" }}>
           Detay raporu <Icon.arrow width={14} height={14} />
         </Btn>
       </div>

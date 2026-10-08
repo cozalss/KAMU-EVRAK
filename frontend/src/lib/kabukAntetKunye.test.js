@@ -8,14 +8,14 @@ const veri = {
 };
 
 test("kunyeDeger üç hâli ayırır: sayı, bekliyor, bilinmiyor", () => {
-  assert.equal(kunyeDeger(7), "07");
+  assert.equal(kunyeDeger(7), "7");
   assert.equal(kunyeDeger(null, true), "··");
   assert.equal(kunyeDeger(null, false), "—");
 });
 
 test("gelen künyesi kuyruk + gecikmiş (acil işaretli) + karar bekleyen taşır", () => {
   const s = antetKunyeSatirlari("gelen-h", veri);
-  assert.deepEqual(s.map((x) => x.d), ["15", "01", "32"]);
+  assert.deepEqual(s.map((x) => x.d), ["15", "1", "32"]);
   assert.equal(s[1].acil, true);
 });
 

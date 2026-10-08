@@ -268,7 +268,9 @@ function summarize(id, d) {
   }
   if (id === "cikar") {
     const n = d.bilgi_unsurlari ? Object.keys(d.bilgi_unsurlari).length : 0;
-    const pii = d.bilgi_unsurlari?.pii_var ? " · PII maskeli" : "";
+    // Yalnız gerçekten maskeli gelen alan varsa söylenir (genel "PII maskeli" iddiası yok).
+    const bu = d.bilgi_unsurlari || {};
+    const pii = bu.tckn_maskeli || bu.telefon_maskeli ? " · kimlik/telefon maskeli" : "";
     return n ? `${n} alan${pii}` : "";
   }
   if (id === "eksik_tespit") {

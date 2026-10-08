@@ -22,7 +22,7 @@ const SOL = { gizli: { opacity: 0 }, acik: { opacity: 1, transition: { duration:
 const CIZGI = { gizli: { scaleX: 0 }, acik: { scaleX: 1, transition: { duration: 0.9, ease: EASE_BEZIER.inOut } } };
 const SATIR = { gizli: { y: "108%" }, acik: { y: "0%", transition: { duration: 0.8, ease: EASE_BEZIER.out } } };
 const YUKSEL = { gizli: { opacity: 0, y: 14 }, acik: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_BEZIER.out } } };
-const KAGIT = { gizli: { opacity: 0, x: 28, rotate: 0.6 }, acik: { opacity: 1, x: 0, rotate: 0, transition: { type: "spring", stiffness: 120, damping: 20, delay: 0.25 } } };
+const KAGIT = { gizli: { opacity: 0, x: 28 }, acik: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 120, damping: 20, delay: 0.25 } } };
 
 const VAAT = ["Evrak gelir.", "Ajan okur.", "Memur imzalar."];
 
@@ -107,13 +107,15 @@ function Vaat() {
    adını ve büyük-harf uyarısını girdinin erişilebilir adına katıyordu ("Parola Parolayı göster"). */
 function Field({ label, no, id, children, ek }) {
   return (
-    <motion.div variants={YUKSEL} data-alan="" style={{ marginBottom: SP.l }}>
+    <motion.div variants={YUKSEL} data-alan="" style={{ marginBottom: SP.s }}>
       <label htmlFor={id} style={{ display: "flex", alignItems: "baseline", gap: SP.s, ...TYPE.data, fontWeight: 600, color: PAL.ink2, marginBottom: 6 }}>
         {no && <span aria-hidden="true" style={{ fontFamily: MONO, fontSize: 11, fontWeight: 500, letterSpacing: ".04em", color: PAL.mut3, ...TNUM }}>{no}</span>}
         <span>{label}</span>
       </label>
       {children}
-      {ek}
+      {/* Yardım satırı YERİ ÖNCEDEN ayrılır (tur 9, j2: alan altı hata kutusu sonraki alanı 41 px
+          itiyordu). Tek satırlık hata/büyük harf uyarısı bu 24 px'e sığar → düzen kaymaz. */}
+      <div style={{ minHeight: 24 }}>{ek}</div>
     </motion.div>
   );
 }
@@ -148,7 +150,7 @@ function ParolaField({ label, no, value, onChange, autoComplete, placeholder, ha
   const kilitOku = (e) => setBuyukHarf(!!e.getModifierState?.("CapsLock"));
   return (
     <Field label={label} no={no} id="ke-f-parola" ek={<>{buyukHarf && (
-      <span role="status" style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, ...TYPE.meta, color: DERIN.sari }}>
+      <span role="status" style={{ display: "flex", alignItems: "center", gap: 6, paddingTop: 5, ...TYPE.meta, color: DERIN.sari }}>
         <Icon.alert width={13} height={13} />Büyük harf kilidi açık
       </span>
     )}{hataEk}</>}>
@@ -195,6 +197,15 @@ const sureYaz = (sn) => `${Math.floor(sn / 60)}:${String(sn % 60).padStart(2, "0
    ilk iletide okunur; geri sayım SR'yi her saniye rahatsız etmez (süre düğme metninde). */
 function HataNotu({ metin, kilit, alanAlti = false }) {
   const c = kilit ? BANT.sari.c : BANT.kirmizi.c;
+  /* Alan altı: kutu değil, ayrılmış satırdaki yardımcı metin (tur 9, j2: iki katlı kırmızı halka
+     ağırdı). Kırmızı = tek sinyal değil: ikon + metin; alanın kendisi tek kenar çizgisi taşır. */
+  if (alanAlti && !kilit) return (
+    <motion.div role="alert" id="ke-auth-hata" initial={{ opacity: 0, y: -2 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.18, ease: EASE_BEZIER.out }}
+      style={{ display: "flex", gap: 6, alignItems: "flex-start", paddingTop: 5, ...TYPE.meta, color: DERIN.kirmizi }}>
+      <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, marginTop: 2 }}><Icon.alert width={13} height={13} /></span>
+      <span style={{ minWidth: 0 }}>{metin}</span>
+    </motion.div>
+  );
   return (
     <motion.div role="alert" id="ke-auth-hata"
       initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2, ease: EASE_BEZIER.out }}
@@ -408,7 +419,7 @@ export default function AuthPage({ tema, onTemaDegistir }) {
                 <ParolaField label="Parola" no={kayit ? "05" : "02"} hatali={hatali("parola")} describedBy={hatali("parola") ? "ke-auth-hata" : undefined} hataEk={hataSlot("parola")} value={form.parola} onChange={set("parola")} autoComplete={kayit ? "new-password" : "current-password"} placeholder={kayit ? "En az 8 karakter" : "Parolanız"} />
 
                 {!kayit && (
-                  <div style={{ marginTop: -SP.l, marginBottom: SP.m, textAlign: "right" }}>
+                  <motion.div variants={YUKSEL} style={{ marginTop: -SP.l - SP.xs, marginBottom: SP.m, textAlign: "right" }}>
                     <button type="button" className="ke-metin-link" onClick={() => setSifreNot((v) => !v)} aria-expanded={sifreNot} {...focusRing}>
                       Parolamı unuttum
                     </button>
@@ -420,29 +431,50 @@ export default function AuthPage({ tema, onTemaDegistir }) {
                         </motion.p>
                       )}
                     </AnimatePresence>
-                  </div>
+                  </motion.div>
                 )}
 
                 {hataSlot("genel")}
 
-                <div className="ke-cta">
+                <motion.div variants={YUKSEL} className="ke-cta">
                   <Btn primary type="submit" disabled={busy || kilitli} style={{ width: "100%", justifyContent: "center", minHeight: 48, fontWeight: 600, ...TNUM }}>
                     {busy ? <span aria-hidden="true" className="ke-spin" /> : kilitli ? <Icon.clock width={16} height={16} /> : null}
                     {busy ? (kayit ? "Oluşturuluyor…" : "Giriş yapılıyor…") : kilitli ? `Yeniden deneme ${sureYaz(kilitSn)}` : (kayit ? "Hesap oluştur" : "Giriş yap")}
                     {!busy && !kilitli && <span aria-hidden="true" className="ke-ok"><Icon.arrow width={16} height={16} /></span>}
                   </Btn>
-                </div>
+                </motion.div>
               </form>
 
-              <div style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.xl, paddingTop: SP.l, borderTop: `1px dashed ${PAL.lineHi}`, ...TYPE.meta, color: PAL.mut2 }}>
+              <motion.div variants={YUKSEL} style={{ display: "flex", alignItems: "center", gap: SP.s, marginTop: SP.xl, paddingTop: SP.l, borderTop: `1px dashed ${PAL.lineHi}`, ...TYPE.meta, color: PAL.mut2 }}>
                 <span aria-hidden="true" style={{ display: "flex", color: DERIN.T }}><ScrollText size={15} strokeWidth={1.75} /></span>
                 <span>Her oturum <span style={{ fontFamily: MONO, fontSize: 11 }}>SHA-256</span> denetim izine işlenir.</span>
-              </div>
+              </motion.div>
             </motion.div>
           </motion.div>
+          <MasaKurallari />
         </main>
       </motion.div>
     </MotionConfig>
+  );
+}
+
+/* Masa kuralları (tur 9, j2: 1920'de form kartı y≈683'te bitiyor, kâğıt 930'a iniyordu — sağ alt
+   çeyrek ölüydü). Formun altında, kâğıdın tabanına doğru: ürünün dört değişmez kuralı, sicil defteri
+   künye dilinde. Yalnız uzun masaüstü penceresinde (≥ 1100 × 980); bilgi KVKK kipindekiyle aynı. */
+const KURALLAR = [["Gönderim", "Memur onayıyla"], ["Kişisel veri", "Maskelenir · KVKK"], ["Evrak", "Sentetik örnek"], ["Denetim", "SHA-256 zinciri"]];
+function MasaKurallari() {
+  return (
+    <motion.dl variants={YUKSEL} className="ke-masa-kural" aria-label="Masa kuralları"
+      style={{ margin: 0, width: "100%", maxWidth: 440, boxSizing: "border-box", padding: `0 ${SP.xs}px`, display: "none" }}>
+      <div aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", paddingBottom: SP.s, borderBottom: `1px solid ${PAL.lineHi}` }}>Masa kuralları</div>
+      {KURALLAR.map(([k, v]) => (
+        <div key={k} style={{ display: "flex", alignItems: "baseline", gap: SP.s, padding: "8px 0", borderBottom: `1px solid ${PAL.line}` }}>
+          <dt style={{ ...TYPE.antet, textTransform: "uppercase", color: PAL.mut2, whiteSpace: "nowrap" }}>{k}</dt>
+          <span aria-hidden="true" style={{ flex: 1, borderBottom: `1px dotted ${PAL.lineHi}`, transform: "translateY(-3px)" }} />
+          <dd style={{ margin: 0, ...TYPE.data, color: PAL.ink2, whiteSpace: "nowrap" }}>{v}</dd>
+        </div>
+      ))}
+    </motion.dl>
   );
 }
 
@@ -475,8 +507,8 @@ const AUTH_CSS = `
 .ke-girdi{ display:block; width:100%; box-sizing:border-box; height:46px; padding:0 14px; border-radius:${RAD.ctl}px;
   background:${PAL.surf}; border:1px solid ${PAL.inputLine}; color:${PAL.ink}; font:400 16px/24px ${SANS}; outline:none;
   transition:border-color .15s ease, box-shadow .2s ease, background .15s ease; }
-.ke-girdi::placeholder{ color:${PAL.mut3}; opacity:1; }
-.ke-girdi[data-bos]{ color:${PAL.mut3}; }
+.ke-girdi::placeholder{ color:var(--ke-yer-tutucu, ${PAL.mut3}); opacity:1; }
+.ke-girdi[data-bos]{ color:var(--ke-yer-tutucu, ${PAL.mut3}); }
 .ke-girdi option{ color:${PAL.ink}; }
 .ke-girdi:hover{ border-color:color-mix(in srgb, ${PAL.ink} 45%, transparent); }
 .ke-girdi[aria-invalid="true"]{ border-color:${BANT.kirmizi.c}; }
@@ -554,6 +586,10 @@ const AUTH_CSS = `
   .ke-masa{ grid-template-columns:minmax(0,5fr) minmax(0,3fr)!important; }
 }
 @media(min-width:1100px) and (max-height:760px){ .ke-auth-alt{ display:none; } }
+@media(min-width:1100px) and (min-height:980px){
+  .ke-auth-sag{ flex-direction:column; align-items:flex-end!important; justify-content:flex-start!important; gap:40px; }
+  .ke-masa-kural{ display:block!important; }
+}
 @media(min-width:2100px){ .ke-auth-root{ --z:1.15; zoom:1.15 } }
 @media(min-width:2400px){ .ke-auth-root{ --z:1.32; zoom:1.32 } }
 @media(min-width:2900px){ .ke-auth-root{ --z:1.5;  zoom:1.5  } }

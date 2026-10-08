@@ -78,19 +78,18 @@ export function ErrorBar({ msg, canRetry, onRetry, onDismiss }) {
   );
 }
 
-/* Deneme şeridi — kabuğun veri sorguları (işlemler · giden · SLA) yeniden denenirken üstte mono
-   "Sunucuya 2. kez yazıldı" satırı. Hata ekranı gelmeden önceki ~10 sn sessiz iskelet "donmuş"
-   okunuyordu (jüri). Yalnız deneme SÜRERKEN görünür; denemeler tükenince görünümün kendi hata
-   fişi devralır (aynı anda iki hata dili yok). Yerleşimi kaydırmaz (sabit, üstte, ortalı). */
-const DENEME_CSS = `.ke-deneme{position:fixed;z-index:390;top:calc(10px + env(safe-area-inset-top));left:0;right:0;margin-inline:auto;width:max-content;max-width:calc(100vw - 32px);pointer-events:none}`;
+/* Deneme şeridi — kabuğun veri sorguları (işlemler · giden · SLA) yeniden denenirken "Sunucuya 2. kez
+   yazıldı" satırı. Hata ekranı gelmeden önceki ~10 sn sessiz iskelet "donmuş" okunuyordu (jüri).
+   Tur 9 (j2: sabit konumlu hap antetin künye çizgisinin ÜSTÜNE biniyordu): Bağlantı kaydı ile
+   AYNI şerit — akışın içinde, içerik sütununun üstünde, aynı kâğıt fiş + sarı kenar. Denemeler
+   tükenince Bağlantı kaydı aynı yeri devralır (tek kaynak, tek yer; iki hata dili aynı anda yok). */
 export function DenemeSeridi({ sorgular }) {
   const deneyen = sorgular.filter((q) => q && q.isFetching && !q.isError && q.failureCount > 0);
   if (!deneyen.length) return null;
   const deneme = Math.max(...deneyen.map((q) => q.failureCount));
   return (
-    <div className="ke-deneme">
-      <style>{DENEME_CSS}</style>
-      <div style={{ background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.ctl, boxShadow: SH.card, padding: `${SP.m}px ${SP.m}px 0` }}>
+    <div style={{ padding: "12px clamp(16px, 4vw, 40px) 0" }}>
+      <div style={{ ...SERIT_FIS, padding: `${SP.s}px ${SP.m}px` }}>
         <DenemeKunye deneme={deneme} toplam={3} />
       </div>
     </div>
@@ -123,6 +122,9 @@ export function BildirimKatmani({ toast }) {
   );
 }
 
+/* Ortak şerit fişi — Deneme şeridi ve Bağlantı kaydı aynı yerde, aynı kâğıtta. */
+const SERIT_FIS = { maxWidth: ICERIK_AZAMI, marginInline: "auto", display: "flex", alignItems: "center", background: PAL.surfPop, border: `1px solid ${PAL.line}`, borderLeft: `3px solid ${BANT.sari.c}`, borderRadius: RAD.ctl, boxShadow: SH.card, animation: "nu-sol .2s ease-out both" };
+
 /* Bağlantı kaydı (tur 8, jüri: tüm GET'ler 500 iken kabuğun tek işareti küçük sarı "YANIT YOK" idi;
    Gelen ve Panel sağlıklı görünüyordu). Kabuğun kaynaklarının HEPSİ son denemede hata verdiyse
    içerik sütununun üstünde TEK, sakin bir uyarı fişi: ekrandakiler son bilinen kayıtlardır.
@@ -133,7 +135,7 @@ export function BaglantiKaydi({ kaynak, onYenidenDene }) {
   const saat = new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
   return (
     <div style={{ padding: "12px clamp(16px, 4vw, 40px) 0" }}>
-      <div role="status" style={{ maxWidth: ICERIK_AZAMI, marginInline: "auto", display: "flex", alignItems: "center", gap: SP.m, flexWrap: "wrap", padding: `${SP.s}px ${SP.s}px ${SP.s}px ${SP.m}px`, background: PAL.surfPop, border: `1px solid ${PAL.line}`, borderLeft: `3px solid ${BANT.sari.c}`, borderRadius: RAD.ctl, boxShadow: SH.card, animation: "nu-sol .2s ease-out both" }}>
+      <div role="status" style={{ ...SERIT_FIS, gap: SP.m, flexWrap: "wrap", padding: `${SP.s}px ${SP.s}px ${SP.s}px ${SP.m}px` }}>
         <span aria-hidden="true" style={{ display: "flex", color: DERIN.sari }}><Icon.alert width={14} height={14} /></span>
         <span style={{ ...TYPE.antet, textTransform: "uppercase", color: DERIN.sari, whiteSpace: "nowrap", ...TNUM }}>Bağlantı kaydı · {saat}</span>
         <span style={{ ...TYPE.data, color: PAL.ink2, flex: "1 1 320px", minWidth: 0 }}>

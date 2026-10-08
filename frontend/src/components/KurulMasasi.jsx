@@ -6,6 +6,7 @@
    üyeler masanın dört yanında koltuktur, masanın ortası toplantının o anki durumunu söyler;
    akış sohbet balonu değil TOPLANTI TUTANAĞI gibi dizilir (tur başlığı · § numaralı madde ·
    konuşmacı sütunu); uzlaşan üyenin koltuğuna küçük yuvarlak bir MÜHÜR basılır. */
+import { useEffect, useRef, useState } from "react";
 import { MONO, SANS, DISPLAY, T, V, R, PAL, DERIN, DERIN_OF, ALFA, BANT, TYPE, TNUM, RAD, SP, SH, Icon } from "./neonUi.jsx";
 import { kaynakEtiketi } from "../lib/muzakere.js";
 
@@ -25,7 +26,9 @@ const KisiIkon = (p) => (
 export const KURUL = [
   { id: "taslakci", ad: "Yazı Sorumlusu", rol: "biçim · Yön. 2646 bölümleri", col: T, Ikon: Icon.doc },
   { id: "hukukcu", ad: "Hukuk Denetimi", rol: "doğruluk · dayanak", col: V, Ikon: Icon.scale },
-  { id: "vatandas", ad: "Muhatap Temsilcisi", rol: "talep · hak arama yolu", col: R, Ikon: KisiIkon },
+  // Muhatap tükenmez mavisinde (tur 9): R bu üründe ACELE/kusur demek; temsilci üye kırmızı
+  // giyince her söz alışı alarm gibi okunuyordu. Sinyal rengi yalnız risk bandından (amir) gelir.
+  { id: "vatandas", ad: "Muhatap Temsilcisi", rol: "talep · hak arama yolu", col: T, Ikon: KisiIkon },
   { id: "birim_amiri", ad: "Birim Amiri", rol: "risk bandı · gönderim", col: V, Ikon: Icon.shield, dinamik: true },
 ];
 export const UYE = Object.fromEntries(KURUL.map((k) => [k.id, k]));
@@ -66,10 +69,13 @@ export const aksanRenk = (risk) => RISK[risk]?.c || V;
    bu yüzden YALNIZ ızgara alanları için kapsamlı (ke-kurul-*) bir stil bloğu. Telefonda
    masa üste çıkar, koltuklar 2×2 dizilir. */
 const MASA_CSS = `
-.ke-kurul-masa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) minmax(0,1fr);grid-template-areas:". hukukcu ." "taslakci masa birim_amiri" ". vatandas .";gap:10px 18px;align-items:center}
-@media (max-width:720px){.ke-kurul-masa{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"masa masa" "taslakci hukukcu" "vatandas birim_amiri"}.ke-kurul-masa > [data-koltuk]{justify-self:stretch!important;width:auto!important;padding:8px 6px!important}.ke-kurul-masa > [data-koltuk] [data-koltuk-metin]{white-space:normal!important}}
-.ke-kurul-besleme{max-height:460px;overflow-y:auto;overscroll-behavior:contain}
-[data-tur-serit]{position:sticky;top:0;z-index:1;background:var(--ke-bg)}
+.ke-kurul-masa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);grid-template-areas:". hukukcu ." "taslakci masa birim_amiri" ". vatandas .";gap:18px 28px;align-items:center;width:100%;max-width:880px;margin:0 auto}
+[data-bag]{position:absolute;pointer-events:none;background:var(--ke-line-hi);transition:background .24s var(--ke-ease-out)}
+[data-bag][data-aktif]{background:var(--ke-t)}
+@media (max-width:720px){[data-bag]{display:none}}
+@media (max-width:720px){.ke-kurul-masa{gap:10px 18px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"masa masa" "taslakci hukukcu" "vatandas birim_amiri"}.ke-kurul-masa > [data-koltuk]{justify-self:stretch!important;width:auto!important;padding:8px 6px!important}.ke-kurul-masa > [data-koltuk] [data-koltuk-metin]{white-space:normal!important}}
+.ke-kurul-besleme{max-height:460px;overflow-y:auto;overscroll-behavior:contain;scroll-padding-top:44px}
+[data-tur-serit]{position:sticky;top:0;z-index:1;background:var(--ke-bg);box-shadow:0 1px 0 var(--ke-line)}
 [data-tur-serit]::after{content:"";position:absolute;left:0;right:0;top:100%;height:16px;background:linear-gradient(var(--ke-bg),transparent);pointer-events:none}
 .ke-kurul-besleme:focus-visible{outline-offset:2px}
 @media (max-width:720px){.ke-kurul-besleme{max-height:none;overflow:visible}}
@@ -141,15 +147,25 @@ const HIZA = { taslakci: "end", birim_amiri: "start", hukukcu: "center", vatanda
 /* Sabit plaka genişliği (tur 6): durum satırı ("söz alıyor…" ↔ rol) değiştikçe içerik genişliği
    değişiyor, masa her söz değişiminde ≈70 px zıplıyordu. Aktiflik yalnız zemin rengiyle. */
 const KOLTUK_GENISLIK = 236;
+/* Masa bağı (tur 9): her koltuktan masaya ince mürekkep çizgisi — dört etiket değil, bir masa.
+   Uzunluk ızgara aralığına eşit (28 yatay · 18 dikey); söz alan üyenin bağı tükenmez mavisiyle. */
+const BAG = {
+  taslakci: { right: -28, top: "50%", width: 28, height: 1 },
+  birim_amiri: { left: -28, top: "50%", width: 28, height: 1 },
+  hukukcu: { bottom: -18, left: "50%", width: 1, height: 18 },
+  vatandas: { top: -18, left: "50%", width: 1, height: 18 },
+};
 
 function Koltuk({ uye, aktif, durus, yukleniyor, az, i }) {
   const oy = !!DURUS[durus];
   const durum = yukleniyor ? "taslağı okuyor…" : aktif ? "söz alıyor…" : oy ? DURUS[durus].etiket : uye.rol;
   return (
-    <div data-koltuk="" style={{ gridArea: uye.id, justifySelf: HIZA[uye.id] || "stretch", width: KOLTUK_GENISLIK, maxWidth: "100%", boxSizing: "border-box", minWidth: 0, display: "flex", alignItems: "center", gap: SP.l, padding: "8px 12px", borderRadius: RAD.card,
-      background: aktif ? ALFA(uye.col) : "transparent", transition: "background .2s ease-out",
+    <div data-koltuk="" style={{ position: "relative", gridArea: uye.id, justifySelf: HIZA[uye.id] || "stretch", width: KOLTUK_GENISLIK, maxWidth: "100%", boxSizing: "border-box", minWidth: 0, display: "flex", alignItems: "center", gap: SP.l, padding: "8px 12px", borderRadius: RAD.card,
+      /* Dört düğüm eşit ağırlık (tur 9 jüri): her koltuk aynı kutu; aktif = zemin tonu + kenar. */
+      background: aktif ? ALFA(uye.col) : PAL.surf, border: `1px solid ${aktif ? uye.col : PAL.line}`, transition: "background .2s ease-out, border-color .2s ease-out",
       animation: az ? "none" : `nu-rise .36s var(--ke-ease-out) ${0.06 + i * 0.06}s both`,
       ...(yukleniyor && !az ? { opacity: 0.85 } : null) }}>
+      {BAG[uye.id] && <span aria-hidden="true" data-bag="" {...(aktif ? { "data-aktif": "" } : null)} style={BAG[uye.id]} />}
       <Avatar uye={uye} aktif={aktif} durus={durus} az={az} />
       <span style={{ minWidth: 0, flex: 1 }}>
         <span data-koltuk-metin="" style={{ display: "block", ...TYPE.data, fontWeight: 600, color: PAL.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{uye.ad}</span>
@@ -262,15 +278,28 @@ function satirDuzeni(draft) {
 
 /* Taslak kâğıdı — müzakere sürerken orijinal, kurul revize önerdiyse REVİZE taslağı.
    Masadaki evrak: beyaz yüzey, keskin köşe, kâğıt gölgesi; vurgulu satırlar kenar notuyla. */
+/* Kâğıt devamı (tur 9): 1440×900'de kâğıt "Gereğini arz ederim"de kesiliyor, kendi kaydırması
+   belirsizdi. Taşma varken altta kâğıt rengine solma + mono "devamı ↓"; sona inince kalkar. */
+function useKagitDevami(bagimlilik) {
+  const ref = useRef(null);
+  const [devam, setDevam] = useState(false);
+  const olc = () => { const el = ref.current; if (el) setDevam(el.scrollHeight - el.scrollTop - el.clientHeight > 8); };
+  useEffect(olc, [bagimlilik]);
+  return { ref, devam, olc };
+}
+
 export function TaslakKarti({ draft, revize, kunye = null }) {
   const satirlar = satirDuzeni(draft);
+  const { ref: kagitRef, devam, olc } = useKagitDevami(satirlar.length);
   return (
-    <div style={{ position: "relative", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: 3, boxShadow: SH.kagit, minWidth: 0 }}>
+    /* Kâğıt kapsamı (tur 9 jüri): koyu temada taslak koyu yüzeye basılıyordu, giriş fişi ise krem
+       kâğıttı — malzeme tutarsız. [data-evrak-kagit] koyu temada kâğıt token'larına döner. */
+    <div data-evrak-kagit="" style={{ position: "relative", background: PAL.surf, color: PAL.ink, border: `1px solid ${PAL.line}`, borderRadius: 3, boxShadow: SH.kagit, minWidth: 0 }}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "10px 18px", borderBottom: `1px solid ${PAL.line}`, ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>
         <span style={{ color: revize ? DERIN.V : PAL.ink2 }}>{revize ? "Kurulun revize taslağı" : "Resmî yazı taslağı"}</span>
         <span style={{ marginLeft: "auto", color: revize ? DERIN.V : PAL.mut3 }}>{kunye || (revize ? "önerilen sürüm" : "müzakerede")}</span>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", maxHeight: 460, overflowY: "auto", padding: "20px 26px 24px" }}>
+      <div ref={kagitRef} onScroll={olc} style={{ display: "flex", flexDirection: "column", maxHeight: 460, overflowY: "auto", padding: "20px 26px 24px" }}>
         {satirlar.map((l) => {
           if (l.bos && !l.vurgu) return <span key={l.id} aria-hidden="true" style={{ height: 9, flexShrink: 0 }} />;
           const v = l.vurgu ? VURGU[l.vurgu] : null;
@@ -294,6 +323,37 @@ export function TaslakKarti({ draft, revize, kunye = null }) {
           );
         })}
       </div>
+      {devam && (
+        <div aria-hidden="true" style={{ position: "absolute", left: 1, right: 1, bottom: 1, height: 56, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 6, pointerEvents: "none",
+          background: `linear-gradient(to bottom, transparent, ${PAL.surf} 70%)`, ...TYPE.antet, fontSize: 10, color: PAL.mut2, textTransform: "uppercase" }}>
+          devamı ↓
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Gelecek turlar iskeleti (tur 9) — tutanak 1/6 maddedeyken alt yarı bomboştu, ilerleme
+   görünmüyordu. Bilinen SABİT turlar (açılış · çapraz eleştiri · karar) henüz açılmadıysa
+   soluk şerit olarak önceden çizilir. Denetim turlarının sayısı önceden BİLİNMEZ → çizilmez. */
+const SABIT_TURLAR = ["Açılış turu", "Çapraz eleştiri", "Karar"];
+export function GelecekTurlar({ gorulen, baslangicNo, roma }) {
+  const kalan = SABIT_TURLAR.filter((e) => !gorulen.has(e));
+  if (!kalan.length) return null;
+  return (
+    <div aria-hidden="true" style={{ opacity: 0.5 }}>
+      {kalan.map((e, k) => (
+        <div key={e}>
+          <TurSeridi etiket={`${e} · sırada`} no={roma[baslangicNo + k] || baslangicNo + k + 1} />
+          <div style={{ display: "grid", gridTemplateColumns: "28px minmax(0,1fr)", columnGap: SP.s, padding: "12px 0 14px", borderTop: `1px dashed ${PAL.line}` }}>
+            <span />
+            <span style={{ display: "grid", gap: 7 }}>
+              <span style={{ width: "34%", height: 6, borderRadius: 3, background: PAL.line }} />
+              <span style={{ width: "78%", height: 6, borderRadius: 3, background: PAL.line }} />
+            </span>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

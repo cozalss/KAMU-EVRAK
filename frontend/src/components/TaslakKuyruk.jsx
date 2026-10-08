@@ -132,7 +132,10 @@ export function KuyrukSatiri({ h, konu, muhatap, sira, secili, onSec, onAc, optI
   const tamTarih = satirTarihi(h.ts, false);
   const baslik = konu || h.name;
   const birim = BIRIM_GOSTER(h.result?.hedef_birim || h.hedef_birim, h.result?.evrak_turu || h.evrak_turu);
-  const meta = metaSatiri(YAZI_TR(h.result?.yazi_turu) || "Taslak", birim && birim !== "—" ? birim : muhatap);
+  // Dar kuyrukta (1440) satır yalnız saati taşır; eski günün tarihi meta satırının başına iner
+  // (tur 9 jüri: "06.10 21:14" sütunu konuyu 15-18 karaktere sıkıştırıyordu).
+  const gunEki = kisa ? satirGunu(h.ts) : "";
+  const meta = metaSatiri(gunEki, YAZI_TR(h.result?.yazi_turu) || "Taslak", birim && birim !== "—" ? birim : muhatap);
   const zemin = secili ? ALFA(T) : "transparent";
   return (
     <div role="option" id={optId} aria-selected={secili} onClick={onSec} onDoubleClick={onAc} data-press=""
@@ -169,12 +172,35 @@ function satirTarihi(ts, kisa = false) {
   const gun = d.toLocaleDateString("tr-TR");
   const saat = d.toLocaleTimeString("tr-TR", SAAT);
   const bugun = gun === new Date().toLocaleDateString("tr-TR");
-  // TEK BİÇİM, SABİT GENİŞLİK (jüri tur 8: aynı listede "06.10 21:14" ile yalnız "06.10" yan
-  // yana duruyordu). KISA (dar kuyruk): bugün → "bugün 21:14", eski gün → "06.10 21:14" — ikisi
-  // de 11 mono karakter, sütun hizalı. GENİŞ: eski gün tam tarih + saat. Tam tarih title'da.
-  const ga = `${iki(d.getDate())}.${iki(d.getMonth() + 1)}`;   // gg.aa (yerel ayar "/" basıyordu)
-  if (bugun) return `bugün ${saat}`;
-  return kisa ? `${ga} ${saat}` : `${gun} ${saat}`;
+  // KISA (dar kuyruk, 1440): yalnız saat — 5 mono karakter, sütun hizalı; gün meta satırında
+  // (satirGunu). GENİŞ: bugün → "bugün 21:14", eski gün tam tarih + saat. Tam tarih title'da.
+  if (kisa) return saat;
+  return bugun ? `bugün ${saat}` : `${gun} ${saat}`;
+}
+
+/* Dar kuyrukta meta satırının gün öneki: bugün için boş (varsayılan gün), eski gün "06.10". */
+function satirGunu(ts) {
+  if (!Number.isFinite(ts)) return "";
+  const d = new Date(ts);
+  if (d.toLocaleDateString("tr-TR") === new Date().toLocaleDateString("tr-TR")) return "";
+  return `${iki(d.getDate())}.${iki(d.getMonth() + 1)}`;   // gg.aa (yerel ayar "/" basıyordu)
+}
+
+/* Liste yüksekliği SATIR_H'nin tam katı (tur 9 jüri: 1920'de 14. satır yarım kesikti). Kap
+   esnek ölçülür, liste katına yuvarlanır; artan <52px defter zemini olarak boş kalır. */
+export function useSatirKati(etkin) {
+  const [el, kapRef] = useState(null);   // callback ref: kap geç bağlansa da gözlem kurulur
+  const [yuk, setYuk] = useState(null);
+  useEffect(() => {
+    if (!etkin || !el || typeof ResizeObserver === "undefined") return undefined;
+    const ro = new ResizeObserver(([g]) => {
+      const h = Math.floor(g.contentRect.height / SATIR_H) * SATIR_H;
+      setYuk(h > 0 ? h : null);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [etkin, el]);
+  return { kapRef, yuk: etkin ? yuk : null };
 }
 
 /* Boş filtre — defter SATIRLARINA oturur: başlık+açıklama tek 52px satır (kuyruk satırıyla

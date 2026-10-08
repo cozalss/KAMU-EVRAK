@@ -19,7 +19,7 @@
    · Gün listesi haftanın günü adı yerine günün EN ACİL evrakını basar (+ek sayısı, gecikme).
    Saf çekirdek lib/sureTakvimi.js + lib/panelBrifSaf.js'te. */
 import { useMemo, useState } from "react";
-import { Icon, MONO, DISPLAY, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
+import { Icon, MONO, T, DISPLAY, TYPE, TNUM, SP, RAD, SH, EASE, ALFA, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
 import { DURUM_AGIRLIK, gunAnahtar, kalanMetin, isaretHarita, ayIsaretleri, ayIzgarasi, gunGenislik } from "../lib/sureTakvimi.js";
 import { gunEnAcil } from "../lib/panelBrifSaf.js";
 import { useDarEkran } from "../hooks/useMedya.js";
@@ -61,26 +61,31 @@ const HALKA = {
 };
 
 /* Mühür — sabit 34 px daire, hücrenin ortasında. Seçiliyken (ya da köprüden vurguluyken) DOLAR. */
-function Muhur({ renk, agirlik, gecikme, gun, dolu }) {
+function Muhur({ renk, agirlik, gecikme, gun, dolu, basim }) {
   const cizgi = dolu ? DERIN_OF(renk) : renk;
   return (
     <span aria-hidden="true" style={{ position: "absolute", inset: 0, margin: "auto", width: MUHUR, height: MUHUR, borderRadius: RAD.dot, pointerEvents: "none",
       ...(HALKA[agirlik] || HALKA[1])(cizgi),
       background: dolu ? DERIN_OF(renk) : ALFA(renk), "--pv-egim": `${egim(gun)}deg`, transform: `rotate(${egim(gun)}deg)`,
       WebkitMaskImage: MUREKKEP, maskImage: MUREKKEP, WebkitMaskSize: "80px 80px", maskSize: "80px 80px",
-      transition: "background .16s ease", animation: `pv-bas .5s ${EASE.out} ${gecikme}ms both` }} />
+      /* Tur 9 imza: tıklanınca ıstampa basılır (120 ms 0,92→1); ilk açılış salvosu bir kez oynar. */
+      transition: "background .16s ease", animation: basim === "bas" ? `pv-muhur .12s ${EASE.out} both` : basim === "dur" ? "none" : `pv-bas .5s ${EASE.out} ${gecikme}ms both` }} />
   );
 }
 
 /* Gün hücresi. İşaretsiz gün <div>'dir (30 boş sekme durağı klavyeyi boğardı). */
 function GunHucre({ tarih, bugunMu, kayit, seciliMi, onSec, sira, yukseklik, odak, onOdak }) {
   const gunNo = tarih.getDate();
+  const [etkilesti, setEtkilesti] = useState(false);
   const kutu = { position: "relative", width: "100%", height: yukseklik, display: "flex", alignItems: "center", justifyContent: "center",
     borderRadius: RAD.ctl, ...TNUM };
   if (!kayit) {
     return (
-      <div style={{ ...kutu, fontFamily: MONO, fontSize: 13, color: bugunMu ? PAL.onAccent : PAL.mut3, fontWeight: bugunMu ? 600 : 400 }} title={bugunMu ? "Bugün" : undefined}>
-        {bugunMu && <span aria-hidden="true" style={{ position: "absolute", inset: 0, margin: "auto", width: MUHUR - 2, height: MUHUR - 2, borderRadius: RAD.ctl, background: DERIN.T }} />}
+      <div style={{ ...kutu, fontFamily: MONO, fontSize: 13, color: bugunMu ? DERIN.T : PAL.mut3, fontWeight: bugunMu ? 700 : 400 }} title={bugunMu ? "Bugün" : undefined}>
+        {/* Tur 9 jüri: bugün dolu KARE, işaretler YUVARLAK mühürdü → bugün de mühür geometrisinde:
+            ince çift halka (dolgu yalnız seçili günde). */}
+        {bugunMu && <span aria-hidden="true" style={{ position: "absolute", inset: 0, margin: "auto", width: MUHUR - 6, height: MUHUR - 6, borderRadius: RAD.dot,
+          border: `1.5px solid ${DERIN.T}`, outline: `1px solid ${DERIN.T}`, outlineOffset: 2 }} />}
         <span style={{ position: "relative" }}>{gunNo}</span>
       </div>
     );
@@ -90,8 +95,9 @@ function GunHucre({ tarih, bugunMu, kayit, seciliMi, onSec, sira, yukseklik, oda
   /* Mürekkep köprüsü: defter satırı/cetvel iğnesi bu günün evrakını gösteriyorsa mühür dolar. */
   const dolu = seciliMi || (!!odak && kayit.ogeler.some((x) => x.id === odak));
   const kopruId = gunEnAcil(kayit.ogeler).enAcil?.id ?? null;
+  const basim = etkilesti ? (seciliMi ? "bas" : "dur") : "acilis";
   return (
-    <button type="button" onClick={(e) => { e.currentTarget.style.background = "transparent"; onSec(seciliMi ? null : gunAnahtar(tarih)); }} {...focusRing} data-press=""
+    <button type="button" onClick={(e) => { e.currentTarget.style.background = "transparent"; setEtkilesti(true); onSec(seciliMi ? null : gunAnahtar(tarih)); }} {...focusRing} data-press=""
       aria-pressed={seciliMi} title={`${gunNo} ${AY_ADI[tarih.getMonth()]}: ${n} evrakın son günü`}
       aria-label={`${gunNo} ${AY_ADI[tarih.getMonth()]} ${tarih.getFullYear()}, ${GUN_TAM[haftaGunu(tarih)]} — ${n} evrakın son günü. Listeyi ${seciliMi ? "kapat" : "göster"}.`}
       onFocus={() => onOdak?.(kopruId)} onBlur={() => onOdak?.(null)}
@@ -99,7 +105,7 @@ function GunHucre({ tarih, bugunMu, kayit, seciliMi, onSec, sira, yukseklik, oda
       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; onOdak?.(null); }}
       style={{ ...kutu, cursor: "pointer", padding: 0, border: "none", background: "transparent",
         color: dolu ? PAL.onAccent : bugunMu ? DERIN.T : DERIN_OF(renk), transition: GECIS }}>
-      <Muhur renk={renk} agirlik={kayit.agirlik} gecikme={420 + sira * 80} gun={gunNo} dolu={dolu} />
+      <Muhur renk={renk} agirlik={kayit.agirlik} gecikme={420 + sira * 80} gun={gunNo} dolu={dolu} basim={basim} />
       {/* Archivo rakam; genişliği günün en sıkışık süresini kodlar (bol süre geniş, gecikmiş dar). */}
       <span style={{ position: "relative", fontFamily: DISPLAY, fontSize: 16, lineHeight: "18px", fontWeight: 800, letterSpacing: "-.01em",
         fontStretch: `${gunGenislik(kayit)}%`, textDecoration: bugunMu ? "underline" : "none", textUnderlineOffset: 3 }}>{gunNo}</span>
@@ -147,8 +153,12 @@ function GunPaneli({ isaretliGunler, seciliKayit, onSec, ayAdi }) {
     const gorunen = seciliKayit.ogeler.slice(0, 6);
     return (
       <>
-        <div style={{ display: "flex", alignItems: "baseline", gap: SP.s, marginBottom: SP.xs }}>
-          <span style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink, ...TNUM }}>{seciliKayit.tarih.getDate()} {ayAdi} · son gün</span>
+        {/* Tur 9 jüri: seçimde liste görsel olarak değişmiyordu → süzülmüş liste tükenmez mavisi
+            sırtla başlar ve sayaç taşır ("1 Ekim · 1 evrak"). */}
+        <div role="status" style={{ display: "flex", alignItems: "baseline", gap: SP.s, marginBottom: SP.xs, paddingLeft: SP.s, borderLeft: `3px solid ${T}`,
+          animation: `pv-yaz .22s ${EASE.out} both` }}>
+          <span style={{ ...TYPE.data, fontWeight: 600, color: PAL.ink, ...TNUM }}>{seciliKayit.tarih.getDate()} {ayAdi} · {seciliKayit.ogeler.length} evrak</span>
+          <span style={{ ...TYPE.antet, fontSize: 11, color: PAL.mut2 }}>SON GÜN</span>
           <button type="button" onClick={() => onSec(null)} {...focusRing} data-press=""
             style={{ marginLeft: "auto", cursor: "pointer", padding: "4px 6px", margin: "-4px -6px -4px auto",
               background: "transparent", border: "none", ...TYPE.meta, fontWeight: 500, color: DERIN.T }}>
@@ -314,11 +324,11 @@ function AyIzgarasi({ hucreler, isaret, bugunKey, secili, onSec, siraHarita, dar
       {/* Tur 8 jüri: hafta sonu şeridi ayrı kutu gibiydi → masaüstünde kartın sağ kenarına
           kadar uzanır (kenar boşluğunu da kapsar), yalnız sol köşeler yuvarlak. */}
       <span aria-hidden="true" style={{ position: "absolute", top: 0, bottom: 0, background: PAL.surf2,
-        borderRadius: dar ? RAD.ctl : `${RAD.ctl}px 0 0 ${RAD.ctl}px`,
-        left: `calc((100% - ${6 * aralik}px) * 5 / 7 + ${5 * aralik - 2}px)`, right: dar ? -2 : -SP.l }} />
+        borderRadius: RAD.chip,   // tur 9 jüri: kart kenarına taşıyordu, sol ile simetri bozuktu → ızgarada kırpılı
+        left: `calc((100% - ${6 * aralik}px) * 5 / 7 + ${5 * aralik - 2}px)`, right: -2 }} />
       <div aria-hidden="true" style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", columnGap: aralik }}>
         {GUN_KISA.map((g, i) => (
-          <span key={g} style={{ textAlign: "center", ...TYPE.antet, fontSize: 10, color: i >= 5 ? PAL.mut3 : PAL.mut2, padding: "6px 0 4px" }}>{g}</span>
+          <span key={g} style={{ textAlign: "center", ...TYPE.antet, fontSize: 11, color: PAL.mut2, padding: "6px 0 4px" }}>{g}</span>
         ))}
       </div>
       <div id="sure-takvim-panel" role="tabpanel" aria-labelledby={etiketId} style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: aralik }}>

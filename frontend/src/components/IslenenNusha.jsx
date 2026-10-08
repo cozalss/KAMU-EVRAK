@@ -5,7 +5,7 @@
    Risk tek sözlükten: "Orta" + mono kod "SARI" yalnız künyede (lib/defterSozluk).
    Kimlikler ortadan kısalır, tam değer kopyalanır (KimlikDeger). */
 import React, { useEffect, useState } from "react";
-import { Icon, MONO, PAL, BANT, TYPE, RAD, SP, DERIN, DERIN_OF, focusRing } from "./neonUi.jsx";
+import { Icon, PAL, BANT, TYPE, RAD, SP, DERIN, DERIN_OF, focusRing } from "./neonUi.jsx";
 import BelgeModal, { ScrimDugme } from "./BelgeModal.jsx";
 import { GecisCip } from "./FilterBar.jsx";
 import { KunyeFisi, KimlikDeger, AltKunye } from "./DefterNusha.jsx";
@@ -45,17 +45,28 @@ function MevzuatListesi({ mevzuat, onMevzuatAc }) {
   );
 }
 
+/* ÖZET DERKENARI (tur 9 jüri: özet 200 px'lik künye kolonunda 18 satır akıyordu) — kâğıdın
+   üstünde tam genişlikte, resmî yazıya düşülen el notu gibi: mono künye + ıstampa moru kenar. */
+function OzetDerkenar({ ozet }) {
+  return (
+    <aside aria-label="Evrak özeti" style={{ padding: `${SP.m}px ${SP.l}px`, borderRadius: 2, background: PAL.surf, borderLeft: `3px solid ${DERIN.V}`, boxShadow: `0 0 0 1px ${PAL.line}` }}>
+      <div style={{ ...TYPE.antet, fontSize: 10, color: DERIN.V, textTransform: "uppercase", marginBottom: SP.xs }}>Derkenar · özet</div>
+      <p style={{ margin: 0, ...TYPE.data, color: PAL.ink2, maxWidth: "72ch", textWrap: "pretty" }}>{ozet}</p>
+    </aside>
+  );
+}
+
 function kunyeSatirlari(item, aktifTur) {
   const r = item.result || {};
   const sla = SLA_TR[r.sla_metadata?.durum];
-  const riskKod = BANT[item.bant]?.l;
   return [
-    { k: "Kaynak dosya", v: item.name ? <span title={item.name}>{ortaElips(item.name, 18, 10)}</span> : "", mono: true },
+    { k: "Kaynak dosya", v: item.name ? <KimlikDeger deger={item.name} etiket="kaynak dosya adını" bas={12} son={8} /> : "" },
     { k: "Evrak türü", v: EVRAK_TR(item.evrak_turu) },
     { k: "Üretilen yazı türü", v: aktifTur ? YAZI_TR(aktifTur) : "" },
     { k: "Hedef birim", v: BIRIM_GOSTER(item.hedef_birim, item.evrak_turu), c: DERIN.V },
     { k: "Karar durumu", v: DURUM_TR[item._durum], c: DURUM_RENK[item._durum] ? DERIN_OF(DURUM_RENK[item._durum]) : PAL.mut2 },
-    { k: "Risk bandı", v: riskAdi(item.bant) ? <>{riskAdi(item.bant)} <span style={{ fontFamily: MONO, fontSize: 11, color: PAL.mut2 }}>{riskKod}</span></> : "—", c: DERIN_OF(BANT[item.bant]?.c) },
+    // Tur 9 jüri: "Orta SARI" aynı bilgiyi iki kez veriyordu — bant kodu yalnız title'da.
+    { k: "Risk bandı", v: riskAdi(item.bant) ? <span title={`Bant kodu: ${BANT[item.bant]?.l || "—"}`}>{riskAdi(item.bant)}</span> : "—", c: DERIN_OF(BANT[item.bant]?.c) },
     { k: "Sınıflandırma güveni", v: fmtGuven(r.tur_confidence) || "—" },
     { k: "Yasal süre", v: sla ? sla[0] : r.sla_metadata?.durum ? "Normal takvim" : "", c: sla ? sla[1] : DERIN.yesil },
     { k: "İşlem süresi", v: fmtSure(r.sure_ms) },
@@ -76,7 +87,6 @@ export default function IslenenNusha({ item, onClose, onDuzenle, onMevzuatAc }) 
   const ozet = cleanDemoText(r.ozet || "").replace(/\*\*/g, "");
   const fis = item ? (
     <KunyeFisi baslik="Sicil künyesi" satirlar={kunyeSatirlari(item, aktifTur)}>
-      {ozet && <p style={{ margin: `${SP.m}px 0 0`, ...TYPE.data, color: PAL.ink2, paddingLeft: SP.m, borderLeft: `2px solid ${PAL.lineHi}` }}>{ozet}</p>}
       <MevzuatListesi mevzuat={(r.mevzuat_onerileri || []).slice(0, 3)} onMevzuatAc={onMevzuatAc} />
       {varyantlar.length > 1 && (
         <div role="group" aria-label="İşlenen yazı türleri" style={{ display: "flex", gap: SP.xs, flexWrap: "wrap", alignItems: "center", marginTop: SP.m }}>
@@ -92,7 +102,7 @@ export default function IslenenNusha({ item, onClose, onDuzenle, onMevzuatAc }) 
     <BelgeModal acik={!!item} onKapat={onClose} baslik={item ? (item._konuGoster || item.name) : ""} kayitNo={item?._no || ""}
       dosyaAdi={item ? DURUM_TR[item._durum] : ""}
       metin={aktifMd ? cleanDemoText(aktifMd) : "Bu kayıt için resmî yazı taslağı üretilmedi."}
-      ustIcerik={fis}
+      ustIcerik={fis} cilt="Sicil" derkenar={ozet ? <OzetDerkenar ozet={ozet} /> : null}
       altKunye={item ? <AltKunye parcalar={[
         { k: "Sicil", v: item._no },
         { k: "Denetim izi", v: r.denetim_izi?.son_hash ? ortaElips(r.denetim_izi.son_hash, 10, 6) : "", tam: r.denetim_izi?.son_hash },

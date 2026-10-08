@@ -26,7 +26,7 @@ const EVRAKLAR = [
       "Arızanın en kısa sürede giderilmesi için",
       "gereğinin yapılmasını arz ederim.",
     ],
-    imza: "Ayşe Yılmaz", tur: "Dilekçe", ozet: "Aydınlatma arızası", kisi: "A*** Y*****",
+    imza: "Ayşe Yılmaz", alt: [["Adres", "Işık Mah. 14. Sokak No: 3, Örnekkent"], ["Tel", "0555-123-4567"]], tur: "Dilekçe", ozet: "Aydınlatma arızası", kisi: "A*** Y*****",
     birim: "Fen İşleri Müdürlüğü", sure: "30 gün · 3071",
   },
   {
@@ -40,7 +40,7 @@ const EVRAKLAR = [
       "elektronik posta yoluyla verilmesini",
       "saygılarımla arz ederim.",
     ],
-    imza: "Mehmet Kaya", tur: "Bilgi edinme", ozet: "Okul onarım verileri", kisi: "M***** K***",
+    imza: "Mehmet Kaya", alt: [["Adres", "Cumhuriyet Mah. 5. Cad. No: 12, Örnek"], ["Tel", "0555-123-4567"]], tur: "Bilgi edinme", ozet: "Okul onarım verileri", kisi: "M***** K***",
     birim: "Bilgi Edinme Birimi", sure: "15 iş günü · 4982",
   },
   {
@@ -55,7 +55,7 @@ const EVRAKLAR = [
       "Ek: Güzergâh krokisi (1 sayfa)",
     ],
     antet: "ÖRNEK ELEKTRİK DAĞITIM A.Ş.",
-    imza: "Genel Müdür Yrd.", tur: "Kurum yazısı", ozet: "Kazı izni", kisi: "Örnek EDAŞ",
+    imza: "Genel Müdür Yrd.", alt: [["Gereği", "Örnekkent Belediye Başkanlığı"], ["Bilgi", "Örnek EDAŞ Bölge Müdürlüğü"]], tur: "Kurum yazısı", ozet: "Kazı izni", kisi: "Örnek EDAŞ",
     birim: "İmar ve Şehircilik Md.", sure: "Kurum içi · normal",
   },
 ];
@@ -116,7 +116,7 @@ function Defter({ evrak, adim }) {
                 <motion.span key={bitti ? `${evrak.no}-${r.k}` : "bos"} style={{ display: "inline-block" }}
                   initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.28, ease: EASE_BEZIER.out }}>
-                  {bitti ? r.v(evrak) : <span style={{ color: PAL.mut3, fontWeight: 400 }}>{calisiyor ? "işleniyor…" : "—"}</span>}
+                  {bitti ? r.v(evrak) : <span style={{ color: calisiyor ? PAL.mut2 : PAL.mut3, fontWeight: 400 }}>{calisiyor ? "işleniyor…" : "—"}</span>}
                 </motion.span>
               </AnimatePresence>
             </span>
@@ -171,9 +171,32 @@ function Kagit({ evrak, adim }) {
           <div style={{ fontSize: 10.5, lineHeight: "14px", fontWeight: 600, color: PAL.ink }}>{evrak.imza}</div>
         </div>
       </div>
-      {/* alt boşluk kâğıdın devamı — sahne bunu kırpar */}
-      <div style={{ marginTop: 28, display: "grid", gap: 8 }}>
-        {[0.92, 0.78, 0.86].map((w, n) => <span key={n} style={{ height: 3, width: `${w * 100}%`, borderRadius: 2, background: PAL.press }} />)}
+      {/* Tur 9 (j2: kâğıdın alt yarısı boştu, "yarım kâğıt"): yazının KENDİ alt ögeleri — dilekçede
+          adres/telefon, kurum yazısında Gereği/Bilgi dağıtımı; tabanda kayıt bandı + paraf zinciri. */}
+      <dl style={{ margin: "18px 0 0", display: "grid", gridTemplateColumns: "auto minmax(0,1fr)", columnGap: 6, rowGap: 2, fontSize: 9.5, lineHeight: "13px" }}>
+        {evrak.alt.map(([k, v]) => <div key={k} style={{ display: "contents" }}><dt style={{ color: PAL.mut }}>{k} :</dt><dd style={{ margin: 0, color: PAL.ink2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{v}</dd></div>)}
+      </dl>
+      <KayitBandi evrak={evrak} />
+    </div>
+  );
+}
+
+/* Kayıt bandı — kâğıdın tabanı: gelen evrak kaydı künyesi + paraf zinciri (memur → şef → müdür).
+   Paraf kutuları boş (kayıt yeni); yalnız memurunki mühürle birlikte dolar. */
+const PARAF = ["Memur", "Şef", "Müdür"];
+function KayitBandi({ evrak }) {
+  return (
+    <div style={{ position: "absolute", left: 34, right: 34, bottom: 22, fontFamily: MONO, fontSize: 9, lineHeight: "12px", color: PAL.mut, ...TNUM }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", columnGap: 10, marginBottom: 12 }}>
+        {PARAF.map((p) => (
+          <div key={p} style={{ display: "grid", gap: 3 }}>
+            <span style={{ height: 18, borderBottom: `1px dotted ${PAL.lineHi}` }} />
+            <span style={{ textTransform: "uppercase", letterSpacing: ".06em" }}>Paraf · {p}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, paddingTop: 6, borderTop: `1px dashed ${PAL.lineHi}`, textTransform: "uppercase", letterSpacing: ".04em" }}>
+        <span>Gelen evrak kaydı · {evrak.no}</span><span>Sayfa 1/1</span>
       </div>
     </div>
   );
@@ -188,10 +211,12 @@ function HavaleFisi({ evrak }) {
     <motion.div
       initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }}
       transition={{ duration: 0.42, ease: EASE_BEZIER.out }}
-      /* Tur 8 (jüri): fiş y=196'da imza karalamasını örtüyordu — "Memur imzalar." vaadinin görsel
-         karşılığı kayboluyordu. İmza bloğunun (≈253–297 px) ALTINA iliştirilir; damga solda. */
-      style={{ position: "absolute", right: -40, top: 312, zIndex: 3, width: 176, padding: "10px 12px 11px", background: PAL.surf2, border: `1px solid ${PAL.lineHi}`, borderRadius: 3, boxShadow: SH.pop }}>
-      <span aria-hidden="true" style={{ position: "absolute", left: 18, top: -9, width: 10, height: 26, borderRadius: 6, border: `1.5px solid ${PAL.mut3}` }} />
+      /* Tur 9 (j2: fiş imza bloğuna ve imza sahibinin adına biniyordu, ataç imzanın içine düşüyordu):
+         imza + alt künye bitince (≈340 px) kâğıdın SAĞ KENARINA zımbalanır; damga solda, arada ≥16 px. Taşma 14 px (j1: -40 forma
+         ~9 px biniyordu) → fiş ile form kartı arasında ≥16 px boşluk kalır. */
+      style={{ position: "absolute", right: -14, top: 362, zIndex: 3, width: 176, padding: "10px 12px 11px", background: PAL.surf2, border: `1px solid ${PAL.lineHi}`, borderRadius: 3, boxShadow: SH.pop }}>
+      {/* Zımba teli — fişi kâğıt kenarına tutturan iki bacaklı tel (ataç değil). */}
+      <span aria-hidden="true" style={{ position: "absolute", left: 22, top: 7, width: 18, height: 4, borderRadius: 1, border: `1.5px solid ${PAL.mut3}`, borderBottom: "none" }} />
       <div style={{ ...TYPE.antet, fontSize: 10, color: DERIN.V, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 6 }}>
         <Icon.route width={12} height={12} /> Havale
       </div>
@@ -251,7 +276,7 @@ export default function AuthMasa({ dondur = false }) {
             </motion.div>
             <AnimatePresence>{adim >= HAVALE && <HavaleFisi key="fis" evrak={evrak} />}</AnimatePresence>
             {adim >= MUHUR && (
-              <div className="ke-murekkep" style={{ position: "absolute", left: 20, top: 292, zIndex: 4 }}>
+              <div className="ke-murekkep" style={{ position: "absolute", left: 22, top: 368, zIndex: 4 }}>
                 <Damga ton={V} egim={-8} butce={false} style={{ fontSize: 17, lineHeight: "20px", padding: "8px 14px", background: "transparent" }}>
                   <span style={{ display: "grid", justifyItems: "center", gap: 3 }}>
                     <span>Kayda alındı</span>

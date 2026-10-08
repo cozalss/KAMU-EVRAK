@@ -13,19 +13,7 @@ import { T, PAL, BANT, DERIN, ALFA, TYPE, RAD, SP, SH, focusRing, Icon, BuyutDug
 
 export const KAGIT_VT = "ke-kaynak-kagit";
 
-export function buildSegments(metin, spanlar) {
-  const segs = [];
-  let cur = 0;
-  for (const sp of [...spanlar].sort((a, b) => (a.start | 0) - (b.start | 0))) {
-    const s = Math.max(cur, Math.min(metin.length, sp.start | 0));
-    const e = Math.max(s, Math.min(metin.length, sp.end | 0));
-    if (s > cur) segs.push({ t: metin.slice(cur, s) });
-    if (e > s) segs.push({ t: metin.slice(s, e), mark: true });
-    cur = e;
-  }
-  if (cur < metin.length) segs.push({ t: metin.slice(cur) });
-  return segs;
-}
+export { buildSegments } from "../lib/canliMetin.js";
 
 /* Fosfor kalem: kanıt spanları canlı koşumda soldan sağa sırayla boyanır (çıkarım "şimdi"
    işaretleniyor); sonuç ekranında statik. */
@@ -56,18 +44,30 @@ function HavaleNotu({ havale, sik = false }) {
 
 /* Belge iskeleti — gerçek bir yazı sayfasının düşük-kontrast önizlemesi; şerit şerit nefes
    alır. NN/g: iskelet, spinner'a göre algılanan süreyi kısaltır. */
-function BelgeIskeleti({ busy, glow, satir = [96, 100, 92, 88, 100, 64] }) {
+/* A4 ritmi (tur 9 jüri: 6 şerit + altında ~500 px boş kâğıt): antet (ortalı iki satır) → sayı/
+   tarih → muhatap → gövde paragrafları → imza bloğu. Satır aralığı okuma metniyle aynı (22 px):
+   tarama çizgisi gerçek satır ritminin üstünden iner. */
+const A4_ISKELET = [
+  { w: 46, ort: true }, { w: 34, ort: true }, { bosluk: 1 },
+  { w: 38 }, { w: 30 }, { bosluk: 1 }, { w: 52, ort: true }, { bosluk: 1 },
+  { w: 96 }, { w: 100 }, { w: 92 }, { w: 98 }, { w: 64 }, { bosluk: 1 },
+  { w: 100 }, { w: 94 }, { w: 88 }, { w: 42 }, { bosluk: 1 },
+  { w: 26, sag: true }, { w: 22, sag: true },
+];
+function BelgeIskeleti({ busy, glow, satir = null }) {
+  const dizi = satir ? satir.map((w) => ({ w })) : A4_ISKELET;
   return (
     <div style={{ ...TYPE.data, color: PAL.mut2 }}>
-      <div aria-hidden="true" style={{ display: "flex", flexDirection: "column", gap: SP.s, marginBottom: SP.l }}>
-        <div style={{ height: 8, width: "42%", background: PAL.press, borderRadius: RAD.chip, marginBottom: SP.xs, animation: busy && glow ? "nu-think 1.4s ease-in-out infinite" : "none" }} />
-        {satir.map((w, i) => (
-          <div key={i} style={{ height: 8, width: `${w}%`, background: PAL.press, borderRadius: RAD.chip, animation: busy && glow ? `nu-think 1.4s ease-in-out ${i * 140}ms infinite` : "none" }} />
+      <div aria-hidden="true" style={{ display: "flex", flexDirection: "column", marginBottom: SP.l }}>
+        {dizi.map((x, i) => (
+          <div key={i} style={{ height: x.bosluk ? 11 : 22, display: "flex", alignItems: "center", justifyContent: x.ort ? "center" : x.sag ? "flex-end" : "flex-start" }}>
+            {!x.bosluk && <div style={{ height: 8, width: `${x.w}%`, background: PAL.press, borderRadius: RAD.chip, animation: busy && glow ? `nu-think 1.4s ease-in-out ${(i % 7) * 140}ms infinite` : "none" }} />}
+          </div>
         ))}
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: SP.s }}>
         {busy && <Icon.spin width={14} height={14} />}
-        {busy ? "Kaynak metin okunuyor; unsurlar maskelenip işaretlenecek…" : "Bu koşumda kaynak metin alınamadı."}
+        {busy ? "Kaynak metin okunuyor; unsurlar işaretlenecek…" : "Bu koşumda kaynak metin alınamadı."}
       </div>
     </div>
   );
@@ -117,7 +117,7 @@ export function KaynakBelge({ fileUrl, segs, busy, glow, onBuyut, compact = fals
       <div data-kd="kaynak-masa" style={{ flex: 1, background: masada ? "transparent" : PAL.surf2, padding: masada ? `${SP.m}px 2px ${SP.s}px` : `${SP.m}px ${SP.s}px`, display: "flex", minHeight: 0, ...(compact || canli ? { overflowY: "auto" } : null) }}>
         <div data-kd="kaynak-kagit" data-evrak-kagit=""
           {...(tiklanabilir ? { onClick: onBuyut, title: "Büyüt (A4 görünüm)" } : {})}
-          style={{ position: "relative", flex: 1, minWidth: 0, maxWidth: 840, margin: "0 auto", alignSelf: "flex-start", minHeight: "100%", boxSizing: "border-box", background: PAL.surf, color: PAL.ink2, border: `1px solid ${PAL.line}`, borderRadius: masada ? RAD.ctl : RAD.card, padding: masada ? "clamp(24px,2.4vw,40px) clamp(20px,2.2vw,36px)" : "clamp(24px,3.5vw,48px) clamp(20px,4vw,60px)", boxShadow: SH.kagit, cursor: tiklanabilir ? "zoom-in" : "default", overflow: "hidden", viewTransitionName: KAGIT_VT }}>
+          style={{ position: "relative", flex: 1, minWidth: 0, maxWidth: 840, margin: "0 auto", alignSelf: "flex-start", minHeight: masada ? undefined : "100%", boxSizing: "border-box", background: PAL.surf, color: PAL.ink2, border: `1px solid ${PAL.line}`, borderRadius: masada ? RAD.ctl : RAD.card, padding: masada ? "clamp(24px,2.4vw,40px) clamp(20px,2.2vw,36px)" : "clamp(24px,3.5vw,48px) clamp(20px,4vw,60px)", boxShadow: SH.kagit, cursor: tiklanabilir ? "zoom-in" : "default", overflow: "hidden", viewTransitionName: KAGIT_VT }}>
           {canli && busy && !segs && !pdfGoster && <Tarayici />}
           {canli && havale && <HavaleNotu havale={havale} />}
           {pdfGoster ? (

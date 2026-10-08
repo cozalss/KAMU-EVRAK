@@ -7,7 +7,8 @@
 
    Sözleşmeler:
    · Gönderim YALNIZ "Onayla ve gönder" ile olur; Esc / Vazgeç / zemin tıklaması hiçbir şey
-     yazmaz. Odak açılışta birincil düğmede (Enter = onay), kapanışta tetikleyiciye döner.
+     yazmaz. Odak açılışta GÜVENLİ varsayılanda (tur 9 jüri): hazırsa Vazgeç'te — Enter kalıcı
+     kaydı tetiklemez; kilitliyse "Taslağı düzenle"de. Kapanışta tetikleyiciye döner.
    · Engelleyen kusur varsa (boş gövde, açıklama vaadi, [DOĞRULA]) onay düğmesi KİLİTLİDİR;
      yerine "Düzenle" önerilir — boş yazı memurun dikkatinden kaçıp gönderilemez.
    · Gönderim sürerken fiş kilitli kalır; başarısızlıkta fiş AÇIK kalır ve hata satır içinde
@@ -16,7 +17,7 @@
    · Risk bandı yazıyla söylenir; skor yüzde olarak gösterilmez (riskOlcuEtiketi). */
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Btn, Icon, MONO, DISPLAY, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, odakDongusu, focusRing } from "./neonUi.jsx";
+import { Btn, Damga, Icon, MONO, DISPLAY, V, PAL, DERIN, BANT, ALFA, TYPE, TNUM, RAD, SP, SH, odakDongusu, focusRing } from "./neonUi.jsx";
 import { riskOlcuEtiketi } from "../lib/detayYorum.js";
 import { bugunTarihi as bugun, tarihFarkli as tarihFarkliMi } from "../lib/gonderimTarihi.js";
 
@@ -28,7 +29,7 @@ const SATIR_GECIKME_MS = 40;
    (değer metinde var) ya da boş halka (bulunamadı). Hareket yalnız opaklık + 2px kayma, satır
    başına 40ms; reduced-motion global kuralıyla anında. İşaret salt görsel — durum metinle de
    yazılı ("Metinde bulunamadı"), renk tek sinyal değil. */
-function Satir({ etiket, children, not, sira = 0, isaret = "tamam" }) {
+function Satir({ etiket, children, not, notKunye = false, sira = 0, isaret = "tamam" }) {
   const tamam = isaret === "tamam";
   return (
     <div style={{ display: "grid", gridTemplateColumns: "18px 100px minmax(0, 1fr)", gap: SP.m, padding: "9px 0", borderTop: `1px solid ${PAL.line}`,
@@ -40,7 +41,7 @@ function Satir({ etiket, children, not, sira = 0, isaret = "tamam" }) {
       <dt style={{ ...TYPE.meta, color: PAL.mut2, paddingTop: 1 }}>{etiket}</dt>
       <dd style={{ margin: 0, minWidth: 0, ...TYPE.data, color: PAL.ink, fontWeight: 500, overflowWrap: "anywhere" }}>
         {children || <span style={{ color: PAL.mut2, fontWeight: 400 }}>Metinde bulunamadı</span>}
-        {not && <span style={{ display: "block", marginTop: 2, ...TYPE.meta, color: PAL.mut2, fontWeight: 400 }}>{not}</span>}
+        {not && <span style={{ display: "block", marginTop: 2, ...(notKunye ? { ...TYPE.antet, textTransform: "uppercase", color: PAL.mut3 } : { ...TYPE.meta, color: PAL.mut2 }), fontWeight: 400 }}>{not}</span>}
       </dd>
     </div>
   );
@@ -70,9 +71,8 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
 
   useEffect(() => {
     const onceki = document.activeElement;
-    // Odak son (birincil) etkin düğmede: hazırsa Enter = onay, kilitliyse Enter = düzenle.
-    const dugmeler = Array.from(kutuRef.current?.querySelectorAll("button:not([disabled])") || []);
-    dugmeler[dugmeler.length - 1]?.focus();
+    // Güvenli varsayılan: [data-ilk-odak] (hazırsa Vazgeç, kilitliyse Düzenle).
+    kutuRef.current?.querySelector("[data-ilk-odak] button:not([disabled]), button[data-ilk-odak]:not([disabled])")?.focus();
     const tus = (e) => { if (e.key === "Escape" && !kilitliRef.current) { e.stopPropagation(); vazgecFn.current(); } };
     window.addEventListener("keydown", tus, true);
     const eski = document.body.style.overflow;
@@ -97,16 +97,20 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
   return createPortal(
     <div role="presentation" onMouseDown={() => { if (!gonderiliyor) onVazgec(); }}
       style={{ position: "fixed", inset: 0, zIndex: 80, display: "grid", placeItems: "center", padding: 16,
-        background: `color-mix(in srgb, ${PAL.scrim}, ${PAL.scrimKoyu} 30%)`, animation: "ke-fis-zemin .16s ease-out both" }}>
-      {/* Örtü scrim + %30 scrimKoyu (jüri tur 8: açık temada fiş aynı tonlu panellerden
+        background: `color-mix(in srgb, ${PAL.scrim}, ${PAL.scrimKoyu} 55%)`, animation: "ke-fis-zemin .16s ease-out both" }}>
+      {/* Tur 9: %30 → %55 — kuyruk metni fiş kenarından okunuyordu (blur yerine opaklık:
+          modallarda backdropFilter yasak, jank). Örtü scrim + scrimKoyu (jüri tur 8: açık temada fiş aynı tonlu panellerden
           ayrışmıyordu). Örtü PAL.scrim: iki temada da KARARTIR (eski ink-%38 karışımı koyu temada açık
           renk olduğundan sayfayı griye boyuyor, fiş yükselmek yerine çöküyordu). */}
-      <style>{"@keyframes ke-fis-zemin{from{opacity:0}to{opacity:1}}@keyframes ke-fis-satir{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}"}</style>
+      <style>{"@keyframes ke-fis-zemin{from{opacity:0}to{opacity:1}}@keyframes ke-fis-satir{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}"
+        /* Fiş dibi odak halkası (2. jüri): mavi dolgunun üstüne ikinci mavi halka ağırdı. Boşluk
+           dip zemininde, halka MÜREKKEP rengi — dolgu tonundan ayrışır, iki temada AA. */
+        + "[data-fis-dip] button:focus-visible{box-shadow:0 0 0 2px var(--ke-odak-bosluk),0 0 0 4px var(--ke-ink)!important}"}</style>
       <section ref={kutuRef} role="alertdialog" aria-modal="true" aria-labelledby="ke-fis-baslik" aria-describedby="ke-fis-aciklama"
         onKeyDown={odakDongusu} onMouseDown={(e) => e.stopPropagation()}
         style={{ width: "min(560px, 100%)", maxHeight: "calc(100vh - 32px)", overflow: "auto", background: PAL.surfPop,
           border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, animation: "nu-rise .22s var(--ke-ease-out) both" }}>
-        <div style={{ padding: "16px 24px 0" }}>
+        <div style={{ position: "relative", padding: "16px 24px 0" }}>
           <div aria-hidden="true" style={{ display: "flex", alignItems: "center", gap: SP.m, ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase" }}>
             <span style={{ color: PAL.ink, fontWeight: 600 }}>Giden evrak</span>
             <span>Onay fişi</span>
@@ -114,6 +118,14 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
             <span style={{ fontFamily: MONO, ...TNUM }}>{bugun()}</span>
           </div>
           <div aria-hidden="true" style={{ marginTop: SP.s, height: 4, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}` }} />
+          {gonderiliyor && hazir && (
+            /* İmza anı (2. jüri): onay verildiği an fişe ıstampa basılır — gönderim sürerken görünür,
+               hata olursa kalkar ("Onaylandı" olgudur; "Gönderildi" iddia edilmez). Basma hareketi
+               Damga atomunun kendi animasyonu; reduced-motion global kuralıyla anında. */
+            <span style={{ position: "absolute", right: 24, top: 44, pointerEvents: "none" }}>
+              <Damga ton={V} egim={-6} oncelik={1}>Onaylandı</Damga>
+            </span>
+          )}
           <h2 id="ke-fis-baslik" style={{ margin: "14px 0 4px", fontFamily: DISPLAY, fontSize: 24, lineHeight: "28px", fontWeight: 800, fontStretch: "112%", letterSpacing: "-.02em", color: PAL.ink }}>
             {hazir ? "Bu yazı gönderilsin mi?" : "Bu yazı henüz gönderilemez"}
           </h2>
@@ -127,11 +139,21 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
         <dl style={{ margin: "14px 24px 0" }}>
           <Satir sira={0} isaret={isaret(kunye.muhatap)} etiket="Muhatap">{kunye.muhatap}</Satir>
           <Satir sira={1} isaret={isaret(kunye.konu)} etiket="Konu">{basHarf(kunye.konu)}</Satir>
-          <Satir sira={2} isaret={isaret(kunye.sayi)} etiket="Sayı" not="Kayıt numarası gönderimde evrak kaydı sırasında verilir.">
+          <Satir sira={2} isaret={isaret(kunye.sayi)} etiket="Sayı" notKunye not="Kayıt no · gönderim anında verilir">
             {kunye.sayi && <span style={{ fontFamily: MONO, fontSize: 13, ...TNUM }}>{kunye.sayi}</span>}
           </Satir>
           <Satir sira={3} isaret={tarihFarkli ? "eksik" : isaret(kunye.tarih)} etiket="Tarih"
-            not={tarihFarkli ? `Bugün ${bugun()} — yazının tarihi farklı.` : null}>
+            not={tarihFarkli ? (
+              /* Tarih uyarısı satırın İÇİNDE (tur 9 jüri: aynı sorun satırda ve altta ayrı kutuda
+                 iki kez yazıyordu). */
+              <span style={{ color: DERIN.sari }}>
+                Bugün {bugun()} — yazının tarihi farklı.{" "}
+                <button type="button" onClick={onDuzenle} disabled={gonderiliyor} {...focusRing} data-press=""
+                  style={{ cursor: "pointer", padding: 0, border: "none", background: "transparent", ...TYPE.meta, fontWeight: 600, color: DERIN.T, textDecoration: "underline", textUnderlineOffset: 3 }}>
+                  Tarihi düzenle
+                </button>
+              </span>
+            ) : null}>
             {kunye.tarih && <span style={{ ...TNUM }}>{kunye.tarih}</span>}
           </Satir>
           <Satir sira={4} isaret={isaret(kunye.kapanis || kunye.imza)} etiket="Kapanış · imza" not={ayrinti}>{[kunye.kapanis, kunye.imza].filter(Boolean).join(" — ")}</Satir>
@@ -143,19 +165,10 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
           )}
         </dl>
 
-        {(engel.length > 0 || uyari.length > 0 || tarihFarkli) && (
+        {(engel.length > 0 || uyari.length > 0) && (
           <ul aria-label="Gönderim öncesi bulgular" style={{ listStyle: "none", margin: "12px 24px 0", padding: 0, display: "grid", gap: SP.xs }}>
             {engel.map((e) => <Madde key={e.kod} ton="kirmizi">{e.metin}</Madde>)}
             {uyari.map((u) => <Madde key={u.kod} ton="sari">{u.metin}</Madde>)}
-            {tarihFarkli && (
-              <Madde ton="sari">
-                Yazının tarihi {kunye.tarih}; bugün {bugun()}. Tarih bugün olarak gidecekse önce taslağı düzenleyin.{" "}
-                <button type="button" onClick={onDuzenle} disabled={gonderiliyor} {...focusRing} data-press=""
-                  style={{ cursor: "pointer", padding: 0, border: "none", background: "transparent", ...TYPE.data, fontWeight: 600, color: DERIN.T, textDecoration: "underline", textUnderlineOffset: 3 }}>
-                  Tarihi düzenle
-                </button>
-              </Madde>
-            )}
           </ul>
         )}
 
@@ -166,13 +179,13 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
           </p>
         )}
 
-        <div style={{ display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", padding: "16px 24px 20px", marginTop: 16, borderTop: `1px solid ${PAL.line}`, background: PAL.surf2 }}>
+        <div data-fis-dip="" style={{ "--ke-odak-bosluk": PAL.surf2, display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap", padding: "16px 24px 20px", marginTop: 16, borderTop: `1px solid ${PAL.line}`, background: PAL.surf2 }}>
           {onaylayan && (
             <span style={{ ...TYPE.meta, color: PAL.mut2, marginRight: "auto" }}>
               Onaylayan: <strong style={{ color: PAL.ink2, fontWeight: 600 }}>{onaylayan}</strong>
             </span>
           )}
-          <Btn onClick={onVazgec} disabled={gonderiliyor} style={{ minHeight: 44, marginLeft: onaylayan ? 0 : "auto" }}>Vazgeç</Btn>
+          <span data-ilk-odak={hazir ? "" : undefined} style={{ marginLeft: onaylayan ? 0 : "auto" }}><Btn onClick={onVazgec} disabled={gonderiliyor} style={{ minHeight: 44 }}>Vazgeç</Btn></span>
           {hazir ? (
             /* Btn primary (tur 8): elle çizilen düğme koyu temada açık lavanta zemin + koyu metin
                çiziyordu, Taslaklar'daki "Gönder" ise dolgu mavisi + beyaz — aynı eylem zincirinde
@@ -183,7 +196,7 @@ export default function GonderimOnayFisi({ denetim, r, onaylayan = "", gonderili
               {gonderiliyor ? <><Icon.spin width={14} height={14} /> Gönderiliyor…</> : <><Icon.send width={14} height={14} /> {hata ? "Tekrar dene" : "Onayla ve gönder"}</>}
             </Btn>
           ) : (
-            <Btn primary onClick={onDuzenle} style={{ minHeight: 44 }}><Icon.edit width={14} height={14} /> Taslağı düzenle</Btn>
+            <span data-ilk-odak=""><Btn primary onClick={onDuzenle} style={{ minHeight: 44 }}><Icon.edit width={14} height={14} /> Taslağı düzenle</Btn></span>
           )}
         </div>
       </section>

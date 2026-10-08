@@ -10,14 +10,14 @@
 import { useMemo, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "motion/react";
-import { Btn, Icon, MONO, DISPLAY, T, R, TYPE, TNUM, SP, RAD, SH, EASE, EASE_BEZIER, DERIN, PAL, SR_ONLY, focusRing } from "./neonUi.jsx";
+import { Btn, Icon, MONO, T, R, TYPE, TNUM, SP, RAD, SH, EASE, EASE_BEZIER, DERIN, PAL, SR_ONLY, focusRing } from "./neonUi.jsx";
 import { BIRIM_GOSTER, EVRAK_TR } from "./result-cards.jsx";
 import SureKiyasBloku, { TrendRozet } from "./SureKiyas.jsx";
 import { Kronometre } from "./PanelSure.jsx";
 import { useDarEkran } from "../hooks/useMedya.js";
 import { olcumler, ortalama, esikMs, genelTrend, sirala, turKirilimi, hizKademe, fmtSn as sn, ESIK_KAT } from "../lib/sureRapor.js";
 import { MARJ } from "./PanelBrif.jsx";
-import { noktaliGunSaat, noktaliTamTarih } from "../lib/panelBrifSaf.js";
+import { noktaliGunSaat, noktaliTamTarih, kronometreEksen, eksenYuzde, eksenIsaretleri } from "../lib/panelBrifSaf.js";
 import { kayitAdi } from "../lib/sohbetMetin.js";
 
 /* Tablo başlığı künyesi — hangi 7 kaydın gösterildiğini söyler (sıralama değişince "son 7"
@@ -124,9 +124,14 @@ function RaporListe({ satirlar, esik }) {
 }
 
 /* Rapor anteti — görünüm başlığıyla aynı dil: mono künye + başlık + çift çizgi. */
+/* Tur 9 jüri: 900 px yükseklikte başlık kaydırmada kayboluyordu → antet şeridi YAPIŞIK
+   (modal iç boşluğu kadar dışa taşar ki zemin kesintisiz olsun; kapat düğmesi şeritte). */
+const MODAL_PAD = "clamp(16px, 4vw, 32px)";
 function RaporAntet({ olcumN }) {
   return (
-    <div style={{ marginBottom: SP.xl }}>
+    <div style={{ position: "sticky", top: 0, zIndex: 2, background: PAL.surfPop, margin: `calc(-1 * ${MODAL_PAD}) calc(-1 * ${MODAL_PAD}) ${SP.xl}px`,
+      padding: `${MODAL_PAD} ${MODAL_PAD} ${SP.m}px`, borderRadius: `${RAD.pop}px ${RAD.pop}px 0 0` }}>
+      <KapatDugme />
       {/* Künye ViewWrap ile aynı: "KAMU-EVRAK · <bölüm>" — T.C. YOK (bağımsız ürün devlet
           kimliğini taşımaz). Telefonda ölçüm sayısı alt satıra iner; künye kırpılmaz. */}
       <div aria-hidden="true" style={{ ...TYPE.antet, color: PAL.mut3, display: "flex", flexWrap: "wrap", alignItems: "center", gap: `${SP.xs}px ${SP.m}px`, marginBottom: SP.s, paddingRight: 44 }}>
@@ -159,65 +164,89 @@ function KapatDugme() {
 }
 
 const TUR_AZAMI = 6;
-const TUR_SUTUN = "minmax(0, 200px) minmax(0, 1fr) 64px 48px 80px";
-/* Çubuk boyası ORTALAMANIN kademesinden (tur 8 jüri: tek eşik üstü kayıt bütün çubuğu
-   kırmızıya boyuyordu, oysa ortalama eşiğin altındaydı). Kronometredeki üç kademeyle aynı. */
-/* Kronometreyle aynı kodlama (tur 8 jüri 2. tur): hızlı = yalnız kenar, orta = dolu T. */
+const SERIT_N = 12;
+/* Tur 9: kronometreyle AYNI ızgara (etiket 220 · çubuk 1fr · değer 112, aralık SP.s) → iki
+   grafiğin çubuk sütunu piksel piksel üst üste biner; eşik çizgisi aynı x'te. Adet ve eşik üstü
+   künyesi etiket hücresinin ikinci satırına iner (ayrı sütunlar çubuk ekseni kaydırıyordu). */
+const turSutun = (dar) => (dar ? "minmax(0, 40%) minmax(0, 1fr) 64px" : "220px minmax(0, 1fr) 112px");
+/* Çubuk boyası ORTALAMANIN kademesinden — kronometredeki kodlamayla aynı:
+   hızlı = yalnız kenar, orta = dolu T, eşik üstü = ACELE. */
 const TUR_BOYA = { hizli: PAL.surfPop, orta: T, yavas: R };
 const hucre = { padding: "6px 0", borderTop: `1px solid ${PAL.line}` };
 
-/* Tür satırı — iz kutusu (flex:1) içinde çubuk YÜZDE ile; sn etiketi ayrı sütunda → orantı
-   bozulmaz. Eşik, sicil defterinin kırmızı marjı diliyle her izi keser. */
-function TurSatir({ x, tavan, ort, esikX }) {
+function TurKunye({ x }) {
+  return (
+    <span style={{ display: "flex", alignItems: "center", gap: 4, fontFamily: MONO, fontSize: 11, lineHeight: "14px", color: PAL.mut3, ...TNUM }}>
+      {x.n} ADET
+      {x.esikUstu > 0 && <span style={{ display: "inline-flex", alignItems: "center", gap: 3, color: DERIN.R, fontWeight: 600 }}>
+        · <Icon.alert width={11} height={11} aria-hidden="true" />{x.esikUstu} EŞİK ÜSTÜ</span>}
+    </span>
+  );
+}
+
+/* Tür satırı — iz kutusu içinde çubuk ortak eksende YÜZDE ile; eşik, sicil defterinin kırmızı
+   marjı diliyle her izi keser; ızgara çizgileri kronometrenin işaretleriyle aynı. */
+function TurSatir({ x, eksen, ort }) {
   const k = hizKademe(x.ortMs, ort);
   return (
     <span role="row" style={{ display: "contents" }}>
-      <span role="cell" style={{ ...hucre, ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.tur ? EVRAK_TR(x.tur) : "Tür belirsiz"}</span>
+      <span role="cell" style={{ ...hucre, minWidth: 0 }}>
+        <span style={{ display: "block", ...TYPE.data, color: PAL.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{x.tur ? EVRAK_TR(x.tur) : "Tür belirsiz"}</span>
+        <TurKunye x={x} />
+      </span>
       <span role="cell" aria-hidden="true" style={{ ...hucre, alignSelf: "stretch", display: "flex", alignItems: "center", minWidth: 0 }}>
         <span style={{ position: "relative", flex: 1, height: 10 }}>
-          <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${Math.max(1, (x.ortMs / tavan) * 100)}%`, background: TUR_BOYA[k],
+          {eksen.isaret.map((v) => <span key={v} style={{ position: "absolute", top: -8, bottom: -8, left: `${eksenYuzde(v * 1000, eksen.tavanSn)}%`, width: 1, background: PAL.line }} />)}
+          <span style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `max(4px, ${eksenYuzde(x.ortMs, eksen.tavanSn)}%)`, background: TUR_BOYA[k],
             border: `1px solid ${k === "yavas" ? R : T}`, borderRadius: "0 2px 2px 0", boxSizing: "border-box" }} />
-          <span style={{ position: "absolute", top: -6, bottom: -6, left: `${esikX}%`, width: 1.5, background: MARJ }} />
+          <span style={{ position: "absolute", top: -8, bottom: -8, left: `${eksen.esikX}%`, width: 1.5, background: MARJ }} />
         </span>
       </span>
-      <span role="cell" style={{ ...hucre, fontFamily: MONO, fontSize: 12, color: k === "yavas" ? DERIN.R : PAL.ink2, textAlign: "right", whiteSpace: "nowrap", ...TNUM }}>{sn(x.ortMs)} sn</span>
-      <span role="cell" style={{ ...hucre, fontFamily: DISPLAY, fontWeight: 700, fontSize: 15, color: PAL.ink, textAlign: "right", ...TNUM }}>{x.n}</span>
-      <span role="cell" style={{ ...hucre, ...TYPE.meta, fontWeight: 600, color: x.esikUstu ? DERIN.R : PAL.mut3, textAlign: "right", ...TNUM,
-        display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 3 }}>
-        {x.esikUstu ? <><Icon.alert width={12} height={12} aria-hidden="true" />{x.esikUstu}</> : "—"}
-      </span>
+      <span role="cell" style={{ ...hucre, alignSelf: "stretch", display: "flex", alignItems: "center", justifyContent: "flex-end", fontFamily: MONO, fontSize: 12,
+        color: k === "yavas" ? DERIN.R : PAL.ink2, fontWeight: k === "yavas" ? 600 : 400, whiteSpace: "nowrap", ...TNUM }}>{sn(x.ortMs)} sn</span>
+    </span>
+  );
+}
+
+function TurEksen({ eksen, esik }) {
+  return (
+    <span aria-hidden="true" style={{ gridColumn: 2, position: "relative", height: 18, borderTop: `1px solid ${PAL.lineHi}`, fontFamily: MONO, fontSize: 11, color: PAL.mut3, ...TNUM }}>
+      {eksen.isaret.map((v, i, a) => (
+        <span key={v} style={{ position: "absolute", top: 3, left: `${eksenYuzde(v * 1000, eksen.tavanSn)}%`,
+          transform: i === 0 ? "none" : i === a.length - 1 ? "translateX(-100%)" : "translateX(-50%)" }}>{String(v).replace(".", ",")}</span>
+      ))}
+      <span style={{ position: "absolute", top: 20, left: `${eksen.esikX}%`, transform: "translateX(-50%)", color: DERIN.R, whiteSpace: "nowrap" }}>eşik {sn(esik)}</span>
     </span>
   );
 }
 
 /* Tür kırılımı (tur 8 jüri: "rapor kartın büyütülmüş kopyasıydı") — kartın sunamadığını
-   sunar: hangi evrak türü yavaş, kaçı eşik üstü. Ölçek: en yavaş tür ile eşikten büyüğü. */
-function TurKirilimi({ olcum, esik, ort }) {
+   sunar: hangi evrak türü yavaş, kaçı eşik üstü. */
+function TurKirilimi({ olcum, esik, ort, dar }) {
   const tumSatir = useMemo(() => turKirilimi(olcum, esik), [olcum, esik]);
   const [tumu, setTumu] = useState(false);
   if (tumSatir.length < 2) return null;
   const satirlar = tumu ? tumSatir : tumSatir.slice(0, TUR_AZAMI);
-  const tavan = Math.max(tumSatir[0].ortMs, esik || 0) * 1.04 || 1;
-  const esikX = esik ? (esik / tavan) * 100 : 100;
+  /* Üstteki kronometreyle ORTAK eksen: şeridin son SERIT_N ölçümü + tür ortalamaları (RaporGovde
+     aynı kümeyi Kronometre'ye eksenMs olarak verir). Tüm ham ölçümler değil — tek eski aykırı
+     kayıt ekseni 25 sn'ye çekip çubukları sola sıkıştırıyordu (ölçüldü). */
+  const { tavanSn, adimSn } = kronometreEksen([...olcum.slice(0, SERIT_N).map((x) => x.ms), ...tumSatir.map((x) => x.ortMs)], esik);
+  const eksen = { tavanSn, isaret: eksenIsaretleri(tavanSn, adimSn), esikX: eksenYuzde(esik, tavanSn) };
   const kalan = tumSatir.length - TUR_AZAMI;
   return (
     <section aria-label="Evrak türüne göre işlem süresi" style={{ marginTop: SP.xl }}>
       <h3 style={{ margin: `0 0 ${SP.s}px`, display: "flex", alignItems: "baseline", gap: SP.s, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>
-        Evrak türüne göre <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2 }}>en yavaş önce · kırmızı çizgi eşik {sn(esik)} sn</span>
+        Evrak türüne göre <span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2 }}>en yavaş önce · üstteki şeritle aynı ölçek</span>
       </h3>
-      <div role="table" style={{ display: "grid", gridTemplateColumns: TUR_SUTUN, columnGap: SP.m, alignItems: "center" }}>
+      <div role="table" style={{ display: "grid", gridTemplateColumns: turSutun(dar), columnGap: SP.s, alignItems: "center", paddingBottom: SP.m }}>
         <span role="row" style={{ display: "contents" }}>
-          {["Tür", "Ortalama süre", "Ort.", "Adet", "Eşik üstü"].map((b, i) => (
+          {["Tür · adet", "Ortalama süre", "Ort."].map((b, i) => (
             <span key={b} role="columnheader" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, padding: "4px 0", textAlign: i > 1 ? "right" : "left" }}>{b.toLocaleUpperCase("tr")}</span>
           ))}
         </span>
-        {satirlar.map((x) => <TurSatir key={x.tur || "-"} x={x} tavan={tavan} ort={ort} esikX={esikX} />)}
-        {/* Ölçek ekseni (tur 8 jüri: eşik çentiğinin ölçeği belirsizdi) — 0 · eşik · tavan. */}
-        <span aria-hidden="true" style={{ gridColumn: 2, position: "relative", height: 18, borderTop: `1px solid ${PAL.lineHi}`, fontFamily: MONO, fontSize: 11, color: PAL.mut3, ...TNUM }}>
-          <span style={{ position: "absolute", top: 3, left: 0 }}>0</span>
-          <span style={{ position: "absolute", top: 3, left: `${esikX}%`, transform: esikX > 80 ? "translateX(calc(-100% - 4px))" : "translateX(4px)", color: DERIN.R, whiteSpace: "nowrap" }}>eşik {sn(esik)}</span>
-          <span style={{ position: "absolute", top: 3, right: 0, display: esikX > 80 ? "none" : "inline" }}>{sn(tavan)} sn</span>
-        </span>
+        {satirlar.map((x) => <TurSatir key={x.tur || "-"} x={x} eksen={eksen} ort={ort} />)}
+        <TurEksen eksen={eksen} esik={esik} />
+        <span aria-hidden="true" style={{ gridColumn: 3, fontFamily: MONO, fontSize: 11, color: PAL.mut3, textAlign: "right" }}>sn</span>
       </div>
       {kalan > 0 && (
         <button type="button" onClick={() => setTumu((v) => !v)} aria-expanded={tumu} {...focusRing} data-press=""
@@ -238,6 +267,7 @@ function RaporGovde({ history, olcum }) {
   const ort = useMemo(() => ortalama(olcum), [olcum]);
   const esik = esikMs(ort);
   const gTrend = useMemo(() => genelTrend(olcum), [olcum]);
+  const eksenMs = useMemo(() => turKirilimi(olcum, esik).map((x) => x.ortMs), [olcum, esik]);
   const [tumu, setTumu] = useState(false);
   const [vurgu, setVurgu] = useState(null);
   /* Tur 8: tablo 33 kaydın yalnız 7'sini veriyordu, genişletme yolu yoktu. */
@@ -253,8 +283,8 @@ function RaporGovde({ history, olcum }) {
           {olcum.length} işlem{gTrend ? " · son koşumlar öncekilere göre" : " · trend için en az 4 işlem gerekir"}
         </span>
       </div>
-      <Kronometre olcum={olcum} ort={ort} satirN={12} buyuk={!dar} vurgu={vurgu} onVurgu={dar ? null : setVurgu} />
-      <TurKirilimi olcum={olcum} esik={esik} ort={ort} />
+      <Kronometre olcum={olcum} ort={ort} satirN={SERIT_N} buyuk={!dar} vurgu={vurgu} onVurgu={dar ? null : setVurgu} eksenMs={eksenMs} />
+      <TurKirilimi olcum={olcum} esik={esik} ort={ort} dar={dar} />
       <h3 style={{ margin: `${SP.xl}px 0 ${SP.s}px`, display: "flex", alignItems: "baseline", gap: SP.s, ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>
         İşlem Ayrıntısı<span style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut2, ...TNUM }}>{tabloBaslik(alan, artan, tablo.length, olcum.length)}</span>
       </h3>
@@ -275,7 +305,7 @@ function RaporGovde({ history, olcum }) {
   );
 }
 
-export default function SureRaporModal({ acik, onKapat, history = [] }) {
+export default function SureRaporModal({ acik, onKapat, history = [], donusRef = null }) {
   const olcum = useMemo(() => olcumler(history), [history]);
   return (
     <Dialog.Root open={acik} onOpenChange={(v) => { if (!v) onKapat(); }}>
@@ -285,19 +315,24 @@ export default function SureRaporModal({ acik, onKapat, history = [] }) {
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
-              style={{ position: "fixed", inset: 0, zIndex: 300, /* Tur 8 jüri: açık temada .40 karartı arka kartları rakip bırakıyordu → koyu karartının %70'i. */
-              background: `color-mix(in srgb, ${PAL.scrimKoyu} 70%, transparent)`, overflowY: "auto", padding: "32px 12px calc(48px + env(safe-area-inset-bottom))" }}>
-              <Dialog.Content asChild forceMount>
+              style={{ position: "fixed", inset: 0, zIndex: 300, /* Tur 9: color-mix(var(), transparent) Chrome'da hesaplanıp BOYANMIYORDU
+                 (açık temada karartı ~%0; ölçüldü) → diğer modallarla aynı düz token (Kurul/Mevzuat okuma). */
+              background: PAL.scrimKoyu, overflowY: "auto", padding: "32px 12px calc(48px + env(safe-area-inset-bottom))" }}>
+              {/* Tur 9 jüri: kontrollü Dialog'da Trigger yok → Esc/Kapat sonrası odak <body>'ye
+                  düşüyordu; tetikleyici "Detay raporu" düğmesine geri verilir. */}
+              <Dialog.Content asChild forceMount onCloseAutoFocus={(e) => {
+                const el = donusRef?.current;
+                if (el && el.isConnected) { e.preventDefault(); el.focus(); }
+              }}>
                 <motion.div
                   initial={{ opacity: 0, y: 8, scale: 0.985 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.985 }}
                   transition={{ duration: 0.22, ease: EASE_BEZIER.out }}
                   style={{ position: "relative", width: "min(920px, 100%)", margin: "0 auto", background: PAL.surfPop,
                     border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal,
-                    padding: "clamp(16px, 4vw, 32px)", outline: "none" }}>
+                    padding: MODAL_PAD, outline: "none" }}>
                   <Dialog.Description style={SR_ONLY}>
                     İşlem sürelerinin ayrıntılı raporu: ortalama, son işlemlerin kronometre şeridi, tablo ve dönem kıyaslaması.
                   </Dialog.Description>
-                  <KapatDugme />
                   <RaporAntet olcumN={olcum.length} />
                   {olcum.length === 0
                     ? <p style={{ margin: 0, ...TYPE.read, color: PAL.mut2 }}>Henüz süre ölçümü yok. Bir evrak işlediğinizde rapor buradan oluşur.</p>

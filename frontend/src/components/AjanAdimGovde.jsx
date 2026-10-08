@@ -10,7 +10,7 @@ import {
 import { motorEtiketi } from "../lib/pipelinePhases.js";
 import A4Belge from "./A4Belge.jsx";
 import {
-  MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, Icon, KV, RiskBand,
+  MONO, T, V, PAL, BANT, DERIN, DERIN_OF, ALFA, TYPE, TNUM, RAD, SP, Icon, RiskBand,
 } from "./neonUi.jsx";
 
 const pct = (x) => Math.round((Number(x) || 0) * 100);
@@ -59,6 +59,17 @@ export const Bolum = ({ t, sag, children }) => (
 /* Sessiz bilgi notu — veri yokken/az bilgide düz açıklama satırı. */
 export const Not = ({ t }) => (
   <div style={{ ...TYPE.data, color: PAL.mut2, padding: "10px 12px", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRadius: RAD.card }}>{t}</div>
+);
+
+/* DİZİN SATIRI (tur 9 jüri: etiket solda, değer sağ uçta, arada ~400 px boşluk göz bağını
+   koparıyordu) — mevzuat dizinindeki noktalı cetvel: etiket ····· değer. Değer uzunsa sarar,
+   cetvel en az 24 px kalır. */
+const KV = ({ k, v, c = PAL.ink2 }) => (
+  <div style={{ display: "grid", gridTemplateColumns: "auto minmax(24px, 1fr) minmax(0, max-content)", columnGap: SP.s, alignItems: "baseline", padding: "6px 0" }}>
+    <span style={{ ...TYPE.meta, color: PAL.mut3, whiteSpace: "nowrap" }}>{k}</span>
+    <span aria-hidden="true" style={{ alignSelf: "end", marginBottom: 6, borderBottom: `1.5px dotted ${PAL.lineHi}` }} />
+    <span style={{ ...TYPE.data, fontWeight: 500, color: c, textAlign: "right", minWidth: 0, overflowWrap: "anywhere", ...TNUM }}>{v}</span>
+  </div>
 );
 
 /* Büyük ölçüm — panel metriği dili (SANS + TNUM; mono yalnız makine verisinde). */
@@ -207,8 +218,9 @@ function KanitDetay({ d, r }) {
       </div>
       {spanlar.map((sp, i) => (
         <KanitAlinti key={i} span={sp} metin={metin}>
-          <span style={{ display: "flex", justifyContent: "space-between", gap: SP.m, alignItems: "baseline", padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>
-            <span style={{ ...TYPE.meta, color: PAL.mut3, flexShrink: 0 }}>{sp.label}</span>
+          <span style={{ display: "grid", gridTemplateColumns: "auto minmax(24px, 1fr) minmax(0, max-content)", columnGap: SP.s, alignItems: "baseline", padding: "6px 0" }}>
+            <span style={{ ...TYPE.meta, color: PAL.mut3, whiteSpace: "nowrap" }}>{sp.label}</span>
+            <span aria-hidden="true" style={{ alignSelf: "end", marginBottom: 6, borderBottom: `1.5px dotted ${PAL.lineHi}` }} />
             <span style={{ ...TYPE.data, fontWeight: 500, color: PAL.ink2, textAlign: "right", minWidth: 0, ...TNUM }}>{cleanDemoText(String(sp.deger || ""))}</span>
           </span>
         </KanitAlinti>

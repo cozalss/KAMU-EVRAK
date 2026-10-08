@@ -31,7 +31,10 @@ const asamaMetni = (sn) =>
 
 const RISK_TR = { yesil: "düşük", sari: "orta", kirmizi: "yüksek" };
 /* Telefonda girdi 16px (iOS odakta sayfayı yakınlaştırmasın). */
-const GIRDI_CSS = "@media (max-width:720px){.ke-revize-girdi{font-size:16px !important}}";
+/* Girdi odağı: genel dışa halka + kenar = metne yapışık çift mavi çerçeve (2. jüri). Girdide
+   tek mürekkep kenarı (2px = 1px kenar + 1px iç gölge) yeter; kontrast T üstünden AA. */
+const GIRDI_CSS = "@media (max-width:720px){.ke-revize-girdi{font-size:16px !important}}"
+  + ".ke-revize-girdi:focus-visible{outline:none!important;box-shadow:inset 0 0 0 1px var(--ke-t)!important;border-color:var(--ke-t)!important}";
 
 /* İstek sürerken kâğıt GİZLENMEZ (BelgeModal düzenleme kâğıdını kaldırır — yarış koruması):
    aynı metin burada yerinde, soluk ve KİLİTLİ görünür; üstünde ne olduğunu söyleyen şerit.
@@ -103,7 +106,7 @@ const SON_TALIMAT = "ke-revize-son-talimat";
 const sonTalimatOku = () => { try { return window.localStorage.getItem(SON_TALIMAT) || ""; } catch { return ""; } };
 const sonTalimatYaz = (e) => { try { window.localStorage.setItem(SON_TALIMAT, e); } catch { /* depolama kapalı: sıra sabit kalır */ } };
 
-function HazirTalimatlar({ onSec }) {
+function HazirTalimatlar({ onSec, secili = "" }) {
   const kapRef = useRef(null);
   const [son, setSon] = useState(sonTalimatOku);
   const sirali = [...HAZIR_TALIMATLAR].sort((a, b) => (b.etiket === son) - (a.etiket === son));
@@ -117,15 +120,19 @@ function HazirTalimatlar({ onSec }) {
   return (
     <div ref={kapRef} role="group" aria-label="Hazır revizyon talimatları — seçim talimatı girdiye yazar"
       style={{ display: "flex", alignItems: "stretch", gap: 0, flexWrap: "wrap", marginLeft: 38, borderTop: `1px dashed ${PAL.line}`, paddingTop: 6 }}>
-      {sirali.map((h, i) => (
-        <button key={h.etiket} type="button" onClick={() => sec(h)} title={`${h.talimat} — girdiye yazar`} {...focusRing} data-press="" data-revize-hazir=""
+      {sirali.map((h, i) => {
+        // Seçili hâl (tur 9 jüri): girdideki talimat bu fişinse rozet dolar, etiket mürekkep + altı çizili.
+        const secik = secili.trim() === h.talimat;
+        return (
+        <button key={h.etiket} type="button" onClick={() => sec(h)} title={`${h.talimat} — girdiye yazar`} aria-pressed={secik} {...focusRing} data-press="" data-revize-hazir=""
           style={{ cursor: "pointer", display: "inline-flex", alignItems: "baseline", gap: 6, padding: "4px 10px 4px 0", marginRight: 10, border: "none", background: "transparent",
-            color: PAL.ink2, ...TYPE.meta, fontWeight: 500, transition: `color .12s ease-out, transform .14s ${EASE.out}` }}>
-          <span aria-hidden="true" style={{ ...TYPE.antet, ...TNUM, color: h.etiket === son ? DERIN.V : PAL.mut3 }}>T{i + 1}</span>
-          <span>{h.etiket}</span>
+            color: secik ? PAL.ink : PAL.ink2, ...TYPE.meta, fontWeight: secik ? 600 : 500, transition: `color .12s ease-out, transform .14s ${EASE.out}` }}>
+          <span aria-hidden="true" style={{ ...TYPE.antet, ...TNUM, padding: "0 4px", borderRadius: RAD.chip, color: secik || h.etiket === son ? DERIN.V : PAL.mut3, background: secik ? ALFA(V) : "transparent", boxShadow: secik ? `inset 0 0 0 1px ${DERIN.V}` : "none", transition: "background .12s ease-out, color .12s ease-out" }}>T{i + 1}</span>
+          <span style={secik ? { textDecoration: "underline", textUnderlineOffset: 3 } : undefined}>{h.etiket}</span>
           {h.etiket === son && <span style={{ ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase" }}>· son</span>}
         </button>
-      ))}
+        );
+      })}
       <style>{"[data-revize-hazir]:hover>span:nth-child(2){color:var(--ke-ink);text-decoration:underline;text-underline-offset:3px}"}</style>
     </div>
   );
@@ -158,11 +165,14 @@ function GirisSeridi({ busy, sure, talimat, setTalimat, setHata, girisRef, stt, 
                 <Icon.mic width={13} height={13} />
               </button>
             )}
-            <Btn onClick={() => revizeIste()} disabled={!talimat.trim()} ariaLabel={REVIZE_ET}>Revize et</Btn>
+            {/* Talimat girilince bu ekranın birincil eylemi olur; boşken NEDENİ söylenir (2. jüri). */}
+            <Btn onClick={() => revizeIste()} disabled={!talimat.trim()} primary={!!talimat.trim()}
+              ariaLabel={talimat.trim() ? REVIZE_ET : `${REVIZE_ET} — önce talimat yazın`}
+              title={talimat.trim() ? "Talimata göre düzeltme önerisi iste (Enter)" : "Önce bir talimat yazın ya da aşağıdan hazır talimat seçin"}>Revize et</Btn>
           </>
         )}
       </div>
-      {!busy && <HazirTalimatlar onSec={(t) => { setTalimat(t); setHata(null); }} />}
+      {!busy && <HazirTalimatlar secili={talimat} onSec={(t) => { setTalimat(t); setHata(null); }} />}
       {stt.hata && <div role="alert" style={{ ...TYPE.meta, color: DERIN.kirmizi }}>{stt.hata}</div>}
     </div>
   );

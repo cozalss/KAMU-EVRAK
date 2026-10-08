@@ -17,7 +17,7 @@ import { EVRAK_TR, BIRIM_LBL, cleanDemoText } from "../lib/evrakEtiket.js";
 import { sutunButcesi, BOSLUK, KUYRUK_AZAMI } from "../lib/taslakSutun.js";
 import { gonderimDenetimi, taslakKunyesi } from "../lib/gonderimHazirlik.js";
 import { SATIR_H, defterZemini, useIslemDurumu, IskeletSatirlar, KararIskeleti } from "./TaslakDefter.jsx";
-import { AracCubugu, DefterBasligi, KuyrukSatiri, BosFiltre, Tus, icOdak, KUYRUK_ODAK_CSS } from "./TaslakKuyruk.jsx";
+import { AracCubugu, DefterBasligi, KuyrukSatiri, BosFiltre, Tus, icOdak, KUYRUK_ODAK_CSS, useSatirKati } from "./TaslakKuyruk.jsx";
 import KararPaneli, { BosMasa } from "./TaslakKararPaneli.jsx";
 import TaslakBosMasa from "./TaslakBosMasa.jsx";
 
@@ -328,6 +328,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
     // memur önce belgeyi görmek ister, eylemler onun altında zaten erişilebilir.
     if (!genis) document.querySelector("[data-karar-kagit]")?.scrollIntoView({ block: "nearest" });
   }, [secili?.id, genis]); // eslint-disable-line react-hooks/exhaustive-deps
+  const satirKati = useSatirKati(genis);
 
   /* Başlık TÜM durumlarda aynı (künye + 40px başlık + aynı alt satır): tur-4'te boş/yükleniyor
      hâli künyeli, dolu hâli künyesiz (ustSik) çiziliyordu — veri gelince H1 ~40px zıplıyor,
@@ -416,9 +417,10 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
             {/* Liste kabı boşken de DOM'da kalır (hidden): auto-animate'in çıkış hayaletleri
                 sökülen kabın yerine boş durumun üstüne biniyordu (tur-3 ölçümü). */}
             {sonuc.length === 0 && !yukleniyor && <BosFiltre toplam={drafts.length} onTemizle={filter.clearAll} />}
-            <div ref={listeRef} role="listbox" hidden={sonuc.length === 0 || yukleniyor} aria-label="Taslak kuyruğu" tabIndex={0} onKeyDown={klavye}
+            <div ref={satirKati.kapRef} style={{ flex: 1, minHeight: 0, display: sonuc.length === 0 || yukleniyor ? "none" : "flex", flexDirection: "column" }}>
+            <div ref={listeRef} role="listbox" aria-label="Taslak kuyruğu" tabIndex={0} onKeyDown={klavye}
               aria-activedescendant={secili ? optIdOf(secili.id) : undefined} {...icOdak}
-              style={{ ...defterZemini(sonuc.length), flex: 1, minHeight: genis ? 0 : SATIR_H * 3, overflowY: "auto", outline: "none",
+              style={{ ...defterZemini(sonuc.length), flex: satirKati.yuk ? "none" : 1, height: satirKati.yuk ?? undefined, minHeight: genis ? 0 : SATIR_H * 3, overflowY: "auto", outline: "none",
                 // Telefonda 4,5 satır: yarım görünen satır kaydırılabilirliği söyler ve kâğıt
                 // ilk ekrana yaklaşır (tur 6: belge y=800'de başlıyordu).
                 maxHeight: genis ? undefined : Math.round(SATIR_H * 4.5) }}>
@@ -426,6 +428,7 @@ export default function TaslaklarView({ drafts = [], onGoInbox, onGoOutbox = nul
                 <KuyrukSatiri key={h.id} h={h} konu={h.konu} muhatap={h.muhatap} sira={i + 1} kisa={kisaTarih} secili={secili?.id === h.id} optId={optIdOf(h.id)}
                   onSec={() => { if (!sendBusy) setSeciliId(h.id); }} onAc={() => { if (!sendBusy) acDuzenle(h.id); }} />
               ))}
+            </div>
             </div>
             {genis && sonuc.length > 0 && (
               <div aria-hidden="true" style={{ display: "flex", alignItems: "center", gap: SP.m, height: 30, flexShrink: 0, padding: "0 14px", whiteSpace: "nowrap", overflow: "hidden", borderTop: `1px solid ${PAL.line}`, background: PAL.surf2, fontFamily: MONO, fontSize: 11, color: PAL.mut3 }}>

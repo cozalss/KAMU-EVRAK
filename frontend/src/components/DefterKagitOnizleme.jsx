@@ -17,7 +17,7 @@ export const ONIZLEME_SUTUN = 420;
 
 function OnizlemeKunye({ satirlar }) {
   return (
-    <dl aria-label="Gönderim künyesi" style={{ margin: "auto 0 0", paddingTop: SP.m, borderTop: `1px solid ${PAL.ink2}`, display: "grid", gridTemplateColumns: "auto minmax(0,1fr)", columnGap: SP.l }}>
+    <dl aria-label="Gönderim künyesi" style={{ margin: `${SP.m}px 0 0`, paddingTop: SP.m, borderTop: `1px solid ${PAL.ink2}`, display: "grid", gridTemplateColumns: "auto minmax(0,1fr)", columnGap: SP.l }}>
       {satirlar.filter((r) => r && r.v).map((r) => (
         <React.Fragment key={r.k}>
           <dt style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", padding: "6px 0", borderBottom: `1px solid ${PAL.line}` }}>{r.k}</dt>

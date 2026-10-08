@@ -13,6 +13,7 @@ import { A4_GEN_MM, A4_YUK_MM } from "../lib/a4Sayfalama.js";
 import { SATIR_H, KENAR_X, MASA_PAY, defterZemini } from "./TaslakDefter.jsx";
 
 const HUCRE = { minWidth: 0, boxSizing: "border-box", borderRadius: RAD.card };
+const GIZLI = { position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" };
 
 /* Boş kâğıdın antet iskeleti — gerçek yazının yerleşimini hairline'larla ima eder (T.C. ortası,
    Sayı/tarih iki uç, muhatap ortası, gövde, imza sağı). Metin YOK: kurum kimliği taklidi değil. */
@@ -41,7 +42,7 @@ function BosKagit({ damga, ton }) {
 }
 
 /* Boş defter — kuyruk kartının geometrisi (başlık 34 + satırlar); tek satır durum metni. */
-function BosDefter({ baslik, aciklama, kunye, devamKunye }) {
+function BosDefter({ baslik, aciklama, kunye, devamKunye, satirKunye }) {
   return (
     <div style={{ ...HUCRE, flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card }}>
       <div style={{ display: "flex", alignItems: "center", height: 34, flexShrink: 0, borderBottom: `1px solid ${PAL.lineHi}`, ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", whiteSpace: "nowrap" }}>
@@ -53,8 +54,15 @@ function BosDefter({ baslik, aciklama, kunye, devamKunye }) {
         <div style={{ height: SATIR_H, display: "flex", alignItems: "center" }}>
           <span aria-hidden="true" style={{ width: KENAR_X, flexShrink: 0, textAlign: "center", ...TYPE.antet, ...TNUM, color: PAL.mut3 }}>—</span>
           <div style={{ flex: 1, minWidth: 0, padding: "0 14px 1px 12px" }}>
-            <div style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{baslik}</div>
-            <div style={{ ...TYPE.meta, color: PAL.mut2, marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={aciklama}>{aciklama}</div>
+            {/* Tur 9: boş hâlde satır yalnız mono künye taşır — başlık altı metniyle aynı cümleyi
+                ikinci kez yazmıyordu artık (ekran okuyucu için durum cümlesi gizli metinde). */}
+            {baslik ? <>
+              <div style={{ ...TYPE.ui, fontWeight: 600, color: PAL.ink }}>{baslik}</div>
+              <div style={{ ...TYPE.meta, color: PAL.mut2, marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={aciklama}>{aciklama}</div>
+            </> : <>
+              <span style={GIZLI}>{aciklama}</span>
+              <div aria-hidden="true" style={{ fontFamily: MONO, fontSize: 11, lineHeight: "14px", letterSpacing: ".08em", textTransform: "uppercase", color: PAL.mut2, ...TNUM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{satirKunye}</div>
+            </>}
           </div>
         </div>
       </div>
@@ -145,7 +153,7 @@ export default function TaslakBosMasa({ hata = false, sutunH = null, onGoInbox, 
         <div style={{ flex: 1, display: "flex", minWidth: 0 }}>
           {hata
             ? <BosDefter kunye="İşlem durdu" baslik="Kuyruk alınamadı" aciklama="Ayrıntı karar fişinde." devamKunye="Bağlantı bekleniyor" />
-            : <BosDefter kunye="00 kayıt" baslik="Karar bekleyen taslak yok" aciklama="İşlenen evrakın taslağı burada sıraya girer." devamKunye="Defter açık · sıradaki No 01" />}
+            : <BosDefter kunye="00 kayıt" aciklama="Karar bekleyen taslak yok. İşlenen evrakın taslağı burada sıraya girer." satirKunye="Defter açık · sıradaki No 01" devamKunye="Taslak geldikçe sıraya girer" />}
         </div>
       </div>
       <div style={{ ...HUCRE, ...yuk, display: "flex", flexDirection: "column", gap: SP.s, padding: `10px ${MASA_PAY}px ${MASA_PAY}px`, background: PAL.bg2,
@@ -164,7 +172,7 @@ export default function TaslakBosMasa({ hata = false, sutunH = null, onGoInbox, 
             eylem={<Btn primary onClick={onYenidenDene} style={tamGenis}><Icon.undo /> Tekrar dene</Btn>} />
         ) : (
           <BosFis kunye="00 / 00" baslik="Masa temiz"
-            metin="Kuyrukta karar bekleyen taslak yok." adimlar={ADIM_BOS}
+            metin="Yeni taslak, gelen evrak işlendikçe bu masaya düşer." adimlar={ADIM_BOS}
             eylem={<Btn primary onClick={onGoInbox} style={tamGenis}><Icon.inbox /> Gelen evrakı aç</Btn>} />
         )}
       </div>

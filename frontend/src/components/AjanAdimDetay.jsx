@@ -17,7 +17,8 @@ import { Paraf, CanliSure } from "./CanliMetro.jsx";
 import { gorevFaz } from "../lib/pipelinePhases.js";
 import { duvarMs, fmtSn } from "../lib/canliBicim.js";
 import { akanMetin } from "../lib/metinAkis.js";
-import { FosforMetin, buildSegments } from "./CanliKaynakBelge.jsx";
+import { FosforMetin } from "./CanliKaynakBelge.jsx";
+import { buildSegments, kesitBasligi } from "../lib/canliMetin.js";
 import { useMedyaSorgusu } from "../hooks/useMedya.js";
 import { ACIKLAMA, GOVDE, GenelDetay, Bolum, Not } from "./AjanAdimGovde.jsx";
 import {
@@ -29,13 +30,14 @@ import {
    iddia değil — §8). Telefonda yatay kaydırılır (scroll-snap) ve her hedef 44px'tir
    (tur 6: 22px noktalar 13+2 diye kırılıyordu, dokunma hedefi kuralının yarısıydı). */
 function KonumNokta({ x, i, idx, onGit, dar }) {
+  const no = String(i + 1).padStart(2, "0");
   const col = x.gorev === 2 ? V : T;
   const done = x.status === "done", err = x.status === "error";
   const secili = i === idx;
   const boy = dar ? 44 : 24;
   return (
-    <button type="button" onClick={() => onGit(i)} title={x.label} data-secili={secili ? "" : undefined}
-      aria-label={`${x.label} adımına git`} aria-current={secili ? "step" : undefined} {...focusRing} data-press=""
+    <button type="button" onClick={() => onGit(i)} title={`${no} · ${x.label}`} data-secili={secili ? "" : undefined}
+      aria-label={`${no}. masa, ${x.label} adımına git`} aria-current={secili ? "step" : undefined} {...focusRing} data-press=""
       onMouseEnter={(e) => { e.currentTarget.style.background = PAL.hov; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
       style={{ cursor: "pointer", width: dar ? 36 : boy, height: boy, flexShrink: 0, scrollSnapAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, background: "transparent", borderRadius: RAD.ctl, border: `1px solid ${secili ? PAL.lineHi : "transparent"}`, transition: `background .12s ease-out, transform .14s ${EASE.out}` }}>
@@ -66,6 +68,12 @@ function KonumSeridi({ display, idx, onGit, dar }) {
   return (
     <div ref={kapRef} role="group" aria-label="Masalar arasında geçiş" style={{ display: "flex", alignItems: "center", flexWrap: "nowrap", gap: 2, padding: `${SP.s}px 0 ${SP.m}px`, borderBottom: `1px solid ${PAL.line}`, overflowX: "auto", scrollSnapType: dar ? "x mandatory" : undefined, scrollbarWidth: "none" }}>
       {parcalar}
+      {/* Bağlam künyesi (tur 9: şerit etiketsiz ve şifreliydi) — bulunulan masa "03 / 15 · ad". */}
+      {!dar && display[idx] && (
+        <span aria-hidden="true" style={{ marginLeft: "auto", paddingLeft: SP.m, ...TYPE.antet, fontSize: 10, color: PAL.mut2, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0, ...TNUM }}>
+          <span style={{ color: PAL.ink2, fontWeight: 600 }}>{String(idx + 1).padStart(2, "0")} / {String(display.length).padStart(2, "0")}</span> · {display[idx].label}
+        </span>
+      )}
     </div>
   );
 }
@@ -209,7 +217,9 @@ function DetayIcerik({ idx, display, result, onKapat, onGit, runBase, kapatRef, 
         <p style={{ margin: 0, ...TYPE.data, color: PAL.mut }}>{ACIKLAMA[a.id] || a.desc || "Pipeline adımı."}</p>
       </Bolum>
       <Bolum t="Çıktı ve gerekçe"><DetayCikti a={a} result={result} col={col} durdu={durdu} /></Bolum>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, marginTop: SP.xl, paddingTop: SP.l, borderTop: `1px solid ${PAL.line}` }}>
+      {/* Gezinme çubuğu sütunun dibine oturur (tur 9: kaynak kesiti uzunken ortada asılıydı). */}
+      <div aria-hidden="true" style={{ flex: 1, minHeight: SP.xl }} />
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.m, paddingTop: SP.l, borderTop: `1px solid ${PAL.line}` }}>
         <NavDugme hedef={onceki} etiket={onceki ? onceki.label : "İlk masa"} onGit={onGit} dar={dar} />
         {ipucu && !dar && <span style={{ ...TYPE.meta, color: PAL.mut3, textAlign: "center", whiteSpace: "nowrap" }}>← → gezinir · Esc kapatır</span>}
         <NavDugme hedef={sonraki} etiket={sonraki ? sonraki.label : "Son masa"} sagOk onGit={onGit} dar={dar} />
@@ -224,10 +234,8 @@ function DetayIcerik({ idx, display, result, onKapat, onGit, runBase, kapatRef, 
    diyalog eski tek sütun genişliğinde kalır. Kâğıt gece de kâğıttır (data-evrak-kagit). */
 const kaynakMetadata = (display, result) => result?.kanit_metadata || display.find((x) => x.id === "kanit_baglama")?.data?.kanit_metadata || null;
 
-/* Başlık olguya bağlı (tur 8 jüri): kesit metni yalnız TCKN/telefon gibi alanlarda maskeli
-   gelir; ad/e-posta/adres açık kalabilir. "Maskeli metin" demek iddiayı genişletirdi. */
-const kesitBasligi = (metin) => (/\*{3,}/.test(String(metin || "")) ? "Kaynak kesiti · kısmen maskeli" : "Kaynak kesiti · okunan metin");
-
+/* Kesit başlığı olguya bağlı (tur 8-9): maskeli alan sayısı + açık e-posta lib/canliMetin.kesitBasligi'nden;
+   "maskeli metin" demek iddiayı genişletirdi. */
 function KaynakKesiti({ km }) {
   const segs = useMemo(() => buildSegments(akanMetin(km.metin), Array.isArray(km.spanlar) ? km.spanlar : []), [km]);
   return (
@@ -287,7 +295,7 @@ export default function AjanAdimDetay(p) {
         initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.98 }}
         transition={{ duration: 0.16, ease: EASE_BEZIER.out }}
         style={{ width: kesit ? "min(1180px, 96vw)" : "min(720px, 96vw)", margin: "0 auto", background: PAL.surfPop, border: `1px solid ${PAL.lineHi}`, borderRadius: RAD.pop, boxShadow: SH.modal, padding: SP.xl, ...(kesit ? { display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 440px)", columnGap: SP.xxl } : null) }}>
-        <div style={{ minWidth: 0 }}><DetayIcerik {...p} kapatRef={kapatRef} dar={false} BaslikEtiketi={H2} /></div>
+        <div style={{ minWidth: 0, display: "flex", flexDirection: "column" }}><DetayIcerik {...p} kapatRef={kapatRef} dar={false} BaslikEtiketi={H2} /></div>
         {kesit && <KaynakKesiti km={kesit} />}
       </motion.div>
     </motion.div>

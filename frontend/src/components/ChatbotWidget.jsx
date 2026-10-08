@@ -5,14 +5,15 @@
    Geçmiş oturumluk (component state — DashboardApp ömrünce yaşar). Tema yalnız neonUi
    token'ları; z-index FAB 150 / panel 160 (Toast 200 üstte kalır).
    Spec: docs/09-sohbet-asistani.md */
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiPost, authFetch } from "../lib/authApi.js";
 import { sttDestekleniyorMu } from "../lib/sesliMod.js";
 import { hafizaKaydet, hafizaTemizle, hafizaYukle } from "../lib/sohbetHafiza.js";
 import SesliGorusme from "./SesliGorusme.jsx";
-import { Balon, BeklemeFisi } from "./AsistanFis.jsx";
+import { Balon, BeklemeFisi, MasaSorulari } from "./AsistanFis.jsx";
+import { baglamSorulari } from "../lib/sohbetMetin.js";
 import { MONO, DISPLAY, PAL, T, DERIN, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, Icon, focusRing, SR_ONLY } from "./neonUi.jsx";
 
 /* Panelin çapası: kenar çubuğu (cilt) sağ kenarının 12px yanı, tetikle aynı taban hizası.
@@ -22,8 +23,13 @@ import { MONO, DISPLAY, PAL, T, DERIN, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIE
 /* Geniş masaüstünde (≥1280) panel yüzen kutu değil, sağ kenara yaslı TAM YÜKSEKLİKTE bir
    danışma sütunudur ve ana içeriği iter (örtmez; tur 8 jüri: 400×600 kutu Panel kartlarını
    örtüyordu, 1920'nin %20'sini kullanıyordu). İtme CSS'te: html[data-asistan-sutun] #nu-main. */
-export const SUTUN_GENISLIK = 440;
+import { SUTUN_GENISLIK } from "./SesliSahne.jsx";
+export { SUTUN_GENISLIK };
 const SUTUN_MQ = "(min-width: 1280px)";
+/* İtme eşiği (tur 9 jüri): 1280–1599'da sütun içeriği iterse Panel ~760 px'e sıkışıp kart
+   etiketleri ("Kar…", "Gönderi…") kesiliyordu. Bu aralıkta sütun ÇEKMECE olarak içeriğin
+   üstüne biner (itmez); ≥1600'de içerik sütunla birlikte yeniden yerleşecek kadar geniştir. */
+const ITME_MQ = "(min-width: 1600px)";
 function capaHesapla() {
   if (window.matchMedia?.("(max-width: 720px)").matches) return null;
   if (window.matchMedia?.(SUTUN_MQ).matches) return { sutun: true };
@@ -64,8 +70,8 @@ const SOHBET_CSS = `
 /* Tek odak dili (tur 8): kenarlık tükenmeze döner, halka yok — global :focus-visible çift
    çizgisi girdide bastırılır (iki katman üst üste ağır bir kutu çiziyordu). */
 .ke-sohbet-girdi:focus,.ke-sohbet-girdi:focus-visible{border-color:${T}!important;box-shadow:inset 0 0 0 1px ${T}!important;outline:none!important}
-/* Danışma sütunu ana içeriği iter — yalnız geniş masaüstü; telefon/dar düzene dokunmaz. */
-@media ${SUTUN_MQ}{
+/* Danışma sütunu ana içeriği iter — yalnız ≥1600; 1280–1599 bindirme çekmece. */
+@media ${ITME_MQ}{
   #nu-main{transition:padding-right .28s ${EASE.out}}
   html[data-asistan-sutun] #nu-main{padding-right:${SUTUN_GENISLIK}px}
 }
@@ -153,6 +159,7 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
     return () => kok.removeAttribute("data-asistan-sutun");
   }, [acik, sesliAcik, sutun]);
   const baglamAdi = String(ekran?.gorunum || "").replace(/\s*\(.*\)$/, "");
+  const masaSorulari = useMemo(() => baglamSorulari(ekran), [ekran]);
 
   // Konuşma bitince (akış sürerken değil) geçmişi localStorage'a yaz — reload'da kalıcı.
   useEffect(() => { if (!bekliyor) hafizaKaydet(mesajlar); }, [mesajlar, bekliyor]);
@@ -362,7 +369,9 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
             {mesajlar.map((m, i) => <Balon key={i} m={m} fisRef={i === mesajlar.length - 1 ? sonFisRef : undefined} damgali={i === sonAracIdx && !m.akiyor} onNavigate={onNavigate} onClose={kapat} onTeyit={onTeyit} onMevzuatAc={onMevzuatAc} bekliyor={bekliyor} />)}
             {bekliyor && mesajlar[mesajlar.length - 1]?.rol === "kullanici" && <BeklemeFisi />}
             {ilkAcilis && !bekliyor && (
-              <div style={{ marginTop: SP.xs }}>
+              <div style={{ marginTop: SP.xs, display: "grid", gap: SP.l }}>
+                <MasaSorulari sorular={masaSorulari} gonder={gonder} baglamAdi={baglamAdi} />
+                <div>
                 {/* Sık sorulanlar = numaralı soru listesi (form maddesi gibi), hap çip değil (jüri A#32). */}
                 <div id="ke-sohbet-oneri-baslik" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", marginBottom: SP.s }}>Sık sorulanlar</div>
                 <ol aria-labelledby="ke-sohbet-oneri-baslik" style={{ listStyle: "none", margin: 0, padding: 0, background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.ctl, overflow: "hidden" }}>
@@ -377,15 +386,29 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
                     </li>
                   ))}
                 </ol>
+                </div>
               </div>
             )}
           </div>
           <div role="status" aria-live="polite" style={SR_ONLY}>{srDuyuru}</div>
 
+          {/* İlgili sorular (tur 9) — geniş sütunda konuşma sürerken de girdinin üstünde sabit:
+              1920'de sohbet alanının çoğu boş kalıyordu. Yalnız sütun modunda (dar kutuya sığmaz). */}
+          {sutun && !ilkAcilis && !bekliyor && (
+            <nav aria-label="İlgili sorular" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: SP.xs, padding: `${SP.s}px ${SP.m}px 0`, background: PAL.surfPop, borderTop: `1px solid ${PAL.line}` }}>
+              <span style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", marginRight: SP.xs }}>İlgili</span>
+              {[...masaSorulari, ...ONERILER].slice(0, 3).map((o) => (
+                <button key={o} type="button" className="ke-sohbet-oneri" {...focusRing} data-press="" onClick={() => gonder(o)}
+                  style={{ cursor: "pointer", minHeight: 28, maxWidth: "100%", padding: "3px 10px", ...TYPE.meta, color: PAL.ink2, background: "transparent", border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {o}
+                </button>
+              ))}
+            </nav>
+          )}
           {/* Giriş — tek satır yazı alanı + gönder. Ataç ve mikrofon bilinçli olarak YOK
               (kullanıcı kararı): konuşmak → sesli görüşme diski, yazmak → bu kutu. */}
           <form onSubmit={(e) => { e.preventDefault(); gonder(); }}
-            style={{ display: "flex", gap: SP.s, padding: SP.m, borderTop: `1px solid ${PAL.line}`, background: PAL.surfPop }}>
+            style={{ display: "flex", gap: SP.s, padding: SP.m, borderTop: sutun && !ilkAcilis && !bekliyor ? "none" : `1px solid ${PAL.line}`, background: PAL.surfPop }}>
             <input ref={inputRef} type="text" value={girdi} onChange={(e) => setGirdi(e.target.value)}
               placeholder="Evrak sorun, mevzuat arayın…" aria-label="Asistana mesaj yaz"
               maxLength={1000} className="ke-sohbet-girdi"
@@ -410,7 +433,7 @@ export default function ChatbotWidget({ onNavigate, onMevzuatAc, ekran = null, o
       {/* Sesli görüşme diski — panelin yerine geçer, AYNI çapada (konum) doğar; bitince panel
           geri açılır (odak, panelin kendi effect'iyle mesaj kutusuna gider: görüşmenin devamı
           yazarak sürdürülebilir). onKomut: sesli komut siteyi GERÇEKTEN sürer. */}
-      <SesliGorusme acik={sesliAcik} ekran={ekran} onKomut={sesliKomutUygula} konum={konum}
+      <SesliGorusme acik={sesliAcik} ekran={ekran} onKomut={sesliKomutUygula} konum={konum} baglamAdi={baglamAdi}
         onKapat={() => { setSesliAcik(false); acKapa(true); }} />
     </>
   );

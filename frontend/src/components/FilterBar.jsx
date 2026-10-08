@@ -219,15 +219,20 @@ function FiltreDugmesi({ acik, onClick, sayi, panelId }) {
 
 /* Sayaç + (masaüstü) satır içi "Temizle": görünür ölçütler şeritsiz kaldığında tek temizleme
    yolu burada — satır yüksekliği değişmez. Sonuç 0 iken boş defterin eylemi yeterli. */
-const Sayac = ({ filter, temizle = false }) => (
-  <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "baseline", gap: SP.m, flexShrink: 0 }}>
-    {temizle && filter.hasActiveFilters && filter.counts.filtered > 0 && <TemizleBag filter={filter}>Temizle</TemizleBag>}
-    <span role="status" aria-live="polite" aria-atomic="true" style={{ display: "inline-flex", alignItems: "baseline", gap: 6, fontFamily: MONO, fontSize: 12, color: PAL.mut2, whiteSpace: "nowrap", ...TNUM }}>
-      <strong style={{ color: PAL.ink, fontWeight: 600, fontSize: 13 }}>{filter.counts.filtered}</strong>
-      <span>/ {filter.counts.total} kayıt</span>
+/* Tur 9 jüri: "15 / 15 kayıt" antet künyesi + alt başlıkla aynı sayıyı üçüncü kez yazıyordu →
+   sayaç yalnız süzme ETKİNKEN görünür; süzülmemiş hâlde ekran okuyucuya sessiz durum kalır. */
+const Sayac = ({ filter, temizle = false }) => {
+  const suzuk = filter.hasActiveFilters || filter.counts.filtered !== filter.counts.total;
+  return (
+    <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "baseline", gap: SP.m, flexShrink: 0 }}>
+      {temizle && filter.hasActiveFilters && filter.counts.filtered > 0 && <TemizleBag filter={filter}>Temizle</TemizleBag>}
+      <span role="status" aria-live="polite" aria-atomic="true" style={suzuk ? { display: "inline-flex", alignItems: "baseline", gap: 6, fontFamily: MONO, fontSize: 12, color: PAL.mut2, whiteSpace: "nowrap", animation: "nu-rise .18s var(--ke-ease-out) both", ...TNUM } : SR_ONLY}>
+        <strong style={{ color: PAL.ink, fontWeight: 600, fontSize: 13 }}>{filter.counts.filtered}</strong>
+        <span>/ {filter.counts.total} kayıt</span>
+      </span>
     </span>
-  </span>
-);
+  );
+};
 
 function etkinOlcutSayisi(filter, haric = []) {
   const c = Object.entries(filter.filters.chips || {}).reduce((a, [k, set]) => a + (haric.includes(k) ? 0 : set?.size || 0), 0);

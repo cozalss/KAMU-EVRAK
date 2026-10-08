@@ -55,3 +55,9 @@ test("hataSebebi: başlıkta zaten yazan masa adı öneki sahne kutusundan düş
   assert.equal(hataSebebi("Mevzuat Öner adımında durdu — Servis yanıt vermedi.", "Mevzuat Öner"), "Servis yanıt vermedi.");
   assert.equal(hataSebebi("Ağ hatası", "Mevzuat Öner"), "Ağ hatası");
 });
+
+test("sahneCiktisi cikar: genel PII eki yerine yalnız gerçekten maskeli alanlar", () => {
+  assert.equal(sahneCiktisi("cikar", "10 alan · PII maskeli", { bilgi_unsurlari: { pii_var: true, telefon_maskeli: "055******12" } }), "10 alan · telefon maskeli");
+  assert.equal(sahneCiktisi("cikar", "4 alan · PII maskeli", { bilgi_unsurlari: { pii_var: true } }), "4 alan");
+  assert.equal(sahneCiktisi("cikar", "3 alan", { bilgi_unsurlari: { tckn_maskeli: "123*****45", telefon_maskeli: "x" } }), "3 alan · TCKN, telefon maskeli");
+});

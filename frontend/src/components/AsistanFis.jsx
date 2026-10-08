@@ -7,7 +7,7 @@
    notunun kendi dili; her dipnot okuma modalını ilgili maddede açar. */
 import React from "react";
 import { mdSatirAyristir } from "../lib/mdSatir.js";
-import { satirIciParcala, kayitAdi, notSaati } from "../lib/sohbetMetin.js";
+import { satirIciParcala, atifParcala, kayitAdi, notSaati } from "../lib/sohbetMetin.js";
 import { BANT, MONO, PAL, T, V, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, Icon, Damga, focusRing } from "./neonUi.jsx";
 
 export const GORUNUM_ETIKET = {
@@ -15,16 +15,28 @@ export const GORUNUM_ETIKET = {
   mevzuat: "Mevzuat", denetim: "Denetim", panel: "Panel", islenen: "İşlenen evrak",
 };
 const KAYIT_TUR_ETIKET = { gelen: "Gelen", giden: "Giden", islem: "İşlem", taslak: "Taslak", mevzuat: "Mevzuat", panel: "Panel" };
-const UST = ["¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"];
 
 /* Hafif markdown: **kalın** + *eğik* + "• / - / *" madde + "1." numaralı madde (mono rakam,
    asılı girinti) + boş satır = paragraf arası + "---" ayraç (kütüphanesiz). */
-const satirIci = (metin) => satirIciParcala(metin).map((p, j) =>
+/* Atıf ipi (tur 9): düz metindeki kanun·madde atfı, aynı cevabın kaynaklarında varsa okuma
+   penceresini o maddede açan bağlantıdır (dipnotla aynı eylem; uydurma bağlantı yok). */
+const ATIF_STIL = { cursor: "pointer", padding: 0, border: "none", background: "none", font: "inherit", color: DERIN.V, fontWeight: 600, textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 3, textDecorationThickness: 1 };
+function duzMetin(metin, j, atif) {
+  if (!atif?.kaynaklar) return <React.Fragment key={j}>{metin}</React.Fragment>;
+  return (
+    <React.Fragment key={j}>
+      {atifParcala(metin, atif.kaynaklar).map((a, k) => (a.tip === "atif"
+        ? <button key={k} type="button" {...focusRing} title="Madde metnini okuma penceresinde aç" onClick={() => atif.onAc({ dosya: a.dosya, maddeNo: a.maddeNo })} style={ATIF_STIL}>{a.metin}</button>
+        : <React.Fragment key={k}>{a.metin}</React.Fragment>))}
+    </React.Fragment>
+  );
+}
+const satirIci = (metin, atif) => satirIciParcala(metin).map((p, j) =>
   p.tip === "kalin" ? <strong key={j} style={{ fontWeight: 600, color: "inherit" }}>{p.metin}</strong>
     : p.tip === "egik" ? <em key={j} style={{ fontStyle: "italic" }}>{p.metin}</em>
-      : <React.Fragment key={j}>{p.metin}</React.Fragment>);
+      : duzMetin(p.metin, j, atif));
 
-export function Md({ text }) {
+export function Md({ text, atif = null }) {
   return (text || "").split("\n").map((satir, i) => {
     const { tip, govde, no } = mdSatirAyristir(satir);
     if (tip === "hr") return <hr key={i} aria-hidden="true" style={{ border: "none", borderTop: `1px solid ${PAL.line}`, margin: `${SP.s}px 0` }} />;
@@ -35,11 +47,11 @@ export function Md({ text }) {
           <span aria-hidden="true" style={tip === "numara"
             ? { fontFamily: MONO, fontSize: 12, color: DERIN.V, textAlign: "right", paddingRight: 2, ...TNUM }
             : { color: DERIN.V, textAlign: "center" }}>{tip === "numara" ? `${no}.` : "–"}</span>
-          <span>{satirIci(govde)}</span>
+          <span>{satirIci(govde, atif)}</span>
         </span>
       );
     }
-    return <span key={i} style={{ display: "block" }}>{satirIci(govde)}</span>;
+    return <span key={i} style={{ display: "block" }}>{satirIci(govde, atif)}</span>;
   });
 }
 
@@ -93,7 +105,7 @@ function Dipnotlar({ kaynaklar, onMevzuatAc, onClose }) {
           <button type="button" className="ke-sohbet-dipnot" {...focusRing} title={`${k.baslik}: tam metni oku`}
             onClick={() => { onMevzuatAc?.({ dosya: k.dosya, maddeNo: k.madde_no ?? null }); onClose(); }}
             style={{ cursor: "pointer", display: "flex", alignItems: "baseline", gap: SP.s, width: "calc(100% + 12px)", boxSizing: "border-box", minHeight: 30, padding: "4px 6px", margin: "0 -6px", textAlign: "left", border: "none", borderRadius: RAD.chip, background: "transparent", color: PAL.ink2, ...TYPE.meta }}>
-            <span aria-hidden="true" style={{ fontFamily: MONO, color: DERIN.V, minWidth: 10 }}>{UST[i] || `${i + 1}.`}</span>
+            <span aria-hidden="true" style={{ fontFamily: MONO, fontSize: 11, fontWeight: 600, color: DERIN.V, minWidth: 14, ...TNUM }}>{i + 1}</span>
             <span style={{ fontFamily: MONO, color: DERIN.V, fontWeight: 600, whiteSpace: "nowrap", ...TNUM }}>{[k.no, k.madde_no != null && `m.${k.madde_no}`].filter(Boolean).join(" · ")}</span>
             <span style={{ minWidth: 0, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{k.baslik}</span>
             <span aria-hidden="true" className="ke-sohbet-dipnot-ok" style={{ display: "flex", color: DERIN.T }}><Icon.arrow width={12} height={12} /></span>
@@ -216,7 +228,9 @@ export function Balon({ m, onNavigate, onClose, onTeyit, onMevzuatAc, bekliyor, 
       {kullanici ? (
         /* Soru fişi — balon değil: kâğıt zemin + sağda tükenmez cilt çizgisi + mono künye.
            Dolgun primary mavi görünümün tek primary'siyle yarışıyordu (tur 8 jüri). */
-        <div style={{ maxWidth: "86%", background: PAL.surf2, border: `1px solid ${PAL.line}`, borderRight: `3px solid ${T}`, borderRadius: RAD.ctl, color: PAL.ink, overflowWrap: "anywhere" }}>
+        /* Tur 9: zeminsiz + çerçevesiz — havale pusulasına düşülmüş not gibi hafif; fiş yüzeyi
+           (zemin + kenar + gölge) yalnız cevaba kalır, hiyerarşi hizadan değil malzemeden okunur. */
+        <div style={{ maxWidth: "86%", borderRight: `2px solid ${T}`, color: PAL.ink, overflowWrap: "anywhere" }}>
           <div aria-hidden="true" style={{ display: "flex", gap: SP.s, justifyContent: "flex-end", padding: "6px 12px 0", ...TYPE.antet, fontSize: 10, lineHeight: "14px", textTransform: "uppercase", color: PAL.mut3 }}>
             <span>Soru</span>{m.zaman && <span style={TNUM}>{notSaati(m.zaman)}</span>}
           </div>
@@ -225,11 +239,37 @@ export function Balon({ m, onNavigate, onClose, onTeyit, onMevzuatAc, bekliyor, 
       ) : (
         <DanismaFisi kunye={kunye} saat={notSaati(m.zaman)} hata={m.hata}
           alt={kaynaklar && !m.akiyor ? <Dipnotlar kaynaklar={kaynaklar} onMevzuatAc={onMevzuatAc} onClose={onClose} /> : null}>
-          {m.akiyor && !m.icerik ? <KalemIskeleti /> : <div style={{ padding: "9px 12px 11px", ...TYPE.ui }}><Md text={m.icerik} /></div>}
+          {m.akiyor && !m.icerik ? <KalemIskeleti /> : <div style={{ padding: "9px 12px 11px", ...TYPE.ui }}><Md text={m.icerik} atif={kaynaklar && !m.akiyor && onMevzuatAc ? { kaynaklar, onAc: (h) => { onMevzuatAc(h); onClose(); } } : null} /></div>}
         </DanismaFisi>
       )}
       {m.kayitlar?.length > 0 && <EkYigini m={m} damgali={damgali} />}
       <MesajEylemleri m={m} bekliyor={bekliyor} onTeyit={onTeyit} onNavigate={onNavigate} onClose={onClose} />
     </div>
+  );
+}
+
+/* Masadaki durum (tur 9 jüri: "PANEL BAĞLAMINDA" deniyor ama sorular ekrandan bağımsızdı;
+   sık soruların altında ~360–490 px boş kâğıt kalıyordu). Sorular ekran bağlamının
+   sayaçlarından türetilir (lib/sohbetMetin.baglamSorulari); veri yoksa bölüm hiç basılmaz.
+   Havale pusulası dili: tükenmez cilt çizgisi + mono künye, numara yerine "→". */
+export function MasaSorulari({ sorular, gonder, baglamAdi }) {
+  if (!sorular?.length) return null;
+  return (
+    <section aria-labelledby="ke-masa-soru-baslik">
+      <div id="ke-masa-soru-baslik" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase", marginBottom: SP.s }}>
+        Masadaki durum{baglamAdi ? ` · ${baglamAdi}` : ""}
+      </div>
+      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: SP.xs, borderLeft: `2px solid ${T}` }}>
+        {sorular.map((o) => (
+          <li key={o}>
+            <button type="button" className="ke-sohbet-oneri" {...focusRing} data-press="" onClick={() => gonder(o)}
+              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: SP.m, width: "100%", minHeight: 36, padding: "6px 12px", ...TYPE.data, fontWeight: 500, color: PAL.ink, background: "transparent", border: "none", borderRadius: `0 ${RAD.ctl}px ${RAD.ctl}px 0`, textAlign: "left" }}>
+              <span style={{ flex: 1, minWidth: 0 }}>{o}</span>
+              <span aria-hidden="true" style={{ display: "flex", color: DERIN.T }}><Icon.arrow width={13} height={13} /></span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

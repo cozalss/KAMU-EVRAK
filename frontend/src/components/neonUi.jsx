@@ -253,7 +253,13 @@ export const NEON_KEYFRAMES = `
 /* Sesli görüşme diski girişi — köken-farkında: transformOrigin'i çağıran taraf (sağ-alt) verir,
    disk kendisini açan yuvarlak butondan büyür. scale(0)'dan DEĞİL .94'ten: hiçlikten belirmez. */
 @keyframes ke-disk-gir{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
-::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
+/* Tur 9 (jüri: kök .18s eşzamanlı crossfade kenar çubuğunu + araç çubuklarını üst üste
+   gösteriyordu, iki etkin sırt aynı karede): kök ANINDA değişir — yeni kök eskinin üstüne
+   opak biner, ara kare yok. Hareketi yalnız adlandırılmış gruplar (antet, içerik) taşır. Eski
+   gruplar 60 ms ease-out ile söner (80 ms ease-in 70. karede %20 okunur kalıyordu, kendi antetini
+   taşıyan defter görünümlerinin üstüne biniyordu); yeni 60 ms gecikmeyle gelir. */
+::view-transition-old(root){animation:none;opacity:0}
+::view-transition-new(root){animation:none}
 /* Antet görünümler arasında YOLCULUK eder (benchmark #5): başlık eski konumundan yenisine
    morflanır (tarayıcının grup animasyonu), içerik eski sayfa hızla solar, yenisi kâğıt gibi
    aşağıdan yerine oturur. Yalnız transform/opacity. Reduced-motion'da geçiş hiç başlamaz
@@ -263,9 +269,9 @@ export const NEON_KEYFRAMES = `
    gecikmeyle başlar → aynı anda ikisinin de okunur olduğu kare yok. Grup (konum) morfu sürer. */
 ::view-transition-group(ke-antet-baslik){animation-duration:.34s;animation-timing-function:cubic-bezier(.23,1,.32,1)}
 ::view-transition-old(ke-antet-baslik),::view-transition-new(ke-antet-baslik){height:100%;object-fit:none;object-position:left center}
-::view-transition-old(ke-antet-baslik){animation:ke-vt-son .08s ease-in both}
+::view-transition-old(ke-antet-baslik){animation:ke-vt-son .06s ease-out both}
 ::view-transition-new(ke-antet-baslik){animation:ke-vt-bel .22s cubic-bezier(.23,1,.32,1) .06s both}
-::view-transition-old(ke-icerik){animation:ke-vt-cik .08s ease-in both}
+::view-transition-old(ke-icerik){animation:ke-vt-cik .06s ease-out both}
 ::view-transition-new(ke-icerik){animation:ke-vt-gir .34s cubic-bezier(.23,1,.32,1) .06s both}
 @keyframes ke-vt-son{to{opacity:0}}
 @keyframes ke-vt-bel{from{opacity:0}}
@@ -390,7 +396,10 @@ function useIlkAcilis(id) {
    Yalnız ≥ 1200 px — telefon ve dar masaüstü düzeni değişmez. Renk yok; gecikmiş > 0 ise satır derin
    kırmızı — etiket zaten "Gecikmiş" sözcüğüdür (renk tek sinyal değil). */
 export const AntetKunyeBaglam = React.createContext(null);
-const ANTET_KUNYE_CSS = ".ke-antet-kunye{display:none}@media (min-width:1200px){.ke-antet-kunye{display:grid}}";
+/* Tur 9 (j1: 1920'de başlık ile künye arasında ~1000 px ölü bant): ≥1600'de bant, içindekiler
+   cetvelindeki gibi noktalı bir KILAVUZ ÇİZGİSİYLE künyeye bağlanır; ucunda cilt yılı. Başlığın
+   taban çizgisinde durur — boşluk "doldurulmaz", başlık→künye okuma yolu çizilir. */
+const ANTET_KUNYE_CSS = ".ke-antet-kunye,.ke-antet-kilavuz{display:none}@media (min-width:1200px){.ke-antet-kunye{display:grid}}@media (min-width:1600px){.ke-antet-kilavuz{display:flex}}";
 function AntetKunye({ id }) {
   const satirlar = React.useContext(AntetKunyeBaglam)?.(id) || [];
   if (!satirlar.length) return null;
@@ -401,10 +410,21 @@ function AntetKunye({ id }) {
       {satirlar.map((s) => (
         <React.Fragment key={s.e}>
           <dt style={{ color: s.acil ? DERIN.kirmizi : PAL.mut3, fontWeight: s.acil ? 600 : 500, whiteSpace: "nowrap" }}>{s.e}</dt>
-          <dd style={{ margin: 0, textAlign: "right", whiteSpace: "nowrap", fontWeight: 600, color: s.acil ? DERIN.kirmizi : PAL.ink2 }}>{s.d}</dd>
+          <dd style={{ margin: 0, minWidth: "22ch", textAlign: "right", whiteSpace: "nowrap", fontWeight: 600, color: s.acil ? DERIN.kirmizi : PAL.ink2 }}>{s.d}</dd>
         </React.Fragment>
       ))}
     </dl>
+    </>
+  );
+}
+function AntetKilavuz() {
+  return (
+    <>
+    <style>{ANTET_KUNYE_CSS}</style>
+    <div aria-hidden="true" className="ke-antet-kilavuz" style={{ flex: "1 1 120px", alignSelf: "flex-end", alignItems: "baseline", gap: SP.s, minWidth: 0, marginBottom: 4, fontFamily: MONO, fontSize: 11, lineHeight: "15px", letterSpacing: ".08em", textTransform: "uppercase", color: PAL.mut3, ...TNUM }}>
+      <span style={{ flex: 1, minWidth: 48, borderBottom: `1px dotted ${PAL.lineHi}`, transform: "translateY(-4px)" }} />
+      <span style={{ whiteSpace: "nowrap" }}>Cilt {new Date().getFullYear()}</span>
+    </div>
     </>
   );
 }
@@ -431,6 +451,7 @@ export function ViewWrap({ id, title, sub, actions, altDolgu = 96, ustSik = fals
             </div>
             {sub && <p style={{ margin: `${SP.s}px 0 0`, ...TYPE.read, color: PAL.mut2, maxWidth: 760 }}>{sub}</p>}
           </div>
+          {!ustSik && <AntetKilavuz />}
           {/* minWidth:0 — <select>'li araç çubuğu telefonda kabından taşmasın (2026-08-12 ölçümü). */}
           {actions && <div style={{ display: "flex", gap: SP.m, flexWrap: "wrap", minWidth: 0, maxWidth: "100%" }}>{actions}</div>}
           {!actions && !ustSik && <AntetKunye id={id} />}

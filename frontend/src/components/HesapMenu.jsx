@@ -7,7 +7,7 @@
    Esc/odak-iadesi kütüphaneden), alt-modallar (Profil/Kurum/Yardım/KVKK) @radix-ui/react-dialog
    (odak tuzağı/scroll kilidi/Esc kütüphaneden) — görünüm birebir eski (yalnız davranış
    sağlamlaştı, elle yazılan klavye/portal mantığı kalktı). */
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { AnimatePresence, motion } from "motion/react";
@@ -16,6 +16,17 @@ import { sonGirdiIsaretMi } from "../lib/girdiKipi.js";
 import { MONO, DISPLAY, T, V, PAL, BANT, DERIN, ALFA, TYPE, TNUM, RAD, SP, SH, EASE, EASE_BEZIER, SR_ONLY, focusRing, Icon } from "./neonUi.jsx";
 
 const ROL_TR = { memur: "Memur", yetkili: "Yetkili", yonetici: "Yönetici", sistem: "Sistem" };
+
+/* Tek kimlik satırı (tur 9, j2): kart "Sef" (unvan), menü çipi "Memur" (rol) diyordu — aynı kişi iki
+   kimlikle. Her yerde aynı sıra: "Unvan · Rol". Tohum verisindeki ASCII unvanlar (Sef, Mudur…)
+   yalnız GÖSTERİMDE Türkçe yazımına çevrilir; veri değiştirilmez, bilinmeyen unvan aynen kalır. */
+const UNVAN_TR = { sef: "Şef", mudur: "Müdür", "mudur yardimcisi": "Müdür Yardımcısı", "sube muduru": "Şube Müdürü", "sef yardimcisi": "Şef Yardımcısı" };
+const unvanTr = (u) => { const t = String(u || "").trim(); return UNVAN_TR[t.toLocaleLowerCase("tr-TR").replace(/ı/g, "i")] || t; };
+const rolTr = (user) => ROL_TR[user?.rol] || user?.rol || "";
+const kimlikSatiri = (user) => {
+  const u = unvanTr(user?.unvan), r = rolTr(user);
+  return [u, r && r.toLocaleLowerCase("tr-TR") !== u.toLocaleLowerCase("tr-TR") ? r : ""].filter(Boolean).join(" · ") || "—";
+};
 
 function bashHarfler(ad) {
   const p = (ad || "").trim().split(/\s+/).filter(Boolean);
@@ -53,7 +64,7 @@ const Cip = ({ renk, zemin, children }) => (
    odaklanır, gövde kaydırması otomatik kilitlenir (react-remove-scroll, kütüphane içinde).
    Eskiden elle portal+focus-trap+Esc dinleyicisi vardı (sidebar'ın position:sticky'si kendi
    stacking context'ini kurduğundan portal ŞARTTI) — Dialog.Portal aynı işi görür. */
-function Kip({ baslik, kunye = "KAMU-EVRAK · Hesap", onKapat, donusRef, children }) {
+function Kip({ baslik, kunye, onKapat, donusRef, children }) {
   const kapatRef = useRef(null);
   const kabRef = useRef(null);
   return (
@@ -82,7 +93,7 @@ function Kip({ baslik, kunye = "KAMU-EVRAK · Hesap", onKapat, donusRef, childre
             <Dialog.Description style={SR_ONLY}>{baslik} bilgi penceresi.</Dialog.Description>
             <div style={{ display: "flex", alignItems: "flex-end", gap: SP.s, padding: "16px 20px 0" }}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase" }}>{kunye}</div>
+                <div aria-hidden="true" style={{ ...TYPE.antet, fontSize: 10, color: PAL.mut3, textTransform: "uppercase" }}>{`Kip · ${kunye}`}</div>
                 <Dialog.Title asChild>
                   <h2 style={{ margin: "4px 0 0", fontFamily: DISPLAY, fontWeight: 800, fontStretch: "112%", fontSize: 20, lineHeight: "24px", letterSpacing: "-.01em", color: PAL.ink }}>{baslik}</h2>
                 </Dialog.Title>
@@ -132,7 +143,7 @@ const sicilNo = (id) => (id ? `P-${String(id).replace(/-/g, "").slice(0, 8).toLo
    (birim adı kimlik yanıtında yok → satır uydurulmaz). */
 function ProfilKip({ user, onKapat, donusRef }) {
   return (
-    <Kip baslik="Personel sicil fişi" kunye="Personel kartı · Oturum açık" onKapat={onKapat} donusRef={donusRef}>
+    <Kip baslik="Personel sicil fişi" kunye="Personel kartı" onKapat={onKapat} donusRef={donusRef}>
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, padding: `${SP.xs}px 0 ${SP.m}px` }}>
         <Avatar ad={user?.ad_soyad} boy={48} />
         <span style={{ minWidth: 0, flex: 1 }}>
@@ -145,7 +156,7 @@ function ProfilKip({ user, onKapat, donusRef }) {
         </span>
       </div>
       <div style={{ borderTop: `1px solid ${PAL.lineHi}` }}>
-        <PRow l="Unvan">{user?.unvan || "—"}</PRow>
+        <PRow l="Unvan">{unvanTr(user?.unvan) || "—"}</PRow>
         <PRow l="Rol"><span style={{ color: DERIN.V, fontWeight: 600 }}>{ROL_TR[user?.rol] || user?.rol || "—"}</span></PRow>
         <PRow l="E-imza yetkisi">{user?.e_imza_yetkisi ? <span style={{ color: DERIN.yesil, fontWeight: 600 }}>Var</span> : <KorYok />}</PRow>
         <PRow l="Gönderim kararı">Memur onayıyla</PRow>
@@ -173,7 +184,7 @@ function YardimKip({ onKapat, donusRef }) {
     </div>
   );
   return (
-    <Kip baslik="Yardım ve kısayollar" onKapat={onKapat} donusRef={donusRef}>
+    <Kip baslik="Yardım ve kısayollar" kunye="Yardım" onKapat={onKapat} donusRef={donusRef}>
       <div style={{ ...TYPE.meta, fontWeight: 500, color: PAL.mut3, marginBottom: SP.xs }}>Üç adımda evrak işleme</div>
       {[
         ["1", "Gelen evraktan seçin, yeni belge yükleyin ya da örnek evrakla deneyin."],
@@ -189,6 +200,7 @@ function YardimKip({ onKapat, donusRef }) {
       <Kisayol k="Esc" a="Açık menü ve pencereleri kapatır" />
       <Kisayol k="Tab" a="Tüm denetimlerde klavye gezinmesi (odak halkasıyla)" />
       <Kisayol k={/Mac|iPhone|iPad/.test(navigator.platform || "") ? "⌘ ." : "Ctrl ."} a="Evrak asistanını açar / kapatır" />
+      <Kisayol k="?" a="Bu yardım penceresini açar" />
     </Kip>
   );
 }
@@ -201,7 +213,7 @@ function KvkkKip({ onKapat, donusRef }) {   // donusRef: kapanınca odak hesap k
     </div>
   );
   return (
-    <Kip baslik="KVKK ve gizlilik" onKapat={onKapat} donusRef={donusRef}>
+    <Kip baslik="KVKK ve gizlilik" kunye="KVKK" onKapat={onKapat} donusRef={donusRef}>
       <Madde>Çıkarılan kişisel veriler (TCKN, telefon) işleme sırasında <strong style={{ fontWeight: 600 }}>maskelenir</strong>; ham hâliyle saklanmaz.</Madde>
       <Madde>Sistem yalnız <strong style={{ fontWeight: 600 }}>sentetik/kurgu evrak</strong> ve kamuya açık mevzuatla çalışır; gerçek vatandaş verisi kullanılmaz.</Madde>
       <Madde>Her koşum SHA-256 <strong style={{ fontWeight: 600 }}>hash-zincirli denetim izi</strong> üretir — kayıtlar sonradan değiştirilemez (Denetim izi görünümünden doğrulanır).</Madde>
@@ -237,10 +249,15 @@ function DItem({ ikon, label, sag, tehlike, onSelect, isCheckbox, checked }) {
   );
 }
 
+/* Kısayol ipucu — mono, kesikli çerçeveli tuş künyesi (yalnız GERÇEK kısayolu olan öğede). */
+const Kbd = ({ children }) => (
+  <kbd aria-hidden="true" style={{ fontFamily: MONO, fontSize: 11, lineHeight: "16px", minWidth: 18, padding: "0 5px", textAlign: "center", borderRadius: RAD.chip, border: `1px solid ${PAL.lineHi}`, borderBottomWidth: 2, color: PAL.mut2, ...TNUM }}>{children}</kbd>
+);
+
 /* Anahtar görseli (checkbox sağ ucu) — durum ayrıca aria-checked ile verilir (Radix CheckboxItem). */
 const Anahtar = ({ acik }) => (
-  <span aria-hidden="true" style={{ width: 28, height: 16, flexShrink: 0, borderRadius: 8, background: acik ? DERIN.T : PAL.press, border: `1px solid ${acik ? DERIN.T : PAL.inputLine}`, position: "relative", transition: "background .15s ease-out" }}>
-    <span style={{ position: "absolute", top: 1, left: 1, width: 12, height: 12, borderRadius: RAD.dot, background: PAL.onAccent, transform: acik ? "translateX(12px)" : "none", transition: "transform .2s var(--ke-ease-out)" }} />
+  <span aria-hidden="true" style={{ width: 28, height: 16, flexShrink: 0, borderRadius: 8, background: acik ? DERIN.T : PAL.press, border: `1.5px solid ${acik ? DERIN.T : PAL.mut2}`, position: "relative", transition: "background .15s ease-out" }}>
+    <span style={{ position: "absolute", top: 1, left: 1, width: 12, height: 12, borderRadius: RAD.dot, background: acik ? PAL.onAccent : PAL.mut2, transform: acik ? "translateX(12px)" : "none", transition: "transform .2s var(--ke-ease-out)" }} />
   </span>
 );
 
@@ -250,6 +267,17 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
   const tetikRef = useRef(null);   // sub-modal kapanınca odak buraya döner (Kip.onCloseAutoFocus)
 
   const modalAc = (m) => setModal(m);
+  /* "?" kısayolu (tur 9, j1: menüde kısayol ipucu yoktu) — yazı alanında ve açık diyalogda tetiklenmez. */
+  useEffect(() => {
+    const tus = (e) => {
+      if (e.key !== "?" || e.ctrlKey || e.metaKey || e.altKey) return;
+      const h = e.target;
+      if (h?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(h?.tagName || "") || document.querySelector('[aria-modal="true"]')) return;
+      e.preventDefault(); setModal("yardim");
+    };
+    window.addEventListener("keydown", tus);
+    return () => window.removeEventListener("keydown", tus);
+  }, []);
 
   return (
     <div style={{ position: "relative" }}>
@@ -267,7 +295,7 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
               <>
                 <span style={{ minWidth: 0, flex: 1 }}>
                   <span style={{ display: "block", ...TYPE.data, fontWeight: 600, color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
-                  <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.unvan || ROL_TR[user?.rol] || "—"}</span>
+                  <span style={{ display: "block", ...TYPE.meta, color: PAL.mut3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{kimlikSatiri(user)}</span>
                 </span>
                 <span aria-hidden="true" style={{ display: "flex", flexShrink: 0, color: PAL.mut2, transition: "transform .15s ease-out", transform: acik ? "rotate(180deg)" : "none" }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 15 L12 9 L18 15" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -293,7 +321,9 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
                 <span style={{ display: "block", fontFamily: DISPLAY, fontWeight: 700, fontStretch: "106%", fontSize: 15, lineHeight: "20px", color: PAL.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user?.ad_soyad || "Kullanıcı"}</span>
                 {/* E-posta kırpılmaz (tur 8): kimlik bilgisi "kurum.go…" diye kesiliyordu → gerekirse iki satır. */}
                 <span style={{ display: "block", fontFamily: MONO, fontSize: 12, lineHeight: "16px", color: PAL.mut2, overflowWrap: "anywhere" }}>{user?.eposta || "—"}</span>
-                <span style={{ display: "flex", gap: SP.xs, marginTop: 4, flexWrap: "wrap" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: SP.xs, marginTop: 4, flexWrap: "wrap" }}>
+                  {unvanTr(user?.unvan) && <span style={{ ...TYPE.meta, color: PAL.ink2 }}>{unvanTr(user?.unvan)}</span>}
+                  {unvanTr(user?.unvan) && <span aria-hidden="true" style={{ ...TYPE.meta, color: PAL.mut3 }}>·</span>}
                   <Cip renk={DERIN.V} zemin={ALFA(V)}>{ROL_TR[user?.rol] || user?.rol || "Kullanıcı"}</Cip>
                   {user?.e_imza_yetkisi && <Cip renk={DERIN.yesil} zemin={ALFA(BANT.yesil.c)}>E-imza</Cip>}
                 </span>
@@ -303,7 +333,7 @@ export default function HesapMenu({ user, onLogout, onDenetimAc, tema, onTemaDeg
             <DItem ikon={MIC.kisi} label="Profil bilgileri" onSelect={() => modalAc("profil")} />
             <DItem ikon={MIC.tema} label="Koyu görünüm" isCheckbox checked={tema === "dark"}
               sag={<Anahtar acik={tema === "dark"} />} onSelect={(el) => onTemaDegistir?.(el)} />
-            <DItem ikon={MIC.yardim} label="Yardım ve kısayollar" onSelect={() => modalAc("yardim")} />
+            <DItem ikon={MIC.yardim} label="Yardım ve kısayollar" sag={<Kbd>?</Kbd>} onSelect={() => modalAc("yardim")} />
             <DItem ikon={MIC.denetim} label="Denetim izi" onSelect={() => onDenetimAc?.()} />
             <DItem ikon={MIC.kvkk} label="KVKK ve gizlilik" onSelect={() => modalAc("kvkk")} />
             <DropdownMenu.Separator style={{ height: 1, background: PAL.line, margin: `${SP.xs}px ${SP.s}px` }} />

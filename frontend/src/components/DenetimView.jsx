@@ -68,7 +68,16 @@ const DENETIM_CSS = `
 @media (min-width:821px) and (max-width:1599px){[data-denetim-serit-cizgi]{display:none!important}[data-denetim-ozet]{display:inline!important}}
 [data-denetim-ozet]{display:none}
 [data-denetim-tam]{display:none!important}
-@media (min-width:1600px){[data-denetim-tam]{display:block!important}[data-denetim-kisa]{display:none!important}}`;
+@media (min-width:1600px){[data-denetim-tam]{display:block!important}[data-denetim-kisa]{display:none!important}}
+[data-denetim-notkap]>p>span:last-child{min-width:0;flex:1}
+[data-denetim-not-sema]{overflow:hidden}
+@media (min-width:1600px){
+  [data-denetim-notkap]>p{max-width:none!important}
+  [data-denetim-not]{display:grid!important;grid-template-columns:minmax(0,64ch) minmax(360px,560px);column-gap:56px;align-items:center}
+  [data-denetim-not]>[data-denetim-not-sema]>span{margin-top:0!important}
+}`;
+
+const uclarHash = (h) => { const x = String(h || ""); return x.length > 20 ? `${x.slice(0, 8)} ··· ${x.slice(-8)}` : x; };
 
 /* Zincir hücresi — son hash'in parmak izi (16 çubuk, veriden) + adım sayısı + kısa hash.
    Dokuz özdeş halka yerine her kayıt bakışta ayırt edilir; aynı son hash = aynı izi. */
@@ -80,8 +89,9 @@ function ZincirHucre({ son, adim, kirik, serit = true }) {
       <ParmakIzi h={son} />
       <span style={{ display: "flex", flexDirection: "column", minWidth: 0, fontFamily: MONO, ...TNUM }}>
         <span title={son || ""} {...(serit ? null : { "data-denetim-kisa": "" })} style={{ fontSize: 11.5, lineHeight: "16px", color: DERIN.V, whiteSpace: "nowrap" }}>{kisaHash(son)}</span>
-        {/* Geniş ekranda şerit yoksa sütun TAM son hash'i 8'li gruplarla taşır — boşluk veriyle dolar. */}
-        {!serit && son && <span data-denetim-tam="" title={son} style={{ fontSize: 11.5, lineHeight: "16px", color: DERIN.V, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", wordSpacing: 2 }}>{(String(son).match(/.{1,8}/g) || []).join(" ")}</span>}
+        {/* Geniş ekranda şerit yoksa ilk ve son 8 hex (tur 9 jüri: yedi gruplu mono duvar
+            ortadan "2fec43…" diye kesiliyordu — kesik okunuyordu). Tam değer title'da + çekmecede. */}
+        {!serit && son && <span data-denetim-tam="" title={`${son} — tam hash, çekmecede kopyalanabilir`} style={{ fontSize: 11.5, lineHeight: "16px", color: DERIN.V, whiteSpace: "nowrap" }}>{uclarHash(son)}</span>}
         <span style={{ fontSize: 10.5, lineHeight: "14px", color: PAL.mut3, whiteSpace: "nowrap" }}>{adim ? `${adim} halka` : "halka sayısı yok"}</span>
       </span>
       {/* <1600'de 13 etiketsiz boncuk yerine sayısal özet (tur 8 jüri: iki genişlikte iki dil). */}
@@ -95,9 +105,12 @@ function ZincirHucre({ son, adim, kirik, serit = true }) {
 }
 
 /* Risk hücresi — filtre çipleriyle AYNI dil (nokta + bant adı); renk tek sinyal değil. */
-const RiskHucre = ({ bant }) => (
+const bantMetni = (b) => `${BANT[b].l.charAt(0)}${BANT[b].l.slice(1).toLocaleLowerCase("tr")} · ${BANT[b].t.split(" ")[0]}`;
+/* baskin: çoğunluk bandı (nota bir kez yazılır) → o banttaki satır hücresi yalnız ekran
+   okuyucuya söyler; görünür metin yalnız SAPMADA (tur 9 jüri: 33 satırda aynı "Sarı · Orta"). */
+const RiskHucre = ({ bant, baskin = null }) => (
   <span {...HUCRE.grid} style={{ gridArea: "risk" }}>
-    {BANT[bant] ? <SessizCip renk={BANT[bant].c} metin={`${BANT[bant].l.charAt(0)}${BANT[bant].l.slice(1).toLocaleLowerCase("tr")} · ${BANT[bant].t.split(" ")[0]}`} /> : <span style={{ ...TYPE.meta, color: PAL.mut3 }}>—</span>}
+    {baskin && bant === baskin.b ? <span style={SR_ONLY}>{bantMetni(bant)}</span> : BANT[bant] ? <SessizCip renk={BANT[bant].c} metin={`${BANT[bant].l.charAt(0)}${BANT[bant].l.slice(1).toLocaleLowerCase("tr")} · ${BANT[bant].t.split(" ")[0]}`} /> : <span style={{ ...TYPE.meta, color: PAL.mut3 }}>—</span>}
   </span>
 );
 
@@ -121,11 +134,19 @@ function DenetimHata({ hata, onYenidenDene }) {
   );
 }
 
+/* Çoğunluk bandı: kayıtların ≥%75'i aynı banttaysa {b, n}; değilse null (sütun her satırda yazar). */
+function baskinBant(kayitlar) {
+  const sayac = new Map();
+  kayitlar.forEach((h) => { if (BANT[h.bant]) sayac.set(h.bant, (sayac.get(h.bant) || 0) + 1); });
+  const [b, n] = [...sayac.entries()].sort((x, y) => y[1] - x[1])[0] || [];
+  return b && kayitlar.length >= 6 && n / kayitlar.length >= 0.75 ? { b, n } : null;
+}
+
 const zincirOf = (di) => (Array.isArray(di.zincir) ? di.zincir : (Array.isArray(di.adimlar) ? di.adimlar : []));
 // DB kaydı zincirin kendisini değil adım SAYISINI taşır (adim_sayisi).
 const adimOf = (di) => zincirOf(di).length || (Number.isFinite(di.adim_sayisi) ? di.adim_sayisi : 0);
 
-function DenetimSatir({ h, i, gez, onAc, riskSutunu, serit, gunlu }) {
+function DenetimSatir({ h, i, gez, onAc, riskSutunu, baskin, serit, gunlu }) {
   const di = h.result.denetim_izi;
   const adim = adimOf(di);
   return (
@@ -145,7 +166,7 @@ function DenetimSatir({ h, i, gez, onAc, riskSutunu, serit, gunlu }) {
           </span>
         </span>
       </span>
-      {riskSutunu && <RiskHucre bant={h.bant} />}
+      {riskSutunu && <RiskHucre bant={h.bant} baskin={baskin} />}
       <ZincirHucre son={di.son_hash || di.kok_hash} adim={adim} kirik={di.butunluk === false} serit={serit || di.butunluk === false} />
       <span {...HUCRE.grid} style={{ gridArea: "eylem", justifySelf: "end" }}>
         {/* Satırın kendisi açar; bu yalnız sessiz ok — klavye odağı ve Enter için (tur 7: her
@@ -224,9 +245,12 @@ export default function DenetimView({ history = [], onGoInbox, yukleniyor = fals
   if (kayitlar.length === 0) return <DenetimBos yukleniyor={yukleniyor} hata={hata} onYenidenDene={onYenidenDene} onGoInbox={onGoInbox} />;
 
   // Liste tek bantlıysa risk sütunu bilgi taşımaz → nota iner (tur 8).
-  const bantlar = new Set(filter.results.map((h) => h.bant || ""));
+  // Bantsız (eski) kayıtlar tekdüzeliği bozmaz: "—" bilgi değil (tur 9 jüri: 33 satırda aynı
+  // "Sarı · Orta" — birkaç bantsız kayıt sütunu ayakta tutuyordu).
+  const bantlar = new Set(filter.results.map((h) => h.bant).filter((b) => BANT[b]));
   const tekBant = bantlar.size === 1 ? [...bantlar][0] : null;
   const riskSutunu = !(tekBant && BANT[tekBant]);
+  const baskin = riskSutunu ? baskinBant(filter.results) : null;
   const adimlar = new Set(filter.results.map((h) => adimOf(h.result.denetim_izi)));
   const ortakAdim = adimlar.size === 1 ? [...adimlar][0] : 0;
   const serit = !ortakAdim;
@@ -234,7 +258,7 @@ export default function DenetimView({ history = [], onGoInbox, yukleniyor = fals
   const sablon = riskSutunu && serit ? SABLON : sablonOlustur(riskSutunu, serit);
   const basliklar = riskSutunu && serit ? BASLIKLAR : basliklarOlustur(riskSutunu, serit);
   const kolonSayisi = riskSutunu ? 5 : 4;
-  const satir = (h, i) => <DenetimSatir key={h.id} h={h} i={i} gez={gez} riskSutunu={riskSutunu} serit={serit} gunlu={gunlu} onAc={(k) => setSecili(cekmeceKaydi(k))} />;
+  const satir = (h, i) => <DenetimSatir key={h.id} h={h} i={i} gez={gez} riskSutunu={riskSutunu} baskin={baskin} serit={serit} gunlu={gunlu} onAc={(k) => setSecili(cekmeceKaydi(k))} />;
   const bos = bosDurumMetni({ ara: filter.filters.search, filtreVar: filter.hasActiveFilters, nesne: "kayıt", kalici: "zincir kayıtları silinmez" });
   return (
     <ViewWrap id="denetim-h" title="Denetim izi" kunye="Denetim kayıt defteri"
@@ -242,16 +266,23 @@ export default function DenetimView({ history = [], onGoInbox, yukleniyor = fals
       damga={kirik ? { metin: `${kirik} kırık zincir`, ton: R, egim: -4 } : { metin: "Zincirler bütün", ton: V, egim: -4 }}>
       <SicilStil />
       <style>{DENETIM_CSS}</style>
+      {/* ≥1600 (tur 9 jüri): metin 64ch + halka şeması sağda iki kolon — 1920'de notun sağında
+          ~900 px boşluk vardı, şema kutuya hapsolmuştu. Daha dar ekranda tek sütun. */}
+      <div data-denetim-notkap="">
       <DefterNotu ikon={<Icon.shield width={15} height={15} />} style={{ margin: `0 0 ${SP.l}px` }}>
         {/* Tek ölçü (≤72ch) + vurgusuz: yeşil kalın "uyum" iddiası pazarlama tonunda okunuyordu (tur 8). */}
+        <span data-denetim-not="" style={{ display: "block" }}>
         <span style={{ display: "block", maxWidth: "72ch" }}>
           Bir kaydı incelemek için satırı açın: halkalar sırayla gösterilir ve zincir sunucuda bağımsız yeniden hesaplanarak doğrulanır.
           Kayıtlar <span style={{ whiteSpace: "nowrap" }}>Sayıştay denetimi</span> ve KVKK işleme kaydı için kanıt niteliğindedir.
           {ortakKok ? <> Tüm zincirler aynı başlangıç değerinden türer (kök <span style={{ fontFamily: MONO, fontSize: 12 }}>{kisaHash(ortakKok)}</span>).</> : null}
-          {ortakAdim > 0 && <HalkaLejant adim={ortakAdim} />}
-          {!riskSutunu && <> Listelenen kayıtların tümü <SessizCip renk={BANT[tekBant].c} metin={`${BANT[tekBant].l.charAt(0)}${BANT[tekBant].l.slice(1).toLocaleLowerCase("tr")} · ${BANT[tekBant].t.toLocaleLowerCase("tr")}`} /> bandında.</>}
+          {!riskSutunu && <> Listelenen kayıtların tümü <SessizCip renk={BANT[tekBant].c} metin={`${BANT[tekBant].l.charAt(0)}${BANT[tekBant].l.slice(1).toLocaleLowerCase("tr")} · ${BANT[tekBant].t.toLocaleLowerCase("tr")}`} /> bandında; risk sütunu bu yüzden gösterilmiyor.</>}
+          {baskin && <> {baskin.n} / {filter.results.length} kayıt <SessizCip renk={BANT[baskin.b].c} metin={bantMetni(baskin.b)} /> bandında; risk sütunu yalnız farklı bandı yazar.</>}
+        </span>
+        {ortakAdim > 0 && <span data-denetim-not-sema="" style={{ display: "block" }}><HalkaLejant adim={ortakAdim} /></span>}
         </span>
       </DefterNotu>
+      </div>
 
       <FilterBar config={config} filter={filter} />
 

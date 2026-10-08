@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { epostaMaskele, segmentleriMaskele } from "./sonucMaske.js";
+import { epostaMaskele, segmentleriMaskele, kelimeSinirinaYasla } from "./sonucMaske.js";
 
 describe("sonucMaske", () => {
   it("e-postanın yerel kısmını baş iki karakter dışında kapatır, alanı korur", () => {
@@ -19,5 +19,21 @@ describe("sonucMaske", () => {
     assert.deepEqual(m[1], { t: "ay*********@ornek.org", mark: true });
     const sabit = [{ t: "yok" }];
     assert.equal(segmentleriMaskele(sabit), sabit);
+  });
+});
+
+describe("kelimeSinirinaYasla", () => {
+  it("vurguyu kelimenin ekine kadar genişletir, sonraki kelimeye taşmaz", () => {
+    const segs = [{ t: "T.C.\n" }, { t: "BAKANLIĞ", mark: true }, { t: "INA ANKARA" }];
+    assert.deepEqual(kelimeSinirinaYasla(segs), [{ t: "T.C.\n" }, { t: "BAKANLIĞINA", mark: true }, { t: " ANKARA" }]);
+  });
+  it("kelime ortasında başlayan vurguyu başa çeker; sınırdaysa dokunmaz", () => {
+    assert.deepEqual(kelimeSinirinaYasla([{ t: "Sayın Meh" }, { t: "met", mark: true }]), [{ t: "Sayın " }, { t: "Mehmet", mark: true }]);
+    const sabit = [{ t: "Tarih: " }, { t: "09.07.2026", mark: true }, { t: "\nKonu" }];
+    assert.deepEqual(kelimeSinirinaYasla(sabit), sabit);
+  });
+  it("vurgu yoksa aynı diziyi döndürür", () => {
+    const segs = [{ t: "düz" }];
+    assert.equal(kelimeSinirinaYasla(segs), segs);
   });
 });

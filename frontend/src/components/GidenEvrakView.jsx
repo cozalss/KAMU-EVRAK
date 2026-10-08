@@ -154,7 +154,7 @@ function GidenNusha({ item, onClose }) {
     { k: "Yazı türü", v: item.tur ? YAZI_TR(item.tur) : "—" },
     { k: "Alıcı birim", v: BIRIM_LBL(item.alici_birim), c: DERIN.V },
     { k: "Durum", v: DURUM_TR[item.durum] || item.durum, c: durumC },
-    { k: "Risk bandı", v: riskAdi(item.risk) ? <>{riskAdi(item.risk)} <span style={{ fontFamily: MONO, fontSize: 11, color: PAL.mut2 }}>{BANT[item.risk]?.l}</span></> : "—", c: DERIN_OF(BANT[item.risk]?.c) },
+    { k: "Risk bandı", v: riskAdi(item.risk) ? <span title={`Bant kodu: ${BANT[item.risk]?.l || "—"}`}>{riskAdi(item.risk)}</span> : "—", c: DERIN_OF(BANT[item.risk]?.c) },
     { k: "Sınıflandırma güveni", v: fmtGuven(item.guven) || "—" },
     { k: "Yasal süre", v: item.sla_durum === "GECIKMIS" ? "Gecikmiş" : item.sla_durum === "KRITIK" ? "Kritik" : "" },
     { k: "Evrak / dilekçe tarihi", v: item.evrak_tarihi },
@@ -163,7 +163,7 @@ function GidenNusha({ item, onClose }) {
     { k: "Denetim hash", v: item.son_hash ? <KimlikDeger deger={item.son_hash} etiket="denetim hash'ini" /> : "" },
   ] : [];
   return (
-    <BelgeModal acik={!!item} onKapat={onClose} baslik={item ? konuOf(item) : ""}
+    <BelgeModal acik={!!item} onKapat={onClose} baslik={item ? konuOf(item) : ""} cilt="Giden"
       kayitNo={item && !numaraBekliyor(item) ? item.id : "Numara bekleniyor"}
       dosyaAdi={item ? `arşiv nüshası · ${gitti(item) ? "gönderildi" : "gönderilmedi"}` : ""}
       metin={item?.taslak ? cleanDemoText(item.taslak) : "Bu kayıtta yazı metni saklanmamış."}
@@ -187,6 +187,11 @@ const DOLGU_AZAMI = 3;
 const KOLON = alanlarOf(SABLON.alan).length;
 
 /* Antet sağ künyesi + defter folyosu — yalnız gerçek kayıtlardan (uydurma sıradaki no yok). */
+/* Yükleniyor hâli AYNI etiket takımını "··" ile basar (tur 9 jüri: yüklenirken başka bir künye
+   takımı görünüp yüklenince değişiyor, künye genişliği zıplıyordu). */
+const KUNYE_BEKLIYOR = [{ k: "Defter", v: "··" }, { k: "Son no", v: "··" }, { k: "Son gönderi", v: "··" }];
+const ALT_BASLIK = "Onaylanıp gönderilen resmî yazılar · arşiv nüshası için satıra tıklayın ya da Enter";
+
 function useGidenKunye(outbox) {
   return useMemo(() => {
     const sirali = [...outbox].sort((a, b) => Number(new Date(b.gonderim_tarihi)) - Number(new Date(a.gonderim_tarihi)));
@@ -200,10 +205,8 @@ function useGidenKunye(outbox) {
         { k: "Son no", v: sonNo },
         iade ? { k: "İade", v: `${iade} yazı`, ton: "kirmizi" } : { k: "Son gönderi", v: sonZaman },
       ],
-      folyo: (rows) => {
-        const s = rows.reduce((a, x) => (!a || Number(x.gonderim_tarihi) > Number(a.gonderim_tarihi) ? x : a), null);
-        return `Sayfa 1 · ${rows.length} kayıt${s ? ` · son kayıt ${defterZamani(s.gonderim_tarihi).tam}` : ""}`;
-      },
+      // Folyo yalnız sayfa künyesi — son gönderi zamanı antet künyesinde (tekrar yok).
+      folyo: (rows) => `Sayfa 1 · ${rows.length} kayıt`,
     };
   }, [outbox]);
 }
@@ -233,7 +236,7 @@ const BOS_ILK = {
 
 /* Boş defter üç hâli — yükleniyor (filtre + defter silüeti) · hata/çevrimdışı · ilk sayfa. */
 function GidenBos({ yukleniyor, hata, onYenidenDene, onGoInbox }) {
-  if (yukleniyor) return <><FiltreIskelet /><DefterIskelet sablon={SABLON} basliklar={BASLIKLAR} etiket="Giden evrak kayıtları yükleniyor" /></>;
+  if (yukleniyor) return <><FiltreIskelet /><DefterIskelet sablon={SABLON} basliklar={BASLIKLAR} satir={DEFTER_SAYFA} etiket="Giden evrak kayıtları yükleniyor" /></>;
   if (hata) return <DefterHata sablon={SABLON} basliklar={BASLIKLAR} baslik="Giden evrak defteri alınamadı" ayrinti={String(hata?.message || hata)} onYenidenDene={onYenidenDene} />;
   return (
     <BosDefter sablon={SABLON} basliklar={BASLIKLAR} onek={`E-G-${new Date().getFullYear()}/`} satir={4} baslik={BOS_ILK.baslik} sub={BOS_ILK.sub}
@@ -262,16 +265,17 @@ export default function GidenEvrakView({ outbox = [], onGoInbox, yukleniyor = fa
   const [detay, setDetay] = useState(null);
   const gez = useDefterGezinme();
   const { config, filter } = useGidenFiltre(outbox);
-  const gonderildi = outbox.filter((o) => o.durum === "gonderildi").length;
   const kunye = useGidenKunye(outbox);
-  const genis = useMedyaSorgusu("(min-width: 1600px)");
+  // Tur 9 jüri: 1440'ta önizleme yoktu, tek kayıtlı defterin altı boş masaydı → ≥1360.
+  const genis = useMedyaSorgusu("(min-width: 1360px)");
   // Zimmet çizelgesi: tarih sıralamasında GÜNÜN PULU ayraçları; risk/birim sırasında düz liste.
   const gunlu = filter.filters.sortBy === "ts_desc" || filter.filters.sortBy === "ts_asc";
   const gruplar = useMemo(() => (gunlu ? gunleGrupla(filter.results, (r) => r.gonderim_tarihi) : [{ anahtar: "duz", rows: filter.results }]), [filter.results, gunlu]);
 
   if (outbox.length === 0) {
     return (
-      <ViewWrap id="giden-h" title="Giden evrak" kunye="Giden evrak defteri" sub={yukleniyor ? "Defter açılıyor…" : "Onaylanıp gönderilen resmî yazılar"}>
+      <ViewWrap id="giden-h" title="Giden evrak" kunye="Giden evrak defteri" sub={yukleniyor ? "Defter açılıyor…" : ALT_BASLIK}
+        actions={yukleniyor ? [<DefterAntetKunye key="k" etiket="Giden evrak defteri özeti yükleniyor" satirlar={KUNYE_BEKLIYOR} />] : undefined}>
         <SicilStil />
         <div><GidenBos yukleniyor={yukleniyor} hata={hata} onYenidenDene={onYenidenDene} onGoInbox={onGoInbox} /></div>
       </ViewWrap>
@@ -280,12 +284,14 @@ export default function GidenEvrakView({ outbox = [], onGoInbox, yukleniyor = fa
   const bos = bosDurumMetni({ ara: filter.filters.search, filtreVar: filter.hasActiveFilters, nesne: "gönderi", kalici: "gönderilen yazılar silinmez" });
   let sira = 0;
   return (
-    <ViewWrap id="giden-h" title="Giden evrak" kunye="Giden evrak defteri" sub={`${outbox.length} evrak · ${gonderildi} gönderildi · satıra dokununca arşiv nüshası açılır`}
+    <ViewWrap id="giden-h" title="Giden evrak" kunye="Giden evrak defteri" sub={ALT_BASLIK}
       actions={[<DefterAntetKunye key="k" etiket="Giden evrak defteri özeti" satirlar={kunye.satirlar} />]}>
       <SicilStil />
       <div>
         <FilterBar config={config} filter={filter} kip="kompakt" satirIci={outbox.length >= 10 ? ["durum"] : []} />
-        <div style={genis && filter.results.length ? { display: "grid", gridTemplateColumns: `minmax(0,1fr) ${ONIZLEME_SUTUN}px`, gap: SP.xl, alignItems: "stretch" } : undefined}>
+        {/* Tur 9 jüri: 1920'de defterin altında ~300 px ölü masa → geniş ekranda sayfa görünüm
+            dibine kadar uzar (cetvel satırları sürer, folyo + önizleme künyesi dibe oturur). */}
+        <div style={genis && filter.results.length ? { display: "grid", gridTemplateColumns: `minmax(0,1fr) ${ONIZLEME_SUTUN}px`, gap: SP.xl, alignItems: "stretch", minHeight: "max(560px, calc(100vh - 270px))" } : undefined}>
         {filter.results.length === 0 ? (
           <BosDefter sablon={SABLON} basliklar={BASLIKLAR} damga={null}
             kunye={`${filter.filters.search.trim() ? "Arama" : "Filtre"} · 0 / ${outbox.length} kayıt`}
@@ -297,7 +303,7 @@ export default function GidenEvrakView({ outbox = [], onGoInbox, yukleniyor = fa
             {gruplar.map((g) => (
               <React.Fragment key={g.anahtar}>
                 {gunlu && <GunPuluBasligi etiket={g.etiket} tarih={g.tarih} sayi={g.rows.length} kolon={KOLON}
-                  ts={g.rows.find(gitti)?.gonderim_tarihi ?? null} tohum={g.anahtar} />}
+                  ts={genis ? null : g.rows.find(gitti)?.gonderim_tarihi ?? null} tohum={g.anahtar} />}
                 {g.rows.map((item) => <GidenSatir key={item.id} item={item} sira={sira++} gez={gez} gunlu={gunlu} onAc={setDetay} jetonlar={filter.jetonlar} />)}
               </React.Fragment>
             ))}

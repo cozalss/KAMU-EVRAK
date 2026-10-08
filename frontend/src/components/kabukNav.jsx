@@ -127,7 +127,7 @@ export function NavBtn({ item, active, onClick, busy, sayac, dar }) {
             {canli && <span aria-hidden="true" style={{ position: "absolute", top: -3, right: -5, width: 7, height: 7, borderRadius: RAD.dot, background: "var(--ke-t)", animation: "nu-think 1.2s ease-in-out infinite" }} />}
             {/* Rozet ikonun DIŞINDA, sağ üst köşeye asılı; ray/sırt renginde 2 px ayırma halkası (tur 8 jüri:
                 rozet zarf/belge ikonunu örtüyordu). */}
-            {!canli && rozetVar && <span style={{ position: "absolute", top: -7, left: 13, borderRadius: 999, boxShadow: `0 0 0 2px ${active ? "var(--ke-sayfa)" : PAL.bg2}` }}><SayiRozet n={rozet.n} acil={rozet.acil} bayat={rozet.bayat} bekliyor={rozet.bekliyor} etkin={active} kucuk /></span>}
+            {!canli && rozetVar && <span style={{ position: "absolute", top: -10, left: 17, borderRadius: 999, boxShadow: `0 0 0 2px ${active ? "var(--ke-sayfa)" : PAL.bg2}` }}><SayiRozet n={rozet.n} acil={rozet.acil} bayat={rozet.bayat} bekliyor={rozet.bekliyor} etkin={active} kucuk /></span>}
           </span>
         ) : (
           <>

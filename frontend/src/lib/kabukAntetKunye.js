@@ -5,11 +5,12 @@
    "··", yanıt yok → "—" (KabukSicil ile aynı üç hâl). Görünüm kendi künyesini (actions) taşıyorsa
    (Panel) ViewWrap bunu çizmez. Saf → node --test. */
 
-const iki = (n) => String(n).padStart(2, "0");
+/* tur9 çapraz: sayaçlar dolgusuz — sicil, defter künyeleri ve panel rakamlarıyla tek sayı dili. */
+const sayi = (n) => String(n);
 
-/** Bir sayaç değerini künye hücresine çevirir: sayı → "07", bekliyor → "··", bilinmiyor → "—". */
+/** Bir sayaç değerini künye hücresine çevirir: sayı → "7", bekliyor → "··", bilinmiyor → "—". */
 export function kunyeDeger(n, bekliyor = false) {
-  if (Number.isFinite(n)) return iki(n);
+  if (Number.isFinite(n)) return sayi(n);
   return bekliyor ? "··" : "—";
 }
 

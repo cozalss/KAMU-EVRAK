@@ -76,7 +76,10 @@ const noOf = (x) => x._no;
 /* Defter şablonu — kayıt no (+seçim, derkenar) · tarih/saat · konu · karar · risk · eylem.
    Telefonda SİCİL FİŞİ: dikey no koçanı; tarih + risk üstte, konu ortada, karar + eylem altta. */
 const SABLON = {
-  kolon: `${DEFTER_NO} 84px minmax(0,1fr) 132px 68px 92px`,
+  /* Tur 9 jüri: 1920'de konu ile KARAR arasında ~350 px ölü koridor → geniş ekranda karar
+     (132→200) ve risk (68→120) sütunları büyür, konu sütununa düşen artık azalır; 1440'ta
+     şablon önceki gibi (konu kesilmez). */
+  kolon: `${DEFTER_NO} 84px minmax(0,1fr) clamp(132px, calc(100vw - 1460px), 200px) clamp(68px, calc(100vw - 1700px), 120px) 92px`,
   marj: DEFTER_MARJ,
   satir: ADIM.yogun,
   alan: '"no zaman ana durum risk eylem"',
@@ -111,9 +114,13 @@ const DOKUM_SUTUN = [
    aynı durumu taşıyan satır deftercilerin "aynen" işaretini basar; satırda yalnız SAPAN
    (onaylandı, reddedildi…) yazılı kalır (tur 8 jüri: 32/33 satırda aynı "Karar bekliyor ·
    Orta" istisnayı gömüyordu). Ekran okuyucu tam metni okur. */
-const Aynen = ({ metin }) => (
-  <span title={metin} style={{ display: "inline-flex", alignItems: "center", gap: 6, ...TYPE.meta, color: PAL.mut3, whiteSpace: "nowrap" }}>
-    <span aria-hidden="true" style={{ fontSize: 15, lineHeight: "16px", paddingLeft: 10 }}>{AYNEN}</span><span style={SR_ONLY}>{metin}</span>
+/* Tur 9 imza: satıra bakılınca 〃 yerinde asıl değere çözülür (120 ms çapraz geçiş, yalnız
+   opaklık; iki katman aynı ızgara hücresinde → genişlik sabit, kayma yok). */
+const Aynen = ({ metin, goster = metin }) => (
+  <span title={metin} data-aynen="" style={{ ...TYPE.meta, color: PAL.mut3, whiteSpace: "nowrap" }}>
+    <span aria-hidden="true" data-aynen-isaret="" style={{ fontSize: 15, lineHeight: "16px", paddingLeft: 10 }}>{AYNEN}</span>
+    <span aria-hidden="true" data-aynen-deger="" style={{ color: PAL.mut2 }}>{goster}</span>
+    <span style={SR_ONLY}>{metin}</span>
   </span>
 );
 
@@ -228,7 +235,7 @@ function DefterSatiri({ item, sira, onAc, onDuzenle, gez, secili, onSec, jetonla
         <MetaSatiri item={item} jetonlar={jetonlar} />
       </span>
       <span {...HUCRE.grid} style={{ gridArea: "durum", minWidth: 0 }}><DurumCip durum={item._durum} aynen={kutle?.durum === item._durum} /></span>
-      {kutle?.risk === item.bant ? <span {...HUCRE.grid} data-sd-sag-dar="" style={{ gridArea: "risk" }}><Aynen metin={`risk: ${riskAdi(item.bant)}`} /></span> : (
+      {kutle?.risk === item.bant ? <span {...HUCRE.grid} data-sd-sag-dar="" style={{ gridArea: "risk" }}><Aynen metin={`risk: ${riskAdi(item.bant)}`} goster={riskAdi(item.bant)} /></span> : (
         <span {...HUCRE.grid} data-sd-sag-dar="" style={{ gridArea: "risk", display: "inline-flex", alignItems: "center", gap: 6, ...TYPE.meta, fontWeight: 500, color: riskC ? DERIN_OF(riskC) : PAL.mut3, whiteSpace: "nowrap" }}>
           <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: RAD.dot, background: riskC || PAL.mut3, opacity: riskC ? 1 : 0.5 }} />
           <span style={SR_ONLY}>risk: </span>{riskAdi(item.bant) || "—"}
@@ -359,14 +366,11 @@ function islenenKunye(items) {
   const sonZaman = son ? defterZamani(son.ts).tam : "";
   return {
     satirlar: [
-      { k: "Sicil", v: `${items.length} kayıt` },
       { k: "Son kayıt", v: son?._no || "" },
       { k: "Son işlem", v: sonZaman },
     ],
-    folyo: (rows) => {
-      const s = rows.reduce((a, x) => (!a || Number(x.ts) > Number(a.ts) ? x : a), null);
-      return `Sayfa 1 · ${rows.length} kayıt${s ? ` · son kayıt ${defterZamani(s.ts).tam}` : ""}`;
-    },
+    // Folyo yalnız sayfa künyesi — son kayıt/işlem antet künyesinde (tekrar yok).
+    folyo: (rows) => `Sayfa 1 · ${rows.length} kayıt`,
   };
 }
 

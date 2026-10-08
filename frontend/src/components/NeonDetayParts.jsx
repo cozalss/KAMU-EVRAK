@@ -121,16 +121,18 @@ export function MevzuatRow({ rank, m, ad = "", nli, ilk, onAc, secili = false, o
             <span title="Bu öneri, üstteki maddenin atıf verdiği mevzuattan otomatik genişletmeyle geldi (GraphRAG-lite)" aria-label="Atıf grafiği genişletmesiyle gelen öneri" style={{ ...TYPE.meta, color: PAL.mut }}>atıf grafiğinden</span>
           )}
           {!sade && pct > 0 && (
-            <span className="kd-mev-pct" title="Skor, listenin ilk önerisine GÖRELİdir (ilk satır daima %100). Mutlak alaka ölçüsü değildir; onu güven bandı verir."
+            <span className="kd-mev-pct" title={`Alaka sırası ${rank}. Çubuk ilk öneriye oranla çizilir (bu satır: ilkinin %${pct}'i). Mutlak alaka ölçüsü değildir; onu güven bandı verir.`}
               style={{ marginLeft: "auto", ...TYPE.meta, color: PAL.mut3, flex: "none", ...TNUM }}>
-              %{pct} <span style={{ color: PAL.mut }}>göreli</span>
+              {/* Tur 9 jüri: "%100 göreli" mutlak kesinlik gibi okunuyordu → SIRA gösterilir; çubuk
+                  ilk adaya oransal kalır, oran açıklaması title'da. */}
+              {rank}. <span style={{ color: PAL.mut }}>sıra</span>
             </span>
           )}
         </div>
         {!sade && pct > 0 && (
           <div className="kd-mev-cubuk">
             <span className="kd-mev-cubuk-etiket" aria-hidden="true" style={{ display: "none", ...TYPE.antet, color: PAL.mut3, textTransform: "uppercase", marginBottom: 6, ...TNUM }}>
-              Alaka · %{pct} göreli
+              Alaka sırası · {rank}.
             </span>
             <div style={{ position: "relative", height: 4, background: PAL.press, borderRadius: RAD.chip }} role="img"
               aria-label={`Göreli BM25 skoru: ilk önerinin yüzde ${pct}'i${guven ? `; güven bandı: ${guven}` : ""}`}>

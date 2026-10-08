@@ -26,3 +26,33 @@ export function segmentleriMaskele(segs) {
   });
   return degisti ? yeni : segs;
 }
+
+/* Fosfor vurgusu kelime ortasında bitmesin (2. jüri: "BAKANLIĞ" vurgulu, "INA" değil).
+   Kanıt aralığı ekten önce biter (kök eşleşir, Türkçe ek dışarıda kalır); SUNUMDA vurgu
+   bitişik harflere kadar genişletilir — kelime bütün okunur. Yalnız aynı kelimenin
+   devamı taşınır (boşluk/noktalama sınırı aşılmaz); kaynak metin ve aralıklar değişmez. */
+const HARF_BAS_RE = /^[\p{L}\p{N}]+/u;
+const HARF_SON_RE = /[\p{L}\p{N}]+$/u;
+const harfleBiter = (t) => HARF_SON_RE.test(t || "");
+const harfleBaslar = (t) => HARF_BAS_RE.test(t || "");
+
+/** {t, mark?} segmentlerinde vurguyu komşu düz segmentteki kelime parçasına genişletir. */
+export function kelimeSinirinaYasla(segs) {
+  if (!Array.isArray(segs) || !segs.some((s) => s?.mark)) return segs;
+  const out = segs.map((s) => ({ ...s }));
+  for (let i = 0; i < out.length; i++) {
+    const sg = out[i];
+    if (!sg.mark) continue;
+    const sonra = out[i + 1];
+    if (sonra && !sonra.mark && harfleBiter(sg.t) && harfleBaslar(sonra.t)) {
+      const ek = sonra.t.match(HARF_BAS_RE)[0];
+      sg.t += ek; sonra.t = sonra.t.slice(ek.length);
+    }
+    const once = out[i - 1];
+    if (once && !once.mark && harfleBaslar(sg.t) && harfleBiter(once.t)) {
+      const kok = once.t.match(HARF_SON_RE)[0];
+      sg.t = kok + sg.t; once.t = once.t.slice(0, -kok.length);
+    }
+  }
+  return out.filter((s) => s.t);
+}

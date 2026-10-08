@@ -65,7 +65,17 @@ export function sahneCiktisi(id, out, data) {
     return [RISK_KOD[bant], ...olcu].join(" · ");
   }
   if (id === "sla_triyaj") return slaSatiri(data?.sla_metadata) || metin;
+  if (id === "cikar") return cikarSatiri(metin, data?.bilgi_unsurlari);
   return metin;
+}
+
+/* Bilgi Çıkar satırı OLGUYU söyler (tur 9 jüri): genel "PII maskeli" eki, okunan belgede
+   e-posta/ad açıkken yanlış güvence veriyordu. Yalnız gerçekten maskeli gelen alanlar adlanır. */
+const MASKELI_ALAN = [["tckn_maskeli", "TCKN"], ["telefon_maskeli", "telefon"]];
+function cikarSatiri(metin, bu) {
+  const govde = metin.replace(/ · PII maskeli$/, "");
+  const adlar = MASKELI_ALAN.filter(([k]) => typeof bu?.[k] === "string" && bu[k].trim()).map(([, ad]) => ad);
+  return adlar.length ? `${govde} · ${adlar.join(", ")} maskeli` : govde;
 }
 
 /** Göreli koşum damgası (ms, runBase'e göre) → duvar saati "ss:dd:sn". Geçersizse "". */

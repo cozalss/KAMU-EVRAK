@@ -14,7 +14,7 @@ import { AltTaleplerCard, MevzuatCard, ArchiveSlaCard, RiskCard, ValidationCard,
 import { gosterimBirimi } from "../lib/gosterimBirimi.js";
 import YazismaPaketiKarti from "./YazismaPaketiKarti.jsx";
 import { gonderimDenetimi } from "../lib/gonderimHazirlik.js";
-import { segmentleriMaskele } from "../lib/sonucMaske.js";
+import { segmentleriMaskele, kelimeSinirinaYasla } from "../lib/sonucMaske.js";
 
 const TRUNCATED_TEXT_RE = /(?:\.{3}|…)\s*$/;
 
@@ -521,7 +521,7 @@ export default function SonucCalismaAlani({
     : isValidElement(solPanel)
       /* Görüntü maskesi (jüri tur 8): kâğıtta telefon maskeliyken e-posta açıktı. Segmentler
          aynı kuralla (baş 2 karakter + yıldız) maskelenir; kaynak veri değişmez. */
-      ? cloneElement(solPanel, { ekAksiyon: ozetButonu, ...(solPanel.props?.segs ? { segs: segmentleriMaskele(solPanel.props.segs) } : null) })
+      ? cloneElement(solPanel, { ekAksiyon: ozetButonu, ...(solPanel.props?.segs ? { segs: kelimeSinirinaYasla(segmentleriMaskele(solPanel.props.segs)) } : null) })
       : (solPanel || <EmptySource />);
 
   return (

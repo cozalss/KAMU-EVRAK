@@ -15,7 +15,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { DISPLAY, T, PAL, DERIN_OF, BANT, TYPE, TNUM, RAD, SP, SH, Icon, Btn, odakDongusu, focusRing } from "./neonUi.jsx";
-import { UYE, uyeGor, turEtiketi, RISK, aksanRenk, KurulMasasi, duruslariCikar, TurSeridi, TutanakMaddesi, Yaziyor, TaslakKarti, KurulYukleniyor } from "./KurulMasasi.jsx";
+import { UYE, uyeGor, turEtiketi, RISK, aksanRenk, KurulMasasi, duruslariCikar, TurSeridi, TutanakMaddesi, GelecekTurlar, Yaziyor, TaslakKarti, KurulYukleniyor } from "./KurulMasasi.jsx";
 import { KurulTutanagi, KurulHukumBasligi, kurulHukmu } from "./KurulKarar.jsx";
 import { muzakereKurgusu, editUygula, nihaiTaslak, sunucuKurgusu, kurguUzlasiMetni, metniSatirlara, kurulRiskOzeti } from "../lib/muzakere.js";
 import { apiStream } from "../lib/authApi.js";
@@ -239,6 +239,10 @@ function KurulSahnesi({ kurgu, az, onUygula, akan = false, onOneriIsle = null, o
                 </span>
               </div>
             )}
+            {!done && (() => {
+              const gorulen = new Set(gorunenTurlar.map(turEtiketi));
+              return <GelecekTurlar gorulen={gorulen} baslangicNo={gorulen.size} roma={ROMA} />;
+            })()}
             {done && (
               /* ✓ yalnız olumlu/revize hükümde; çekince varken nötr bilgi glifi + nötr renk (renk tek sinyal değil). */
               <div style={{ display: "flex", alignItems: "center", gap: SP.s, padding: "10px 0 2px", borderTop: `1px solid ${PAL.line}`, ...TYPE.data, color: hukum.olumlu || hukum.tur === "revize" ? DERIN_OF(aksan) : PAL.ink2, fontWeight: 500, animation: az ? "none" : "nu-rise .2s var(--ke-ease-out) both" }}>

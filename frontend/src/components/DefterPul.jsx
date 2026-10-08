@@ -56,12 +56,15 @@ export function GunPuluBasligi({ etiket, tarih, sayi, ts, tohum, kolon = 4 }) {
     /* Tur 8 jüri 2: iki satırlı başlık + tam boy pul tek kayıtta ~80 px tutuyordu → tek satır
        künye, 56 px; pul satır çizgisine oturan küçültülmüş damga (yükseklik eklemez). */
     <div data-sd-grup="" role="row" style={{ position: "relative", padding: `0 20px`, minHeight: 56, alignItems: "center" }}>
-      <span role="gridcell" aria-colspan={kolon} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: SP.l, width: "100%", minWidth: 0 }}>
+      {/* Tur 9 jüri: pul satırın sağ ucunda metinden ~700 px uzakta tek başına duruyordu → gün
+          künyesinin hemen sağında, aynı orta çizgide, küçük. Önizleme sütunu açıkken çağıran
+          ts=null verir (kâğıttaki pulla ikinci kopya olmasın). */}
+      <span role="gridcell" aria-colspan={kolon} style={{ display: "flex", alignItems: "center", gap: SP.m, width: "100%", minWidth: 0 }}>
         <span role="heading" aria-level={2} style={{ ...TYPE.antet, fontSize: 10, color: PAL.ink2, textTransform: "uppercase", whiteSpace: "nowrap", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>
           {etiket} <span style={{ color: PAL.mut2, ...TNUM }}>{tarih}</span>
           <span style={{ color: PAL.mut3, ...TNUM }}> · {sayi} gönderi · posta defteri</span>
         </span>
-        {ts != null && <span style={{ marginRight: SP.xl, flexShrink: 0, height: 48, display: "flex", alignItems: "center" }}><PostaDamgasi ts={ts} tohum={tohum} olcek={0.72} /></span>}
+        {ts != null && <span style={{ flexShrink: 0, height: 48, display: "flex", alignItems: "center" }}><PostaDamgasi ts={ts} tohum={tohum} olcek={0.72} /></span>}
       </span>
     </div>
   );

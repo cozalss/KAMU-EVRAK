@@ -73,6 +73,19 @@ export const ROL_STIL = {
   sayi: { display: "flex", justifyContent: "space-between", gap: "1em" },
 };
 
+/* Sayı satırındaki köşeli yer tutucular ("[DETSİS No]", "[Kayıt No]") gövde metni gibi
+   durmasın (tur 9 jüri): "doldurulacak alan" — soluk mürekkep + kesik alt çizgi; title'da
+   gönderimde atandığı söylenir. Ölçüm katmanı aynı yardımcıyı kullanır (sarma kaymaz). */
+const YER_TUTUCU = /(\[[^\]]{1,40}\])/;
+export function yerTutuculu(metin) {
+  const parca = String(metin ?? "").split(YER_TUTUCU);
+  if (parca.length === 1) return metin;
+  return parca.map((p, i) => (i % 2 === 1
+    ? <span key={i} data-yer-tutucu="" title="Doldurulacak alan — gönderimde EBYS kaydıyla atanır"
+        style={{ color: PAL.mut3, textDecoration: "underline dashed", textDecorationColor: PAL.mut3, textUnderlineOffset: "0.2em", cursor: "help" }}>{p}</span>
+    : p));
+}
+
 const STIL_ID = "ke-a4-stil";
 const STIL = `
 @media print {
@@ -124,7 +137,7 @@ function A4OkumaDuzeni({ satirlar, roller, onAc, solgun, baslikIpucu, imzaIdx, i
         {satirlar.map((s, i) => {
           const rol = roller[i] || { tip: "duz", metin: s };
           const ic = rol.tip === "sayi"
-            ? (<><span>{rol.metin}</span><span style={{ flexShrink: 0 }}>{rol.sag}</span></>)
+            ? (<><span>{yerTutuculu(rol.metin)}</span><span style={{ flexShrink: 0 }}>{rol.sag}</span></>)
             : (rol.tip === "duz" ? (s === "" ? " " : s) : rol.metin);
           const stil = { ...temel, ...ROL_STIL[rol.tip], ...(rol.tip === "imza" ? { marginLeft: "40%" } : null) };
           return <div key={i} style={i === imzaIdx ? { ...stil, position: "relative" } : stil}>{ic}{i === imzaIdx && imzaKatmani}</div>;
@@ -349,7 +362,7 @@ export default function A4Belge({ metin = "", onAc = null, solgun = false, basli
     const islak = !olcum && islakMi(s);
     const stil = { ...satirStil, ...ROL_STIL[rol.tip], ...(islak ? { animation: `kd-kuru .9s var(--ke-ease-out) ${Math.min(i, 12) * 30}ms both` } : null) };
     const ic = rol.tip === "sayi"
-      ? (<><span>{rol.metin}</span><span style={{ flexShrink: 0 }}>{rol.sag}</span></>)
+      ? (<><span>{yerTutuculu(rol.metin)}</span><span style={{ flexShrink: 0 }}>{rol.sag}</span></>)
       : (rol.tip === "duz" ? (s === "" ? " " : s) : rol.metin);
     const katman = !olcum && i === imzaIdx;
     return (

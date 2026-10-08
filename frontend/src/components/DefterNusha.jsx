@@ -34,7 +34,7 @@ export function KunyeFisi({ baslik, satirlar, children }) {
   );
 }
 
-export function KimlikDeger({ deger, etiket = "kimliği" }) {
+export function KimlikDeger({ deger, etiket = "kimliği", bas, son }) {
   const [kopyalandi, setKopyalandi] = useState(false);
   useEffect(() => {
     if (!kopyalandi) return undefined;
@@ -47,7 +47,7 @@ export function KimlikDeger({ deger, etiket = "kimliği" }) {
   };
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "flex-end" }}>
-      <span title={String(deger)} style={{ fontFamily: MONO, fontSize: 12, ...TNUM }}>{ortaElips(deger)}</span>
+      <span title={String(deger)} style={{ fontFamily: MONO, fontSize: 12, ...TNUM }}>{ortaElips(deger, bas, son)}</span>
       <button type="button" onClick={kopyala} aria-label={kopyalandi ? `${etiket} kopyalandı` : `Tam ${etiket} kopyala`} title={kopyalandi ? "Kopyalandı" : "Tam değeri kopyala"} {...focusRing} data-press="" data-dokunma=""
         style={{ cursor: "pointer", display: "inline-grid", placeItems: "center", width: 28, height: 28, padding: 0, border: "none", borderRadius: RAD.chip, background: "transparent", color: kopyalandi ? DERIN.yesil : PAL.mut2 }}>
         {kopyalandi ? <Check size={13} strokeWidth={2} aria-hidden="true" /> : <Copy size={13} strokeWidth={1.75} aria-hidden="true" />}

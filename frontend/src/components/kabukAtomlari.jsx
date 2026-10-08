@@ -95,6 +95,11 @@ export function SayiRozet({ n, acil = 0, bayat = false, bekliyor = false, etkin 
      (renk hangi sayıyı işaret ediyorsa o sayı yazılır — "15" kırmızı "15 gecikmiş" okunuyordu);
      toplam ipucunda ve aria-label'da. Gecikmiş yoksa toplam, nötr. */
   const acilVar = acil > 0;
+  /* Tur 9 (j2: dar rayda Gelen ve Taslak rozetleri yalnız renkle ayrılıyordu): ACİL rozet DOLU pul
+     (kırmızı zemin, zemin renginde rakam), olağan rozet çerçeveli — renk tek sinyal değil, biçim de. */
+  if (acilVar && kucuk) {
+    return <span aria-label={etiket} style={{ ...temel, ...boyut, color: etkin ? "var(--ke-sayfa)" : PAL.bg, background: kirmizi, border: `1px solid ${kirmizi}` }}>{acil}</span>;
+  }
   return (
     <span aria-label={etiket} style={{ ...temel, ...boyut, color: acilVar ? kirmizi : etkin ? "var(--ke-sayfa-ink)" : PAL.ink2, background: kucuk ? (etkin ? "var(--ke-sayfa)" : PAL.bg) : etkin ? "transparent" : PAL.surfHi, border: acilVar ? `1px solid ${kirmizi}` : kucuk ? `1px solid ${PAL.lineHi}` : "none" }}>{acilVar && kucuk ? acil : n}</span>
   );
@@ -154,10 +159,10 @@ export function HataFisi({ baslik, children, ton = "hata", zaman, onYenidenDene,
 
 /* DenemeKunye — sorgu yeniden denenirken iskeletin ÜSTÜNDE: "Sunucuya 2. kez yazıldı". 10 sn sessiz
    iskelet "donmuş" okunuyordu (jüri). deneme = react-query failureCount (0 → hiç çizilmez). */
-export function DenemeKunye({ deneme = 0, toplam = 3 }) {
+export function DenemeKunye({ deneme = 0, toplam = 3, kenar = 0 }) {
   if (!(deneme > 0)) return null;
   return (
-    <div role="status" style={{ ...TYPE.antet, textTransform: "uppercase", color: DERIN.sari, display: "flex", alignItems: "center", gap: SP.s, marginBottom: SP.m }}>
+    <div role="status" style={{ ...TYPE.antet, textTransform: "uppercase", color: DERIN.sari, display: "flex", alignItems: "center", gap: SP.s, marginBottom: kenar }}>
       <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: RAD.dot, border: `1.5px solid ${DERIN.sari}`, borderRightColor: "transparent", animation: "nu-spin .9s linear infinite", flexShrink: 0 }} />
       <span style={TNUM}>Sunucuya {deneme + 1}. kez yazıldı · en çok {toplam + 1}</span>
     </div>

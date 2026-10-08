@@ -16,6 +16,7 @@ import { ViewWrap, EmptyState, Icon, Btn, MONO, DISPLAY, T, V, R, PAL, DERIN, AL
 import { cleanDemoText } from "./result-cards.jsx";
 import { OkumaModal } from "./MevzuatOkuma.jsx";
 import { Dizin, DerinSonucSatir } from "./MevzuatDizin.jsx";
+import MevzuatOnizleme from "./MevzuatOnizleme.jsx";
 import { kunyeCoz, NITELIK, atifCoz, katalogEslesir } from "../lib/mevzuatKunye.js";
 import { vurguParcala } from "../lib/mevzuatVurgu.js";
 
@@ -105,7 +106,8 @@ const mulgaMi = (m, kn) => kn.mulga || /\bMÜLGA\b/.test(m.baslik);
    İmza: kart üzerinde mevzuat numarası Archivo'nun GENİŞLİK ekseninde açılır (font-stretch) —
    sırt sütunu sabit genişlikte, komşu yerleşim kıpırdamaz. */
 const MV_CSS = `
-.mv-duzen{display:grid;grid-template-columns:clamp(268px,18vw,304px) minmax(0,1fr);gap:${SP.xxl + 8}px;align-items:start}
+/* Dizin ≥324 px (tur 9): 1440'de "Çalışma, Sosyal Güvenlik & Aile" + "1 / 22" tek satıra sığmıyor, ritim kırılıyordu. */
+.mv-duzen{display:grid;grid-template-columns:clamp(324px,21vw,344px) minmax(0,1fr);gap:${SP.xxl + 8}px;align-items:start}
 .mv-dizin{min-width:0;position:sticky;top:${SP.l}px;max-height:calc(100vh - ${SP.xxl}px);overflow-y:auto;overscroll-behavior:contain;padding-bottom:${SP.l}px;scrollbar-width:thin}
 .mv-dizin-oge:hover{background:var(--ke-hov)}
 .mv-dizin-oge:hover .mv-dizin-ad{color:var(--ke-ink)}
@@ -716,6 +718,10 @@ export default function MevzuatView({ history = [] }) {
                 <KategoriGrup key={ad} ad={ad} sira={sira} mevzuatlar={uyeler} onAc={ac} q={trLower(filtre.trim())} ciftNolar={ciftNolar}
                   acik={!!filtre.trim() || !!kategori || gruplar.length === 1 || gi === 0} />
               ))
+            )}
+            {/* Az sonuçlu (≤3) ya da sonuçsuz katalog araması → madde içi önizleme (tur 9). */}
+            {filtre.trim().length >= 3 && listelenen.length <= 3 && (
+              <MevzuatOnizleme q={filtre} onAc={ac} onTumu={() => setAramaModu("derin")} />
             )}
           </div>
         </div>

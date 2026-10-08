@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { T, V, PAL, TYPE, RAD, SP, SH, Icon, Damga } from "./neonUi.jsx";
 import { gorevFaz } from "../lib/pipelinePhases.js";
 import AjanOrb from "./AjanOrb.jsx";
-import { SahneAkis, SahneTelemetri, MerkezKart, merkezIndeksi, eszamanliMasalar } from "./CanliMetro.jsx";
+import { SahneAkis, SahneTelemetri, MerkezKart, merkezIndeksi } from "./CanliMetro.jsx";
 
 /* KISA MASAÜSTÜ (tur 8 jüri 2): 1440×900'de yapışkan odak bölgesi ~335 px kaplıyor, pusula
    listesi ~415 px'lik pencerede akıyordu. ≥1200 genişlik + ≤980 yükseklikte ıstampa ve rakam
@@ -33,7 +33,7 @@ const azHareket = () => typeof window !== "undefined" && !!window.matchMedia?.("
    dışında kalıyordu). Telefonda da açık (doğrulama: etkin satırlar katlamanın altında kalıyordu);
    alt pay orada sabit Asistan düğmesinin yüksekliği kadardır. Kapanışta sayfa başa döner
    (CanliAjanAkisi.useKapanis) — İŞLENDİ damgası pusulanın tepesinde görülür. */
-function useEtkinSatiraKaydir(display, runBase, kosumda, altPay) {
+function useEtkinSatiraKaydir(display, runBase, kosumda, altPay, durdu = null) {
   const elle = useRef(false);
   useEffect(() => { elle.current = false; }, [runBase]);
   useEffect(() => {
@@ -56,14 +56,21 @@ function useEtkinSatiraKaydir(display, runBase, kosumda, altPay) {
     if (!fark) return;
     window.scrollBy({ top: fark, behavior: azHareket() ? "auto" : "smooth" });
   }, [etkin, kosumda, altPay]);
+  /* Koşum kesilince hatalı masa görünür alana gelir (tur 9 jüri: 1440×900'de kesilen satır
+     katlamanın altında kalıyordu). Kullanıcı kendisi kaydırdıysa dokunulmaz. */
+  useEffect(() => {
+    if (!durdu || elle.current || document.body.style.overflow === "hidden") return;
+    const fark = kaydirmaFarki(altPay, '[data-satir][data-durum="hata"], [data-satir][data-durum="kesildi"]');
+    if (fark) window.scrollBy({ top: fark, behavior: azHareket() ? "auto" : "smooth" });
+  }, [durdu, altPay]);
 }
 
 /* Etkin satırların görünür kalması için gereken kaydırma (px; 0 = gerekmez). Masaüstünde odak
    bölgesi yapışkan olduğundan satır onun ALTINDA kalmışsa da görünmez sayılır (tur 8: iki hat
    yan yana iken etkin masa 1. hattın dibinden 2. hattın tepesine geçince yapışkan bölgenin
    arkasında kalıyordu) → gerekirse yukarı da kaydırılır. */
-function kaydirmaFarki(altPay) {
-  const satirlar = [...document.querySelectorAll('[data-satir][aria-current="step"]')].map((r) => r.getBoundingClientRect());
+function kaydirmaFarki(altPay, secici = '[data-satir][aria-current="step"]') {
+  const satirlar = [...document.querySelectorAll(secici)].map((r) => r.getBoundingClientRect());
   if (!satirlar.length) return 0;
   const ust = (document.querySelector("[data-odak-bolge]")?.getBoundingClientRect().bottom ?? 0) + 8;
   const enUst = Math.min(...satirlar.map((r) => r.top)), enAlt = Math.max(...satirlar.map((r) => r.bottom));
@@ -79,7 +86,8 @@ function CanliKunye({ olgu, tekSatir = false }) {
   const parcalar = [
     { k: "baslik", v: "Havale pusulası" },
     { k: "tur", v: olgu.tur || "tür belirleniyor", soluk: !olgu.tur },
-    olgu.tarih && { k: "tarih", v: olgu.tarih },
+    // Tek satırda havale birimi (asıl karar) tarihe yer açmak için öncelik alır (tur 9: kırpılıyordu).
+    olgu.tarih && !(tekSatir && olgu.birim) && { k: "tarih", v: olgu.tarih },
     olgu.sayi && { k: "sayi", v: `sayı ${olgu.sayi}` },
     olgu.birim && { k: "birim", v: `→ ${olgu.birim}` },
   ].filter(Boolean);
@@ -90,7 +98,7 @@ function CanliKunye({ olgu, tekSatir = false }) {
     <span style={{ flex: "0 1 auto", minWidth: 0, overflow: "hidden" }}>
       <span style={{ display: "flex", flexWrap: tekSatir ? "nowrap" : "wrap", rowGap: SP.xs, marginLeft: -AYRAC, minWidth: 0 }}>
         {parcalar.map((p) => (
-          <span key={`${p.k}:${p.v}`} style={{ position: "relative", paddingLeft: AYRAC, minWidth: 0, flexShrink: p.k === "birim" ? 1 : 0, maxWidth: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: p.k === "baslik" ? PAL.mut2 : p.soluk ? PAL.mut2 : PAL.mut, animation: p.k === "baslik" ? "none" : "ke-e-kayit .32s var(--ke-ease-out) both" }}>
+          <span key={`${p.k}:${p.v}`} style={{ position: "relative", paddingLeft: AYRAC, minWidth: 0, flexShrink: p.k === "birim" ? 0 : p.k === "tur" ? 1 : 0, maxWidth: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: p.k === "baslik" ? PAL.mut2 : p.soluk ? PAL.mut2 : PAL.mut, animation: p.k === "baslik" ? "none" : "ke-e-kayit .32s var(--ke-ease-out) both" }}>
             <span aria-hidden="true" style={{ position: "absolute", left: 6, color: PAL.mut3 }}>·</span>
             {p.v}
           </span>
@@ -106,16 +114,16 @@ function IstampaKutusu({ display, sahneCanli, runBase, durdu, gelis, vurgu, onYu
       <div style={{ padding: kisa ? SP.xs : SP.s, borderRadius: RAD.pop, background: PAL.surf2, boxShadow: `inset 0 0 0 1px ${PAL.lineHi}, ${SH.card}` }}>
         <AjanOrb display={display} kosumda={sahneCanli} yukseklik={kisa ? 124 : 176} runBase={runBase} durdu={durdu} gelis={gelis} vurgu={vurgu} onYuva={onYuva} />
       </div>
-      {!kisa && <IstampaLejanti />}
+      <IstampaLejanti kisa={kisa} />
     </div>
   );
 }
 
-function IstampaLejanti() {
+function IstampaLejanti({ kisa = false }) {
   return (
     <>
       {/* Lejant: her nokta+etiket çifti kırılmaz bir birim (tur 6: satır sonunda öksüz nokta). */}
-      <div aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", columnGap: SP.m, rowGap: SP.xs, marginTop: SP.s, ...TYPE.antet, fontSize: 10, color: PAL.mut2, textTransform: "uppercase", flexWrap: "wrap" }}>
+      <div aria-hidden="true" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", columnGap: SP.m, rowGap: SP.xs, marginTop: kisa ? SP.xs : SP.s, ...TYPE.antet, fontSize: kisa ? 9 : 10, color: PAL.mut2, textTransform: "uppercase", flexWrap: "wrap" }}>
         <span style={{ whiteSpace: "nowrap" }}>Paraf defteri</span>
         <span style={{ display: "inline-flex", gap: SP.m, flexWrap: "wrap" }}>
           {[[T, 1], [V, 2]].map(([c, n]) => (
@@ -158,7 +166,7 @@ function OdakBolgesi({ p, pad, merkezIdx, vurgu, kisa }) {
         <div style={{ position: "relative", minWidth: 0 }}>
           {/* KAPANIŞ DAMGASI — rakam bloğunun sağındaki yuvada (tur 8: "15"in üstüne biniyordu). */}
           <MerkezKart a={display[merkezIdx]} total={display.length || 1} runBase={runBase} kapanis={kapanisBilgi} kosumda={sahneCanli}
-            esz={eszamanliMasalar(display, merkezIdx)} hataMesaji={hataMesaji} onTekrarDene={onTekrarDene} damga={damga} kisa={kisa} />
+            hataMesaji={hataMesaji} onTekrarDene={onTekrarDene} damga={damga} kisa={kisa} />
         </div>
       </div>
       {/* Yapışkan kenarın altında solma (tur 8 jüri 2): akan satırlar ve paraf damgaları kartın
@@ -181,7 +189,7 @@ export default function CanliPusula(p) {
   const merkezIdx = merkezIndeksi(display);
   const kisa = useKisaMasaustu() && !dar;
   const [vurgu, vurguOlaylari] = useSatirVurgusu();
-  useEtkinSatiraKaydir(display, runBase, sahneCanli, dar ? 96 : 24);
+  useEtkinSatiraKaydir(display, runBase, sahneCanli, dar ? 96 : 24, durdu);
   return (
     <section aria-label="İşlem durumu" style={{ position: "relative", width: "100%", borderRadius: RAD.card, background: PAL.surf, border: `1px solid ${PAL.line}`, boxShadow: SH.card, overflow: "clip", viewTransitionName: "ke-pusula" }}>
       <OdakBolgesi p={p} pad={pad} merkezIdx={merkezIdx} vurgu={vurgu} kisa={kisa} />

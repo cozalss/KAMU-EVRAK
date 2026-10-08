@@ -44,11 +44,12 @@ export function kurulHukmu(kurgu) {
   // olumlu: yalnız çekince YOKSA yeşil ✓. Tur 8: çekince varken TEK hüküm cümlesi — metin
   // yönünden uygun, gönderim yönünden çekinceli. Masa, kâğıt künyesi, tutanak son satırı ve
   // karar başlığı aynı cümleyi kurar (eskiden masa "Değişiklik önerilmedi", kâğıt "MÜZAKEREDE",
-  // amir "gönderime çıkmamalı" — üç ayrı sinyal).
+  // amir "gönderime çıkmamalı" — üç ayrı sinyal). Tur 9: kâğıt künyesi nötr "hüküm verildi" —
+  // "çekinceli" sözcüğünü yalnız hüküm bandı ve damga taşır (üç kez tekrar ediyordu).
   const cekince = cekinceli(kurgu);
   if (cekince) {
     return {
-      tur: "yok", baslik: "Metin uygun · gönderim çekinceli", damga: "Çekinceli", ton: null, durum: "Metin uygun · gönderim çekinceli", olumlu: false, kunye: "çekinceli",
+      tur: "yok", baslik: "Metin uygun · gönderim çekinceli", damga: "Çekinceli", ton: null, durum: "Metin uygun · gönderim çekinceli", olumlu: false, kunye: "hüküm verildi",
       satir: "Kurul metinde değişiklik önermedi; Birim Amiri ölçülen risk bandı nedeniyle gönderime çekince koydu.",
     };
   }

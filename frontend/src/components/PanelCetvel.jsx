@@ -7,11 +7,13 @@
    — sessizce düşmez. Süresi tanımsız evrak cetvelde YOK; sayısı lejantta zaten yazılı.
    VERİ KAYNAĞI YENİ DEĞİL: aynı `kuyrukSla` (kalan_gun · durum · son_tarih).
    Mürekkep köprüsü: iğneye gelince `onOdak(id)` → defter satırı ve takvim günü birlikte vurgulanır. */
-import { DISPLAY, MONO, T, TNUM, SP, RAD, EASE, DERIN, DERIN_OF, PAL, BANT } from "./neonUi.jsx";
+import { DISPLAY, MONO, T, TNUM, SP, RAD, EASE, DERIN, DERIN_OF, PAL, BANT, focusRing } from "./neonUi.jsx";
 
 const BAS = -14, BIT = 30, ARALIK = BIT - BAS;
 const IGNE = 9, KAT = 11, EKSEN_H = 22;
-const x = (gun) => ((Math.max(BAS, Math.min(BIT, gun)) - BAS) / ARALIK) * 100;
+/* Tur 9 jüri: +28 ucundaki iğneler kart kenarına yapışıyordu → eksen %2–%98 aralığına sıkışır. */
+const UC = 2;
+const x = (gun) => UC + ((Math.max(BAS, Math.min(BIT, gun)) - BAS) / ARALIK) * (100 - 2 * UC);
 const renkOf = (d) => (d === "GECIKMIS" ? BANT.kirmizi.c : d === "KRITIK" ? BANT.sari.c : BANT.yesil.c);
 const ETIKET = { [-14]: "−14", [-7]: "−7", 0: "BUGÜN", 7: "+7", 14: "+14", 21: "+21", 28: "+28" };
 
@@ -28,13 +30,17 @@ function kovala(kuyrukSla) {
   return { kova, solDis, sagDis };
 }
 
+/* İğne — tur 9 jüri: yalnız fareyle erişiliyordu → odaklanabilir düğme; odakta da mürekkep
+   köprüsü (defter satırı + takvim günü) yanar. Tıklama yok: yalnız işaret (title + aria-label). */
 function Igne({ it, gun, kat, odak, onOdak, sira }) {
   const renk = renkOf(it.sla.durum);
   const vurgulu = odak === it.id;
+  const metin = `${it.label} — ${it.sla.son_tarih || "son gün yok"} (${gun < 0 ? `${-gun} gün gecikti` : `${gun} gün kaldı`})`;
+  const ac = () => onOdak?.(it.id), kapa = () => onOdak?.(null);
   return (
-    <span title={`${it.label} — ${it.sla.son_tarih || ""} (${gun < 0 ? `${-gun} gün gecikti` : `${gun} gün kaldı`})`}
-      onMouseEnter={() => onOdak?.(it.id)} onMouseLeave={() => onOdak?.(null)}
-      style={{ position: "absolute", left: `${x(gun)}%`, bottom: EKSEN_H + kat * KAT, width: IGNE, height: IGNE, marginLeft: -IGNE / 2,
+    <button type="button" title={metin} aria-label={metin} {...focusRing}
+      onMouseEnter={ac} onMouseLeave={kapa} onFocus={ac} onBlur={kapa}
+      style={{ position: "absolute", left: `${x(gun)}%`, bottom: EKSEN_H + kat * KAT, width: IGNE, height: IGNE, marginLeft: -IGNE / 2, padding: 0, border: "none",
         borderRadius: RAD.dot, background: vurgulu ? DERIN_OF(renk) : renk, boxShadow: `0 0 0 ${vurgulu ? 3 : 1.5}px ${PAL.surf}`,
         transform: vurgulu ? "scale(1.35)" : "none", transition: `transform .14s ${EASE.out}, box-shadow .14s ${EASE.out}`,
         animation: `pv-gir .28s ${EASE.out} ${360 + sira * 18}ms both`, cursor: "default" }} />
@@ -64,12 +70,13 @@ export default function SureCetveli({ kuyrukSla, odak, onOdak }) {
   const gecikmis = [...kova.entries()].filter(([g]) => g < 0).reduce((t, [, l]) => t + l.length, 0) + solDis;
   let sira = 0;
   return (
-    <div role="img" aria-label={`Süre cetveli: ${gecikmis} evrakın süresi geçti, bugün çizgisinin sağında ${kuyrukSla.length - gecikmis} evrak`}
+    <div role="group" aria-label={`Süre cetveli: ${gecikmis} evrakın süresi geçti, bugün çizgisinin sağında ${kuyrukSla.length - gecikmis} evrak`}
       style={{ position: "relative", height: yukseklik, marginTop: SP.xs }}>
       {/* Geçmiş bölge — bugünün solu; ACELE kırmızısının en soluk hâli (veri bölgesi, süs değil). */}
       <span aria-hidden="true" style={{ position: "absolute", left: 0, width: `${x(0)}%`, top: 0, bottom: EKSEN_H,
         background: `color-mix(in srgb, ${BANT.kirmizi.c} 6%, transparent)`, borderRadius: `${RAD.chip}px 0 0 0` }} />
-      <span aria-hidden="true" style={{ position: "absolute", left: `${x(0)}%`, top: -2, bottom: 0, width: 2, marginLeft: -1, background: T,
+      {/* Tur 9 jüri: çizgi etiket bandına inip "BUGÜN"ün ortasından geçiyordu → eksen çentiğinde biter. */}
+      <span aria-hidden="true" style={{ position: "absolute", left: `${x(0)}%`, top: -2, bottom: EKSEN_H - 7, width: 2, marginLeft: -1, background: T,
         transformOrigin: "50% 100%", animation: `pv-cizgi .32s ${EASE.out} 300ms both` }} />
       <Eksen />
       {[...kova.entries()].map(([gun, liste]) => liste.map((it, kat) => (

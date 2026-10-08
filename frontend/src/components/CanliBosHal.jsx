@@ -26,8 +26,8 @@ import { cleanDemoText } from "./result-cards.jsx";
    artan yükseklik tepsideki bırakma yuvasına akar (tepsi ile pusula dipte hizalı). Altında eski düzen aynen (telefon dokunulmaz). */
 const BOS_CSS = `
 @media (min-width:1100px){
-.ke-bos-izgara{min-height:calc(100vh - 236px)}
 .ke-bos-satirlar{display:grid;grid-template-rows:repeat(var(--satir),40px)}
+.ke-bos-yuva{max-height:240px}
 }
 `;
 
@@ -46,18 +46,19 @@ function useOnizlemeMasalari() {
     .map((id, i) => ({ ...makeNode(id), sira: i, numarasiz: true })), []);
 }
 
+/* Satır başına TEK durum göstergesi (tur 9): canlı pusuladaki bekleyen masa diliyle aynı —
+   solda hat düğümü, sağda boş paraf halkası YOK. Sürükleme anında ilk masanın düğümü nefes alır. */
 function MasaSatiri({ a, nefes }) {
   const col = a.gorev === 2 ? V : T;
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "22px minmax(0,1fr) 24px", alignItems: "center", columnGap: SP.s, minHeight: 34, borderBottom: `1px solid ${PAL.line}` }}>
-      <span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: RAD.dot, background: PAL.lineHi, justifySelf: "center" }} />
+    <div style={{ display: "grid", gridTemplateColumns: "22px minmax(0,1fr)", alignItems: "center", columnGap: SP.s, minHeight: 34, borderBottom: `1px solid ${PAL.line}` }}>
+      <span aria-hidden="true" style={{ width: nefes ? 9 : 6, height: nefes ? 9 : 6, boxSizing: "border-box", borderRadius: RAD.dot, background: nefes ? PAL.surf : PAL.lineHi, border: nefes ? `2px solid ${col}` : "none", justifySelf: "center", animation: nefes ? "ke-e-nefes 1.2s ease-in-out infinite" : "none" }} />
       <span style={{ ...TYPE.data, color: PAL.mut2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.label}</span>
-      <span aria-hidden="true" style={{ width: 22, height: 22, boxSizing: "border-box", borderRadius: RAD.dot, border: nefes ? `1.5px dashed ${col}` : `1px dotted ${PAL.lineHi}`, animation: nefes ? "ke-e-nefes 1.2s ease-in-out infinite" : "none" }} />
     </div>
   );
 }
 
-function SonukPusula({ masalar, surukleniyor, dar, sonSaat }) {
+function SonukPusula({ masalar, surukleniyor, dar }) {
   const fazlar = [1, 2].map((n) => masalar.filter((a) => (a.gorev === 2 ? 2 : 1) === n));
   return (
     <section aria-label="Havale pusulası önizlemesi" style={{ display: "flex", flexDirection: "column", background: PAL.surf, border: `1px solid ${PAL.line}`, borderRadius: RAD.card, boxShadow: SH.card, padding: "clamp(16px, 2.4vw, 28px)", minWidth: 0 }}>
@@ -65,16 +66,15 @@ function SonukPusula({ masalar, surukleniyor, dar, sonSaat }) {
       <div style={{ display: "flex", alignItems: "center", gap: SP.m, ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase", flexWrap: "nowrap", minWidth: 0 }}>
         <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Havale pusulası · evrak bekleniyor</span>
         <span aria-hidden="true" style={{ flex: 1, height: 1, background: PAL.line, minWidth: 12 }} />
-        <span style={{ ...TNUM, flexShrink: 0, whiteSpace: "nowrap" }}>{masalar.length} masa</span>
       </div>
       <div aria-hidden="true" style={{ marginTop: SP.s, height: 5, borderTop: `2px solid ${PAL.ink}`, borderBottom: `1px solid ${PAL.ink}`, opacity: 0.35 }} />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: "clamp(16px, 2.4vw, 28px)", marginTop: SP.l, alignItems: "center" }}>
-        <div style={{ padding: SP.s, borderRadius: RAD.pop, background: PAL.surf2, boxShadow: `inset 0 0 0 1px ${PAL.lineHi}`, opacity: 0.85 }}>
+        <div style={{ padding: SP.s, borderRadius: RAD.pop, background: PAL.surf2, boxShadow: `inset 0 0 0 1px ${PAL.lineHi}` }}>
           <AjanOrb display={masalar} kosumda={false} yukseklik={dar ? 150 : 188} />
         </div>
         <div style={{ minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: SP.s, ...TYPE.antet, color: PAL.mut2, textTransform: "uppercase", whiteSpace: "nowrap" }}>
-            <span aria-hidden="true" style={{ width: 18, height: 2, background: PAL.mut3, flexShrink: 0 }} />Masa boş{sonSaat ? ` · son işlem ${sonSaat}` : ""}
+            <span aria-hidden="true" style={{ width: 18, height: 2, background: PAL.mut3, flexShrink: 0 }} />Masa boş · hat hazır
           </div>
           {/* "00" yer tutucu değil, olgu (tur 8): sönük lineHi tonu koyu temada okunmuyordu —
               ink-2 rakam + mut2 payda; ince çerçeveli rakam kutusu "henüz masa açılmadı" der. */}
@@ -110,7 +110,7 @@ function SonukPusula({ masalar, surukleniyor, dar, sonSaat }) {
 function BirakmaYuvasi({ surukleniyor, dar }) {
   const ton = surukleniyor ? T : PAL.lineHi;
   return (
-    <div style={{ flex: 1, minHeight: dar ? 132 : 200, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: SP.m, padding: SP.xl, textAlign: "center", borderRadius: RAD.ctl, border: `1.5px dashed ${ton}`, background: surukleniyor ? ALFA(T) : "transparent", transition: "background .15s ease-out, border-color .15s ease-out" }}>
+    <div className={dar ? undefined : "ke-bos-yuva"} style={{ flex: 1, minHeight: dar ? 132 : 200, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: SP.m, padding: SP.xl, textAlign: "center", borderRadius: RAD.ctl, border: `1.5px dashed ${ton}`, background: surukleniyor ? ALFA(T) : "transparent", transition: "background .15s ease-out, border-color .15s ease-out" }}>
       {/* Kâğıt yığını (tur 8): tepside bekleyen evrakın kenarları — iki ofset hairline yaprak. */}
       <span aria-hidden="true" style={{ position: "relative", width: 44, height: 54 }}>
         {!dar && [8, 4].map((o) => <span key={o} style={{ position: "absolute", inset: 0, transform: `translate(${o}px, ${-o}px)`, borderRadius: 3, border: `1px solid ${PAL.lineHi}`, background: PAL.surf }} />)}
@@ -174,8 +174,9 @@ function GelenTepsisi({ surukleniyor, onGoInbox, onUpload, onTelefon, dar, son =
 
 /* ANTET SAĞ KÜNYESİ (tur 8, brif #1) — resmî yazının "Sayı / Tarih" bloğu gibi sağa hizalı üç
    mono satır: görünümün canlı özeti. Bilinmeyen değer "—" (00 diye beyan edilmez). */
-function AntetKunye({ bugun, sonSaat, masa }) {
-  const satirlar = [["Masa", "boş"], ["Son işlem", sonSaat || "—"], ["Bugün işlenen", bugun == null ? "—" : String(bugun).padStart(2, "0")], ["Masa sayısı", String(masa).padStart(2, "0")]];
+function AntetKunye({ bugun, sonSaat }) {
+  // Künye = dosya olguları; masa sayısı kahramanın "00 / 15"inde tek yerde (tur 9: "15" dört kez).
+  const satirlar = [["Son işlem", sonSaat || "—"], ["Bugün işlenen", bugun == null ? "—" : String(bugun)]];
   return (
     <dl aria-label="Masa künyesi" style={{ margin: 0, display: "grid", gridTemplateColumns: "auto auto", columnGap: SP.l, rowGap: 2, ...TYPE.antet, textTransform: "uppercase", ...TNUM }}>
       {satirlar.map(([k, v]) => (
@@ -195,7 +196,7 @@ export default function CanliBosHal({ onGoInbox, onUpload, onFileDrop, onTelefon
     multiple: false, noClick: true, noKeyboard: true, accept: DROP_KABUL,
     onDrop: (kabul) => { if (kabul?.[0]) onFileDrop(kabul[0]); },
   });
-  const kunye = useMasaKunyesi(dar ? 0 : 6);
+  const kunye = useMasaKunyesi(dar ? 0 : 8);
   // Son işlem bugün değilse gün de yazılır ("21:14" dünkü kaydı bugünkü gibi okutuyordu).
   const sonZ = kunye.son[0] ? defterZamani(kunye.son[0].ts) : null;
   const sonSaat = !sonZ ? "" : (kunye.bugun > 0 ? sonZ.saat : `${sonZ.gun} ${sonZ.saat}`);
@@ -205,10 +206,10 @@ export default function CanliBosHal({ onGoInbox, onUpload, onFileDrop, onTelefon
       <input {...getInputProps()} aria-hidden="true" />
       <style>{BOS_CSS}</style>
       <ViewWrap id="isleniyor-h" title="İşleniyor" kunye="Canlı işlem masası" sub="Seçilen evrak burada uçtan uca, masa masa canlı işlenir."
-        actions={dar ? null : <AntetKunye bugun={kunye.bugun} sonSaat={sonSaat} masa={masalar.length} />}>
+        actions={dar ? null : <AntetKunye bugun={kunye.bugun} sonSaat={sonSaat} />}>
         <div className="ke-bos-izgara" style={{ display: "grid", gridTemplateColumns: dar ? "minmax(0,1fr)" : "minmax(0, 1.6fr) minmax(320px, 1fr)", gap: SP.xl, alignItems: "stretch" }}>
           {dar && tepsi}
-          <SonukPusula masalar={masalar} surukleniyor={isDragActive} dar={dar} sonSaat={sonSaat} />
+          <SonukPusula masalar={masalar} surukleniyor={isDragActive} dar={dar} />
           {!dar && tepsi}
         </div>
       </ViewWrap>

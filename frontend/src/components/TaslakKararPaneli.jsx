@@ -185,10 +185,11 @@ export default function TaslakKararPaneli({ h, konu, govde, tamMetin, genis, sut
             govdeUyari={denetim.hazir ? null : denetim.engel[0]?.metin} onDuzenle={onDuzenle} kunye={denetim.kunye} />
         </div>
         {genis && dip.devam && (
-          /* "Devamı" künyesi: solma maskesi tek başına kaydırılabilirliği sezdirmiyordu (2. jüri). */
-          <div style={{ position: "relative", height: 0, zIndex: 2 }}>
+          /* "Devamı" künyesi: bindirme değil, kaydırma kabı ile eylem bloğu arasında kendi
+             24px satırı (tur9 jüri: absolute künye fiş metnini örtüyordu). */
+          <div style={{ flexShrink: 0, height: 24, display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "0 14px", borderTop: `1px solid ${PAL.line}` }}>
             <button type="button" onClick={dip.sonaKaydir} tabIndex={-1} aria-hidden="true" data-press=""
-              style={{ position: "absolute", right: 14, bottom: 8, padding: "2px 8px", border: `1px solid ${PAL.line}`, borderRadius: RAD.chip, background: PAL.surf,
+              style={{ padding: "0 6px", border: "none", borderRadius: RAD.chip, background: "transparent",
                 cursor: "pointer", fontFamily: MONO, fontSize: 10, letterSpacing: ".1em", textTransform: "uppercase", color: PAL.mut2, animation: "nu-rise .22s var(--ke-ease-out) both" }}>
               Devamı ↓
             </button>

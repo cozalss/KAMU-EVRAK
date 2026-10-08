@@ -744,6 +744,7 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
           {/* Görünüm başına hata sınırı: bir görünüm çökerse kabuk (kenar çubuğu, asistan)
               ayakta kalır; key=activeView → başka görünüme geçince sınır kendini sıfırlar. */}
           <BaglantiKaydi kaynak={kabukKaynak} onYenidenDene={() => { islemlerQ.refetch(); gidenQ.refetch(); slaQ.refetch(); }} />
+          <DenemeSeridi sorgular={[islemlerQ, gidenQ, slaQ]} />
           <AntetKunyeBaglam.Provider value={antetKunye}>
             <HataSiniri key={activeView} tam baslik="Bu görünüm gösterilemedi">
               <Suspense fallback={<ViewFallback />}>{view}</Suspense>
@@ -755,7 +756,6 @@ export default function DashboardApp({ tema, onTemaDegistir }) {
         {/* Canlı akışta bir masa hata verdiyse sebep + «Tekrar dene» sahnenin kendisinde (MerkezHata);
             köşe bildirimi aynı şeyi ikinci kez söyler ve kaynak belgeyi örter → orada basılmaz. */}
         {error && !busy && !(activeView === "isleniyor" && nodes.some((x) => x.status === "error")) && <ErrorBar msg={error} canRetry={canRetry && !errorKind} onRetry={retry} onDismiss={dismissError} />}
-        <DenemeSeridi sorgular={[islemlerQ, gidenQ, slaQ]} />
 
         {user && asistanHazir && <Suspense fallback={null}><ChatbotWidget onNavigate={goView} onMevzuatAc={mevzuatAc} ekran={ekranBaglami} onEvrakAc={evrakAc} /></Suspense>}
 

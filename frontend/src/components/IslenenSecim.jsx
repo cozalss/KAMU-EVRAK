@@ -36,6 +36,10 @@ const bugunDamga = () => { const d = new Date(); const p = (n) => String(n).padS
    gelince orada oturur. Telefonda alt sekme şeridinin üstünde (SECIM_CSS). */
 const SECIM_CSS = `
 [data-secim-yuva]{position:sticky;bottom:16px;height:0;z-index:6}
+/* Tur 9 jüri: çubuk son görünen satırı örtüyordu → seçim varken defterin dibinde çubuk boyu
+   kadar boşluk + klavye kaydırması çubuğun altına satır bırakmaz (scroll-padding). */
+[data-secim-bosluk]{height:64px}
+html:has([data-secim-yuva]){scroll-padding-bottom:80px}
 @media (max-width:640px){[data-secim-yuva]{bottom:calc(84px + env(safe-area-inset-bottom))}}
 `;
 export function SecimCubugu({ seciliKayitlar, sutunlar, onBirak }) {
@@ -54,6 +58,8 @@ export function SecimCubugu({ seciliKayitlar, sutunlar, onBirak }) {
   const dugme = { cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 32, padding: "0 12px", borderRadius: RAD.ctl,
     ...TYPE.data, fontWeight: 500, transition: "background .12s ease, transform .14s var(--ke-ease-out)" };
   return (
+    <>
+    <div data-secim-bosluk="" aria-hidden="true" />
     <div data-secim-yuva="">
     <style>{SECIM_CSS}</style>
     <div role="toolbar" aria-label="Seçili kayıtlar" style={{ position: "absolute", left: SP.l, right: SP.l, bottom: 0, display: "flex", alignItems: "center", gap: SP.s, flexWrap: "wrap",
@@ -74,5 +80,6 @@ export function SecimCubugu({ seciliKayitlar, sutunlar, onBirak }) {
       </span>
     </div>
     </div>
+    </>
   );
 }

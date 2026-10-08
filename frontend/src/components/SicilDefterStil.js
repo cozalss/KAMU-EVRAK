@@ -20,7 +20,7 @@ export const SICIL_CSS = `
   transition:background .15s ease;animation:sd-gir .22s var(--ke-ease-out) both;animation-delay:calc(min(var(--sd-i,0), 7) * 18ms)}
 [data-sicil-satir][aria-selected="true"]{background:color-mix(in srgb, var(--ke-t) 9%, transparent)}
 [data-sicil-satir]:first-of-type{border-top:none}
-[data-sicil-satir]::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;
+[data-sicil-satir]::before{content:"";position:absolute;left:4px;top:10px;bottom:10px;width:3px;border-radius:2px;
   background:var(--ke-t);transform:scaleY(0);transform-origin:50% 50%;transition:transform .26s var(--ke-ease-out)}
 [data-sicil-satir]:hover,[data-sicil-satir]:focus-within{background:var(--ke-hov)}
 [data-sicil-satir]:hover::before,[data-sicil-satir]:focus-within::before,[data-sicil-satir][data-vurgu]::before{transform:scaleY(1)}
@@ -28,7 +28,9 @@ export const SICIL_CSS = `
 [data-sicil-satir][data-vurgu]{animation:sd-murekkep 1.2s var(--ke-ease-out) both;background:color-mix(in srgb, var(--ke-t) 6%, transparent)}
 /* Satırın kendisi odak alır (tabIndex=0) — halka satırın İÇ kenarında, dört kenarı tam
    (outline yüzeyin overflow:clip'inde yanlardan kırpılıyordu; tur 8 jüri): inset gölge. */
-[data-sicil-satir]:focus-visible{outline:none;box-shadow:inset 0 0 0 2px var(--ke-t)}
+/* Tur 9 jüri: çift 2 px mavi üst/alt kural + kenar çizgisine binen çubuk ağır duruyordu →
+   halka 1 px + mürekkep çubuğu kartın İÇ kenarında (left 4). Çubuk + halka iki sinyal. */
+[data-sicil-satir]:focus-visible{outline:none;box-shadow:inset 0 0 0 1px var(--ke-t), inset 0 0 0 2px color-mix(in srgb, var(--ke-t) 22%, transparent)}
 [data-sd-no-sira]{transition:color .18s ease}
 [data-sicil-satir]:hover [data-sd-no-sira],[data-sicil-satir]:focus-within [data-sd-no-sira]{color:var(--ke-derin-t)}
 /* Kayıt no hücresi + DERKENAR: marjın solundaki kenar notu (bürokrasinin kendi kavramı) —
@@ -52,6 +54,10 @@ export const SICIL_CSS = `
 @media (min-width:641px) and (hover:hover){
   [data-sd-eylem][data-sd-paraf]{border-color:transparent;background:transparent;color:var(--ke-mut2)}
   [data-sicil-satir]:hover [data-sd-paraf],[data-sicil-satir]:focus-within [data-sd-paraf]{border-color:var(--ke-input-line);background:var(--ke-surf);color:var(--ke-ink)}
+  /* Tur 9 jüri: 15 eş "İşle →" sağ kenarda sütun gürültüsüydü → dinlenmede yalnız ok; metin
+     bakılınca/odakta belirir. Yalnız opaklık: düğme genişliği sabit, kayma yok. */
+  [data-sd-paraf] [data-sd-paraf-metin]{opacity:0;transition:opacity .14s var(--ke-ease-out)}
+  [data-sicil-satir]:hover [data-sd-paraf-metin],[data-sicil-satir]:focus-within [data-sd-paraf-metin]{opacity:1}
 }
 /* Telefon: satır eylemi + seçim kutusu 44 px dokunma alanı (neonUi [data-dokunma] eşiğiyle aynı);
    kutunun görsel yeri değişmesin diye negatif marj büyür. Hover olmayan ekranda gizli eylem görünür. */
@@ -73,6 +79,13 @@ export const SICIL_CSS = `
 [data-sd-eylem-yuva]{display:grid;justify-items:end;align-items:center}
 [data-sd-eylem-yuva]>*{grid-area:1/1}
 [data-sd-liste]{position:relative}
+[data-aynen]{display:inline-grid;align-items:center}
+[data-aynen]>[aria-hidden]{grid-area:1/1;transition:opacity .12s var(--ke-ease-out)}
+[data-aynen-deger]{opacity:0}
+@media (hover:hover){
+  [data-sicil-satir]:hover [data-aynen-deger],[data-sicil-satir]:focus-visible [data-aynen-deger]{opacity:1}
+  [data-sicil-satir]:hover [data-aynen-isaret],[data-sicil-satir]:focus-visible [data-aynen-isaret]{opacity:0}
+}
 [data-sd-liste]::after,[data-sd-baslik]::after{content:"";position:absolute;top:0;bottom:0;left:var(--sd-marj,158px);width:4px;pointer-events:none;
   border-left:1px solid color-mix(in srgb, var(--ke-r) 42%, transparent);border-right:1px solid color-mix(in srgb, var(--ke-r) 22%, transparent)}
 [data-sd-ipucu]{display:flex;align-items:center;gap:14px;min-height:32px;box-sizing:border-box;padding:8px 20px;border-top:1px solid var(--ke-line-hi);background:var(--ke-surf2);

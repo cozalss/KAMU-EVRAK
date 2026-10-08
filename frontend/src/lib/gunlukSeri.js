@@ -42,7 +42,8 @@ export function haftalikKiyas(g) {
   const fark = g.son7N - g.onceki7N;
   /* Tur 8 jüri: "+33 önceki 7 güne göre" belirsizdi — önceki dönemin değeri açıkça yazılır;
      önceki 7 gün boşsa kıyas yok, "ilk hafta" denir. */
-  if (fark > 0 && g.onceki7N === 0) return { metin: `ilk hafta · önceki 7 gün: 0`, yon: "artis" };
+  /* Tur 9 jüri: kıyas yokken "artis" yeşil basılıp olumlu sinyal veriyordu → nötr. */
+  if (fark > 0 && g.onceki7N === 0) return { metin: `ilk hafta · önceki 7 gün: 0`, yon: "notr" };
   if (fark > 0) return { metin: `+${fark} · önceki 7 gün: ${g.onceki7N}`, yon: "artis" };
   if (fark < 0) return { metin: `−${-fark} · önceki 7 gün: ${g.onceki7N}`, yon: "azalis" };
   return g.son7N > 0 ? { metin: "önceki 7 günle aynı", yon: "sabit" } : { metin: "son 7 günde kayıt yok", yon: "sabit" };

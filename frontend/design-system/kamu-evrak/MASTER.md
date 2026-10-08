@@ -130,6 +130,11 @@ preflight kapalı, `@tailwind base` satırı SİLİNMEZ). AGPL bağımlılık yo
   Sesli görüşme diski panelin çapasında doğar (tam ekran değil, zeminsiz orb).
 - **Asistan mesajı = havale notu fişi.** Araç sonucu kayıtlar nota zımbalı ek olarak durur;
   yalnız EN SON araç sonucu mini damga taşır ("3 kayıt · Gelen") — panel başına tek damga.
+- **Antet kılavuzu** (≥ 1600 px, tur 9): başlık ile sağ blok arasındaki bant, içindekiler
+  cetvelindeki gibi noktalı kılavuz çizgisi + mono "CİLT <yıl>" ile bağlanır (`AntetKilavuz`).
+  Künye değer sütunu `min-width: 22ch` — yükleniyor→nihai metin geçişinde blok kaymaz.
+- **Sicil sayacı dolgusuzdur** (tur 9): `00` yazılmaz; panel rakamlarıyla tek dil. Ray başlıkları
+  (GÜNLÜK, SON KAYITLAR, ÇALIŞMA ALANI) tek ses: mono künye etiketi.
 - **Antet sağ künyesi** (≥ 1200 px, tur 8): resmî yazının üst-sağ bloğu gibi 3 satır mono
   `ETİKET  DEĞER` (sol çizgili, tab-stop hizalı). Görünüm kendi bloğunu `actions` ile verirse
   (defterler: `DefterAntetKunye`, Panel) o çizilir; vermezse `ViewWrap` kabuktan
@@ -188,7 +193,9 @@ zoom) · AA kontrast iki temada (ray kapsamı artık `derin-kirmizi`/`derin-sari
 - **Tema geçişi "masa lambası"** (tur 8): sert clip-path dairesi yerine yumuşak kenarlı ışık halesi
   — radial mask, dolu yarıçap `@property --ke-lamba-yc` ile büyür, 96 px yumuşak kenar, 520 ms
   `--ke-ease-in-out`. Menü açık kalır; reduced-motion'da anında.
-- **Görünüm geçişi ardışıktır** (tur 8, çift pozlama bitti): eski başlık/içerik 80 ms'de söner, yeni
+- **Görünüm geçişi ardışıktır** (tur 8, tur 9'da kök dahil): KÖK (kenar çubuğu, araç çubukları)
+  crossfade ETMEZ — anında değişir (`::view-transition-old(root)` opacity 0, animasyonsuz); iki etkin
+  sırt aynı karede görünmez. Eski başlık/içerik 60 ms ease-out'ta söner, yeni
   60 ms gecikmeyle girer (`ke-antet-baslik` grubu konum morfunu sürdürür). Görünümün İLK açılışında
   antet çift çizgisi soldan sağa çekilir (`ke-cizgi`, 280 ms) ve başlık 40 ms sonra yükselir; aynı
   oturumda ikinci ziyarette yalnız 120 ms çapraz geçiş.
@@ -233,6 +240,15 @@ zoom) · AA kontrast iki temada (ray kapsamı artık `derin-kirmizi`/`derin-sari
   da açık token'lar, kartlar gölgesiz, damga siyah-beyaz, animasyonlar son karede.
 - `components/ui/*` (shadcn, ikinci token dünyası, hiç import edilmiyordu) SİLİNDİ; kullanılacak
   atom neonUi/kabukAtomlari'dır.
+
+### Kabuk tur 9 sözleşmeleri
+- **Tek kimlik satırı:** kart, menü ve profil "Unvan · Rol" sırasını kullanır (HesapMenu `kimlikSatiri`); ASCII tohum unvanları yalnız gösterimde Türkçeye çevrilir.
+- **Kip künyesi:** her hesap kipi `KİP · <AD>` (Personel kartı / Yardım / KVKK). Açık temada scrim kâğıt tonlu, hafif (`--ke-scrim`).
+- **Tek bağlantı şeridi:** deneme sayacı ("Sunucuya N. kez yazıldı") ve Bağlantı kaydı aynı yerde, akışın içinde, aynı fişte; sabit konumlu hap antetin üstüne binmez.
+- **Giriş formu:** alan altı yardım satırının yeri önceden ayrılır (24 px) → hata düzeni kaydırmaz; hata kutu değil, ikon + metin. Yer tutucu `--ke-yer-tutucu` (değerden açık, AA). Kademeli giriş DOM sırasıyla: künye → başlık → alanlar → düğme.
+- **Giriş kâğıdı:** adres/telefon ya da Gereği/Bilgi + paraf zinciri + kayıt bandı; havale fişi imzanın altında sağ kenara zımbalı, damga solda. ≥1100×980'de formun altında "Masa kuralları".
+- **Cilt mührü:** sicil ile Asistan arası, yuvarlak çift halkalı kör baskı (KE + yıl); sığmıyorsa hiç basılmaz.
+- **Dar ray rozeti:** acil sayı dolu kırmızı pul, olağan sayı çerçeveli — renk tek sinyal değil.
 
 ## Teslim öncesi
 
